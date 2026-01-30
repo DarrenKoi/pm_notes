@@ -12,6 +12,11 @@
   - [LangGraph RAG](./rag/langgraph/langgraph-rag.md) - Corrective RAG 파이프라인 구현
   - [LangGraph 고급](./rag/langgraph/langgraph-advanced.md) - Human-in-the-loop, Subgraph, Persistence, Streaming
 
+#### Milvus
+- [Milvus 시리즈 목차](./rag/milvus/README.md)
+  - [Milvus 기초](./rag/milvus/milvus-basics.md) - 아키텍처, Collection, Index, 유사도 검색
+  - [Milvus RAG 연동](./rag/milvus/milvus-rag-integration.md) - LangChain/LangGraph와 Milvus 통합
+
 ### MCP (Model Context Protocol)
 - _준비 중_
 
