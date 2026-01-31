@@ -1,0 +1,10 @@
+{
+  "general": {
+    "previewFeatures": true,
+    "disableAutoUpdate": true,
+    "enableAutoUpdate": false
+  },
+  "experimental": {
+    "useOSC52Paste": true
+  }
+}
