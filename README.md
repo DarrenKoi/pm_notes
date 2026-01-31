@@ -11,9 +11,11 @@
 | AI/DT | [MCP](./ai-dt/mcp/README.md) | 🟡 진행중 | 2026-01-31 |
 | AI/DT | 데이터 처리 | 🔴 시작 전 | - |
 | Web | FastAPI | 🔴 시작 전 | - |
+| Web | [TypeScript 프로젝트 설정](./web-development/typescript/tsconfig-setup.md) | 🟡 진행중 | 2026-02-01 |
+| Web | [Vite 기초](./web-development/typescript/vite-basics.md) | 🟡 진행중 | 2026-02-01 |
 | Web | [TypeScript/Vue](./web-development/typescript/vue/README.md) | 🟡 진행중 | 2026-02-01 |
 
 ## 폴더 구조
 
 - [`ai-dt/`](./ai-dt/README.md) - AI/DT 시스템 개발
-- `web-development/` - 웹 개발 (준비 중)
+- [`web-development/`](./web-development/typescript/README.md) - 웹 개발 (TypeScript, Vue, Vite)
