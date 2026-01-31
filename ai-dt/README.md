@@ -17,8 +17,13 @@
   - [Milvus 기초](./rag/milvus/milvus-basics.md) - 아키텍처, Collection, Index, 유사도 검색
   - [Milvus RAG 연동](./rag/milvus/milvus-rag-integration.md) - LangChain/LangGraph와 Milvus 통합
 
+#### Hybrid Search
+- [보조 용어 사전 DB (Elasticsearch)](./rag/auxiliary-glossary-db.md) - ES BM25로 전문 용어 관리, 쿼리 확장, LangGraph 통합
+
 ### MCP (Model Context Protocol)
-- _준비 중_
+- [MCP 시리즈 목차](./mcp/README.md)
+  - [MCP 기초](./mcp/mcp-basics.md) - Server/Client 아키텍처, Tools/Resources/Prompts, FastMCP
+  - [MCP + LangGraph 연동](./mcp/mcp-langgraph-integration.md) - langchain-mcp-adapters, ReAct Agent
 
 ### 데이터 처리 (Data Handling)
 - _준비 중_

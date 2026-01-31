@@ -8,7 +8,7 @@
 |------|------|------|----------------|
 | AI/DT | [RAG/LangGraph](./ai-dt/rag/langgraph/README.md) | 🟡 진행중 | 2026-01-31 |
 | AI/DT | [RAG/Milvus](./ai-dt/rag/milvus/README.md) | 🟡 진행중 | 2026-01-31 |
-| AI/DT | MCP | 🔴 시작 전 | - |
+| AI/DT | [MCP](./ai-dt/mcp/README.md) | 🟡 진행중 | 2026-01-31 |
 | AI/DT | 데이터 처리 | 🔴 시작 전 | - |
 | Web | FastAPI | 🔴 시작 전 | - |
 | Web | TypeScript/Vue | 🔴 시작 전 | - |
