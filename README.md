@@ -11,7 +11,7 @@
 | AI/DT | [MCP](./ai-dt/mcp/README.md) | 🟡 진행중 | 2026-01-31 |
 | AI/DT | 데이터 처리 | 🔴 시작 전 | - |
 | Web | FastAPI | 🔴 시작 전 | - |
-| Web | TypeScript/Vue | 🔴 시작 전 | - |
+| Web | [TypeScript/Vue](./web-development/typescript/vue/README.md) | 🟡 진행중 | 2026-02-01 |
 
 ## 폴더 구조
 

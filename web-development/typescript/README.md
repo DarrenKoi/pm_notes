@@ -25,7 +25,7 @@ status: in-progress
 | 주제 | 내용 | 상태 |
 |------|------|------|
 | [TypeScript 기본 문법](./typescript-basics.md) | 타입 시스템, 인터페이스, 제네릭, 유니온/인터섹션 타입 | 🔴 시작 전 |
-| [tsconfig와 프로젝트 설정](./tsconfig-setup.md) | tsconfig.json 옵션, strict 모드, 모듈 시스템 | 🔴 시작 전 |
+| [tsconfig와 프로젝트 설정](./tsconfig-setup.md) | tsconfig.json 옵션, strict 모드, 모듈 시스템 | 🟡 진행중 |
 | [타입 심화](./advanced-types.md) | 유틸리티 타입, 조건부 타입, 템플릿 리터럴 타입, type guard | 🔴 시작 전 |
 
 **학습 목표**: TypeScript 코드를 읽고 쓸 수 있으며, 타입 에러를 스스로 해결할 수 있다.
@@ -75,6 +75,7 @@ status: in-progress
 
 | 주제 | 내용 | 상태 |
 |------|------|------|
+| [Vite 기초](./vite-basics.md) | Vite 개념, 설정, TypeScript 연동, 환경 변수 | 🟡 진행중 |
 | [패키지 관리와 빌드](./package-and-build.md) | npm/pnpm, Vite, ESBuild, 번들링 개념 | 🔴 시작 전 |
 | [코드 품질 도구](./code-quality.md) | ESLint, Prettier, Husky, lint-staged | 🔴 시작 전 |
 | [테스트](./testing.md) | Vitest (유닛), Playwright (E2E), 테스트 전략 | 🔴 시작 전 |
