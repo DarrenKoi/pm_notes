@@ -19,10 +19,6 @@ INDEX_MAPPING = {
             "summary": {"type": "text", "analyzer": "standard"},
             "category": {"type": "keyword"},
             "keywords": {"type": "keyword"},
-            "embedding": {
-                "type": "dense_vector",
-                "dims": config.EMBEDDING_DIMENSIONS,
-            },
         }
     }
 }
@@ -50,8 +46,6 @@ def bulk_index(es: Elasticsearch, items: list[EnrichedKnowhow]) -> int:
         actions = []
         for item in chunk:
             doc = item.model_dump()
-            if doc.get("embedding") is None:
-                doc.pop("embedding", None)
             actions.append(
                 {
                     "_index": config.ES_INDEX,

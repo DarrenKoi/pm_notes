@@ -28,7 +28,6 @@ def main():
     parser = argparse.ArgumentParser(description="Knowhow → Elasticsearch pipeline")
     parser.add_argument("--input-dir", type=Path, required=True, help="Directory containing knowhow JSON files")
     parser.add_argument("--dry-run", action="store_true", help="Process without storing to Elasticsearch")
-    parser.add_argument("--skip-embedding", action="store_true", help="Skip embedding generation")
     parser.add_argument("--batch-size", type=int, default=config.BATCH_SIZE, help="Items per processing batch")
     args = parser.parse_args()
 
@@ -46,7 +45,7 @@ def main():
         batch = items[start : start + args.batch_size]
         logger.info("=== Batch %d-%d / %d ===", start + 1, start + len(batch), total)
 
-        enriched = process_batch(batch, skip_embedding=args.skip_embedding, offset=start, total=total)
+        enriched = process_batch(batch, offset=start, total=total)
 
         if args.dry_run:
             for e in enriched:

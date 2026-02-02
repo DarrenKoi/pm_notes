@@ -14,7 +14,6 @@ class EnrichedKnowhow(KnowhowItem):
     summary: str = ""
     category: str = ""
     keywords: list[str] = []
-    embedding: list[float] | None = None
 
 
 class KnowhowFile(BaseModel):

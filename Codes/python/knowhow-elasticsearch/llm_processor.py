@@ -23,9 +23,6 @@ def create_llm_client() -> OpenAI:
     return OpenAI(base_url=config.LLM_URL, api_key="not-needed")
 
 
-def create_embedding_client() -> OpenAI:
-    return OpenAI(base_url=config.EMBEDDING_URL, api_key="not-needed")
-
 
 def enrich_item(client: OpenAI, item: KnowhowItem) -> EnrichedKnowhow:
     for attempt in range(config.LLM_MAX_RETRIES):
@@ -60,33 +57,17 @@ def enrich_item(client: OpenAI, item: KnowhowItem) -> EnrichedKnowhow:
     return EnrichedKnowhow(**item.model_dump())
 
 
-def generate_embeddings(client: OpenAI, texts: list[str]) -> list[list[float]]:
-    resp = client.embeddings.create(model=config.EMB_MODEL, input=texts)
-    return [item.embedding for item in resp.data]
-
-
 def process_batch(
     items: list[KnowhowItem],
-    skip_embedding: bool = False,
     offset: int = 0,
     total: int = 0,
 ) -> list[EnrichedKnowhow]:
-    """Process a batch of items: LLM enrichment + optional embedding."""
+    """Process a batch of items with LLM enrichment."""
     llm_client = create_llm_client()
     enriched = []
 
     for i, item in enumerate(items):
         logger.info("Processing %d/%d: %s", offset + i + 1, total or len(items), item.KNOWHOW_ID)
         enriched.append(enrich_item(llm_client, item))
-
-    if not skip_embedding:
-        emb_client = create_embedding_client()
-        texts = [e.knowhow for e in enriched]
-        emb_batch_size = 32
-        for start in range(0, len(texts), emb_batch_size):
-            batch = texts[start : start + emb_batch_size]
-            embeddings = generate_embeddings(emb_client, batch)
-            for j, emb in enumerate(embeddings):
-                enriched[start + j].embedding = emb
 
     return enriched

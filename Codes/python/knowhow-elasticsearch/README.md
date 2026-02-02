@@ -25,9 +25,6 @@ python pipeline.py --input-dir ./sample_data --dry-run
 
 # 전체 파이프라인
 python pipeline.py --input-dir ./sample_data
-
-# 임베딩 생략
-python pipeline.py --input-dir ./sample_data --skip-embedding
 ```
 
 ## 입력 데이터 형식
