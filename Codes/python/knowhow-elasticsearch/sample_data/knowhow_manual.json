@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "knowhow_no": 1,
+      "KNOWHOW_ID": "KH-MANUAL-001",
+      "knowhow": "웹사이트에서 Recipe 검색 시 상단 필터 영역에서 'Equipment Type'을 먼저 선택하고, 이후 'Process Step'을 선택하면 해당 조건에 맞는 Recipe 목록이 자동으로 필터링됩니다. 검색 결과가 너무 많은 경우 키워드 검색창에 Recipe명 일부를 입력하면 빠르게 찾을 수 있습니다.",
+      "user_id": "kim.mj",
+      "user_name": "김민정",
+      "user_department": "AI/DT TF"
+    },
+    {
+      "knowhow_no": 2,
+      "KNOWHOW_ID": "KH-MANUAL-002",
+      "knowhow": "대시보드에서 특정 장비의 가동률(Utilization)을 확인하려면 좌측 메뉴 'Equipment Monitoring' → 'Utilization Report'로 이동합니다. 기간 설정은 최대 90일까지 가능하며, CSV 다운로드 버튼을 통해 원본 데이터를 내려받을 수 있습니다. Chart 타입은 Line/Bar/Heatmap 중 선택 가능합니다.",
+      "user_id": "lee.sh",
+      "user_name": "이상훈",
+      "user_department": "스마트제조팀"
+    },
+    {
+      "knowhow_no": 3,
+      "KNOWHOW_ID": "KH-MANUAL-003",
+      "knowhow": "Batch 작업 등록 시 'Batch Registration' 페이지에서 엑셀 템플릿을 다운로드하여 양식에 맞게 데이터를 입력한 후 업로드하면 자동으로 검증(Validation)이 수행됩니다. 검증 실패 항목은 빨간색으로 표시되며, 해당 행에 마우스를 올리면 오류 원인이 툴팁으로 나타납니다.",
+      "user_id": "park.jy",
+      "user_name": "박주영",
+      "user_department": "생산기술팀"
+    }
+  ]
+}
