@@ -55,7 +55,6 @@ def bulk_index(es: Elasticsearch, items: list[EnrichedKnowhow]) -> int:
             actions.append(
                 {
                     "_index": config.ES_INDEX,
-                    "_id": item.KNOWHOW_ID,
                     "_source": doc,
                 }
             )
