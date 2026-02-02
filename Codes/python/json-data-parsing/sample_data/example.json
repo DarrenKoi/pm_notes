@@ -1,0 +1,73 @@
+{
+  "facility": {
+    "id": "FAB-01",
+    "name": "Manufacturing Line A",
+    "location": "Building 3"
+  },
+  "equipment": [
+    {
+      "id": "EQ-001",
+      "name": "Chamber Alpha",
+      "status": "running",
+      "parameters": {
+        "temperature": 350.5,
+        "pressure": 1.2,
+        "gas_flow": 150
+      },
+      "recipes": [
+        {
+          "id": "RCP-101",
+          "name": "Standard Process",
+          "steps": [
+            {"step": 1, "action": "preheat", "duration_sec": 60},
+            {"step": 2, "action": "deposit", "duration_sec": 300},
+            {"step": 3, "action": "cooldown", "duration_sec": 120}
+          ]
+        },
+        {
+          "id": "RCP-102",
+          "name": "High Temp Process",
+          "steps": [
+            {"step": 1, "action": "preheat", "duration_sec": 90},
+            {"step": 2, "action": "deposit", "duration_sec": 450}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EQ-002",
+      "name": "Chamber Beta",
+      "status": "idle",
+      "parameters": {
+        "temperature": 25.0,
+        "pressure": 1.0,
+        "gas_flow": 0
+      },
+      "recipes": []
+    },
+    {
+      "id": "EQ-003",
+      "name": "Chamber Gamma",
+      "status": "maintenance",
+      "parameters": {
+        "temperature": null,
+        "pressure": null,
+        "gas_flow": null
+      },
+      "recipes": [
+        {
+          "id": "RCP-201",
+          "name": "Cleaning Process",
+          "steps": [
+            {"step": 1, "action": "purge", "duration_sec": 180}
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "last_updated": "2025-01-31T10:30:00Z",
+    "version": "1.2.0",
+    "tags": ["production", "semiconductor", "fab"]
+  }
+}
