@@ -15,9 +15,10 @@
 | Web | [Vite 기초](./web-development/typescript/vite-basics.md) | 🟡 진행중 | 2026-02-01 |
 | Web | [TypeScript/Vue](./web-development/typescript/vue/README.md) | 🟡 진행중 | 2026-02-01 |
 | Codes | [Knowhow → Elasticsearch](./Codes/python/knowhow-elasticsearch/README.md) | 🟡 진행중 | 2026-02-02 |
+| Codes | [조직 계층 트리 유틸리티](./Codes/python/org-hierarchy/) | 🟡 진행중 | 2026-02-02 |
 
 ## 폴더 구조
 
 - [`ai-dt/`](./ai-dt/README.md) - AI/DT 시스템 개발
 - [`web-development/`](./web-development/typescript/README.md) - 웹 개발 (TypeScript, Vue, Vite)
-- [`Codes/python/`](./Codes/python/) - Python 프로젝트 (Knowhow-ES 파이프라인 등)
+- [`Codes/python/`](./Codes/python/) - Python 프로젝트 (Knowhow-ES 파이프라인, 조직 계층 트리 등)
