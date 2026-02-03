@@ -1,5 +1,5 @@
 ---
-tags: [memory, conversation, rag, summarization, user-profiling]
+tags: [memory, conversation, rag, summarization, user-profiling, mongodb, milvus, elasticsearch]
 level: intermediate
 last_updated: 2026-02-03
 status: in-progress
@@ -117,20 +117,52 @@ importance = recency × relevance × significance
 
 ## 어떻게 사용하는가? (How)
 
-### 전체 아키텍처
+### 키 관계: user_id vs session_id
 
 ```
-사용자 메시지
+user_id (1) ──→ (N) session_id
+```
+
+- `user_id`: 사용자 식별자. **장기 메모리의 기본 키**. 모든 세션에 걸쳐 팩트를 축적/검색하는 데 사용
+- `session_id`: 대화 세션 식별자. **중기 요약 및 체크포인터의 키**. 세션별 메시지 히스토리 관리에 사용
+
+```
+user_id: "user-123" (Daeyoung)
+  ├── session_id: "sess-001"  (1월 30일 - FastAPI 질문)
+  ├── session_id: "sess-002"  (1월 31일 - RAG 구현)
+  └── session_id: "sess-003"  (2월 03일 - 메모리 시스템)
+```
+
+### 스토리지 아키텍처 (MongoDB + Milvus + ES 7.14)
+
+사용 가능한 DB: MongoDB, Elasticsearch 7.14, Milvus (dense vector only, sparse 미설정)
+
+#### DB별 역할 분담
+
+| 데이터 | 저장소 | 이유 |
+|--------|--------|------|
+| 대화 메시지 (raw) | **MongoDB** | 문서 지향, 메시지 배열에 자연스러운 구조 |
+| 세션 요약 (mid-term) | **MongoDB** | user_id + session_id로 정확한 키 기반 조회 |
+| 사용자 팩트 (long-term) | **Milvus** | 시맨틱 유사도 검색으로 관련 팩트 검색 필요 |
+| 대화 전문 검색 (optional) | **ES 7.14** | 전체 세션에서 키워드 기반 대화 검색 시 활용 |
+
+> **ES 7.14 참고**: 네이티브 벡터 검색은 8.x부터 지원되므로, 7.14에서는 full-text 검색 용도로만 활용.
+> Milvus는 sparse 미설정 상태이므로 dense vector 유사도 검색만 사용.
+
+#### 스토리지 아키텍처 다이어그램
+
+```
+사용자 메시지 (+ user_id, session_id from State)
     │
-    ├─→ 관련 장기 메모리 검색 (벡터 검색)
-    ├─→ 최근 세션 중기 요약 로드
-    ├─→ 단기 메시지 (최근 N개) 포함
+    ├─→ Milvus: 관련 장기 메모리 검색 (dense vector similarity)
+    ├─→ MongoDB: session_id로 중기 요약 로드
+    ├─→ LangGraph State: 단기 메시지 (최근 N개)
     │
     ▼
 ┌─────────────────────────────┐
 │  시스템 프롬프트              │
-│  + 검색된 메모리             │
-│  + 세션 요약                 │
+│  + Milvus 검색 메모리        │
+│  + MongoDB 세션 요약         │
 │  + 최근 메시지               │
 │  + 현재 사용자 메시지         │
 └─────────────────────────────┘
@@ -138,11 +170,156 @@ importance = recency × relevance × significance
     ▼
   LLM 응답
     │
-    ├─→ (비동기) 새 사용자 팩트 추출 → 저장
-    └─→ (비동기) 필요 시 세션 요약 갱신
+    ├─→ (비동기) 팩트 추출 → Milvus 저장 (user_id 키)
+    ├─→ (비동기) 세션 요약 갱신 → MongoDB 저장 (session_id 키)
+    └─→ (비동기) 대화 기록 → MongoDB 저장
 ```
 
-### LangGraph 기반 구현 예시
+### 1단계: MongoDB 스토리지 레이어 (대화 + 요약)
+
+```python
+from pymongo import MongoClient
+from datetime import datetime
+
+mongo = MongoClient("mongodb://localhost:27017")
+db = mongo["chat_memory"]
+
+# ─── 대화 기록 저장/조회 ───
+
+def save_conversation(user_id: str, session_id: str, messages: list, summary: str = ""):
+    """세션 대화 기록을 MongoDB에 저장 (upsert)"""
+    db.conversations.update_one(
+        {"user_id": user_id, "session_id": session_id},
+        {
+            "$set": {
+                "messages": [
+                    {"role": m.type, "content": m.content}
+                    for m in messages
+                ],
+                "summary": summary,
+                "updated_at": datetime.now(),
+            },
+            "$setOnInsert": {
+                "created_at": datetime.now(),
+            },
+        },
+        upsert=True,
+    )
+
+def load_session_summary(user_id: str, session_id: str) -> str:
+    """현재 세션의 중기 요약을 MongoDB에서 로드"""
+    doc = db.conversations.find_one(
+        {"user_id": user_id, "session_id": session_id},
+        {"summary": 1},
+    )
+    return doc["summary"] if doc and doc.get("summary") else ""
+
+def load_recent_session_summaries(user_id: str, limit: int = 5) -> list[dict]:
+    """최근 N개 세션의 요약을 로드 (크로스 세션 메모리)"""
+    docs = db.conversations.find(
+        {"user_id": user_id, "summary": {"$ne": ""}},
+        {"session_id": 1, "summary": 1, "updated_at": 1},
+    ).sort("updated_at", -1).limit(limit)
+    return list(docs)
+```
+
+#### MongoDB 스키마
+
+```javascript
+// Collection: conversations
+{
+    "user_id": "user-123",
+    "session_id": "session-abc-123",
+    "messages": [
+        {"role": "human", "content": "...", "timestamp": "..."},
+        {"role": "ai", "content": "...", "timestamp": "..."}
+    ],
+    "summary": "사용자가 FastAPI로 RAG 시스템을 구축 중...",
+    "created_at": ISODate("2026-02-03T10:00:00Z"),
+    "updated_at": ISODate("2026-02-03T11:30:00Z")
+}
+
+// 인덱스
+db.conversations.createIndex({ "user_id": 1, "session_id": 1 }, { unique: true })
+db.conversations.createIndex({ "user_id": 1, "updated_at": -1 })
+```
+
+### 2단계: Milvus 스토리지 레이어 (장기 팩트 메모리, dense only)
+
+```python
+from pymilvus import MilvusClient
+from langchain_openai import OpenAIEmbeddings
+from datetime import datetime
+
+embeddings = OpenAIEmbeddings()
+milvus = MilvusClient(uri="http://localhost:19530")
+
+# Milvus 컬렉션은 dense vector만 사용 (sparse 미설정)
+def store_memory(user_id: str, fact: str, importance: float):
+    """사용자 팩트를 Milvus에 dense vector로 저장"""
+    vector = embeddings.embed_query(fact)
+    milvus.insert(
+        collection_name="user_memories",
+        data={
+            "user_id": user_id,
+            "fact": fact,
+            "vector": vector,             # dense vector only
+            "importance": importance,
+            "timestamp": datetime.now().isoformat(),
+        },
+    )
+
+def retrieve_memories(user_id: str, query: str, top_k: int = 5) -> list[dict]:
+    """user_id 기반으로 Milvus에서 관련 팩트를 dense similarity로 검색"""
+    query_vector = embeddings.embed_query(query)
+    results = milvus.search(
+        collection_name="user_memories",
+        data=[query_vector],
+        filter=f'user_id == "{user_id}"',
+        limit=top_k,
+        output_fields=["fact", "importance", "timestamp"],
+    )
+    return [hit.entity for hit in results[0]] if results else []
+```
+
+### 3단계: ES 7.14 (선택사항 - 대화 전문 검색)
+
+```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch("http://localhost:9200")
+
+def index_conversation_to_es(user_id: str, session_id: str, messages: list):
+    """대화 내용을 ES에 인덱싱 (키워드 기반 전문 검색용)"""
+    full_text = "\n".join([f"{m.type}: {m.content}" for m in messages])
+    es.index(
+        index="chat-conversations",
+        body={
+            "user_id": user_id,
+            "session_id": session_id,
+            "content": full_text,
+            "timestamp": datetime.now().isoformat(),
+        },
+    )
+
+def search_past_conversations(user_id: str, keyword: str, size: int = 5):
+    """과거 대화에서 키워드 검색 (ES 7.14 full-text)"""
+    result = es.search(
+        index="chat-conversations",
+        body={
+            "query": {
+                "bool": {
+                    "must": [{"match": {"content": keyword}}],
+                    "filter": [{"term": {"user_id": user_id}}],
+                }
+            },
+            "size": size,
+        },
+    )
+    return [hit["_source"] for hit in result["hits"]["hits"]]
+```
+
+### 4단계: LangGraph 통합 (MongoDB + Milvus 연동)
 
 ```python
 from langgraph.graph import StateGraph, MessagesState
@@ -153,10 +330,10 @@ import json
 # 1. State 정의
 # user_id와 session_id는 백엔드에서 State를 통해 직접 접근 가능
 class ChatState(MessagesState):
-    user_id: str           # 백엔드에서 주입되는 사용자 식별자
-    session_id: str        # 현재 세션 식별자
-    summary: str           # 중기 요약
-    user_facts: list[str]  # 장기 메모리 팩트
+    user_id: str           # 백엔드에서 주입되는 사용자 식별자 (장기 메모리 키)
+    session_id: str        # 현재 세션 식별자 (중기 요약/체크포인터 키)
+    summary: str           # 중기 요약 (MongoDB에 영속화)
+    user_facts: list[str]  # 현재 세션에서 추출된 팩트
 
 # 2. 요약 노드
 def should_summarize(state: ChatState) -> bool:
@@ -164,29 +341,38 @@ def should_summarize(state: ChatState) -> bool:
     return len(state["messages"]) > 10
 
 def summarize_conversation(state: ChatState):
-    """대화를 요약하고 오래된 메시지를 제거"""
+    """대화를 요약하고 오래된 메시지를 제거, MongoDB에 저장"""
+    user_id = state["user_id"]
+    session_id = state["session_id"]
     messages = state["messages"]
     existing_summary = state.get("summary", "")
 
     summary_prompt = f"""
     기존 요약: {existing_summary}
-    최근 대화: {messages[:-5]}  # 최근 5개 제외
+    최근 대화: {messages[:-5]}
 
     위 내용을 종합하여 핵심 정보를 보존한 요약을 작성하세요.
     """
 
     new_summary = llm.invoke([HumanMessage(content=summary_prompt)])
 
+    # MongoDB에 요약 영속화
+    save_conversation(
+        user_id=user_id,
+        session_id=session_id,
+        messages=messages[-5:],
+        summary=new_summary.content,
+    )
+
     return {
         "summary": new_summary.content,
-        "messages": messages[-5:],  # 최근 5개만 유지
+        "messages": messages[-5:],
     }
 
 # 3. 팩트 추출 노드
 def extract_user_facts(state: ChatState):
-    """대화에서 사용자 팩트를 추출하고 user_id 기반으로 저장"""
+    """대화에서 사용자 팩트를 추출 → Milvus에 저장"""
     user_id = state["user_id"]
-    session_id = state["session_id"]
     messages = state["messages"]
     existing_facts = state.get("user_facts", [])
 
@@ -202,36 +388,52 @@ def extract_user_facts(state: ChatState):
     result = llm.invoke([HumanMessage(content=extract_prompt)])
     new_facts = json.loads(result.content)
 
-    # user_id를 키로 벡터 DB에 팩트 저장 (장기 메모리)
+    # Milvus에 새 팩트 저장 (user_id 키, dense vector)
     for fact in new_facts:
         if fact not in existing_facts:
             store_memory(user_id=user_id, fact=fact, importance=7.0)
 
     return {"user_facts": new_facts}
 
-# 4. 챗 노드 (메모리 주입)
+# 4. 챗 노드 (MongoDB 요약 + Milvus 메모리 주입)
 def chat_with_memory(state: ChatState):
     user_id = state["user_id"]
-    summary = state.get("summary", "")
-    facts = state.get("user_facts", [])
+    session_id = state["session_id"]
 
-    # user_id 기반으로 벡터 DB에서 관련 장기 메모리 검색
+    # Milvus: 현재 쿼리와 관련된 장기 팩트 검색 (dense similarity)
     current_query = state["messages"][-1].content
     long_term_memories = retrieve_memories(
         user_id=user_id, query=current_query, top_k=5
     )
 
+    # MongoDB: 현재 세션 요약 + 최근 다른 세션 요약 로드
+    current_summary = state.get("summary", "") or load_session_summary(
+        user_id=user_id, session_id=session_id
+    )
+    recent_sessions = load_recent_session_summaries(user_id=user_id, limit=3)
+
+    # 시스템 프롬프트 조립
     system_content = "당신은 도움이 되는 AI 어시스턴트입니다.\n"
+
     if long_term_memories:
-        system_content += "\n[장기 메모리 - 이전 세션에서 축적된 정보]\n"
+        system_content += "\n[장기 메모리 - Milvus에서 검색된 사용자 팩트]\n"
         for mem in long_term_memories:
             system_content += f"- {mem['fact']}\n"
+
+    if recent_sessions:
+        system_content += "\n[이전 세션 요약 - MongoDB]\n"
+        for sess in recent_sessions:
+            if sess["session_id"] != session_id:
+                system_content += f"- {sess['summary']}\n"
+
+    if current_summary:
+        system_content += f"\n[현재 세션 요약]\n{current_summary}\n"
+
+    facts = state.get("user_facts", [])
     if facts:
         system_content += "\n[현재 세션에서 파악한 정보]\n"
         for fact in facts:
             system_content += f"- {fact}\n"
-    if summary:
-        system_content += f"\n[이전 대화 요약]\n{summary}\n"
 
     messages = [SystemMessage(content=system_content)] + state["messages"]
     response = llm.invoke(messages)
@@ -252,7 +454,7 @@ graph.add_conditional_edges("chat", should_summarize, {
 graph.add_edge("summarize", "extract_facts")
 graph.add_edge("extract_facts", "__end__")
 
-# 체크포인터로 세션 간 상태 유지
+# 체크포인터로 세션 내 상태 유지
 memory = MemorySaver()
 app = graph.compile(checkpointer=memory)
 
@@ -260,48 +462,12 @@ app = graph.compile(checkpointer=memory)
 config = {"configurable": {"thread_id": "session-abc-123"}}
 response = app.invoke(
     {
-        "user_id": "user-123",           # 백엔드 인증에서 획득
-        "session_id": "session-abc-123",  # 세션 관리에서 획득
+        "user_id": "user-123",
+        "session_id": "session-abc-123",
         "messages": [HumanMessage(content="안녕, 나는 FastAPI로 RAG 시스템 만들고 있어")],
     },
     config=config,
 )
-```
-
-### 벡터 DB를 활용한 장기 메모리 저장
-
-```python
-from pymilvus import MilvusClient
-from langchain_openai import OpenAIEmbeddings
-
-embeddings = OpenAIEmbeddings()
-client = MilvusClient(uri="http://localhost:19530")
-
-# 팩트 저장
-def store_memory(user_id: str, fact: str, importance: float):
-    vector = embeddings.embed_query(fact)
-    client.insert(
-        collection_name="user_memories",
-        data={
-            "user_id": user_id,
-            "fact": fact,
-            "vector": vector,
-            "importance": importance,
-            "timestamp": datetime.now().isoformat(),
-        }
-    )
-
-# 관련 메모리 검색
-def retrieve_memories(user_id: str, query: str, top_k: int = 5):
-    query_vector = embeddings.embed_query(query)
-    results = client.search(
-        collection_name="user_memories",
-        data=[query_vector],
-        filter=f'user_id == "{user_id}"',
-        limit=top_k,
-        output_fields=["fact", "importance", "timestamp"],
-    )
-    return results
 ```
 
 ### 실무 프레임워크 비교
@@ -319,16 +485,18 @@ def retrieve_memories(user_id: str, query: str, top_k: int = 5):
 | 결정 | 트레이드오프 |
 |------|-------------|
 | N개 메시지마다 요약 vs. 세션마다 요약 | 세밀함 vs. 비용 |
-| 벡터 DB vs. 구조화 DB | 유연한 검색 vs. 정확한 쿼리 |
+| MongoDB + Milvus 분리 vs. 단일 DB | 각 DB의 강점 활용 vs. 운영 복잡도 |
 | 동기 팩트 추출 vs. 비동기 | 지연시간 vs. 즉시 반영 |
 | 사용자 편집 가능 메모리 vs. 자동만 | 신뢰/통제 vs. 단순함 |
+| ES 전문 검색 추가 vs. 미사용 | 과거 대화 키워드 검색 가능 vs. 추가 인프라 |
 
 ## 주의사항 (Common Pitfalls)
 
-- **과잉 추출(Over-extraction)**: 사소한 팩트까지 저장하면 검색 품질 저하
-- **모순 처리(Contradiction)**: 선호가 바뀌면 이전 팩트를 무효화해야 함
-- **프라이버시**: 사용자가 저장된 메모리를 조회/삭제할 수 있어야 함
+- **과잉 추출(Over-extraction)**: 사소한 팩트까지 저장하면 Milvus 검색 품질 저하
+- **모순 처리(Contradiction)**: 선호가 바뀌면 Milvus의 이전 팩트를 무효화해야 함
+- **프라이버시**: 사용자가 MongoDB/Milvus에 저장된 메모리를 조회/삭제할 수 있어야 함
 - **요약 드리프트(Summary Drift)**: 반복 요약 시 디테일 유실 → 계층적 요약으로 완화
+- **Milvus sparse 미지원**: 현재 dense vector만 사용하므로, 키워드 기반 팩트 검색이 필요하면 ES 7.14 활용
 
 ---
 
