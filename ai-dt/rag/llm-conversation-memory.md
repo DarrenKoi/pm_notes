@@ -151,7 +151,10 @@ from langchain_core.messages import SystemMessage, HumanMessage
 import json
 
 # 1. State 정의
+# user_id와 session_id는 백엔드에서 State를 통해 직접 접근 가능
 class ChatState(MessagesState):
+    user_id: str           # 백엔드에서 주입되는 사용자 식별자
+    session_id: str        # 현재 세션 식별자
     summary: str           # 중기 요약
     user_facts: list[str]  # 장기 메모리 팩트
 
@@ -181,7 +184,9 @@ def summarize_conversation(state: ChatState):
 
 # 3. 팩트 추출 노드
 def extract_user_facts(state: ChatState):
-    """대화에서 사용자 팩트를 추출"""
+    """대화에서 사용자 팩트를 추출하고 user_id 기반으로 저장"""
+    user_id = state["user_id"]
+    session_id = state["session_id"]
     messages = state["messages"]
     existing_facts = state.get("user_facts", [])
 
@@ -197,20 +202,36 @@ def extract_user_facts(state: ChatState):
     result = llm.invoke([HumanMessage(content=extract_prompt)])
     new_facts = json.loads(result.content)
 
+    # user_id를 키로 벡터 DB에 팩트 저장 (장기 메모리)
+    for fact in new_facts:
+        if fact not in existing_facts:
+            store_memory(user_id=user_id, fact=fact, importance=7.0)
+
     return {"user_facts": new_facts}
 
 # 4. 챗 노드 (메모리 주입)
 def chat_with_memory(state: ChatState):
+    user_id = state["user_id"]
     summary = state.get("summary", "")
     facts = state.get("user_facts", [])
 
+    # user_id 기반으로 벡터 DB에서 관련 장기 메모리 검색
+    current_query = state["messages"][-1].content
+    long_term_memories = retrieve_memories(
+        user_id=user_id, query=current_query, top_k=5
+    )
+
     system_content = "당신은 도움이 되는 AI 어시스턴트입니다.\n"
+    if long_term_memories:
+        system_content += "\n[장기 메모리 - 이전 세션에서 축적된 정보]\n"
+        for mem in long_term_memories:
+            system_content += f"- {mem['fact']}\n"
     if facts:
-        system_content += f"\n사용자에 대해 알고 있는 정보:\n"
+        system_content += "\n[현재 세션에서 파악한 정보]\n"
         for fact in facts:
             system_content += f"- {fact}\n"
     if summary:
-        system_content += f"\n이전 대화 요약:\n{summary}\n"
+        system_content += f"\n[이전 대화 요약]\n{summary}\n"
 
     messages = [SystemMessage(content=system_content)] + state["messages"]
     response = llm.invoke(messages)
@@ -235,10 +256,14 @@ graph.add_edge("extract_facts", "__end__")
 memory = MemorySaver()
 app = graph.compile(checkpointer=memory)
 
-# 사용
-config = {"configurable": {"thread_id": "user-123"}}
+# 사용 - user_id와 session_id는 백엔드에서 State로 직접 주입
+config = {"configurable": {"thread_id": "session-abc-123"}}
 response = app.invoke(
-    {"messages": [HumanMessage(content="안녕, 나는 FastAPI로 RAG 시스템 만들고 있어")]},
+    {
+        "user_id": "user-123",           # 백엔드 인증에서 획득
+        "session_id": "session-abc-123",  # 세션 관리에서 획득
+        "messages": [HumanMessage(content="안녕, 나는 FastAPI로 RAG 시스템 만들고 있어")],
+    },
     config=config,
 )
 ```
