@@ -2,7 +2,8 @@ import json
 import logging
 import time
 
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
 
 import config
 from models import EnrichedKnowhow, KnowhowItem
@@ -19,23 +20,25 @@ Example output:
 {"summary": "웹사이트 검색 기능 사용 방법 안내", "category": "매뉴얼", "keywords": ["검색", "필터", "웹사이트"]}"""
 
 
-def create_llm_client() -> OpenAI:
-    return OpenAI(base_url=config.LLM_URL, api_key="not-needed")
+def create_llm_client() -> ChatOpenAI:
+    return ChatOpenAI(
+        base_url=config.LLM_URL,
+        api_key="not-needed",
+        model=config.LLM_MODEL,
+        temperature=0.1,
+    )
 
 
 
-def enrich_item(client: OpenAI, item: KnowhowItem) -> EnrichedKnowhow:
+def enrich_item(client: ChatOpenAI, item: KnowhowItem) -> EnrichedKnowhow:
     for attempt in range(config.LLM_MAX_RETRIES):
         try:
-            resp = client.chat.completions.create(
-                model=config.LLM_MODEL,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": item.knowhow},
-                ],
-                temperature=0.1,
-            )
-            raw = resp.choices[0].message.content.strip()
+            messages = [
+                SystemMessage(content=SYSTEM_PROMPT),
+                HumanMessage(content=item.knowhow),
+            ]
+            resp = client.invoke(messages)
+            raw = resp.content.strip()
             # Strip markdown code fences if present
             if raw.startswith("```"):
                 raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
