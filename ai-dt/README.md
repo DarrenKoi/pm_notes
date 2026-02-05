@@ -17,6 +17,13 @@
   - [Milvus 기초](./rag/milvus/milvus-basics.md) - 아키텍처, Collection, Index, 유사도 검색
   - [Milvus RAG 연동](./rag/milvus/milvus-rag-integration.md) - LangChain/LangGraph와 Milvus 통합
 
+#### OpenSearch
+- [OpenSearch 시리즈 목차](./rag/opensearch/README.md)
+  - [OpenSearch 기초](./rag/opensearch/opensearch-basics.md) - 아키텍처, 핵심 개념, 설치 및 클러스터 관리
+  - [벡터 검색 (k-NN)](./rag/opensearch/vector-search-knn.md) - k-NN 플러그인, 임베딩 인덱싱, 유사도 검색
+  - [키워드 검색 (BM25)](./rag/opensearch/keyword-search-bm25.md) - Full-text 검색, 분석기, 한국어 처리
+  - [하이브리드 검색](./rag/opensearch/hybrid-search.md) - 벡터 + 키워드 결합, Score Normalization, RRF
+
 #### Hybrid Search
 - [보조 용어 사전 DB (Elasticsearch)](./rag/auxiliary-glossary-db.md) - ES BM25로 전문 용어 관리, 쿼리 확장, LangGraph 통합
 
