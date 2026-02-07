@@ -16,6 +16,8 @@
 | Web | [TypeScript/Vue](./web-development/typescript/vue/README.md) | 🟡 진행중 | 2026-02-01 |
 | Codes | [Knowhow → Elasticsearch](./Codes/python/knowhow-elasticsearch/README.md) | 🟡 진행중 | 2026-02-02 |
 | Codes | [조직 계층 트리 유틸리티](./Codes/python/org-hierarchy/) | 🟡 진행중 | 2026-02-02 |
+| Codes | [대화 메모리 → OpenSearch](./Codes/python/history-opensearch/README.md) | 🟡 진행중 | 2026-02-08 |
+| AI/DT | [RAG/OpenSearch](./ai-dt/rag/opensearch/README.md) | 🟡 진행중 | 2026-02-08 |
 
 ## 폴더 구조
 

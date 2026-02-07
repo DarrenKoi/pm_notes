@@ -17,6 +17,9 @@
 - [성능 최적화 (Scaling)](./performance-optimization.md) - 100GB+ 데이터 샤딩 전략, 튜닝, 메모리 관리
 - [RAG 파이프라인 연동](./rag-integration.md) - LangChain/LangGraph 통합
 
+### 응용
+- [대화 메모리 구현](./conversation-memory-opensearch.md) - 3계층 메모리(단기/중기/장기), 벡터+키워드 검색, 로컬 LLM 연동 | [실습 코드](../../../Codes/python/history-opensearch/)
+
 ---
 
 ## 학습 순서
@@ -30,4 +33,4 @@
 
 ---
 
-*Last updated: 2026-02-07*
+*Last updated: 2026-02-08*
