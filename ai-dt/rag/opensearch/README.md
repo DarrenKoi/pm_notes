@@ -12,9 +12,10 @@
 - [키워드 검색 (BM25)](./keyword-search-bm25.md) - Full-text 검색, 분석기, 한국어 처리
 - [하이브리드 검색](./hybrid-search.md) - 벡터 + 키워드 결합, Score Normalization, RRF
 
-### 실무 적용
-- [Python 클라이언트 활용](./python-client.md) - opensearch-py, 벌크 작업, 비동기 처리
-- [RAG 파이프라인 연동](./rag-integration.md) - LangChain/LangGraph 통합 (예정)
+### 실무 적용 (Production & 100GB+)
+- [Python 클라이언트 활용](./python-client.md) - 대용량 Bulk 처리, Async 클라이언트, 에러 핸들링
+- [성능 최적화 (Scaling)](./performance-optimization.md) - 100GB+ 데이터 샤딩 전략, 튜닝, 메모리 관리
+- [RAG 파이프라인 연동](./rag-integration.md) - LangChain/LangGraph 통합
 
 ---
 
@@ -24,8 +25,9 @@
 2. **벡터 검색** → 의미 기반 검색(Semantic Search) 구현
 3. **키워드 검색** → 정확한 용어 매칭, 한국어 처리
 4. **하이브리드 검색** → 두 검색의 장점을 결합
-5. **Python 클라이언트** → 실제 코드로 OpenSearch 제어
+5. **Python 클라이언트** → 실제 코드로 대용량 데이터 제어
+6. **성능 최적화** → 100GB 이상의 데이터를 운영하기 위한 전략 수립
 
 ---
 
-*Last updated: 2026-02-05*
+*Last updated: 2026-02-07*
