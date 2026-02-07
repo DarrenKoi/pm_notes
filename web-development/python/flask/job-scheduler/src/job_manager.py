@@ -1,9 +1,11 @@
 import json
 import logging
 import os
+import shutil
 import sqlite3
 import subprocess
 import threading
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -14,7 +16,6 @@ logger = logging.getLogger(__name__)
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS jobs (
     id TEXT PRIMARY KEY,
-    user TEXT NOT NULL,
     task TEXT NOT NULL,
     name TEXT,
     description TEXT,
@@ -53,8 +54,12 @@ class JobManager:
         self.jobs_dir = base_dir / paths["jobs_dir"]
         self.logs_dir = base_dir / paths["logs_dir"]
         self.db_path = base_dir / paths["db_path"]
+        
+        # Staging directory for safe updates
+        self.staging_dir = self.jobs_dir / ".staging"
+        self.staging_dir.mkdir(parents=True, exist_ok=True)
+        self.pending_updates = set()
 
-        self.allowed_users = config.get("security", {}).get("allowed_users", [])
         self.log_retention_days = config.get("log_retention", {}).get("days", 30)
 
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -63,14 +68,40 @@ class JobManager:
         self._db_lock = threading.Lock()
         self._job_locks: dict[str, threading.Lock] = {}
         self._init_db()
+        self._cleanup_stale_runs()
 
     def _init_db(self):
         with self._db_lock:
             conn = sqlite3.connect(str(self.db_path))
             conn.execute("PRAGMA journal_mode=WAL")
+            # Check if 'user' column exists, if so, we might need to migrate or just drop and recreate
+            # Since this is a simple internal tool, let's just make sure the new schema is applied.
+            # For simplicity in this non-production context, I'll check for the column.
+            cursor = conn.execute("PRAGMA table_info(jobs)")
+            columns = [info[1] for f, info in enumerate(cursor.fetchall())]
+            if "user" in columns:
+                logger.info("Migrating database: removing 'user' column and clearing legacy data")
+                conn.execute("DROP TABLE IF EXISTS runs")
+                conn.execute("DROP TABLE IF EXISTS jobs")
+            
             conn.executescript(SCHEMA_SQL)
             conn.commit()
             conn.close()
+
+    def _cleanup_stale_runs(self):
+        """Mark jobs that were 'running' during a previous crash as failed."""
+        with self._db_lock:
+            conn = self._get_conn()
+            try:
+                conn.execute(
+                    """UPDATE runs 
+                       SET status='failed', error_message='System restarted while running', finished_at=?
+                       WHERE status='running'""",
+                    (datetime.now().isoformat(),)
+                )
+                conn.commit()
+            finally:
+                conn.close()
 
     def _get_conn(self) -> sqlite3.Connection:
         conn = sqlite3.connect(str(self.db_path))
@@ -91,41 +122,31 @@ class JobManager:
 
         found_job_ids = set()
 
-        for user_dir in sorted(self.jobs_dir.iterdir()):
-            if not user_dir.is_dir() or user_dir.name.startswith("."):
+        for task_dir in sorted(self.jobs_dir.iterdir()):
+            if not task_dir.is_dir() or task_dir.name.startswith(".") or task_dir.name == ".staging":
                 continue
 
-            user = user_dir.name
-            if self.allowed_users and user not in self.allowed_users:
-                logger.debug("Skipping non-allowed user: %s", user)
+            job_yaml = task_dir / "job.yaml"
+            if not job_yaml.exists():
                 continue
 
-            for task_dir in sorted(user_dir.iterdir()):
-                if not task_dir.is_dir() or task_dir.name.startswith("."):
-                    continue
+            job_id = task_dir.name
+            found_job_ids.add(job_id)
 
-                job_yaml = task_dir / "job.yaml"
-                if not job_yaml.exists():
-                    continue
+            yaml_mtime = job_yaml.stat().st_mtime
+            if not self._needs_update(job_id, yaml_mtime):
+                continue
 
-                job_id = f"{user}/{task_dir.name}"
-                found_job_ids.add(job_id)
+            try:
+                with open(job_yaml, "r", encoding="utf-8") as f:
+                    job_config = yaml.safe_load(f)
+            except Exception:
+                logger.exception("Failed to parse %s", job_yaml)
+                continue
 
-                yaml_mtime = job_yaml.stat().st_mtime
-                if not self._needs_update(job_id, yaml_mtime):
-                    continue
-
-                try:
-                    with open(job_yaml, "r", encoding="utf-8") as f:
-                        job_config = yaml.safe_load(f)
-                except Exception:
-                    logger.exception("Failed to parse %s", job_yaml)
-                    continue
-
-                job_config["_user"] = user
-                job_config["_task"] = task_dir.name
-                job_config["_yaml_mtime"] = yaml_mtime
-                self.register_job(job_id, job_config)
+            job_config["_task"] = task_dir.name
+            job_config["_yaml_mtime"] = yaml_mtime
+            self.register_job(job_id, job_config)
 
         self._remove_stale_jobs(found_job_ids)
 
@@ -144,7 +165,6 @@ class JobManager:
 
     def register_job(self, job_id: str, job_config: dict):
         """Register or update a job in the DB and scheduler."""
-        user = job_config["_user"]
         task = job_config["_task"]
         yaml_mtime = job_config["_yaml_mtime"]
         now = datetime.now().isoformat()
@@ -181,13 +201,12 @@ class JobManager:
                 else:
                     conn.execute(
                         """INSERT INTO jobs
-                            (id, user, task, name, description, schedule_type,
+                            (id, task, name, description, schedule_type,
                              schedule_config, entry_point, timeout, enabled,
                              yaml_mtime, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)""",
                         (
                             job_id,
-                            user,
                             task,
                             job_config.get("name", task),
                             job_config.get("description", ""),
@@ -322,13 +341,13 @@ class JobManager:
             logger.info("Job %s is disabled, skipping", job_id)
             return
 
-        job_path = self.jobs_dir / job["user"] / job["task"]
+        job_path = self.jobs_dir / job["task"]
         entry_point = job["entry_point"]
         timeout = job["timeout"]
 
         # Prepare log file
         now = datetime.now()
-        log_dir = self.logs_dir / job["user"] / job["task"]
+        log_dir = self.logs_dir / job["task"]
         log_dir.mkdir(parents=True, exist_ok=True)
         log_filename = now.strftime("%Y%m%d_%H%M%S") + ".log"
         log_path = log_dir / log_filename
@@ -467,7 +486,7 @@ class JobManager:
             conn = self._get_conn()
             try:
                 jobs = conn.execute(
-                    "SELECT * FROM jobs ORDER BY user, task"
+                    "SELECT * FROM jobs ORDER BY task"
                 ).fetchall()
                 result = []
                 for job in jobs:
@@ -595,3 +614,190 @@ class JobManager:
                 return row["cnt"] if row else 0
             finally:
                 conn.close()
+
+    def save_job_files(self, task: str, files: list, job_config: dict | None = None) -> str:
+        """Save uploaded files to staging and queue for update."""
+        # Basic sanitization
+        task = "".join(c for c in task if c.isalnum() or c in ("-", "_"))
+        
+        if not task:
+            raise ValueError("Invalid task name")
+
+        # Prevent duplicates check
+        dest_path = self.jobs_dir / task
+        if dest_path.exists() and not (self.staging_dir / task).exists():
+            # If it's a new upload (not currently in staging) but exists in jobs, 
+            # we should probably prevent it unless we want to allow overwriting.
+            # The user said "cannot upload the same file name to prevent duplicated jobs".
+            # I'll interpret this as "cannot create a job with an existing name".
+            raise ValueError(f"Job with name '{task}' already exists. Please use a different name or edit the existing job.")
+
+        # Save to staging
+        staging_path = self.staging_dir / task
+        if staging_path.exists():
+            shutil.rmtree(staging_path)
+        staging_path.mkdir(parents=True, exist_ok=True)
+
+        has_yaml = False
+        for file in files:
+            if not file.filename:
+                continue
+            filename = Path(file.filename).name
+            if filename == "job.yaml":
+                has_yaml = True
+            save_path = staging_path / filename
+            file.save(save_path)
+        
+        # Generate job.yaml if missing and config provided
+        if not has_yaml and job_config:
+            logger.info("Generating job.yaml for %s", task)
+            with open(staging_path / "job.yaml", "w", encoding="utf-8") as f:
+                yaml.dump(job_config, f, default_flow_style=False)
+
+        job_id = task
+        self.pending_updates.add(job_id)
+        logger.info("Queued update for %s", job_id)
+        
+        return job_id
+
+    def update_job_config(self, task: str, new_config: dict) -> bool:
+        """Update job.yaml for an existing job."""
+        job_path = self.jobs_dir / task
+        job_yaml_path = job_path / "job.yaml"
+
+        if not job_path.exists():
+            return False
+        
+        current_config = {}
+        if job_yaml_path.exists():
+            try:
+                with open(job_yaml_path, "r", encoding="utf-8") as f:
+                    current_config = yaml.safe_load(f) or {}
+            except Exception:
+                logger.warning("Could not read existing job.yaml for update")
+        
+        current_config.update(new_config)
+        
+        try:
+            with open(job_yaml_path, "w", encoding="utf-8") as f:
+                yaml.dump(current_config, f, default_flow_style=False)
+            
+            job_id = task
+            self.scan_jobs()
+            return True
+        except Exception as e:
+            logger.exception("Failed to update job config")
+            return False
+
+    def process_pending_updates(self):
+        """Apply pending updates if the system is idle."""
+        if not self.pending_updates:
+            return
+
+        if not self.is_system_idle():
+            logger.debug("System busy, postponing updates")
+            return
+
+        logger.info("System idle, processing %d updates", len(self.pending_updates))
+        
+        to_process = list(self.pending_updates)
+        
+        for job_id in to_process:
+            task = job_id
+            staging_path = self.staging_dir / task
+            dest_path = self.jobs_dir / task
+            
+            if not staging_path.exists():
+                self.pending_updates.discard(job_id)
+                continue
+
+            try:
+                dest_path.mkdir(parents=True, exist_ok=True)
+                shutil.copytree(staging_path, dest_path, dirs_exist_ok=True)
+                shutil.rmtree(staging_path)
+                self.pending_updates.discard(job_id)
+                logger.info("Applied update for %s", job_id)
+            except Exception:
+                logger.exception("Failed to apply update for %s", job_id)
+
+        # Reload configuration
+        self.scan_jobs()
+
+    def is_system_idle(self) -> bool:
+        """Check if any jobs are currently running."""
+        for lock in self._job_locks.values():
+            if lock.locked():
+                return False
+        return True
+
+    def get_system_status(self) -> dict:
+        """Get current system status summary."""
+        running_count = sum(1 for lock in self._job_locks.values() if lock.locked())
+        
+        status = "idle"
+        if running_count > 0:
+            status = "running"
+        elif self.pending_updates:
+            status = "updating"
+
+        return {
+            "status": status,
+            "running_count": running_count,
+            "pending_count": len(self.pending_updates)
+        }
+        """Apply pending updates if the system is idle."""
+        if not self.pending_updates:
+            return
+
+        if not self.is_system_idle():
+            logger.debug("System busy, postponing updates")
+            return
+
+        logger.info("System idle, processing %d updates", len(self.pending_updates))
+        
+        # Clone set to iterate safely while modifying original
+        to_process = list(self.pending_updates)
+        
+        for job_id in to_process:
+            user, task = job_id.split("/")
+            staging_path = self.staging_dir / user / task
+            dest_path = self.jobs_dir / user / task
+            
+            if not staging_path.exists():
+                self.pending_updates.discard(job_id)
+                continue
+
+            try:
+                dest_path.mkdir(parents=True, exist_ok=True)
+                shutil.copytree(staging_path, dest_path, dirs_exist_ok=True)
+                shutil.rmtree(staging_path)
+                self.pending_updates.discard(job_id)
+                logger.info("Applied update for %s", job_id)
+            except Exception:
+                logger.exception("Failed to apply update for %s", job_id)
+
+        # Reload configuration
+        self.scan_jobs()
+
+    def is_system_idle(self) -> bool:
+        """Check if any jobs are currently running."""
+        for lock in self._job_locks.values():
+            if lock.locked():
+                return False
+        return True
+
+    def get_system_status(self) -> dict:
+        """Get current system status summary."""
+        running_count = sum(1 for lock in self._job_locks.values() if lock.locked())
+        
+        status = "idle"
+        if running_count > 0:
+            status = "running"
+        elif self.pending_updates:
+            status = "updating"
+
+        return {
+            "status": status,
+            "running_count": running_count,
+            "pending_count": len(self.pending_updates)
+        }

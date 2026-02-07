@@ -5,6 +5,7 @@ from pathlib import Path
 import yaml
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask_cors import CORS
 
 from job_manager import JobManager
 
@@ -59,6 +60,15 @@ def create_app() -> Flask:
         id="_system_cleanup",
         replace_existing=True,
     )
+    
+    # Process pending updates frequently (every 5 seconds)
+    scheduler.add_job(
+        manager.process_pending_updates,
+        "interval",
+        seconds=5,
+        id="_system_update",
+        replace_existing=True,
+    )
 
     # Start scheduler and do initial scan
     scheduler.start()
@@ -69,6 +79,7 @@ def create_app() -> Flask:
         __name__,
         template_folder=str(Path(__file__).resolve().parent / "templates"),
     )
+    CORS(app)  # Enable CORS for all routes
     app.config["manager"] = manager
     app.config["scheduler"] = scheduler
 
@@ -120,22 +131,96 @@ def register_routes(app: Flask):
         manager.scan_jobs()
         return redirect(url_for("index"))
 
-    @app.route("/api/run/<user>/<task>", methods=["POST"])
-    def api_run(user, task):
+    @app.route("/api/run/<task>", methods=["POST"])
+    def api_run(task):
         manager = get_manager()
-        job_id = f"{user}/{task}"
+        job_id = task
         import threading
 
         t = threading.Thread(target=manager.execute_job, args=(job_id,))
         t.start()
         return redirect(request.referrer or url_for("index"))
 
-    @app.route("/api/toggle/<user>/<task>", methods=["POST"])
-    def api_toggle(user, task):
+    @app.route("/api/toggle/<task>", methods=["POST"])
+    def api_toggle(task):
         manager = get_manager()
-        job_id = f"{user}/{task}"
+        job_id = task
         manager.toggle_job(job_id)
         return redirect(request.referrer or url_for("index"))
+
+    @app.route("/api/jobs")
+    def api_list_jobs():
+        manager = get_manager()
+        jobs = manager.get_jobs()
+        return jsonify(jobs)
+    
+    @app.route("/api/status")
+    def api_status():
+        manager = get_manager()
+        return jsonify(manager.get_system_status())
+
+    @app.route("/api/upload", methods=["POST"])
+    def api_upload_job():
+        manager = get_manager()
+        task = request.form.get("task")
+        files = request.files.getlist("files")
+
+        if not task:
+            return jsonify({"error": "Task name required"}), 400
+        
+        if not files:
+            return jsonify({"error": "No files uploaded"}), 400
+
+        # Construct job config if provided
+        job_config = None
+        schedule_type = request.form.get("schedule_type")
+        if schedule_type:
+            job_config = {
+                "name": request.form.get("job_name", task),
+                "description": request.form.get("description", ""),
+                "entry_point": request.form.get("entry_point", "main.py"),
+                "schedule": {"type": schedule_type}
+            }
+            
+            # Parse schedule args
+            if schedule_type == "interval":
+                for unit in ["seconds", "minutes", "hours", "days"]:
+                    val = request.form.get(f"schedule_{unit}")
+                    if val and val.isdigit():
+                        job_config["schedule"][unit] = int(val)
+            elif schedule_type == "cron":
+                for unit in ["minute", "hour", "day", "month", "day_of_week"]:
+                    val = request.form.get(f"schedule_{unit}")
+                    if val:
+                        job_config["schedule"][unit] = val
+
+        try:
+            job_id = manager.save_job_files(task, files, job_config)
+            return jsonify({
+                "message": f"Job {job_id} queued for update. Will be applied when system is idle.", 
+                "job_id": job_id,
+                "status": "queued"
+            })
+        except Exception as e:
+            logger.exception("Upload failed")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route("/api/jobs/<task>/config", methods=["POST"])
+    def api_update_config(task):
+        manager = get_manager()
+        try:
+            new_config = request.json
+            if not new_config:
+                return jsonify({"error": "No config provided"}), 400
+            
+            success = manager.update_job_config(task, new_config)
+            if success:
+                return jsonify({"message": "Configuration updated"})
+            else:
+                return jsonify({"error": "Job not found or update failed"}), 404
+        except Exception as e:
+            logger.exception("Update config failed")
+            return jsonify({"error": str(e)}), 500
 
 
 app = create_app()

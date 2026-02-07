@@ -1,0 +1,11 @@
+=== Job: test_user/job_1 ===
+Started: 2026-02-07T23:02:55.179942
+Command: uv run main.py
+Working dir: C:\Code\pm_notes\web-development\python\flask\job-scheduler\jobs\test_user\job_1
+Return code: 0
+========================================
+
+--- STDOUT ---
+Job 1 is running...
+Job 1 finished.
+
