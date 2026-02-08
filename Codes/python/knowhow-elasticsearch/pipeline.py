@@ -1,4 +1,3 @@
-import argparse
 import json
 import logging
 from pathlib import Path
@@ -25,36 +24,34 @@ def load_json_files(input_dir: Path) -> list[KnowhowItem]:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Knowhow → Elasticsearch pipeline")
-    parser.add_argument("--input-dir", type=Path, required=True, help="Directory containing knowhow JSON files")
-    parser.add_argument("--dry-run", action="store_true", help="Process without storing to Elasticsearch")
-    parser.add_argument("--batch-size", type=int, default=config.BATCH_SIZE, help="Items per processing batch")
-    args = parser.parse_args()
+    input_dir = Path("sample_data")
+    dry_run = False
+    batch_size = config.BATCH_SIZE
 
-    items = load_json_files(args.input_dir)
+    items = load_json_files(input_dir)
     total = len(items)
     logger.info("Total items loaded: %d", total)
 
     es = None
-    if not args.dry_run:
+    if not dry_run:
         es = get_client()
         ensure_index(es)
 
     total_indexed = 0
-    for start in range(0, total, args.batch_size):
-        batch = items[start : start + args.batch_size]
+    for start in range(0, total, batch_size):
+        batch = items[start : start + batch_size]
         logger.info("=== Batch %d-%d / %d ===", start + 1, start + len(batch), total)
 
         enriched = process_batch(batch, offset=start, total=total)
 
-        if args.dry_run:
+        if dry_run:
             for e in enriched:
                 logger.info("[%s] category=%s, keywords=%s, summary=%.60s", e.KNOWHOW_ID, e.category, e.keywords, e.summary)
         else:
             indexed = bulk_index(es, enriched)
             total_indexed += indexed
 
-    if args.dry_run:
+    if dry_run:
         logger.info("Dry run complete. %d items processed.", total)
     else:
         logger.info("Pipeline complete. %d/%d documents indexed.", total_indexed, total)
