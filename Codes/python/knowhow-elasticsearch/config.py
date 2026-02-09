@@ -6,6 +6,6 @@ ES_INDEX = "knowhow"
 
 LLM_MAX_RETRIES = 3
 LLM_RETRY_DELAY = 2  # seconds
+REQUEST_DELAY = 1.5   # seconds between each LLM request
 
-BATCH_SIZE = 500  # items per batch for LLM processing + ES indexing
 ES_BULK_CHUNK = 500  # docs per ES bulk request
