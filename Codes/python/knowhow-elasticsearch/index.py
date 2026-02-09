@@ -10,12 +10,25 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger(__name__)
 
 PROCESSED_DIR = Path("processed_data")
-PROGRESS_FILE = PROCESSED_DIR / "progress.json"
+PROGRESS_JSONL = PROCESSED_DIR / "progress.jsonl"
+PROGRESS_JSON = PROCESSED_DIR / "progress.json"
 
 
-def main():
-    if PROGRESS_FILE.exists():
-        source = PROGRESS_FILE
+def load_enriched() -> list[EnrichedKnowhow]:
+    # JSONL (extract_v2)
+    if PROGRESS_JSONL.exists():
+        logger.info("Loading: %s", PROGRESS_JSONL.name)
+        items = []
+        with open(PROGRESS_JSONL, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    items.append(EnrichedKnowhow.model_validate(json.loads(line)))
+        return items
+
+    # JSON (extract v1)
+    if PROGRESS_JSON.exists():
+        source = PROGRESS_JSON
     else:
         json_files = sorted(PROCESSED_DIR.glob("enriched_*.json"))
         if not json_files:
@@ -26,8 +39,11 @@ def main():
     logger.info("Loading: %s", source.name)
     with open(source, encoding="utf-8") as f:
         raw_list = json.load(f)
+    return [EnrichedKnowhow.model_validate(item) for item in raw_list]
 
-    enriched = [EnrichedKnowhow.model_validate(item) for item in raw_list]
+
+def main():
+    enriched = load_enriched()
     logger.info("Loaded %d enriched items", len(enriched))
 
     es = get_client()
