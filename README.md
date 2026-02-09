@@ -18,9 +18,11 @@
 | Codes | [조직 계층 트리 유틸리티](./Codes/python/org-hierarchy/) | 🟡 진행중 | 2026-02-02 |
 | Codes | [대화 메모리 → OpenSearch](./Codes/python/history-opensearch/README.md) | 🟡 진행중 | 2026-02-08 |
 | AI/DT | [RAG/OpenSearch](./ai-dt/rag/opensearch/README.md) | 🟡 진행중 | 2026-02-08 |
+| Dev Environment | [터미널 필수 명령어](./dev-environment/terminal/README.md) | 🟢 기본 완료 | 2026-02-09 |
 
 ## 폴더 구조
 
 - [`ai-dt/`](./ai-dt/README.md) - AI/DT 시스템 개발
 - [`web-development/`](./web-development/typescript/README.md) - 웹 개발 (TypeScript, Vue, Vite)
+- [`dev-environment/`](./dev-environment/README.md) - 개발 환경 (터미널, 도구)
 - [`Codes/python/`](./Codes/python/) - Python 프로젝트 (Knowhow-ES 파이프라인, 조직 계층 트리 등)
