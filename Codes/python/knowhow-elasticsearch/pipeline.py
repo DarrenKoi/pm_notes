@@ -5,7 +5,7 @@ import sys
 def main():
     print("This file is deprecated.")
     print("  python extract.py   — run/resume LLM enrichment")
-    print("  python index.py     — index to Elasticsearch")
+    print("  python index.py     — index to OpenSearch")
     sys.exit(1)
 
 

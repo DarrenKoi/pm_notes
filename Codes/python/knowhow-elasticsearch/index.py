@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from models import EnrichedKnowhow
-from es_client import get_client, ensure_index, bulk_index
+from os_client import get_client, ensure_index, bulk_index
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -46,9 +46,9 @@ def main():
     enriched = load_enriched()
     logger.info("Loaded %d enriched items", len(enriched))
 
-    es = get_client()
-    ensure_index(es)
-    total_indexed = bulk_index(es, enriched)
+    client = get_client()
+    ensure_index(client)
+    total_indexed = bulk_index(client, enriched)
     logger.info("Index complete. %d/%d documents indexed.", total_indexed, len(enriched))
 
 
