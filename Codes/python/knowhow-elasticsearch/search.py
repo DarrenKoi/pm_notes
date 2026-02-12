@@ -8,8 +8,8 @@ import logging
 
 from opensearchpy import OpenSearch
 
-import config
 from os_client import get_client
+from os_settings import OS_INDEX
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ def search_by_keywords(
         must.append({"term": {"category": category}})
 
     body = {"query": {"bool": {"must": must}}, "size": size}
-    resp = client.search(index=config.OS_INDEX, body=body)
+    resp = client.search(index=OS_INDEX, body=body)
     return _hits_to_results(resp)
 
 
@@ -58,7 +58,7 @@ def search_by_text(
         "query": {"bool": {"should": should, "filter": filter_, "minimum_should_match": 1}},
         "size": size,
     }
-    resp = client.search(index=config.OS_INDEX, body=body)
+    resp = client.search(index=OS_INDEX, body=body)
     return _hits_to_results(resp)
 
 
@@ -89,7 +89,7 @@ def hybrid_search(
         "query": {"bool": {"should": should, "filter": filter_, "minimum_should_match": 1}},
         "size": size,
     }
-    resp = client.search(index=config.OS_INDEX, body=body)
+    resp = client.search(index=OS_INDEX, body=body)
     return _hits_to_results(resp)
 
 

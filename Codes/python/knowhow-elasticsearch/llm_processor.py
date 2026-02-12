@@ -5,8 +5,12 @@ import time
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-import config
 from models import EnrichedKnowhow, KnowhowItem
+
+LLM_URL = "http://common.llm.skhynix.com/v1"
+LLM_MODEL = "gpt-oss-20b"
+LLM_MAX_RETRIES = 3
+LLM_RETRY_DELAY = 2  # seconds
 
 logger = logging.getLogger(__name__)
 
@@ -81,16 +85,16 @@ Output:
 
 def create_llm_client() -> ChatOpenAI:
     return ChatOpenAI(
-        base_url=config.LLM_URL,
+        base_url=LLM_URL,
         api_key="not-needed",
-        model=config.LLM_MODEL,
+        model=LLM_MODEL,
         temperature=0.1,
     )
 
 
 
 def enrich_item(client: ChatOpenAI, item: KnowhowItem) -> EnrichedKnowhow:
-    for attempt in range(config.LLM_MAX_RETRIES):
+    for attempt in range(LLM_MAX_RETRIES):
         try:
             messages = [
                 SystemMessage(content=SYSTEM_PROMPT),
@@ -112,10 +116,10 @@ def enrich_item(client: ChatOpenAI, item: KnowhowItem) -> EnrichedKnowhow:
             logger.warning("Parse error on attempt %d for %s: %s", attempt + 1, item.KNOWHOW_ID, e)
         except Exception as e:
             logger.warning("LLM error on attempt %d for %s: %s", attempt + 1, item.KNOWHOW_ID, e)
-            if attempt < config.LLM_MAX_RETRIES - 1:
-                time.sleep(config.LLM_RETRY_DELAY)
+            if attempt < LLM_MAX_RETRIES - 1:
+                time.sleep(LLM_RETRY_DELAY)
 
-    logger.error("Failed to enrich %s after %d attempts", item.KNOWHOW_ID, config.LLM_MAX_RETRIES)
+    logger.error("Failed to enrich %s after %d attempts", item.KNOWHOW_ID, LLM_MAX_RETRIES)
     return EnrichedKnowhow(**item.model_dump())
 
 

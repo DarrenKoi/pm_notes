@@ -21,7 +21,10 @@
       "Bash(python -c \"import ctypes; ctypes.windll.kernel32.DeleteFileW\\(r''\\\\\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul''\\)\")",
       "Bash(python -c \"import ctypes; r = ctypes.windll.kernel32.DeleteFileW\\(r''\\\\\\\\.\\\\C:\\\\code\\\\pm_notes\\\\nul''\\); print\\(''result:'', r, ''error:'', ctypes.windll.kernel32.GetLastError\\(\\)\\)\")",
       "Bash(python:*)",
-      "Bash(git clean:*)"
+      "Bash(git clean:*)",
+      "Bash(python3:*)",
+      "Bash(git mv:*)",
+      "Bash(pip3 install:*)"
     ]
   }
 }

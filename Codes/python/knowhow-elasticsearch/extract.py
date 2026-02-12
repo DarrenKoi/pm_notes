@@ -3,9 +3,10 @@ import logging
 import time
 from pathlib import Path
 
-import config
 from models import EnrichedKnowhow, KnowhowFile, KnowhowItem
 from llm_processor import create_llm_client, enrich_item
+
+REQUEST_DELAY = 1.5  # seconds between each LLM request
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -65,7 +66,7 @@ def main():
         save_progress(enriched)
 
         if i < len(remaining) - 1:
-            time.sleep(config.REQUEST_DELAY)
+            time.sleep(REQUEST_DELAY)
 
     logger.info("Done. %d/%d items processed.", len(enriched), total)
 
