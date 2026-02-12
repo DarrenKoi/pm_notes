@@ -77,9 +77,10 @@ chunks = splitter.split_text(document_text)
 
 ```python
 from langchain_experimental.text_splitter import SemanticChunker
-from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
-embeddings = OpenAIEmbeddings()
+# 사내 환경에서는 로컬 임베딩 모델 사용 (외부 API 차단)
+embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
 splitter = SemanticChunker(
     embeddings,
     breakpoint_threshold_type="percentile",  # or "standard_deviation", "interquartile"
@@ -133,10 +134,15 @@ chunks = splitter.split_text(markdown_text)
 LLM이 직접 문서를 읽고 의미 단위로 분할 결정.
 
 ```python
-# 개념적 코드 - LLM에게 청킹을 위임
+# 개념적 코드 - LLM에게 청킹을 위임 (사내 API 사용)
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="gpt-4o")
+# 사내 OpenAI-compatible API 엔드포인트
+llm = ChatOpenAI(
+    model="Kimi-K2.5",
+    base_url="http://<internal-llm-server>/v1",
+    api_key="<internal-api-key>",
+)
 
 prompt = """다음 문서를 의미적으로 완결된 단위로 분할하세요.
 각 청크는 독립적으로 이해 가능해야 합니다.

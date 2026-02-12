@@ -161,7 +161,11 @@ chunks = splitter.split_text(md_text)
 
 ### 방법 4: Document AI 서비스 (클라우드 기반)
 
-복잡한 레이아웃이나 스캔 PDF에 대한 고정밀 처리.
+> **참고**: 사내 환경에서는 외부 클라우드 API가 방화벽으로 차단되므로 사용 불가.
+> DRM 해제된 PDF에 대해서만 로컬 도구(PyMuPDF, Unstructured)를 사용하고,
+> DRM 문서는 [스크린샷 + VLM 파이프라인](./when_drm/screenshot-vlm-pipeline.md)을 참조.
+
+일반적으로 알려진 클라우드 서비스 (참고용):
 
 | 서비스 | 특징 | 비용 |
 |--------|------|------|
@@ -169,40 +173,23 @@ chunks = splitter.split_text(md_text)
 | **Google Document AI** | OCR 정확도 높음, 커스텀 모델 학습 가능 | 페이지당 과금 |
 | **Amazon Textract** | AWS 생태계 연동, 테이블/폼 추출 | 페이지당 과금 |
 
-```python
-# Azure Document Intelligence 예시
-from azure.ai.documentintelligence import DocumentIntelligenceClient
-from azure.core.credentials import AzureKeyCredential
+### 방법 5: Vision LLM 기반 추출 (사내 VLM 활용)
 
-client = DocumentIntelligenceClient(
-    endpoint="https://<resource>.cognitiveservices.azure.com/",
-    credential=AzureKeyCredential("<key>")
-)
-
-with open("report.pdf", "rb") as f:
-    poller = client.begin_analyze_document("prebuilt-layout", body=f)
-    result = poller.result()
-
-# 테이블 추출
-for table in result.tables:
-    print(f"Table: {table.row_count} rows x {table.column_count} cols")
-    for cell in table.cells:
-        print(f"  [{cell.row_index},{cell.column_index}]: {cell.content}")
-```
-
-### 방법 5: Vision LLM 기반 추출 (최신 트렌드)
-
-GPT-4o, Claude 등 멀티모달 모델로 PDF 페이지를 이미지로 인식하여 구조화.
+사내 VLM(Qwen3-VL)으로 PDF 페이지를 이미지로 인식하여 구조화.
 
 ```python
 import fitz
 import base64
 from openai import OpenAI
 
-client = OpenAI()
+# 사내 OpenAI-compatible API
+client = OpenAI(
+    base_url="http://<internal-llm-server>/v1",
+    api_key="<internal-api-key>",
+)
 
 def extract_with_vision(pdf_path: str, page_num: int) -> str:
-    """PDF 페이지를 이미지로 렌더링 후 Vision LLM으로 구조화"""
+    """PDF 페이지를 이미지로 렌더링 후 사내 VLM으로 구조화"""
     doc = fitz.open(pdf_path)
     page = doc[page_num]
 
@@ -212,7 +199,7 @@ def extract_with_vision(pdf_path: str, page_num: int) -> str:
     img_b64 = base64.b64encode(img_bytes).decode()
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="Qwen3-VL-30B",  # 복잡한 PDF → 고성능 VLM
         messages=[{
             "role": "user",
             "content": [

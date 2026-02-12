@@ -161,7 +161,7 @@ class DocumentExtractor(ABC):
 class VLMExtractor(DocumentExtractor):
     """DRM 문서용: 스크린샷 + VLM 추출"""
 
-    def __init__(self, model: str = "gpt-4o"):
+    def __init__(self, model: str = "Qwen3-VL-8B-Instruct"):
         self.model = model
 
     async def extract(self, doc: DocumentInput) -> list[dict]:
@@ -378,7 +378,7 @@ class DirectParseExtractor(DocumentExtractor):
 class HybridDocumentRouter:
     """DRM 상태에 따라 적절한 추출기로 라우팅"""
 
-    def __init__(self, vlm_model: str = "gpt-4o"):
+    def __init__(self, vlm_model: str = "Qwen3-VL-8B-Instruct"):
         self.vlm_extractor = VLMExtractor(model=vlm_model)
         self.direct_extractor = DirectParseExtractor()
 
@@ -427,7 +427,7 @@ class HybridDocumentRouter:
 import asyncio
 
 async def main():
-    router = HybridDocumentRouter(vlm_model="gpt-4o")
+    router = HybridDocumentRouter(vlm_model="Qwen3-VL-8B-Instruct")
 
     documents = [
         # DRM 활성 → VLM 경로

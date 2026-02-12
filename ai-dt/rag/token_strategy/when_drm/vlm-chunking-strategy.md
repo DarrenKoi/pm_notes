@@ -438,7 +438,7 @@ def add_sliding_context(
 
 ## 메타데이터 보강
 
-VLM 추출은 메타데이터가 부족하므로, LLM으로 보강:
+VLM 추출은 메타데이터가 부족하므로, 텍스트 LLM(Kimi-K2.5)으로 보강:
 
 ```python
 async def enrich_chunk_metadata(
@@ -447,7 +447,7 @@ async def enrich_chunk_metadata(
 ) -> dict:
     """LLM으로 청크에 키워드/요약 메타데이터 추가"""
     response = await client.chat.completions.create(
-        model="gpt-4o-mini",  # 저비용 모델로 충분
+        model="Kimi-K2.5",  # 사내 텍스트 LLM (메타데이터 보강에 충분)
         messages=[{
             "role": "user",
             "content": f"""다음 문서 청크를 분석하여 JSON으로 응답하세요:

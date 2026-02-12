@@ -190,7 +190,7 @@ chunks = chunk_by_title(
 ```python
 import fitz  # PDF 변환 후 이미지 추출
 import base64
-from openai import OpenAI
+from openai import OpenAI  # 사내 OpenAI-compatible API 사용
 
 def pptx_to_images(pptx_path: str) -> list[bytes]:
     """PPTX를 PDF로 변환 후 페이지별 이미지 추출"""
@@ -214,13 +214,16 @@ def pptx_to_images(pptx_path: str) -> list[bytes]:
 
 
 def analyze_slide_with_vision(image_bytes: bytes, slide_num: int) -> str:
-    """Vision LLM으로 슬라이드 내용 구조화"""
-    client = OpenAI()
+    """사내 VLM으로 슬라이드 내용 구조화"""
+    client = OpenAI(
+        base_url="http://<internal-llm-server>/v1",
+        api_key="<internal-api-key>",
+    )
 
     img_b64 = base64.b64encode(image_bytes).decode()
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="Qwen3-VL-30B",  # 다이어그램/차트 인식 → 고성능 VLM
         messages=[{
             "role": "user",
             "content": [

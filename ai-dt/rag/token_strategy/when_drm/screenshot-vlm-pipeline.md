@@ -1,5 +1,5 @@
 ---
-tags: [rag, drm, vlm, screenshot, gpt-4o, claude, pipeline]
+tags: [rag, drm, vlm, screenshot, qwen3-vl, kimi-k2, pipeline]
 level: intermediate
 last_updated: 2026-02-12
 status: complete
@@ -12,7 +12,7 @@ status: complete
 ## 왜 필요한가? (Why)
 
 - DRM 파일은 프로그래매틱 파싱 불가 → 화면 캡처가 유일한 입력 경로
-- VLM(GPT-4o, Claude 등)은 이미지에서 텍스트, 테이블, 다이어그램을 인식하여 구조화 가능
+- VLM(Qwen3-VL 등)은 이미지에서 텍스트, 테이블, 다이어그램을 인식하여 구조화 가능
 - 수작업 타이핑 대비 압도적인 속도와 정확도
 
 ## 핵심 개념 (What)
@@ -46,17 +46,31 @@ DRM 문서 (뷰어에서 열람)
      청킹 파이프라인
 ```
 
-### VLM 선택 가이드
+### 사내 VLM 환경
 
-| VLM | 장점 | 단점 | 비용 (입력 이미지) |
-|-----|------|------|--------------------|
-| **GPT-4o** | 테이블/차트 인식 우수, 한국어 지원 | 가격 높음 | ~$0.01-0.03/이미지 |
-| **Claude Sonnet 4.5** | 긴 문맥 처리, 정확한 추출 | 이미지 해상도 제한 | ~$0.01-0.02/이미지 |
-| **Gemini 2.0 Flash** | 빠르고 저렴, 대량 처리 적합 | 복잡한 레이아웃에서 정확도 ↓ | ~$0.002-0.005/이미지 |
-| **Qwen2.5-VL (로컬)** | 무료, 데이터 유출 걱정 없음 | GPU 필요, 정확도 상대적 ↓ | 무료 (GPU 비용) |
+> **중요**: 외부 LLM API(OpenAI, Anthropic, Google 등)는 **방화벽으로 완전 차단**되어 있다.
+> 사내에서 제공하는 오픈소스 LLM만 사용 가능하다.
 
-> **사내 보안 고려**: DRM 문서의 내용을 외부 API로 전송하는 것이 허용되는지 반드시 확인.
-> 보안이 중요하면 **로컬 VLM(Qwen2.5-VL 등)** 또는 **사내 GPU 서버** 활용 검토.
+#### 사용 가능한 모델
+
+| 모델 | 유형 | 특징 | 용도 |
+|------|------|------|------|
+| **Qwen3-VL-8B-Instruct** | VLM (경량) | 빠른 처리, 적은 GPU 자원 | 대량 문서 처리, 단순 레이아웃 |
+| **Qwen3-VL-30B** | VLM (고성능) | 복잡한 레이아웃 인식 우수 | 테이블/다이어그램 많은 문서, 품질 우선 |
+| **Kimi-K2.5** | Text LLM | 텍스트 처리/요약/분류 | 메타데이터 보강, 청킹 후처리, Agentic Chunking |
+
+#### 모델 선택 전략
+
+```
+단순 텍스트 위주 문서 (Word, 단순 PPT)
+  → Qwen3-VL-8B-Instruct (빠르고 충분한 품질)
+
+테이블/다이어그램/차트 포함 문서 (Excel, 복잡한 PPT, 기술 보고서)
+  → Qwen3-VL-30B (정확도 우선)
+
+추출 후 메타데이터 보강, 요약, 키워드 추출
+  → Kimi-K2.5 (텍스트 LLM으로 충분)
+```
 
 ## 어떻게 사용하는가? (How)
 
@@ -295,18 +309,32 @@ DOCX_PROMPT = """이 이미지는 Word 문서의 한 페이지입니다.
 
 ### Step 4: VLM API 호출 구현
 
+사내 LLM API는 OpenAI-compatible 엔드포인트로 제공된다 (vLLM/TGI 등).
+
 ```python
 import base64
 import asyncio
 from pathlib import Path
 from openai import AsyncOpenAI
 
-client = AsyncOpenAI()
+# 사내 LLM API 엔드포인트 (OpenAI-compatible)
+INTERNAL_API_BASE = "http://<internal-llm-server>/v1"
+INTERNAL_API_KEY = "<internal-api-key>"  # 사내 인증 키
+
+client = AsyncOpenAI(
+    base_url=INTERNAL_API_BASE,
+    api_key=INTERNAL_API_KEY,
+)
+
+# 사내 사용 가능 모델
+VLM_LIGHT = "Qwen3-VL-8B-Instruct"   # 경량 VLM (빠름)
+VLM_HEAVY = "Qwen3-VL-30B"            # 고성능 VLM (정확)
+TEXT_LLM = "Kimi-K2.5"                 # 텍스트 전용 LLM
 
 async def extract_single_image(
     image_path: str,
     doc_type: str = "general",
-    model: str = "gpt-4o",
+    model: str = VLM_LIGHT,
 ) -> dict:
     """단일 이미지에서 VLM으로 텍스트 추출"""
 
@@ -356,8 +384,8 @@ from tqdm.asyncio import tqdm_asyncio
 async def extract_document_batch(
     image_paths: list[str],
     doc_type: str = "general",
-    model: str = "gpt-4o",
-    max_concurrent: int = 5,  # API 동시 요청 제한
+    model: str = VLM_LIGHT,
+    max_concurrent: int = 5,  # 사내 API 동시 요청 제한 (서버 부하 고려)
 ) -> list[dict]:
     """여러 이미지를 비동기로 병렬 추출"""
 
@@ -378,7 +406,7 @@ async def extract_document_batch(
 async def extract_full_document(
     image_dir: str,
     doc_type: str,
-    model: str = "gpt-4o",
+    model: str = VLM_LIGHT,
 ) -> dict:
     """전체 문서(여러 페이지) 추출"""
     image_paths = sorted(Path(image_dir).glob("*.png"))
@@ -402,7 +430,7 @@ async def extract_full_document(
         "page_results": results,
         "total_pages": len(results),
         "total_tokens": total_tokens,
-        "estimated_cost_usd": total_tokens * 0.000005,  # 대략적 추정
+        "total_tokens_info": "사내 API는 별도 과금 없음 (인프라 비용만)",
     }
 ```
 
@@ -446,100 +474,52 @@ def validate_extraction(result: dict) -> dict:
     }
 ```
 
-## 비용 최적화 전략
+## 처리 속도 최적화 전략
 
 ### 티어별 모델 사용
 
-모든 페이지에 GPT-4o를 쓰면 비용이 폭증한다. **문서 복잡도에 따라 모델을 분리**:
+모든 페이지에 30B 모델을 쓰면 사내 GPU 서버에 부하가 크고 처리 시간이 길어진다.
+**문서 복잡도에 따라 모델을 분리**:
 
 ```python
 async def smart_extract(image_path: str, doc_type: str) -> dict:
     """복잡도에 따라 VLM 모델 자동 선택"""
 
-    # 1차: 저비용 모델로 빠른 추출 시도
+    # 1차: 경량 모델(8B)로 빠른 추출 시도
     result = await extract_single_image(
-        image_path, doc_type, model="gemini-2.0-flash"
+        image_path, doc_type, model=VLM_LIGHT
     )
 
     # 품질 검사
     validated = validate_extraction(result)
 
-    # 품질 낮으면 고비용 모델로 재추출
+    # 품질 낮으면 고성능 모델(30B)로 재추출
     if validated["quality_score"] < 60:
         result = await extract_single_image(
-            image_path, doc_type, model="gpt-4o"
+            image_path, doc_type, model=VLM_HEAVY
         )
         result["fallback"] = True
 
     return result
 ```
 
-### 비용 추정 테이블
+### 처리 시간 추정
 
-100페이지 문서 기준 대략적 추정:
+100페이지 문서 기준 (사내 GPU 서버 환경):
 
-| 전략 | 모델 | 추정 비용 | 처리 시간 |
-|------|------|-----------|-----------|
-| 전부 GPT-4o | GPT-4o | ~$2-3 | ~5분 |
-| 전부 Gemini Flash | Gemini 2.0 Flash | ~$0.3-0.5 | ~2분 |
-| 티어별 분리 | Flash + GPT-4o 폴백 | ~$0.5-1.0 | ~3분 |
-| 로컬 VLM | Qwen2.5-VL 72B | $0 (GPU 비용) | ~10-15분 |
+| 전략 | 모델 | 추정 처리 시간 | GPU 부하 |
+|------|------|----------------|----------|
+| 전부 8B | Qwen3-VL-8B-Instruct | ~3-5분 | 낮음 |
+| 전부 30B | Qwen3-VL-30B | ~10-15분 | 높음 |
+| 티어별 분리 | 8B + 30B 폴백 | ~5-8분 | 중간 |
 
-## 로컬 VLM 파이프라인 (보안 우선)
-
-사내 문서를 외부 API로 보내지 못하는 경우:
-
-```python
-from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
-from PIL import Image
-import torch
-
-class LocalVLMExtractor:
-    """로컬 GPU에서 실행하는 VLM 추출기"""
-
-    def __init__(self, model_name: str = "Qwen/Qwen2.5-VL-7B-Instruct"):
-        self.processor = AutoProcessor.from_pretrained(model_name)
-        self.model = Qwen2VLForConditionalGeneration.from_pretrained(
-            model_name,
-            torch_dtype=torch.bfloat16,
-            device_map="auto",
-        )
-
-    def extract(self, image_path: str, prompt: str) -> str:
-        image = Image.open(image_path)
-
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": [
-                {"type": "image", "image": image},
-                {"type": "text", "text": prompt},
-            ]}
-        ]
-
-        text = self.processor.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
-        )
-        inputs = self.processor(
-            text=[text], images=[image],
-            return_tensors="pt", padding=True
-        ).to(self.model.device)
-
-        output_ids = self.model.generate(
-            **inputs, max_new_tokens=4096, temperature=0.0
-        )
-        output_text = self.processor.batch_decode(
-            output_ids[:, inputs.input_ids.shape[1]:],
-            skip_special_tokens=True
-        )[0]
-
-        return output_text
-```
+> **비용**: 사내 API이므로 별도 과금 없음. 주요 고려사항은 **GPU 서버 부하**와 **처리 시간**.
 
 ## 참고 자료 (References)
 
-- [GPT-4o Vision Guide](https://platform.openai.com/docs/guides/vision)
-- [Claude Vision Documentation](https://docs.anthropic.com/en/docs/build-with-claude/vision)
-- [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL)
+- [Qwen2.5-VL / Qwen3-VL](https://github.com/QwenLM/Qwen2.5-VL) — 사내 VLM 기반 모델
+- [Kimi-K2.5](https://github.com/MoonshotAI/Kimi-K2) — 사내 텍스트 LLM
+- [OpenAI-Compatible API (vLLM)](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html) — 사내 API 호환 규격
 - [pyautogui Documentation](https://pyautogui.readthedocs.io/)
 
 ## 관련 문서
