@@ -20,6 +20,9 @@
 ### 응용
 - [대화 메모리 구현](./conversation-memory-opensearch.md) - 3계층 메모리(단기/중기/장기), 벡터+키워드 검색, 로컬 LLM 연동 | [실습 코드](../../../Codes/python/history-opensearch/)
 
+### 프로젝트 아키텍처
+- [knowhow-elasticsearch 구조](./knowhow-elasticsearch-architecture.md) - LLM enrichment → 색인 → 하이브리드 검색 파이프라인, opensearch_handler 연동 | [실습 코드](../../../Codes/python/knowhow-elasticsearch/)
+
 ---
 
 ## 학습 순서
@@ -33,4 +36,4 @@
 
 ---
 
-*Last updated: 2026-02-08*
+*Last updated: 2026-02-12*
