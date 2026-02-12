@@ -1,32 +1,73 @@
 """
-OpenSearch index settings optimized for the current cluster topology.
+Cluster settings for OpenSearch / Elasticsearch environments.
 
-Cluster topology (as of 2026-02):
-  - Cluster Manager: 3 nodes  | 2 cores | 4 GiB RAM  | 10 GiB storage
-  - Data:           1 node    | 4 cores | 8 GiB RAM  | 100 GiB storage
-
-Key decisions:
-  - replicas=0: Only 1 data node, so replicas would remain unassigned (Yellow health).
-                Add replicas when scaling to 2+ data nodes.
-  - shards=1:   Small dataset on a single data node. More shards add overhead with no benefit.
-  - refresh=30s: Reduces I/O during bulk indexing. Default 1s is too aggressive for batch loads.
-  - nori analyzer: Handles Korean morphological analysis for better full-text search quality.
-                   Requires analysis-nori plugin installed on all OpenSearch nodes.
+Select the active cluster by setting ACTIVE_CLUSTER to one of the keys
+in CLUSTERS. All other modules read from the module-level exports:
+    OS_HOST, OS_INDEX, OS_BULK_CHUNK, INDEX_SETTINGS
 """
 
-# -- Connection ----------------------------------------------------------
+import os
 
-OS_HOST = "https://localhost:9200"
-OS_INDEX = "knowhow"
-OS_BULK_CHUNK = 500
+# ========================================================================
+# Cluster definitions
+# ========================================================================
 
-# -- Index-level settings ------------------------------------------------
+CLUSTERS = {
+    # ------------------------------------------------------------------
+    # OpenSearch standalone (dev)
+    #   Cluster Manager: 3 nodes | 2 cores | 4 GiB RAM  | 10 GiB storage
+    #   Data:            1 node  | 4 cores | 8 GiB RAM  | 100 GiB storage
+    # ------------------------------------------------------------------
+    "opensearch-dev": {
+        "host": "https://localhost:9200",
+        "index": "knowhow",
+        "bulk_chunk": 500,
+        "shards": 1,
+        "replicas": 0,
+        "refresh_interval": "30s",
+    },
+    # ------------------------------------------------------------------
+    # Elasticsearch 7.14 cluster (production)
+    #   Master: 3 nodes (dedicated)
+    #   Data:   3 nodes
+    #
+    #   opensearch-py is compatible with ES 7.x (forked from ES 7.10).
+    # ------------------------------------------------------------------
+    "es-prod": {
+        "host": "https://localhost:9200",  # TODO: replace with actual ES host
+        "index": "knowhow",
+        "bulk_chunk": 500,
+        "shards": 2,
+        "replicas": 1,
+        "refresh_interval": "30s",
+    },
+}
+
+# ========================================================================
+# Active cluster selection
+# ========================================================================
+# Override via environment variable: KNOWHOW_CLUSTER=es-prod python index.py
+ACTIVE_CLUSTER = os.environ.get("KNOWHOW_CLUSTER", "opensearch-dev")
+
+_cfg = CLUSTERS[ACTIVE_CLUSTER]
+
+# ========================================================================
+# Module-level exports (used by os_client, retrieval, etc.)
+# ========================================================================
+
+OS_HOST = _cfg["host"]
+OS_INDEX = _cfg["index"]
+OS_BULK_CHUNK = _cfg["bulk_chunk"]
+
+# ========================================================================
+# Index settings
+# ========================================================================
 
 INDEX_SETTINGS = {
     "settings": {
-        "number_of_shards": 1,
-        "number_of_replicas": 0,
-        "refresh_interval": "30s",
+        "number_of_shards": _cfg["shards"],
+        "number_of_replicas": _cfg["replicas"],
+        "refresh_interval": _cfg["refresh_interval"],
         "analysis": {
             "analyzer": {
                 "korean": {
@@ -59,18 +100,23 @@ INDEX_SETTINGS = {
     },
 }
 
-# -- Scaling guide -------------------------------------------------------
+# ========================================================================
+# Scaling guide
+# ========================================================================
 #
-# When you add more DATA nodes, update these settings:
+# opensearch-dev (1 data node):
+#   shards=1, replicas=0 → Green health. No HA.
 #
-# | Data Nodes | Shards | Replicas | Notes                              |
-# |------------|--------|----------|------------------------------------|
-# | 1          | 1      | 0        | Current setup. Green health.       |
-# | 2          | 1      | 1        | 1 replica for HA. Green health.    |
-# | 3+         | 2      | 1        | Distribute load across nodes.      |
+# es-prod (3 data nodes):
+#   | Shards | Replicas | Total copies | Notes                          |
+#   |--------|----------|--------------|--------------------------------|
+#   | 1      | 1        | 2            | Simple HA. 2 of 3 nodes used.  |
+#   | 1      | 2        | 3            | Max read throughput. All nodes. |
+#   | 2      | 1        | 4            | Balance write + read across 3. |  ← default
+#   | 3      | 1        | 6            | Max parallelism. 2 per node.   |
 #
-# To apply new replica count on a live index:
+# To change replicas on a live index:
 #   client.indices.put_settings(
 #       index="knowhow",
-#       body={"index": {"number_of_replicas": 1}},
+#       body={"index": {"number_of_replicas": 2}},
 #   )
