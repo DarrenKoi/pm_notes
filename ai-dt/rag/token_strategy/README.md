@@ -30,6 +30,15 @@ RAG 시스템의 성능은 **문서를 얼마나 잘 분할(chunking)하고 토�
 | [xlsx-tokenization.md](./xlsx-tokenization.md) | Excel 문서 토큰화 전략 | 🟢 |
 | [docx-tokenization.md](./docx-tokenization.md) | Word 문서 토큰화 전략 | 🟢 |
 
+### DRM 환경 전략
+
+| 파일 | 내용 | 상태 |
+|------|------|------|
+| [when_drm/](./when_drm/) | **DRM 문서 처리 전략 (스크린샷 + VLM)** | 🟢 |
+| [when_drm/screenshot-vlm-pipeline.md](./when_drm/screenshot-vlm-pipeline.md) | Phase 1: VLM 기반 추출 파이프라인 | 🟢 |
+| [when_drm/vlm-chunking-strategy.md](./when_drm/vlm-chunking-strategy.md) | VLM 추출 결과물 청킹 전략 | 🟢 |
+| [when_drm/post-drm-hybrid.md](./when_drm/post-drm-hybrid.md) | Phase 2: DRM 해제 후 하이브리드 전략 | 🟢 |
+
 ## 핵심 용어
 
 | 용어 | 설명 |
