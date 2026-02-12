@@ -1,30 +1,12 @@
 {
   "permissions": {
     "allow": [
+      "Bash(git:*)",
       "Bash(claude mcp add:*)",
-      "Bash(ls:*)",
-      "Bash(dir:*)",
-      "Bash(findstr:*)",
-      "Bash(python -m py_compile:*)",
-      "Bash(find:*)",
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd OpenSearch conversation memory system with 3-tier architecture\n\n- Create history-opensearch project: config, models, OpenSearch client,\n  BGE-M3 embedding, Qwen3 summarizer, fact extractor, memory manager, demo\n- Add learning note: conversation-memory-opensearch.md covering index\n  design, k-NN vector search, and local LLM integration patterns\n- Update opensearch/README.md and root README.md with new entries\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git rm:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(del \"\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul\")",
-      "Bash(cmd.exe /c \"del \\\\\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul\")",
-      "Bash(cmd.exe /c \"del /f /q C:\\\\code\\\\pm_notes\\\\nul\")",
-      "Bash(python -c \"import os; os.remove\\(''\\\\\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul''\\)\")",
-      "Bash(python -c \"import os; os.remove\\(r''\\\\\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul''\\)\")",
-      "Bash(python -c \"import pathlib; p = pathlib.Path\\(r''\\\\\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul''\\); print\\(p.exists\\(\\)\\); p.unlink\\(\\)\")",
-      "Bash(python -c \"import ctypes; ctypes.windll.kernel32.DeleteFileW\\(r''\\\\\\\\?\\\\C:\\\\code\\\\pm_notes\\\\nul''\\)\")",
-      "Bash(python -c \"import ctypes; r = ctypes.windll.kernel32.DeleteFileW\\(r''\\\\\\\\.\\\\C:\\\\code\\\\pm_notes\\\\nul''\\); print\\(''result:'', r, ''error:'', ctypes.windll.kernel32.GetLastError\\(\\)\\)\")",
       "Bash(python:*)",
-      "Bash(git clean:*)",
       "Bash(python3:*)",
-      "Bash(git mv:*)",
-      "Bash(pip3 install:*)"
+      "Bash(pip3 install:*)",
+      "Bash(uv:*)"
     ]
   }
 }
