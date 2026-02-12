@@ -1,7 +1,7 @@
 """Retrieval module for knowhow documents from OpenSearch.
 
-Primary strategy: exact match on the `keywords` field (keyword type).
-Fallback: full-text search on `summary` when no keyword matches are found.
+Primary strategy: hybrid search combining keyword exact match + full-text
+search on knowhow/summary in a single query for better relevance ranking.
 """
 
 import logging
@@ -21,86 +21,57 @@ logger = logging.getLogger(__name__)
 def retrieve(
     keywords: list[str],
     *,
+    query: str | None = None,
     client: OpenSearch | None = None,
     size: int = 10,
-    min_match: int = 1,
+    category: str | None = None,
 ) -> list[dict]:
-    """Retrieve documents matching the given keywords list.
+    """Hybrid retrieval combining keyword exact match + full-text search.
 
-    1. Exact match on the `keywords` field.
-    2. If no results, fall back to full-text search on `summary`.
+    Runs keyword exact match, knowhow full-text, and summary full-text
+    in a single query. Documents matching multiple signals score higher.
+
+    Boost strategy:
+        keywords (exact):  3.0  — highest priority, exact term match
+        knowhow (text):    2.0  — original knowhow content
+        summary (text):    1.5  — LLM-generated summary
 
     Args:
-        keywords:  List of keyword strings to search for.
-        size:      Max number of results to return.
-        min_match: Minimum number of keywords that must match (default 1).
+        keywords: List of keyword strings to search for.
+        query:    Optional free-text query. If not provided, keywords are
+                  joined as query text for the full-text fields.
+        size:     Max number of results to return.
+        category: Optional category filter (exact match).
 
     Returns:
-        List of document dicts with an added `_score` and `_match_type` field.
-    """
-    client = client or get_client()
-
-    results = search_keywords_exact(keywords, client=client, size=size, min_match=min_match)
-    if results:
-        return results
-
-    logger.info("No exact keyword match. Falling back to summary search.")
-    return search_summary_fallback(keywords, client=client, size=size)
-
-
-def search_keywords_exact(
-    keywords: list[str],
-    *,
-    client: OpenSearch | None = None,
-    size: int = 10,
-    min_match: int = 1,
-) -> list[dict]:
-    """Exact match on the `keywords` field (keyword type).
-
-    Uses a bool/should query so that documents matching more keywords
-    are scored higher. `min_match` controls how many keywords must match.
+        List of document dicts with `_score` field, ranked by relevance.
     """
     client = client or get_client()
     normalized = [k.strip().lower() for k in keywords if k.strip()]
+    query_text = query or " ".join(normalized)
 
-    should = [{"term": {"keywords": kw}} for kw in normalized]
+    should = [
+        {"terms": {"keywords": normalized, "boost": 3.0}},
+        {"match": {"knowhow": {"query": query_text, "boost": 2.0}}},
+        {"match": {"summary": {"query": query_text, "boost": 1.5}}},
+    ]
+
+    filter_ = []
+    if category:
+        filter_.append({"term": {"category": category}})
 
     body = {
         "query": {
             "bool": {
                 "should": should,
-                "minimum_should_match": min_match,
+                "filter": filter_,
+                "minimum_should_match": 1,
             }
         },
         "size": size,
     }
     resp = client.search(index=OS_INDEX, body=body)
-    return _format_hits(resp, match_type="keyword_exact")
-
-
-def search_summary_fallback(
-    keywords: list[str],
-    *,
-    client: OpenSearch | None = None,
-    size: int = 10,
-) -> list[dict]:
-    """Full-text search on `summary` using the keyword list as query text."""
-    client = client or get_client()
-    query_text = " ".join(kw.strip() for kw in keywords if kw.strip())
-
-    body = {
-        "query": {
-            "match": {
-                "summary": {
-                    "query": query_text,
-                    "analyzer": "korean",
-                }
-            }
-        },
-        "size": size,
-    }
-    resp = client.search(index=OS_INDEX, body=body)
-    return _format_hits(resp, match_type="summary_fallback")
+    return _format_hits(resp)
 
 
 # -- Utility methods ------------------------------------------------------
@@ -228,7 +199,7 @@ if __name__ == "__main__":
         print("No results found.")
     else:
         for i, doc in enumerate(docs, 1):
-            print(f"[{i}] score={doc['_score']:.2f}  match={doc.get('_match_type', 'n/a')}")
+            print(f"[{i}] score={doc['_score']:.2f}")
             print(f"    keywords: {doc.get('keywords', [])}")
             print(f"    category: {doc.get('category', '')}")
             print(f"    summary:  {doc.get('summary', '')[:120]}")
