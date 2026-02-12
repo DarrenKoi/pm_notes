@@ -48,6 +48,11 @@ def get_index_settings(client: OpenSearch, name: str) -> dict:
     return client.indices.get_settings(index=name)
 
 
+def get_index_mapping(client: OpenSearch, name: str) -> dict:
+    """Return mappings for an index."""
+    return client.indices.get_mapping(index=name)
+
+
 def update_index_settings(
     client: OpenSearch,
     name: str,
@@ -55,3 +60,8 @@ def update_index_settings(
 ) -> dict:
     """Update dynamic settings on an existing index."""
     return client.indices.put_settings(index=name, body={"index": settings})
+
+
+def refresh_index(client: OpenSearch, name: str) -> dict:
+    """Force-refresh an index so recent writes are searchable immediately."""
+    return client.indices.refresh(index=name)

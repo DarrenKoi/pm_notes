@@ -8,6 +8,7 @@ from opensearch_handler import (
     aggregate,
     bool_search,
     bulk_index,
+    count_documents,
     create_client,
     create_index,
     delete_document,
@@ -19,7 +20,10 @@ from opensearch_handler import (
     knn_search,
     load_config,
     match_search,
+    multi_match_search,
+    refresh_index,
     term_search,
+    upsert_document,
     update_document,
 )
 
@@ -102,6 +106,17 @@ doc = get_document(client, INDEX_NAME, "1")
 print("Get document:", doc["_source"]["title"])
 
 update_document(client, INDEX_NAME, "1", {"category": "beginner-tutorial"})
+upsert_document(
+    client,
+    INDEX_NAME,
+    "4",
+    {
+        "title": "검색 엔진 운영 팁",
+        "category": "operations",
+        "content": "샤드, 리프레시, 벌크 튜닝 기본 가이드",
+        "embedding": [0.2, 0.2, 0.2],
+    },
+)
 
 # ── 4. Search ───────────────────────────────────────────────────────
 # Full-text
@@ -111,6 +126,9 @@ print("Match search hits:", results["hits"]["total"]["value"])
 # Exact match
 results = term_search(client, INDEX_NAME, "category", "tutorial")
 print("Term search hits:", results["hits"]["total"]["value"])
+
+results = multi_match_search(client, INDEX_NAME, "검색", ["title", "content"])
+print("Multi-match hits:", results["hits"]["total"]["value"])
 
 # Bool compound query
 results = bool_search(
@@ -144,6 +162,12 @@ results = aggregate(
     agg_body={"categories": {"terms": {"field": "category"}}},
 )
 print("Aggregation buckets:", results["aggregations"]["categories"]["buckets"])
+
+count = count_documents(client, INDEX_NAME)
+print("Total documents:", count["count"])
+
+# Force refresh when you need read-after-write guarantees.
+refresh_index(client, INDEX_NAME)
 
 # ── 5. Cleanup ──────────────────────────────────────────────────────
 delete_document(client, INDEX_NAME, "1")

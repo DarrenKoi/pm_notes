@@ -126,3 +126,44 @@ def aggregate(
     if query:
         body["query"] = query
     return client.search(index=index, body=body)
+
+
+def search_raw(
+    client: OpenSearch,
+    index: str,
+    body: dict[str, Any],
+) -> dict:
+    """Run an arbitrary query body."""
+    return client.search(index=index, body=body)
+
+
+def multi_match_search(
+    client: OpenSearch,
+    index: str,
+    query: str,
+    fields: Sequence[str],
+    size: int = 10,
+    match_type: str = "best_fields",
+) -> dict:
+    """Search across multiple text fields using multi_match."""
+    body = {
+        "query": {
+            "multi_match": {
+                "query": query,
+                "fields": list(fields),
+                "type": match_type,
+            }
+        },
+        "size": size,
+    }
+    return client.search(index=index, body=body)
+
+
+def count_documents(
+    client: OpenSearch,
+    index: str,
+    query: Optional[dict[str, Any]] = None,
+) -> dict:
+    """Return count for all docs or docs matching a query."""
+    body = {"query": query} if query else {}
+    return client.count(index=index, body=body)

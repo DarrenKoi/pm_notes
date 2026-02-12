@@ -31,6 +31,10 @@ def create_client(
         "use_ssl": config.use_ssl,
         "verify_certs": config.verify_certs,
         "ssl_show_warn": config.ssl_show_warn,
+        "timeout": config.timeout,
+        "max_retries": config.max_retries,
+        "retry_on_timeout": config.retry_on_timeout,
+        "http_compress": config.http_compress,
     }
 
     http_auth = config.http_auth

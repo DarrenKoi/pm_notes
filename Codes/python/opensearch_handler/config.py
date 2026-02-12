@@ -15,6 +15,15 @@ from dataclasses import dataclass
 from typing import Optional
 
 
+def _parse_bool(value: str) -> bool:
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "t", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "f", "no", "n", "off"}:
+        return False
+    raise ValueError(f"Invalid boolean value: {value!r}")
+
+
 @dataclass
 class ConnectionConfig:
     """Connection and index configuration for an OpenSearch/ES cluster."""
@@ -28,6 +37,10 @@ class ConnectionConfig:
     ssl_show_warn: bool = False
     ca_certs: Optional[str] = None
     bulk_chunk: int = 500
+    timeout: int = 30
+    max_retries: int = 3
+    retry_on_timeout: bool = True
+    http_compress: bool = True
 
     @property
     def http_auth(self) -> Optional[tuple[str, str]]:
@@ -57,6 +70,10 @@ def load_config(**overrides) -> ConnectionConfig:
       - OPENSEARCH_VERIFY_CERTS  ("true"/"false")
       - OPENSEARCH_CA_CERTS
       - OPENSEARCH_BULK_CHUNK
+      - OPENSEARCH_TIMEOUT
+      - OPENSEARCH_MAX_RETRIES
+      - OPENSEARCH_RETRY_ON_TIMEOUT ("true"/"false")
+      - OPENSEARCH_HTTP_COMPRESS ("true"/"false")
     """
     cfg = ConnectionConfig()
 
@@ -79,11 +96,11 @@ def load_config(**overrides) -> ConnectionConfig:
 
     ssl_env = os.getenv("OPENSEARCH_USE_SSL")
     if ssl_env is not None:
-        cfg.use_ssl = ssl_env.lower() == "true"
+        cfg.use_ssl = _parse_bool(ssl_env)
 
     verify_env = os.getenv("OPENSEARCH_VERIFY_CERTS")
     if verify_env is not None:
-        cfg.verify_certs = verify_env.lower() == "true"
+        cfg.verify_certs = _parse_bool(verify_env)
 
     ca_certs = os.getenv("OPENSEARCH_CA_CERTS")
     if ca_certs:
@@ -92,6 +109,22 @@ def load_config(**overrides) -> ConnectionConfig:
     bulk_chunk = os.getenv("OPENSEARCH_BULK_CHUNK")
     if bulk_chunk:
         cfg.bulk_chunk = int(bulk_chunk)
+
+    timeout = os.getenv("OPENSEARCH_TIMEOUT")
+    if timeout:
+        cfg.timeout = int(timeout)
+
+    max_retries = os.getenv("OPENSEARCH_MAX_RETRIES")
+    if max_retries:
+        cfg.max_retries = int(max_retries)
+
+    retry_on_timeout = os.getenv("OPENSEARCH_RETRY_ON_TIMEOUT")
+    if retry_on_timeout is not None:
+        cfg.retry_on_timeout = _parse_bool(retry_on_timeout)
+
+    http_compress = os.getenv("OPENSEARCH_HTTP_COMPRESS")
+    if http_compress is not None:
+        cfg.http_compress = _parse_bool(http_compress)
 
     # Explicit overrides layer
     for key, value in overrides.items():
