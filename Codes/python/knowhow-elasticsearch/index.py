@@ -4,7 +4,8 @@ import sys
 from pathlib import Path
 
 from models import EnrichedKnowhow
-from os_client import get_client, ensure_index, bulk_index
+from os_settings import OS_INDEX, INDEX_SETTINGS, get_connection_config  # triggers _path_setup
+import opensearch_handler as osh
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -46,10 +47,40 @@ def main():
     enriched = load_enriched()
     logger.info("Loaded %d enriched items", len(enriched))
 
-    client = get_client()
-    ensure_index(client)
-    total_indexed = bulk_index(client, enriched)
-    logger.info("Index complete. %d/%d documents indexed.", total_indexed, len(enriched))
+    config = get_connection_config()
+    client = osh.create_client(config=config)
+
+    # Ensure index exists
+    if not osh.index_exists(client, OS_INDEX):
+        osh.create_index(
+            client,
+            OS_INDEX,
+            mappings=INDEX_SETTINGS["mappings"],
+            settings=INDEX_SETTINGS["settings"],
+        )
+        logger.info("Created index: %s", OS_INDEX)
+    else:
+        logger.info("Index already exists: %s", OS_INDEX)
+
+    # Filter empty-keyword items and prepare docs
+    docs = []
+    skipped = 0
+    for item in enriched:
+        if not item.keywords:
+            skipped += 1
+            continue
+        docs.append(item.model_dump(exclude={"knowhow_no"}))
+
+    if skipped:
+        logger.info("Skipped %d items with empty keywords", skipped)
+
+    if docs:
+        success, errors = osh.bulk_index(
+            client, OS_INDEX, docs, chunk_size=config.bulk_chunk
+        )
+        logger.info("Index complete. %d/%d documents indexed.", success, len(enriched))
+    else:
+        logger.info("No documents to index.")
 
 
 if __name__ == "__main__":

@@ -2,11 +2,14 @@
 Cluster settings for OpenSearch / Elasticsearch environments.
 
 Select the active cluster by setting ACTIVE_CLUSTER to one of the keys
-in CLUSTERS. All other modules read from the module-level exports:
-    OS_HOST, OS_INDEX, OS_BULK_CHUNK, INDEX_SETTINGS
+in CLUSTERS. Connection details are accessed via ``get_connection_config()``,
+which returns an ``opensearch_handler.ConnectionConfig``.
 """
 
 import os
+
+import _path_setup  # noqa: F401 — adds Codes/python/ to sys.path
+from opensearch_handler import ConnectionConfig
 
 # ========================================================================
 # Cluster definitions
@@ -60,20 +63,10 @@ ACTIVE_CLUSTER = os.environ.get("KNOWHOW_CLUSTER", "opensearch-dev")
 _cfg = CLUSTERS[ACTIVE_CLUSTER]
 
 # ========================================================================
-# Module-level exports (used by os_client, retrieval, etc.)
+# Exports
 # ========================================================================
 
-OS_HOST = _cfg["host"]
-OS_PORT = _cfg["port"]
-OS_USER = _cfg["user"]
-OS_PASSWORD = _cfg["password"]
-OS_USE_SSL = _cfg["use_ssl"]
 OS_INDEX = _cfg["index"]
-OS_BULK_CHUNK = _cfg["bulk_chunk"]
-
-# ========================================================================
-# Index settings
-# ========================================================================
 
 INDEX_SETTINGS = {
     "settings": {
@@ -111,6 +104,19 @@ INDEX_SETTINGS = {
         },
     },
 }
+
+
+def get_connection_config() -> ConnectionConfig:
+    """Build a ConnectionConfig from the active cluster profile."""
+    return ConnectionConfig(
+        host=_cfg["host"],
+        port=_cfg["port"],
+        user=_cfg["user"],
+        password=_cfg["password"],
+        use_ssl=_cfg["use_ssl"],
+        bulk_chunk=_cfg["bulk_chunk"],
+    )
+
 
 # ========================================================================
 # Scaling guide

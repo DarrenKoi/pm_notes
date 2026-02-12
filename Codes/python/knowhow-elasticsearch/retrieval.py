@@ -9,10 +9,20 @@ from typing import Any
 
 from opensearchpy import OpenSearch
 
-from os_client import get_client
-from os_settings import OS_INDEX
+from os_settings import OS_INDEX, get_connection_config  # triggers _path_setup
+import opensearch_handler as osh
 
 logger = logging.getLogger(__name__)
+
+_client: OpenSearch | None = None
+
+
+def _get_client() -> OpenSearch:
+    """Lazy-initialise a shared client from the active cluster config."""
+    global _client
+    if _client is None:
+        _client = osh.create_client(config=get_connection_config())
+    return _client
 
 
 # -- Primary retrieval ----------------------------------------------------
@@ -46,7 +56,7 @@ def retrieve(
     Returns:
         List of document dicts with `_score` field, ranked by relevance.
     """
-    client = client or get_client()
+    client = client or _get_client()
     normalized = [k.strip().lower() for k in keywords if k.strip()]
     query_text = query or " ".join(normalized)
 
@@ -84,10 +94,8 @@ def retrieve_by_category(
     size: int = 50,
 ) -> list[dict]:
     """Get all documents in a specific category."""
-    client = client or get_client()
-
-    body = {"query": {"term": {"category": category}}, "size": size}
-    resp = client.search(index=OS_INDEX, body=body)
+    client = client or _get_client()
+    resp = osh.term_search(client, OS_INDEX, "category", category, size=size)
     return _format_hits(resp)
 
 
@@ -98,10 +106,8 @@ def retrieve_by_user(
     size: int = 50,
 ) -> list[dict]:
     """Get all documents authored by a specific user."""
-    client = client or get_client()
-
-    body = {"query": {"term": {"user_id": user_id}}, "size": size}
-    resp = client.search(index=OS_INDEX, body=body)
+    client = client or _get_client()
+    resp = osh.term_search(client, OS_INDEX, "user_id", user_id, size=size)
     return _format_hits(resp)
 
 
@@ -111,10 +117,8 @@ def retrieve_by_id(
     client: OpenSearch | None = None,
 ) -> dict | None:
     """Get a single document by KNOWHOW_ID."""
-    client = client or get_client()
-
-    body = {"query": {"term": {"KNOWHOW_ID": knowhow_id}}, "size": 1}
-    resp = client.search(index=OS_INDEX, body=body)
+    client = client or _get_client()
+    resp = osh.term_search(client, OS_INDEX, "KNOWHOW_ID", knowhow_id, size=1)
     hits = _format_hits(resp)
     return hits[0] if hits else None
 
@@ -131,17 +135,9 @@ def list_all_keywords(
     Returns:
         List of {"keyword": str, "doc_count": int} sorted by count desc.
     """
-    client = client or get_client()
-
-    body = {
-        "size": 0,
-        "aggs": {
-            "unique_keywords": {
-                "terms": {"field": "keywords", "size": size}
-            }
-        },
-    }
-    resp = client.search(index=OS_INDEX, body=body)
+    client = client or _get_client()
+    agg_body = {"unique_keywords": {"terms": {"field": "keywords", "size": size}}}
+    resp = osh.aggregate(client, OS_INDEX, agg_body)
     buckets = resp["aggregations"]["unique_keywords"]["buckets"]
     return [{"keyword": b["key"], "doc_count": b["doc_count"]} for b in buckets]
 
@@ -151,17 +147,9 @@ def list_categories(
     client: OpenSearch | None = None,
 ) -> list[dict[str, Any]]:
     """Return all unique categories with their document counts."""
-    client = client or get_client()
-
-    body = {
-        "size": 0,
-        "aggs": {
-            "unique_categories": {
-                "terms": {"field": "category", "size": 100}
-            }
-        },
-    }
-    resp = client.search(index=OS_INDEX, body=body)
+    client = client or _get_client()
+    agg_body = {"unique_categories": {"terms": {"field": "category", "size": 100}}}
+    resp = osh.aggregate(client, OS_INDEX, agg_body)
     buckets = resp["aggregations"]["unique_categories"]["buckets"]
     return [{"category": b["key"], "doc_count": b["doc_count"]} for b in buckets]
 
