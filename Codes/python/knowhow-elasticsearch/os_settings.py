@@ -19,7 +19,11 @@ CLUSTERS = {
     #   Data:            1 node  | 4 cores | 8 GiB RAM  | 100 GiB storage
     # ------------------------------------------------------------------
     "opensearch-dev": {
-        "host": "https://localhost:9200",
+        "host": "localhost",
+        "port": 9200,
+        "user": "admin",
+        "password": "admin",
+        "use_ssl": True,
         "index": "knowhow",
         "bulk_chunk": 500,
         "shards": 1,
@@ -34,7 +38,11 @@ CLUSTERS = {
     #   opensearch-py is compatible with ES 7.x (forked from ES 7.10).
     # ------------------------------------------------------------------
     "es-prod": {
-        "host": "https://localhost:9200",  # TODO: replace with actual ES host
+        "host": "localhost",  # TODO: replace with actual ES host
+        "port": 9200,
+        "user": "elastic",
+        "password": "changeme",
+        "use_ssl": False,
         "index": "knowhow",
         "bulk_chunk": 500,
         "shards": 2,
@@ -56,6 +64,10 @@ _cfg = CLUSTERS[ACTIVE_CLUSTER]
 # ========================================================================
 
 OS_HOST = _cfg["host"]
+OS_PORT = _cfg["port"]
+OS_USER = _cfg["user"]
+OS_PASSWORD = _cfg["password"]
+OS_USE_SSL = _cfg["use_ssl"]
 OS_INDEX = _cfg["index"]
 OS_BULK_CHUNK = _cfg["bulk_chunk"]
 

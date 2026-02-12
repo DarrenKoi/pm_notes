@@ -3,15 +3,28 @@ import logging
 from opensearchpy import OpenSearch, helpers
 
 from models import EnrichedKnowhow
-from os_settings import OS_HOST, OS_INDEX, OS_BULK_CHUNK, INDEX_SETTINGS
+from os_settings import (
+    OS_HOST, OS_PORT, OS_USER, OS_PASSWORD, OS_USE_SSL,
+    OS_INDEX, OS_BULK_CHUNK, INDEX_SETTINGS, ACTIVE_CLUSTER,
+)
 
 logger = logging.getLogger(__name__)
 
 
 def get_client() -> OpenSearch:
+    hosts = [{"host": OS_HOST, "port": OS_PORT}]
+    http_auth = (OS_USER, OS_PASSWORD)
+
+    if ACTIVE_CLUSTER.startswith("es"):
+        return OpenSearch(
+            hosts=hosts,
+            http_auth=http_auth,
+        )
+
     return OpenSearch(
-        OS_HOST,
-        use_ssl=True,
+        hosts=hosts,
+        http_auth=http_auth,
+        use_ssl=OS_USE_SSL,
         verify_certs=False,
         ssl_show_warn=False,
     )
