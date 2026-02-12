@@ -22,6 +22,13 @@ from .index import (
     refresh_index,
     update_index_settings,
 )
+from .lifecycle import (
+    bootstrap_aliases,
+    detect_cluster_flavor,
+    put_index_template,
+    put_lifecycle_policy,
+    rollover_alias,
+)
 from .search import (
     aggregate,
     bool_search,
@@ -48,6 +55,12 @@ __all__ = [
     "index_exists",
     "refresh_index",
     "update_index_settings",
+    # lifecycle
+    "detect_cluster_flavor",
+    "put_index_template",
+    "bootstrap_aliases",
+    "rollover_alias",
+    "put_lifecycle_policy",
     # document
     "index_document",
     "get_document",

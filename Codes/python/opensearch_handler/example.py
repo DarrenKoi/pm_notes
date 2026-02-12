@@ -21,6 +21,7 @@ from opensearch_handler import (
     load_config,
     match_search,
     multi_match_search,
+    put_index_template,
     refresh_index,
     term_search,
     upsert_document,
@@ -35,7 +36,40 @@ client = create_client(config=config)
 # Or override directly:
 #   client = create_client(host="my-es-host", port=9200, use_ssl=False)
 
-# ── 2. Index management ─────────────────────────────────────────────
+# ── 2. Template / lifecycle (optional) ─────────────────────────────
+# Composable template works on OpenSearch and Elasticsearch 7.x.
+put_index_template(
+    client,
+    "example-articles-template",
+    {
+        "index_patterns": ["example-articles*"],
+        "template": {
+            "settings": {
+                "index.number_of_shards": 1,
+                "index.number_of_replicas": 0,
+            },
+            "mappings": {
+                "properties": {
+                    "title": {
+                        "type": "text",
+                        "fields": {"raw": {"type": "keyword"}},
+                    },
+                    "category": {"type": "keyword"},
+                    "content": {"type": "text"},
+                }
+            },
+        },
+        "priority": 100,
+    },
+)
+
+# Lifecycle API differs by cluster flavor:
+# - OpenSearch -> ISM endpoint
+# - Elasticsearch 7.x -> ILM endpoint
+# Pass the proper policy body for your target cluster.
+# put_lifecycle_policy(client, "example-retention", {"policy": {...}}, flavor="auto")
+
+# ── 3. Index management ─────────────────────────────────────────────
 INDEX_NAME = "example-articles"
 
 if index_exists(client, INDEX_NAME):
@@ -66,7 +100,10 @@ create_index(
     settings={"index.knn": True},
 )
 
-# ── 3. Document CRUD ────────────────────────────────────────────────
+# Optional: rollover alias call
+# rollover_alias(client, "example-articles-write", {"max_age": "7d", "max_docs": 1000000})
+
+# ── 4. Document CRUD ────────────────────────────────────────────────
 index_document(
     client,
     INDEX_NAME,
@@ -118,7 +155,7 @@ upsert_document(
     },
 )
 
-# ── 4. Search ───────────────────────────────────────────────────────
+# ── 5. Search ───────────────────────────────────────────────────────
 # Full-text
 results = match_search(client, INDEX_NAME, "content", "벡터 검색")
 print("Match search hits:", results["hits"]["total"]["value"])
@@ -169,7 +206,7 @@ print("Total documents:", count["count"])
 # Force refresh when you need read-after-write guarantees.
 refresh_index(client, INDEX_NAME)
 
-# ── 5. Cleanup ──────────────────────────────────────────────────────
+# ── 6. Cleanup ──────────────────────────────────────────────────────
 delete_document(client, INDEX_NAME, "1")
 delete_index(client, INDEX_NAME)
 print("Cleanup complete.")

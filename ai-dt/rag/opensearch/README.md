@@ -16,6 +16,7 @@
 - [opensearch_handler 핸들러](./opensearch-handler.md) - 범용 Python 패키지 (클라이언트, 인덱스, 문서 CRUD, 검색, Aggregation) | [실습 코드](../../../Codes/python/opensearch_handler/)
 - [Python 클라이언트 활용](./python-client.md) - 대용량 Bulk 처리, Async 클라이언트, 에러 핸들링
 - [성능 최적화 (Scaling)](./performance-optimization.md) - 100GB+ 데이터 샤딩 전략, 튜닝, 메모리 관리
+- [Settings 실무 가이드](./settings/README.md) - 매핑(토큰화/비토큰화), 템플릿, alias, rollover, ISM 삭제 정책
 - [RAG 파이프라인 연동](./rag-integration.md) - LangChain/LangGraph 통합
 
 ### 응용
