@@ -13,6 +13,7 @@
 - [하이브리드 검색](./hybrid-search.md) - 벡터 + 키워드 결합, Score Normalization, RRF
 
 ### 실무 적용 (Production & 100GB+)
+- [opensearch_handler 핸들러](./opensearch-handler.md) - 범용 Python 패키지 (클라이언트, 인덱스, 문서 CRUD, 검색, Aggregation) | [실습 코드](../../../Codes/python/opensearch_handler/)
 - [Python 클라이언트 활용](./python-client.md) - 대용량 Bulk 처리, Async 클라이언트, 에러 핸들링
 - [성능 최적화 (Scaling)](./performance-optimization.md) - 100GB+ 데이터 샤딩 전략, 튜닝, 메모리 관리
 - [RAG 파이프라인 연동](./rag-integration.md) - LangChain/LangGraph 통합
