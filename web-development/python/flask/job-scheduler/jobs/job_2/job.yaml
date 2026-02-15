@@ -1,7 +1,0 @@
-name: "Test Job 2"
-description: "A longer running job"
-schedule:
-  type: interval
-  minutes: 5
-entry_point: main.py
-timeout: 60

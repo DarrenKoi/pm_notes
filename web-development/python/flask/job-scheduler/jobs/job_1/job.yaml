@@ -1,7 +1,0 @@
-name: "Test Job 1"
-description: "A simple print job"
-schedule:
-  type: interval
-  seconds: 30
-entry_point: main.py
-timeout: 10
