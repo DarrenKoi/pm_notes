@@ -19,6 +19,9 @@
 | Codes | [대화 메모리 → OpenSearch](./Codes/python/history-opensearch/README.md) | 🟡 진행중 | 2026-02-08 |
 | AI/DT | [RAG/OpenSearch](./ai-dt/rag/opensearch/README.md) | 🟡 진행중 | 2026-02-08 |
 | Dev Environment | [터미널 필수 명령어](./dev-environment/terminal/README.md) | 🟢 기본 완료 | 2026-02-09 |
+| Web | [Unit Testing 기초](./web-development/testing/unit-testing-basics.md) | 🟡 진행중 | 2026-02-19 |
+| Web | [E2E Testing 기초](./web-development/testing/e2e-testing-basics.md) | 🟡 진행중 | 2026-02-19 |
+| Web | [테스트 프레임워크 비교](./web-development/testing/testing-frameworks.md) | 🟡 진행중 | 2026-02-19 |
 
 ## 폴더 구조
 
