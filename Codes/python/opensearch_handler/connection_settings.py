@@ -40,11 +40,18 @@ class ConnectionConfig:
     retry_on_timeout: bool = True
     http_compress: bool = True
 
+    def __post_init__(self) -> None:
+        self._validate_auth()
+
+    def _validate_auth(self) -> None:
+        if not self.user or not self.password:
+            raise ValueError(
+                "ConnectionConfig requires non-empty user and password for http_auth."
+            )
+
     @property
-    def http_auth(self) -> Optional[tuple[str, str]]:
-        if self.user and self.password:
-            return (self.user, self.password)
-        return None
+    def http_auth(self) -> tuple[str, str]:
+        return (self.user, self.password)
 
     @property
     def hosts(self) -> list[dict]:
@@ -66,6 +73,7 @@ def load_config(**overrides) -> ConnectionConfig:
       - OPENSEARCH_USER / OPENSEARCH_PASSWORD
       - OPENSEARCH_USE_SSL  ("true"/"false")
       - OPENSEARCH_VERIFY_CERTS  ("true"/"false")
+      - OPENSEARCH_SSL_SHOW_WARN  ("true"/"false")
       - OPENSEARCH_CA_CERTS
       - OPENSEARCH_BULK_CHUNK
       - OPENSEARCH_TIMEOUT
@@ -100,6 +108,10 @@ def load_config(**overrides) -> ConnectionConfig:
     if verify_env is not None:
         cfg.verify_certs = _parse_bool(verify_env)
 
+    ssl_show_warn = os.getenv("OPENSEARCH_SSL_SHOW_WARN")
+    if ssl_show_warn is not None:
+        cfg.ssl_show_warn = _parse_bool(ssl_show_warn)
+
     ca_certs = os.getenv("OPENSEARCH_CA_CERTS")
     if ca_certs:
         cfg.ca_certs = ca_certs
@@ -131,4 +143,5 @@ def load_config(**overrides) -> ConnectionConfig:
         else:
             raise TypeError(f"Unknown config key: {key!r}")
 
+    cfg._validate_auth()
     return cfg
