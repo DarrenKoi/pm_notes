@@ -1,4 +1,4 @@
-"""General-purpose OpenSearch/Elasticsearch handler."""
+"""General-purpose OpenSearch handler."""
 
 from .client import create_client
 from .connection_settings import ConnectionConfig, load_config

@@ -1,6 +1,6 @@
 """Usage examples for the OpenSearch handler.
 
-Run with an active OpenSearch/ES cluster to test.
+Run with an active OpenSearch cluster to test.
 Configure via env vars (OPENSEARCH_HOST, etc.) or pass overrides directly.
 """
 
@@ -34,10 +34,10 @@ config = load_config()
 client = create_client(config=config)
 
 # Or override directly:
-#   client = create_client(host="my-es-host", port=9200, use_ssl=False)
+#   client = create_client(host="my-opensearch-host", port=9200, use_ssl=False)
 
 # ── 2. Template / lifecycle (optional) ─────────────────────────────
-# Composable template works on OpenSearch and Elasticsearch 7.x.
+# Composable templates work on OpenSearch.
 put_index_template(
     client,
     "example-articles-template",
@@ -63,11 +63,9 @@ put_index_template(
     },
 )
 
-# Lifecycle API differs by cluster flavor:
-# - OpenSearch -> ISM endpoint
-# - Elasticsearch 7.x -> ILM endpoint
-# Pass the proper policy body for your target cluster.
-# put_lifecycle_policy(client, "example-retention", {"policy": {...}}, flavor="auto")
+# Lifecycle uses OpenSearch's ISM endpoint.
+# Pass a policy body with states.
+# put_lifecycle_policy(client, "example-retention", {"policy": {"states": {}}}, flavor="auto")
 
 # ── 3. Index management ─────────────────────────────────────────────
 INDEX_NAME = "example-articles"

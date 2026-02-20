@@ -1,13 +1,13 @@
-"""Lifecycle, template, alias, and rollover helpers for OS/ES compatibility."""
+"""Lifecycle, template, alias, and rollover helpers for OpenSearch."""
 
 from typing import Any
 
 
 def detect_cluster_flavor(client: Any) -> str:
-    """Detect cluster flavor: ``opensearch`` or ``elasticsearch``.
+    """Detect cluster flavor.
 
     Detection uses ``client.info()`` and falls back to ``unknown`` if the
-    response does not clearly identify either distribution.
+    response does not clearly identify OpenSearch.
     """
     info = client.info()
     version = info.get("version", {})
@@ -19,10 +19,6 @@ def detect_cluster_flavor(client: Any) -> str:
     tagline = str(info.get("tagline", "")).lower()
     if "opensearch" in tagline:
         return "opensearch"
-
-    number = str(version.get("number", ""))
-    if number.startswith("7") or "you know, for search" in tagline:
-        return "elasticsearch"
 
     return "unknown"
 
@@ -74,15 +70,14 @@ def put_lifecycle_policy(
     policy_body: dict[str, Any],
     flavor: str = "auto",
 ) -> dict[str, Any]:
-    """Create/update lifecycle policy using ISM (OS) or ILM (ES7).
+    """Create/update lifecycle policy using OpenSearch ISM.
 
     Args:
-        client: OpenSearch/Elasticsearch client.
+        client: OpenSearch client.
         policy_name: Policy id.
         policy_body: Raw request body for target API.
             - OpenSearch ISM expects ``{"policy": {...states...}}``.
-            - Elasticsearch ILM expects ``{"policy": {...phases...}}``.
-        flavor: ``auto``, ``opensearch``, or ``elasticsearch``.
+        flavor: ``auto`` or ``opensearch``.
 
     Returns:
         API response dict.
@@ -91,12 +86,10 @@ def put_lifecycle_policy(
 
     if selected == "opensearch":
         path = f"/_plugins/_ism/policies/{policy_name}"
-    elif selected == "elasticsearch":
-        path = f"/_ilm/policy/{policy_name}"
     else:
         raise ValueError(
             "Could not determine cluster flavor. "
-            "Set flavor='opensearch' or flavor='elasticsearch'."
+            "Set flavor='opensearch'."
         )
 
     return client.transport.perform_request(method="PUT", url=path, body=policy_body)

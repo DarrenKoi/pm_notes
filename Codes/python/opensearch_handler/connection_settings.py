@@ -1,8 +1,8 @@
-"""Connection and index settings for OpenSearch/Elasticsearch.
+"""Connection and index settings for OpenSearch."""
 
-Credential pattern follows knowhow-elasticsearch/os_settings.py:
+Credential pattern follows the local OS settings convention:
   - Separate host / port (not combined URL)
-  - opensearch-py is compatible with ES 7.x (forked from ES 7.10)
+  - opensearch-py is used as the client library for OpenSearch
 
 All settings can be overridden via environment variables or by passing
 values directly to ``ConnectionConfig``.
@@ -48,7 +48,7 @@ class ConnectionConfig:
 
     @property
     def hosts(self) -> list[dict]:
-        """Return hosts list in the format opensearch-py expects."""
+    """Return hosts list in the format expected by opensearch-py."""
         scheme = "https" if self.use_ssl else "http"
         return [{"host": self.host, "port": self.port, "scheme": scheme}]
 
