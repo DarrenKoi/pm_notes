@@ -4,16 +4,14 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from opensearchpy import OpenSearch
 
-
-def index_exists(client: OpenSearch, name: str) -> bool:
+def index_exists(client: Any, name: str) -> bool:
     """Check whether an index exists."""
     return client.indices.exists(index=name)
 
 
 def create_index(
-    client: OpenSearch,
+    client: Any,
     name: str,
     mappings: Optional[dict[str, Any]] = None,
     settings: Optional[dict[str, Any]] = None,
@@ -38,23 +36,23 @@ def create_index(
     return client.indices.create(index=name, body=body)
 
 
-def delete_index(client: OpenSearch, name: str) -> dict:
+def delete_index(client: Any, name: str) -> dict:
     """Delete an index."""
     return client.indices.delete(index=name)
 
 
-def get_index_settings(client: OpenSearch, name: str) -> dict:
+def get_index_settings(client: Any, name: str) -> dict:
     """Return current settings for an index."""
     return client.indices.get_settings(index=name)
 
 
-def get_index_mapping(client: OpenSearch, name: str) -> dict:
+def get_index_mapping(client: Any, name: str) -> dict:
     """Return mappings for an index."""
     return client.indices.get_mapping(index=name)
 
 
 def update_index_settings(
-    client: OpenSearch,
+    client: Any,
     name: str,
     settings: dict[str, Any],
 ) -> dict:
@@ -62,6 +60,6 @@ def update_index_settings(
     return client.indices.put_settings(index=name, body={"index": settings})
 
 
-def refresh_index(client: OpenSearch, name: str) -> dict:
+def refresh_index(client: Any, name: str) -> dict:
     """Force-refresh an index so recent writes are searchable immediately."""
     return client.indices.refresh(index=name)

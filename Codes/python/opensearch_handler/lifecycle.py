@@ -4,10 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from opensearchpy import OpenSearch
 
-
-def detect_cluster_flavor(client: OpenSearch) -> str:
+def detect_cluster_flavor(client: Any) -> str:
     """Detect cluster flavor: ``opensearch`` or ``elasticsearch``.
 
     Detection uses ``client.info()`` and falls back to ``unknown`` if the
@@ -32,7 +30,7 @@ def detect_cluster_flavor(client: OpenSearch) -> str:
 
 
 def put_index_template(
-    client: OpenSearch,
+    client: Any,
     name: str,
     body: dict[str, Any],
     prefer_composable: bool = True,
@@ -48,7 +46,7 @@ def put_index_template(
 
 
 def bootstrap_aliases(
-    client: OpenSearch,
+    client: Any,
     first_index: str,
     write_alias: str,
     read_alias: str | None = None,
@@ -62,7 +60,7 @@ def bootstrap_aliases(
 
 
 def rollover_alias(
-    client: OpenSearch,
+    client: Any,
     write_alias: str,
     conditions: dict[str, Any],
     dry_run: bool = False,
@@ -73,7 +71,7 @@ def rollover_alias(
 
 
 def put_lifecycle_policy(
-    client: OpenSearch,
+    client: Any,
     policy_name: str,
     policy_body: dict[str, Any],
     flavor: str = "auto",

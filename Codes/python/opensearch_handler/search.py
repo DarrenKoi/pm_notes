@@ -4,11 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Optional, Sequence
 
-from opensearchpy import OpenSearch
-
 
 def match_search(
-    client: OpenSearch,
+    client: Any,
     index: str,
     field: str,
     query: str,
@@ -20,7 +18,7 @@ def match_search(
 
 
 def term_search(
-    client: OpenSearch,
+    client: Any,
     index: str,
     field: str,
     value: Any,
@@ -32,7 +30,7 @@ def term_search(
 
 
 def bool_search(
-    client: OpenSearch,
+    client: Any,
     index: str,
     must: Optional[list[dict]] = None,
     should: Optional[list[dict]] = None,
@@ -56,7 +54,7 @@ def bool_search(
 
 
 def knn_search(
-    client: OpenSearch,
+    client: Any,
     index: str,
     field: str,
     vector: Sequence[float],
@@ -79,7 +77,7 @@ def knn_search(
 
 
 def hybrid_search(
-    client: OpenSearch,
+    client: Any,
     index: str,
     query: str,
     text_field: str,
@@ -107,7 +105,7 @@ def hybrid_search(
 
 
 def aggregate(
-    client: OpenSearch,
+    client: Any,
     index: str,
     agg_body: dict[str, Any],
     query: Optional[dict[str, Any]] = None,
@@ -129,7 +127,7 @@ def aggregate(
 
 
 def search_raw(
-    client: OpenSearch,
+    client: Any,
     index: str,
     body: dict[str, Any],
 ) -> dict:
@@ -138,7 +136,7 @@ def search_raw(
 
 
 def multi_match_search(
-    client: OpenSearch,
+    client: Any,
     index: str,
     query: str,
     fields: Sequence[str],
@@ -160,7 +158,7 @@ def multi_match_search(
 
 
 def count_documents(
-    client: OpenSearch,
+    client: Any,
     index: str,
     query: Optional[dict[str, Any]] = None,
 ) -> dict:

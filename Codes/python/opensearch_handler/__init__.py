@@ -1,10 +1,7 @@
-"""General-purpose OpenSearch/Elasticsearch handler.
-
-Supports both OpenSearch and Elasticsearch 7.x via opensearch-py.
-"""
+"""General-purpose OpenSearch/Elasticsearch handler."""
 
 from .client import create_client
-from .config import ConnectionConfig, load_config
+from .connection_settings import ConnectionConfig, load_config
 from .document import (
     bulk_index,
     delete_document,

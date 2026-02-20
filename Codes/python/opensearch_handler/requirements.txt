@@ -1,1 +1,2 @@
+elasticsearch>=7.14
 opensearch-py>=2.4.0

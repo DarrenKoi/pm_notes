@@ -4,11 +4,14 @@ from __future__ import annotations
 
 from typing import Any, Optional, Sequence
 
-from opensearchpy import OpenSearch, helpers
+try:
+    from opensearchpy import helpers
+except ModuleNotFoundError:  # pragma: no cover
+    from elasticsearch import helpers
 
 
 def index_document(
-    client: OpenSearch,
+    client: Any,
     index: str,
     doc: dict[str, Any],
     doc_id: Optional[str] = None,
@@ -23,13 +26,13 @@ def index_document(
     return client.index(**kwargs)
 
 
-def get_document(client: OpenSearch, index: str, doc_id: str) -> dict:
+def get_document(client: Any, index: str, doc_id: str) -> dict:
     """Retrieve a document by ID."""
     return client.get(index=index, id=doc_id)
 
 
 def update_document(
-    client: OpenSearch,
+    client: Any,
     index: str,
     doc_id: str,
     doc: dict[str, Any],
@@ -43,7 +46,7 @@ def update_document(
 
 
 def upsert_document(
-    client: OpenSearch,
+    client: Any,
     index: str,
     doc_id: str,
     doc: dict[str, Any],
@@ -61,7 +64,7 @@ def upsert_document(
 
 
 def delete_document(
-    client: OpenSearch,
+    client: Any,
     index: str,
     doc_id: str,
     refresh: Optional[str] = None,
@@ -74,7 +77,7 @@ def delete_document(
 
 
 def bulk_index(
-    client: OpenSearch,
+    client: Any,
     index: str,
     docs: Sequence[dict[str, Any]],
     id_field: Optional[str] = None,
