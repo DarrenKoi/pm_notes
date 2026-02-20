@@ -8,8 +8,6 @@ All settings can be overridden via environment variables or by passing
 values directly to ``ConnectionConfig``.
 """
 
-from __future__ import annotations
-
 import os
 from dataclasses import dataclass
 from typing import Optional

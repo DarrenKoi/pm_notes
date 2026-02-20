@@ -1,7 +1,5 @@
 """Search operations: full-text, term, bool, knn, hybrid, aggregations."""
 
-from __future__ import annotations
-
 from typing import Any, Optional, Sequence
 
 

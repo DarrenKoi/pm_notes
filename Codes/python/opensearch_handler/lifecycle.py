@@ -1,7 +1,5 @@
 """Lifecycle, template, alias, and rollover helpers for OS/ES compatibility."""
 
-from __future__ import annotations
-
 from typing import Any
 
 

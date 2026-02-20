@@ -1,7 +1,5 @@
 """Client factory for OpenSearch / Elasticsearch connections."""
 
-from __future__ import annotations
-
 from typing import Any, Optional
 
 from .connection_settings import ConnectionConfig, load_config
