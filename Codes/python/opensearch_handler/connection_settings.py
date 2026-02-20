@@ -24,7 +24,7 @@ def _parse_bool(value: str) -> bool:
 
 @dataclass
 class ConnectionConfig:
-    """Connection and index configuration for an OpenSearch/ES cluster."""
+    """Connection and index configuration for an OpenSearch cluster."""
 
     host: str = "localhost"
     port: int = 9200
@@ -48,7 +48,7 @@ class ConnectionConfig:
 
     @property
     def hosts(self) -> list[dict]:
-    """Return hosts list in the format expected by opensearch-py."""
+        """Return hosts list in the format expected by opensearch-py."""
         scheme = "https" if self.use_ssl else "http"
         return [{"host": self.host, "port": self.port, "scheme": scheme}]
 
