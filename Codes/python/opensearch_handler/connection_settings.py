@@ -1,4 +1,4 @@
-"""Connection and index settings for OpenSearch."""
+"""Connection and index settings for OpenSearch.
 
 Credential pattern follows the local OS settings convention:
   - Separate host / port (not combined URL)
