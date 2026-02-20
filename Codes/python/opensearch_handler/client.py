@@ -1,35 +1,16 @@
-"""Client factory for OpenSearch / Elasticsearch connections."""
+"""Client factory for OpenSearch connections."""
 
 from typing import Any, Optional
 
 from .connection_settings import ConnectionConfig, load_config
 
-try:
-    from opensearchpy import OpenSearch
-except ModuleNotFoundError:  # pragma: no cover
-    OpenSearch = None  # type: ignore[assignment]
-
-try:
-    from elasticsearch import Elasticsearch
-except ModuleNotFoundError:  # pragma: no cover
-    Elasticsearch = None  # type: ignore[assignment]
-
-
-def _resolve_client_class() -> type[Any]:
-    """Return the first available 7.x-compatible client class."""
-    if OpenSearch is not None:
-        return OpenSearch
-    if Elasticsearch is not None:
-        return Elasticsearch
-    raise ModuleNotFoundError(
-        "Either 'opensearch-py' or 'elasticsearch' must be installed to create a client."
-    )
+from opensearchpy import OpenSearch
 
 
 def create_client(
     config: Optional[ConnectionConfig] = None,
     **overrides,
-) -> Any:
+) -> OpenSearch:
     """Create and return an OpenSearch client.
 
     Args:
@@ -38,7 +19,7 @@ def create_client(
         **overrides: Passed to :func:`load_config` when *config* is ``None``.
 
     Returns:
-        A configured OpenSearch/Elasticsearch client instance.
+        A configured OpenSearch client instance.
     """
     if config is None:
         config = load_config(**overrides)
@@ -61,5 +42,4 @@ def create_client(
     if config.ca_certs:
         kwargs["ca_certs"] = config.ca_certs
 
-    client_cls = _resolve_client_class()
-    return client_cls(**kwargs)
+    return OpenSearch(**kwargs)

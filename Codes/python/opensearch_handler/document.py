@@ -2,10 +2,7 @@
 
 from typing import Any, Optional, Sequence
 
-try:
-    from opensearchpy import helpers
-except ModuleNotFoundError:  # pragma: no cover
-    from elasticsearch import helpers
+from opensearchpy import helpers
 
 
 def index_document(
