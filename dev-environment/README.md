@@ -19,6 +19,7 @@ status: in-progress
 | 주제 | 설명 | 상태 |
 |------|------|------|
 | [터미널 필수 명령어](./terminal/README.md) | Mac 터미널(zsh) 기본~중급 명령어 정리 | 🟢 기본 완료 |
+| [UI 특화 VLM 가이드](./vlm/README.md) | 폐쇄망에서 UI VLM 다운로드, 전송, 서빙 가이드 | 🟡 진행 중 |
 
 ## 관련 문서
 
