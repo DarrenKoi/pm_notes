@@ -43,6 +43,8 @@
   - Code Actions, Terminal Integration, Context Management, Worktrees
 - `05_study_plan_4weeks.md`
   - 4주 학습/실습 플랜
+- `06_skills_commands_and_sharing.md`
+  - Skills, Commands, Rules 상세 포맷 및 팀 공유 전략
 
 ## 먼저 이렇게 시작
 

@@ -133,6 +133,7 @@ CUDA_VISIBLE_DEVICES=1 vllm serve /data/models/MAI-UI-8B \
 #### vLLM 버전 요구사항
 
 > 현재 클라우드에 설치된 버전: **vLLM v0.16.0** — 모든 모델 호환 확인됨
+> 로컬 PC에 GPU 없음 — OmniParser V2 포함 모든 모델은 클라우드에서 실행
 
 | 모델 | 최소 vLLM 버전 | v0.16.0 호환 |
 |------|----------------|--------------|
@@ -226,9 +227,24 @@ model = AutoModelForCausalLM.from_pretrained(
 OmniParser V2는 독립 VLM이 아닌 **UI 파싱 도구**로, 스크린샷을 구조화된 요소 목록으로 변환:
 
 ```bash
-# GitHub 코드 클론 (외부에서 다운로드 후 전송)
-git clone https://github.com/microsoft/OmniParser
-cd OmniParser
+# === 외부 PC에서 다운로드 ===
+
+# 1. GitHub 소스 코드 다운로드 (zip)
+# https://github.com/microsoft/OmniParser → Code → Download ZIP
+# 또는:
+# git clone https://github.com/microsoft/OmniParser
+
+# 2. HuggingFace에서 모델 가중치 다운로드
+huggingface-cli download microsoft/OmniParser-v2.0 \
+    --local-dir ./models/OmniParser-v2.0
+
+# 3. 둘 다 USB로 폐쇄망에 전송
+
+# === 클라우드에서 설정 ===
+
+# 소스 코드 배치
+unzip OmniParser-main.zip -d /data/OmniParser
+cd /data/OmniParser
 
 # 의존성 설치 — 기본 pip 설정이 사내 Nexus로 되어 있으므로
 # 공식 PyPI URL을 명시적으로 지정하고 trusted-host 설정 필요
@@ -237,8 +253,7 @@ pip install -r requirements.txt \
     --trusted-host pypi.org \
     --trusted-host files.pythonhosted.org
 
-# 모델 가중치 경로 설정 (이미 다운로드한 파일 사용)
-# weights/ 폴더에 OmniParser-v2.0 파일을 배치
+# 모델 가중치 연결 (이미 전송한 파일 사용)
 ln -s /data/models/OmniParser-v2.0 weights/
 
 # Gradio 데모 실행

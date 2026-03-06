@@ -83,18 +83,26 @@
 - 파일명 = 명령어(`/review`, `/release-check`)
 - 내장 `/init`은 코드베이스 분석 + 에이전트 규칙 파일 생성에 매우 유용
 - 프로젝트 명령이 전역 명령보다 우선
+- frontmatter로 `description`, `argument-hint`, `mode` 지정 가능
+- `run_slash_command` 도구로 명령 체이닝 가능
 
 ## G. Skills (주제 17)
 
 핵심:
 - `SKILL.md` + frontmatter(`name`, `description`)로 작업 특화 지식 패키징
 - 요청과 description이 매칭될 때만 로드(프롬프트 비대화 방지)
+- 번들 파일(스크립트, 템플릿) 포함 가능
 
 구조:
 - 전역: `~/.roo/skills/{skill}/SKILL.md`
 - 프로젝트: `.roo/skills/{skill}/SKILL.md`
+- 모드별: `.roo/skills-{modeSlug}/{skill}/SKILL.md`
+- 크로스 에이전트: `.agents/skills/{skill}/SKILL.md`
 
 활용 예:
 - 사내 API 문서 생성 스킬
 - 특정 프레임워크 마이그레이션 스킬
 - 릴리즈 체크 스킬
+- DRM 문서 추출 스킬
+
+> 상세 가이드: [06_skills_commands_and_sharing.md](./06_skills_commands_and_sharing.md)
