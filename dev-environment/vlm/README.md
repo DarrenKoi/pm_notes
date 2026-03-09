@@ -1,7 +1,7 @@
 ---
 tags: [vlm, ui-automation, gui-agent, offline-deployment]
 level: intermediate
-last_updated: 2026-03-04
+last_updated: 2026-03-09
 status: in-progress
 ---
 
@@ -44,6 +44,7 @@ status: in-progress
 | [UI VLM 모델 카탈로그](./ui-vlm-models.md) | 모든 UI 특화 VLM 상세 정보 및 다운로드 명령어 | 🟡 진행 중 |
 | [HF private cloud 다운로드 shortlist](./huggingface-private-cloud-downloads.md) | H200 x2 기준으로 먼저 받을 Hugging Face repo와 다운로드 링크 | 🟡 진행 중 |
 | [Private cloud 다음 단계](./private-cloud-vllm-next-steps.md) | 모델을 private cloud에 올린 뒤 local path로 vLLM 서빙하는 실전 절차 | 🟡 진행 중 |
+| [SSH 없이 모델 업로드하기](./private-cloud-upload-without-ssh.md) | code-server만 가능한 환경에서 resumable HTTP upload로 대용량 모델을 반입하는 방법 | 🟡 진행 중 |
 | [OmniParser cloud API 가이드](./omniparser-cloud-api-guide.md) | OmniParser V2를 cloud에서 띄우고 Python requests로 이미지 업로드하는 패턴 | 🟡 진행 중 |
 | [UI-Venus Flask blueprint 가이드](./ui-venus-flask-blueprint-cloud-guide.md) | UI-Venus-1.5-8B를 vLLM으로 띄우고 Flask blueprint API로 노출하는 패턴 | 🟡 진행 중 |
 | [오프라인 다운로드 가이드](./offline-download-guide.md) | HuggingFace 다운로드 → 폐쇄망 전송 워크플로우 | 🟡 진행 중 |
@@ -60,6 +61,8 @@ status: in-progress
    ↓
 4. 실제 엔지니어링 도구 UI로 벤치마크 → 최적 모델 선정
 ```
+
+> SSH/SCP/rsync가 막혀 있고 `code-server` 웹 접속만 가능하다면, 2번 다음에 [SSH 없이 모델 업로드하기](./private-cloud-upload-without-ssh.md)를 먼저 보는 편이 낫다
 
 ## 관련 문서
 

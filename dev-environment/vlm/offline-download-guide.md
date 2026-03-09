@@ -1,7 +1,7 @@
 ---
 tags: [vlm, huggingface, offline, firewalled, download]
 level: beginner
-last_updated: 2026-03-04
+last_updated: 2026-03-09
 status: in-progress
 ---
 
@@ -249,6 +249,8 @@ rsync -avhP /path/to/vlm-models/ user@cloud-server:/data/models/
 ```
 
 > `rsync -avhP`에서 `-P`는 진행률 표시 + 중단 시 이어받기 지원
+>
+> SSH/SCP/rsync 자체가 막혀 있고 `code-server` 웹 접속만 가능한 환경이라면, drag-and-drop 대신 [SSH 없이 Private Cloud에 대용량 VLM 파일 올리기](./private-cloud-upload-without-ssh.md) 문서의 resumable HTTP upload 방식을 보는 편이 낫다
 
 ### 클라우드에서 파일 확인
 
