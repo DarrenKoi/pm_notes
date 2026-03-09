@@ -24,12 +24,12 @@ status: active
 | `UGround-V1-7B` | `osunlp/UGround-V1-7B` | 1 GPU | grounding 비교용 |
 | `MAI-UI-2B` | `Tongyi-MAI/MAI-UI-2B` | 1 GPU | 아주 가벼운 smoke test용 |
 
-## 별도 runtime 쪽 모델
+## 전용 실행 코드가 필요한 모델
 
 | 모델 | Repo ID | 메모 |
 |---|---|---|
-| `UI-TARS-1.5-7B` | `ByteDance-Seed/UI-TARS-1.5-7B` | action-heavy agent 실험용 |
-| `GUI-Actor-7B-Qwen2.5-VL` | `microsoft/GUI-Actor-7B-Qwen2.5-VL` | dedicated runtime 성격이 강함 |
+| `UI-TARS-1.5-7B` | `ByteDance-Seed/UI-TARS-1.5-7B` | action-heavy agent 실험용, repo 실행 방식 확인 필요 |
+| `GUI-Actor-7B-Qwen2.5-VL` | `microsoft/GUI-Actor-7B-Qwen2.5-VL` | repo 전용 실행 코드가 필요할 수 있음 |
 | `OmniParser-v2.0` | `microsoft/OmniParser-v2.0` | parser stage, direct VLM 아님 |
 
 ## 단순 선택 규칙

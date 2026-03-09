@@ -42,8 +42,8 @@ status: active
 | 2 | `MAI-UI-8B` | `Tongyi-MAI/MAI-UI-8B` | 단일 GPU | baseline 비교용 |
 | 3 | `UI-Venus-1.5-30B-A3B` | `inclusionAI/UI-Venus-1.5-30B-A3B` | 2 GPU | `8B`가 안정화된 뒤 확장 |
 | 4 | `UGround-V1-7B` | `osunlp/UGround-V1-7B` | 단일 GPU | grounding 비교용 |
-| 5 | `UI-TARS-1.5-7B` | `ByteDance-Seed/UI-TARS-1.5-7B` | 별도 runtime 검토 | first path로는 비권장 |
-| 6 | `GUI-Actor-7B-Qwen2.5-VL` | `microsoft/GUI-Actor-7B-Qwen2.5-VL` | 별도 runtime 검토 | dedicated runtime 성격이 강함 |
+| 5 | `UI-TARS-1.5-7B` | `ByteDance-Seed/UI-TARS-1.5-7B` | 전용 실행 코드 확인 필요 | first path로는 비권장 |
+| 6 | `GUI-Actor-7B-Qwen2.5-VL` | `microsoft/GUI-Actor-7B-Qwen2.5-VL` | 전용 실행 코드 확인 필요 | repo 전용 실행 방식이 필요할 수 있음 |
 | 7 | `OmniParser-v2.0` | `microsoft/OmniParser-v2.0` | parser stage | direct VLM 대체가 아니다 |
 
 ## 모델 폴더 반입 메모
@@ -90,7 +90,7 @@ mv "$UPLOAD_DIR/UI-Venus-1.5-8B" "$MODEL_ROOT/"
 | 경로 | 언제 쓰나 |
 |---|---|
 | direct `vLLM` | `UI-Venus`, `MAI-UI`, `UGround`를 빨리 띄울 때 |
-| dedicated runtime | `UI-TARS`, `GUI-Actor`처럼 repo runtime 요구가 강할 때 |
+| 전용 실행 코드 필요 | `UI-TARS`, `GUI-Actor`처럼 repo 실행 방식 확인이 먼저일 때 |
 | parser path | `OmniParser`로 요소 목록을 먼저 뽑고 싶을 때 |
 
 첫 성공 경로는 direct `vLLM`으로 고정하는 편이 가장 단순하다.
