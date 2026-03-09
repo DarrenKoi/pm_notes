@@ -7,198 +7,136 @@ status: in-progress
 
 # Hugging Face 다운로드 shortlist for private cloud
 
-> 기준일: 2026-03-09. 아래 내용은 Hugging Face 공식 페이지를 직접 확인해서 정리했다.
->
-> `UV-Venus`라고 적었지만, Hugging Face 공식 모델명은 `UI-Venus`다.
+> 목표: `H200 x2`가 있는 private cloud에 무엇을 먼저 반입할지 빠르게 결정한다.
 
-## TL;DR
+## 이 문서의 역할
 
-- `H200 x2`를 가장 잘 쓰려면 1순위는 `UI-Venus-1.5-30B-A3B`
-- 공개 Hugging Face 기준으로 `MAI-UI`는 현재 `2B`, `8B`만 바로 다운로드 가능
-- 공개 Hugging Face 기준으로 `UI-TARS-1.5`는 현재 `UI-TARS-1.5-7B`가 바로 다운로드 가능
-- `GUI-Actor`는 가중치만 받으면 끝이 아니라, HF 모델 카드 예시대로 GitHub runtime 코드도 같이 써야 한다
-- `OmniParser v2`는 단독 에이전트가 아니라 파서 컴포넌트다. 보통 위 에이전트 모델과 같이 둔다
+- 이 문서는 `무엇을 받을지`만 정한다.
+- 실제 다운로드/전송 절차는 [오프라인 다운로드 & 폐쇄망 전송 가이드](./offline-download-guide.md)를 따른다.
+- 전체 모델 비교는 [UI 특화 VLM 모델 카탈로그](./ui-vlm-models.md)를 참고한다.
 
-## 내가 먼저 받을 것
+## 먼저 결론
 
-1. [inclusionAI/UI-Venus-1.5-30B-A3B](https://huggingface.co/inclusionAI/UI-Venus-1.5-30B-A3B)
-2. [Tongyi-MAI/MAI-UI-8B](https://huggingface.co/Tongyi-MAI/MAI-UI-8B)
-3. [ByteDance-Seed/UI-TARS-1.5-7B](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B)
-4. [microsoft/GUI-Actor-7B-Qwen2.5-VL](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL)
-5. [microsoft/GUI-Actor-Verifier-2B](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B)
-6. [microsoft/OmniParser-v2.0](https://huggingface.co/microsoft/OmniParser-v2.0)
-7. [inclusionAI/UI-Venus-1.5-8B](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B)
-8. [Tongyi-MAI/MAI-UI-2B](https://huggingface.co/Tongyi-MAI/MAI-UI-2B)
+- 첫 실전 후보는 `UI-Venus-1.5-8B`와 `MAI-UI-8B`다.
+- `H200 x2`를 제대로 활용하려면 다음 단계에서 `UI-Venus-1.5-30B-A3B`를 추가한다.
+- `UI-TARS-1.5-7B`는 에이전트 비교용으로 좋지만, pure `vLLM`만으로 끝나지 않을 수 있다.
+- `GUI-Actor`는 전용 runtime 검토가 필요하다.
+- `OmniParser V2`는 단독 에이전트가 아니라 parser 컴포넌트다.
 
-## 모델별 다운로드 위치
+## 추천 세트
 
-| 관심 모델 | 추천 repo | 다운로드 링크 | 파일 목록 | 비고 |
-|---|---|---|---|---|
-| UI-TARS-1.5 | [ByteDance-Seed/UI-TARS-1.5-7B](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B) | [Model card](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B) | [Files](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B/tree/main) | 공개 HF 체크포인트는 현재 1.5-7B |
-| MAI-UI | [Tongyi-MAI/MAI-UI-8B](https://huggingface.co/Tongyi-MAI/MAI-UI-8B) | [Model card](https://huggingface.co/Tongyi-MAI/MAI-UI-8B) | [Files](https://huggingface.co/Tongyi-MAI/MAI-UI-8B/tree/main) | `H200 x2`에서도 우선 8B부터 권장 |
-| MAI-UI 경량 | [Tongyi-MAI/MAI-UI-2B](https://huggingface.co/Tongyi-MAI/MAI-UI-2B) | [Model card](https://huggingface.co/Tongyi-MAI/MAI-UI-2B) | [Files](https://huggingface.co/Tongyi-MAI/MAI-UI-2B/tree/main) | 스모크 테스트용 |
-| UI-Venus | [inclusionAI/UI-Venus-1.5-30B-A3B](https://huggingface.co/inclusionAI/UI-Venus-1.5-30B-A3B) | [Repo](https://huggingface.co/inclusionAI/UI-Venus-1.5-30B-A3B) | [Files](https://huggingface.co/inclusionAI/UI-Venus-1.5-30B-A3B/tree/main) | `H200 x2`라면 이 변형이 메인 |
-| UI-Venus baseline | [inclusionAI/UI-Venus-1.5-8B](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B) | [Model card](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B) | [Files](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B/tree/main) | 비교 기준용 |
-| UI-Venus 경량 | [inclusionAI/UI-Venus-1.5-2B](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B) | [Model card](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B) | [Files](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B/tree/main) | 빠른 확인용 |
-| GUI-Actor | [microsoft/GUI-Actor-7B-Qwen2.5-VL](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL) | [Model card](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL) | [Files](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL/tree/main) | HF usage 예시에 GitHub runtime 코드가 필요 |
-| GUI-Actor verifier | [microsoft/GUI-Actor-Verifier-2B](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B) | [Model card](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B) | [Files](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B/tree/main) | HF 카드 기준 성능 향상용 옵션 |
-| OmniParser V2 | [microsoft/OmniParser-v2.0](https://huggingface.co/microsoft/OmniParser-v2.0) | [Model card](https://huggingface.co/microsoft/OmniParser-v2.0) | [Files](https://huggingface.co/microsoft/OmniParser-v2.0/tree/main) | 파서 컴포넌트 |
+### 1. 빠른 첫 실험 세트
 
-## 바로 실행할 다운로드 명령
+가장 적은 시행착오로 첫 성공 경로를 확인할 때:
 
-```bash
-# UI-Venus
-huggingface-cli download inclusionAI/UI-Venus-1.5-30B-A3B --local-dir ./models/UI-Venus-1.5-30B-A3B
-huggingface-cli download inclusionAI/UI-Venus-1.5-8B --local-dir ./models/UI-Venus-1.5-8B
-huggingface-cli download inclusionAI/UI-Venus-1.5-2B --local-dir ./models/UI-Venus-1.5-2B
+| 우선순위 | Repo ID | 용도 | 대략 용량 |
+|---|---|---|---|
+| 1 | `inclusionAI/UI-Venus-1.5-8B` | 기본 `vLLM` smoke test | ~18GB |
+| 2 | `Tongyi-MAI/MAI-UI-8B` | 비교용 baseline | ~16GB |
+| 3 | `microsoft/OmniParser-v2.0` | parser pipeline 비교 | ~1GB+ |
 
-# MAI-UI
-huggingface-cli download Tongyi-MAI/MAI-UI-8B --local-dir ./models/MAI-UI-8B
-huggingface-cli download Tongyi-MAI/MAI-UI-2B --local-dir ./models/MAI-UI-2B
+### 2. 최고 성능 비교 세트
 
-# UI-TARS-1.5
-huggingface-cli download ByteDance-Seed/UI-TARS-1.5-7B --local-dir ./models/UI-TARS-1.5-7B
+정확도 기준으로 바로 상위권 조합을 보고 싶을 때:
 
-# GUI-Actor
-huggingface-cli download microsoft/GUI-Actor-7B-Qwen2.5-VL --local-dir ./models/GUI-Actor-7B-Qwen2.5-VL
-huggingface-cli download microsoft/GUI-Actor-Verifier-2B --local-dir ./models/GUI-Actor-Verifier-2B
+| 우선순위 | Repo ID | 용도 | 대략 용량 |
+|---|---|---|---|
+| 1 | `inclusionAI/UI-Venus-1.5-30B-A3B` | `H200 x2` 메인 후보 | ~60GB |
+| 2 | `inclusionAI/UI-Venus-1.5-8B` | 단일 GPU baseline | ~18GB |
+| 3 | `Tongyi-MAI/MAI-UI-8B` | 대안 비교 | ~16GB |
 
-# OmniParser V2
-huggingface-cli download microsoft/OmniParser-v2.0 --local-dir ./models/OmniParser-v2.0
-```
+### 3. 에이전트 비교 세트
 
-## 모델별 메모
+그라운딩뿐 아니라 액션/추론형 모델도 같이 보려면:
 
-### 1. UI-Venus
+| 우선순위 | Repo ID | 용도 | 대략 용량 |
+|---|---|---|---|
+| 1 | `ByteDance-Seed/UI-TARS-1.5-7B` | 에이전트 비교 | ~33GB |
+| 2 | `microsoft/GUI-Actor-7B-Qwen2.5-VL` | runtime 분리형 비교 | ~17GB |
+| 3 | `microsoft/GUI-Actor-Verifier-2B` | verifier 옵션 | 추가 수 GB |
 
-- 공식 family collection: [UI-Venus collection](https://huggingface.co/collections/inclusionAI/ui-venus)
-- Hugging Face에서 확인된 1.5 계열 공개 repo:
-  - [UI-Venus-1.5-30B-A3B](https://huggingface.co/inclusionAI/UI-Venus-1.5-30B-A3B)
-  - [UI-Venus-1.5-8B](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B)
-  - [UI-Venus-1.5-2B](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B)
-- 공식 모델 카드에서 `vLLM` quick start가 제공된다. 2B/8B 페이지에서 직접 확인했다
-- 라이선스는 `apache-2.0`
-- `H200 x2`라면 `30B-A3B`를 메인으로 두고, `8B`를 baseline으로 같이 받는 구성이 실용적
-- 브라우저로 개별 다운로드할 때는 `Files` 탭에서 가중치 shard와 tokenizer/config를 빠짐없이 받아야 한다. 큰 모델은 CLI가 훨씬 안전하다
-- 단일 파일이 필요한 빠른 확인용 direct link:
-  - [UI-Venus-1.5-2B model.safetensors](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B/resolve/main/model.safetensors)
+### 4. 빠른 스모크 테스트 세트
 
-### 2. MAI-UI
+작은 모델로 경로만 먼저 확인할 때:
 
-- 공식 family collection: [MAI-UI collection](https://huggingface.co/collections/Tongyi-MAI/mai-ui)
-- Hugging Face 공식 컬렉션 기준, 2026-03-09 현재 바로 받을 수 있는 공개 repo는:
-  - [MAI-UI-8B](https://huggingface.co/Tongyi-MAI/MAI-UI-8B)
-  - [MAI-UI-2B](https://huggingface.co/Tongyi-MAI/MAI-UI-2B)
-- 모델 카드 본문은 `2B`, `8B`, `32B`, `235B-A22B` family를 언급하지만, 공식 HF 컬렉션에는 현재 `2B`, `8B`만 보인다
-- `MAI-UI-8B` 파일 트리는 약 `17.6 GB`, shard 4개
-- `MAI-UI-2B`는 약 `4.27 GB`, 단일 `model.safetensors`
-- 공식 모델 카드에서 `vLLM` quick start가 제공된다
-- 라이선스는 `apache-2.0`
-- 단일 파일이 필요한 빠른 확인용 direct link:
-  - [MAI-UI-2B model.safetensors](https://huggingface.co/Tongyi-MAI/MAI-UI-2B/resolve/main/model.safetensors)
+| 우선순위 | Repo ID | 용도 | 대략 용량 |
+|---|---|---|---|
+| 1 | `inclusionAI/UI-Venus-1.5-2B` | 최소 `UI-Venus` 테스트 | ~4GB |
+| 2 | `Tongyi-MAI/MAI-UI-2B` | 최소 `MAI-UI` 테스트 | ~4GB |
+| 3 | `microsoft/OmniParser-v2.0` | parser 확인 | ~1GB+ |
 
-### 3. UI-TARS-1.5
+## 모델별 판단 메모
 
-- 공개 Hugging Face 다운로드 repo: [ByteDance-Seed/UI-TARS-1.5-7B](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B)
-- 공식 모델 카드에는 top-performing `UI-TARS-1.5`는 early research access라고 적혀 있고, 공개 다운로드 체크포인트로는 `UI-TARS-1.5-7B`가 확인된다
-- repo 크기는 약 `33.2 GB`, shard 7개
-- 라이선스는 `apache-2.0`
-- 관련 코드/앱 링크는 HF 모델 카드에 같이 적혀 있다:
-  - Code: `https://github.com/bytedance/UI-TARS`
-  - Application: `https://github.com/bytedance/UI-TARS-desktop`
-- 즉, private cloud에서 쓸 때는 HF weights + GitHub runtime 쪽을 같이 검토하는 편이 안전하다
+| 모델 | 지금 받는 이유 | 주의할 점 |
+|---|---|---|
+| `UI-Venus-1.5-8B` | 가장 무난한 첫 `vLLM` 후보 | 기본 baseline으로 같이 두기 좋다 |
+| `UI-Venus-1.5-30B-A3B` | `H200 x2` 자원을 살리기 좋다 | 처음부터 이 모델만 받기보다 `8B`도 같이 두는 편이 디버깅이 쉽다 |
+| `MAI-UI-8B` | `UI-Venus`와 상위권 비교 가능 | private cloud 첫 A/B 비교 대상으로 적합 |
+| `UI-TARS-1.5-7B` | 액션 중심 비교에 좋다 | GitHub runtime/app 확인이 필요할 수 있다 |
+| `GUI-Actor-7B` | 좌표 없는 그라운딩 실험용 | HF weights만으로 끝나는 흐름이 아니다 |
+| `OmniParser-v2.0` | parser + 내부 LLM 조합 검토용 | `icon_detect` 라이선스 검토가 필요하다 |
 
-### 4. GUI-Actor
+## 실제 다운로드 명령
 
-- 메인 repo: [microsoft/GUI-Actor-7B-Qwen2.5-VL](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL)
-- 권장 추가 repo: [microsoft/GUI-Actor-Verifier-2B](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B)
-- HF 모델 카드 usage 예시는 아래 Python import를 사용한다:
-  - `from gui_actor.constants import chat_template`
-  - `from gui_actor.modeling_qwen25vl import Qwen2_5_VLForConditionalGenerationWithPointer`
-- 즉, HF 가중치만으로 끝나는 형태가 아니라, HF 모델 카드에 연결된 GitHub runtime 코드가 사실상 같이 필요하다
-- GUI-Actor 7B repo는 약 `16.8 GB`, shard 4개
-- grounding 성능은 verifier 포함 시 더 좋아진다고 HF 카드에 적혀 있으므로, 비교 실험을 할 거면 verifier도 같이 받는 편이 낫다
-- 라이선스는 `mit`
+이 문서에서는 세트별 명령만 둔다. 상세 다운로드 절차와 전송 절차는 [오프라인 다운로드 & 폐쇄망 전송 가이드](./offline-download-guide.md)에 있다.
 
-### 5. OmniParser V2
-
-- 루트 repo: [microsoft/OmniParser-v2.0](https://huggingface.co/microsoft/OmniParser-v2.0)
-- 하위 폴더:
-  - [icon_detect](https://huggingface.co/microsoft/OmniParser-v2.0/tree/main/icon_detect)
-  - [icon_caption](https://huggingface.co/microsoft/OmniParser-v2.0/tree/main/icon_caption)
-- 직접 받을 파일:
-  - [icon_detect/model.pt](https://huggingface.co/microsoft/OmniParser-v2.0/resolve/main/icon_detect/model.pt)
-  - [icon_detect/model.yaml](https://huggingface.co/microsoft/OmniParser-v2.0/resolve/main/icon_detect/model.yaml)
-  - [icon_detect/train_args.yaml](https://huggingface.co/microsoft/OmniParser-v2.0/resolve/main/icon_detect/train_args.yaml)
-  - [icon_caption/config.json](https://huggingface.co/microsoft/OmniParser-v2.0/resolve/main/icon_caption/config.json)
-  - [icon_caption/generation_config.json](https://huggingface.co/microsoft/OmniParser-v2.0/resolve/main/icon_caption/generation_config.json)
-  - [icon_caption/model.safetensors](https://huggingface.co/microsoft/OmniParser-v2.0/resolve/main/icon_caption/model.safetensors)
-- HF 쪽 문서 기준 파일 크기:
-  - `icon_detect/model.pt`: 약 `40.6 MB`
-  - `icon_caption/model.safetensors`: 약 `1.08 GB`
-- Hugging Face 쪽 README/Space 문서 기준 다운로드 예시는 아래와 같다:
+### 빠른 첫 실험 세트
 
 ```bash
-for f in icon_detect/{train_args.yaml,model.pt,model.yaml} \
-         icon_caption/{config.json,generation_config.json,model.safetensors}; do
-  huggingface-cli download microsoft/OmniParser-v2.0 "$f" --local-dir weights
-done
+huggingface-cli download inclusionAI/UI-Venus-1.5-8B \
+  --local-dir ./models/UI-Venus-1.5-8B
 
-mv weights/icon_caption weights/icon_caption_florence
+huggingface-cli download Tongyi-MAI/MAI-UI-8B \
+  --local-dir ./models/MAI-UI-8B
+
+huggingface-cli download microsoft/OmniParser-v2.0 \
+  --local-dir ./models/OmniParser-v2.0
 ```
 
-- 중요한 라이선스 메모:
-  - repo 메타데이터는 `mit`로 보이지만, 모델 카드 본문은 하위 컴포넌트 라이선스를 별도로 명시한다
-  - `icon_detect`는 AGPL
-  - `icon_caption`은 MIT
-- private cloud에서 사내 공용 서비스로 붙일 계획이면, 특히 `icon_detect`의 AGPL 조건은 보안/법무 검토가 필요하다
+### 최고 성능 비교 세트
 
-## 브라우저로 수동 다운로드할 때 꼭 받아야 하는 것
+```bash
+huggingface-cli download inclusionAI/UI-Venus-1.5-30B-A3B \
+  --local-dir ./models/UI-Venus-1.5-30B-A3B
 
-### 공통
+huggingface-cli download inclusionAI/UI-Venus-1.5-8B \
+  --local-dir ./models/UI-Venus-1.5-8B
+
+huggingface-cli download Tongyi-MAI/MAI-UI-8B \
+  --local-dir ./models/MAI-UI-8B
+```
+
+### 에이전트 비교 세트
+
+```bash
+huggingface-cli download ByteDance-Seed/UI-TARS-1.5-7B \
+  --local-dir ./models/UI-TARS-1.5-7B
+
+huggingface-cli download microsoft/GUI-Actor-7B-Qwen2.5-VL \
+  --local-dir ./models/GUI-Actor-7B-Qwen2.5-VL
+
+huggingface-cli download microsoft/GUI-Actor-Verifier-2B \
+  --local-dir ./models/GUI-Actor-Verifier-2B
+```
+
+## 브라우저 수동 다운로드 시 최소 확인 항목
 
 - `config.json`
 - `tokenizer_config.json`
-- `tokenizer.json` 또는 `vocab/merges` 계열
+- `tokenizer.json` 또는 vocab 파일
 - `preprocessor_config.json`
-- `model.safetensors.index.json`가 있으면 그 index와 모든 `model-0000x-of-0000y.safetensors`
+- `generation_config.json`
+- `model.safetensors` 또는 모든 shard 파일
+- shard 구조면 `model.safetensors.index.json`
 
-### 예외
+`OmniParser-v2.0`는 일반 LLM repo와 다르게 필요한 하위 파일만 선별해서 받는 편이 낫다. 자세한 내용은 [OmniParser V2 설치 및 Cloud API 패턴](./omniparser-cloud-api-guide.md)에서 정리한다.
 
-- `MAI-UI-2B`, `UI-Venus-1.5-2B`처럼 단일 `model.safetensors` 구조면 shard 전체를 챙길 필요는 없다
-- `OmniParser-v2.0`는 일반 LLM repo처럼 통째로 받는 것보다, 위에 적은 `icon_detect`, `icon_caption` 필수 파일만 받아도 된다
+## 다음 문서
 
-## private cloud 기준 추천 조합
+1. [오프라인 다운로드 & 폐쇄망 전송 가이드](./offline-download-guide.md)
+2. [모델 서빙 가이드](./serving-guide.md)
 
-### 최소 실전 세트
+## 관련 문서
 
-- [inclusionAI/UI-Venus-1.5-30B-A3B](https://huggingface.co/inclusionAI/UI-Venus-1.5-30B-A3B)
-- [Tongyi-MAI/MAI-UI-8B](https://huggingface.co/Tongyi-MAI/MAI-UI-8B)
-- [ByteDance-Seed/UI-TARS-1.5-7B](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B)
-- [microsoft/OmniParser-v2.0](https://huggingface.co/microsoft/OmniParser-v2.0)
-
-### grounding 비교 세트
-
-- [inclusionAI/UI-Venus-1.5-8B](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B)
-- [Tongyi-MAI/MAI-UI-8B](https://huggingface.co/Tongyi-MAI/MAI-UI-8B)
-- [microsoft/GUI-Actor-7B-Qwen2.5-VL](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL)
-- [microsoft/GUI-Actor-Verifier-2B](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B)
-
-### 빠른 smoke test 세트
-
-- [inclusionAI/UI-Venus-1.5-2B](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B)
-- [Tongyi-MAI/MAI-UI-2B](https://huggingface.co/Tongyi-MAI/MAI-UI-2B)
-- [microsoft/OmniParser-v2.0](https://huggingface.co/microsoft/OmniParser-v2.0)
-
-## 확인한 Hugging Face 페이지
-
-- [ByteDance-Seed/UI-TARS-1.5-7B](https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B)
-- [Tongyi-MAI/MAI-UI-8B](https://huggingface.co/Tongyi-MAI/MAI-UI-8B)
-- [Tongyi-MAI/MAI-UI-2B](https://huggingface.co/Tongyi-MAI/MAI-UI-2B)
-- [MAI-UI collection](https://huggingface.co/collections/Tongyi-MAI/mai-ui)
-- [inclusionAI/UI-Venus-1.5-8B](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B)
-- [inclusionAI/UI-Venus-1.5-2B](https://huggingface.co/inclusionAI/UI-Venus-1.5-2B)
-- [UI-Venus collection](https://huggingface.co/collections/inclusionAI/ui-venus)
-- [microsoft/GUI-Actor-7B-Qwen2.5-VL](https://huggingface.co/microsoft/GUI-Actor-7B-Qwen2.5-VL)
-- [microsoft/GUI-Actor-Verifier-2B](https://huggingface.co/microsoft/GUI-Actor-Verifier-2B)
-- [microsoft/OmniParser-v2.0](https://huggingface.co/microsoft/OmniParser-v2.0)
+- [이전: VLM 가이드 인덱스](./README.md)
+- [참고: UI 특화 VLM 모델 카탈로그](./ui-vlm-models.md)

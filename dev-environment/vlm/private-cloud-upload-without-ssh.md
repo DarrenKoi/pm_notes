@@ -11,6 +11,11 @@ status: in-progress
 >
 > 목표: 브라우저 drag-and-drop 대신, 전송이 끊겨도 이어서 업로드할 수 있는 경로를 만든다.
 
+## 이 문서를 읽는 시점
+
+- 기본 다운로드/전송 흐름은 [오프라인 다운로드 & 폐쇄망 전송 가이드](./offline-download-guide.md)를 먼저 본다.
+- 이 문서는 `SSH/SCP/rsync`가 막힌 경우에만 들어오는 분기 문서다.
+
 ## 먼저 결론
 
 - `code-server`의 drag-and-drop 업로드는 수 GB~수십 GB 모델 파일 전송용으로는 적합하지 않다
@@ -223,6 +228,6 @@ SQLite를 써도 되고, 소규모라면 JSON manifest 파일도 충분하다.
 
 ## 관련 문서
 
-- [위로: VLM README](./README.md)
-- [오프라인 다운로드 가이드](./offline-download-guide.md)
-- [Private cloud 다음 단계](./private-cloud-vllm-next-steps.md)
+- [위로: VLM 가이드 인덱스](./README.md)
+- [오프라인 다운로드 & 폐쇄망 전송 가이드](./offline-download-guide.md)
+- [Private Cloud에서 모델 다운로드 후 다음 단계](./private-cloud-vllm-next-steps.md)

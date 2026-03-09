@@ -7,7 +7,13 @@ status: in-progress
 
 # UI 특화 VLM 모델 카탈로그
 
-> GUI 자동화를 위한 UI 특화 VLM 전체 목록 — 일반 VLM은 전문 소프트웨어 UI 인식률 2% 미만이므로 제외
+> GUI 자동화를 위한 UI 특화 VLM 전체 목록. 이 문서는 레퍼런스 문서이며, 실제 읽는 순서는 [VLM 가이드 인덱스](./README.md)를 따른다.
+
+## 이 문서의 역할
+
+- 어떤 모델들이 있는지 전체 지형도를 보는 문서다.
+- 바로 다운로드할 대상을 고를 때는 [Hugging Face 다운로드 shortlist](./huggingface-private-cloud-downloads.md)를 먼저 본다.
+- 실제 다운로드/전송 절차는 [오프라인 다운로드 & 폐쇄망 전송 가이드](./offline-download-guide.md)를 따른다.
 
 ## 왜 UI 특화 모델이 필요한가? (Why)
 
