@@ -42,6 +42,7 @@ status: in-progress
 | 주제 | 설명 | 상태 |
 |------|------|------|
 | [UI VLM 모델 카탈로그](./ui-vlm-models.md) | 모든 UI 특화 VLM 상세 정보 및 다운로드 명령어 | 🟡 진행 중 |
+| [HF private cloud 다운로드 shortlist](./huggingface-private-cloud-downloads.md) | H200 x2 기준으로 먼저 받을 Hugging Face repo와 다운로드 링크 | 🟡 진행 중 |
 | [오프라인 다운로드 가이드](./offline-download-guide.md) | HuggingFace 다운로드 → 폐쇄망 전송 워크플로우 | 🟡 진행 중 |
 | [모델 서빙 가이드](./serving-guide.md) | vLLM/SGLang으로 모델 서빙 및 API 구성 | 🟡 진행 중 |
 
