@@ -24,6 +24,7 @@ status: active
 | [ui-vlm-models.md](./ui-vlm-models.md) | 모델별 간단 비교 |
 | [private-cloud-vllm-next-steps.md](./private-cloud-vllm-next-steps.md) | H200 상태 확인, `vllm serve`, `requests` smoke test |
 | [local-pc-vllm-image-guide.md](./local-pc-vllm-image-guide.md) | 로컬 PC나 다른 서버에서 이미지 전송 |
+| [read_ppt/](./read_ppt/) | PPT/PDF 슬라이드 이미지 → 구조화된 텍스트 추출 (모델 비교 + 배포 + 프롬프트) |
 
 ## 추천 흐름
 
@@ -100,6 +101,7 @@ mv "$UPLOAD_DIR/UI-Venus-1.5-8B" "$MODEL_ROOT/"
 1. [UI 특화 VLM 모델 메모](./ui-vlm-models.md)
 2. [Private Cloud에서 `vLLM` 시작](./private-cloud-vllm-next-steps.md)
 3. [로컬 PC에서 `requests`로 이미지 보내기](./local-pc-vllm-image-guide.md)
+4. [PPT/PDF 슬라이드 → 텍스트 추출 VLM 리서치](./read_ppt/vlm-for-ppt-pdf-extraction.md)
 
 ## 관련 문서
 
