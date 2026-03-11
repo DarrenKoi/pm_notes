@@ -1,115 +1,118 @@
-"""DRM PPTX Extraction Pipeline.
+"""Export slide screenshots from DRM-protected PPTX files.
 
-1. Open DRM + non-DRM PPTX in PowerPoint via COM
-2. Copy-paste slides from DRM to non-DRM
-3. Extract text/images directly from the open COM object (no saving to disk)
-4. Close PowerPoint and flush COM memory
-
-Supports batch processing — loops over multiple DRM files with memory cleanup.
+Each input presentation is opened in Microsoft PowerPoint via COM automation,
+and every slide is exported as a PNG into `output/<presentation_name>/`.
 """
 
-import gc
-import os
+from __future__ import annotations
+
+import argparse
 import glob
+from pathlib import Path
 
 import pythoncom
-import win32com.client
 
-from copy_slides import open_and_copy_slides
-from extract import extract_from_com
+from export_slides import export_slides_to_png
 
-# ============================================================
-# Hardcoded paths — change these to match your files
-# ============================================================
-NON_DRM_PPTX = "input/empty.pptx"
-OUTPUT_DIR = "output"
-
-# Single file mode: set this to a specific file path
-# DRM_PPTX = "input/drm_file.pptx"
-
-# Batch mode: set this to a glob pattern (e.g., all pptx in input/)
-DRM_PATTERN = "input/*.pptx"
-# ============================================================
+DEFAULT_INPUT_PATTERN = "input/*.pptx"
+DEFAULT_OUTPUT_DIR = "output"
 
 
-def process_one(drm_path: str, non_drm_path: str, output_dir: str):
-    """Process a single DRM PPTX: copy slides via COM, extract in-memory, cleanup."""
-    ppt_app = None
-    presentation = None
-
-    try:
-        # Step 1: Copy slides
-        ppt_app, presentation = open_and_copy_slides(drm_path, non_drm_path)
-
-        # Step 2: Extract from open COM object
-        result = extract_from_com(presentation, output_dir)
-
-        total_images = sum(len(s["images"]) for s in result["slides"])
-        print(f"  -> {result['total_slides']} slides, {total_images} images")
-
-        return result
-
-    finally:
-        # Cleanup: close presentation and quit PowerPoint
-        if presentation is not None:
-            try:
-                presentation.Close()
-            except Exception:
-                pass
-        if ppt_app is not None:
-            try:
-                ppt_app.Quit()
-            except Exception:
-                pass
-
-        # Flush COM references and force garbage collection
-        del presentation
-        del ppt_app
-        gc.collect()
+def parse_args() -> argparse.Namespace:
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Capture each slide of DRM PPTX files as PNG images."
+    )
+    parser.add_argument(
+        "inputs",
+        nargs="*",
+        help="PPTX file paths or glob patterns. Defaults to input/*.pptx",
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"Root output directory. Default: {DEFAULT_OUTPUT_DIR}",
+    )
+    return parser.parse_args()
 
 
-def main():
+def resolve_input_files(inputs: list[str]) -> list[Path]:
+    """Resolve file paths and glob patterns into a sorted PPTX file list."""
+    candidates = inputs or [DEFAULT_INPUT_PATTERN]
+    resolved_files: list[Path] = []
+    seen: set[Path] = set()
+
+    for candidate in candidates:
+        candidate_path = Path(candidate)
+
+        if candidate_path.is_file():
+            resolved = candidate_path.resolve()
+            if resolved.suffix.lower() == ".pptx" and resolved not in seen:
+                resolved_files.append(resolved)
+                seen.add(resolved)
+            continue
+
+        for match in sorted(glob.glob(candidate)):
+            match_path = Path(match)
+            if not match_path.is_file() or match_path.suffix.lower() != ".pptx":
+                continue
+
+            resolved = match_path.resolve()
+            if resolved in seen:
+                continue
+
+            resolved_files.append(resolved)
+            seen.add(resolved)
+
+    return sorted(resolved_files)
+
+
+def main() -> int:
+    """Capture slides from each input PPTX into PNG files."""
+    args = parse_args()
+    pptx_files = resolve_input_files(args.inputs)
+
+    if not pptx_files:
+        print(f"No PPTX files found. Inputs: {args.inputs or [DEFAULT_INPUT_PATTERN]}")
+        return 1
+
+    output_root = Path(args.output_dir).resolve()
+    output_root.mkdir(parents=True, exist_ok=True)
+
     pythoncom.CoInitialize()
 
     try:
-        non_drm_path = os.path.abspath(NON_DRM_PPTX)
+        total_slides = 0
 
-        # Collect DRM files (exclude the non-DRM template)
-        all_pptx = glob.glob(DRM_PATTERN)
-        drm_files = [f for f in all_pptx if os.path.abspath(f) != non_drm_path]
-        drm_files.sort()
-
-        if not drm_files:
-            print(f"No DRM PPTX files found matching: {DRM_PATTERN}")
-            return
-
-        print(f"Found {len(drm_files)} file(s) to process")
+        print(f"Found {len(pptx_files)} file(s) to process")
         print()
 
-        for idx, drm_path in enumerate(drm_files, start=1):
-            filename = os.path.basename(drm_path)
-            file_output_dir = os.path.join(OUTPUT_DIR, os.path.splitext(filename)[0])
-            os.makedirs(file_output_dir, exist_ok=True)
+        for index, pptx_path in enumerate(pptx_files, start=1):
+            deck_output_dir = output_root / pptx_path.stem
 
             print("=" * 60)
-            print(f"[{idx}/{len(drm_files)}] {filename}")
+            print(f"[{index}/{len(pptx_files)}] {pptx_path.name}")
+            print(f"Output: {deck_output_dir}")
             print("=" * 60)
 
             try:
-                process_one(drm_path, NON_DRM_PPTX, file_output_dir)
-            except Exception as e:
-                print(f"  [ERROR] Failed: {e}")
+                exported_count = export_slides_to_png(pptx_path, deck_output_dir)
+                total_slides += exported_count
+                print(f"  -> Exported {exported_count} slide(s)")
+            except Exception as exc:
+                print(f"  [ERROR] Failed: {exc}")
 
             print()
 
         print("=" * 60)
-        print(f"All done! Processed {len(drm_files)} file(s).")
-        print(f"Results in: {OUTPUT_DIR}/")
+        print(f"All done! Processed {len(pptx_files)} file(s).")
+        print(f"Exported {total_slides} slide(s) into: {output_root}")
         print("=" * 60)
-
+        return 0
     finally:
         pythoncom.CoUninitialize()
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
