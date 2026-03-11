@@ -32,5 +32,12 @@
   - [MCP 기초](./mcp/mcp-basics.md) - Server/Client 아키텍처, Tools/Resources/Prompts, FastMCP
   - [MCP + LangGraph 연동](./mcp/mcp-langgraph-integration.md) - langchain-mcp-adapters, ReAct Agent
 
+### LLM Fine-Tuning
+- [Unsloth 기반 sLLM 파인튜닝 가이드](./unsloth/README.md)
+  - [Unsloth 개요](./unsloth/unsloth-overview.md) - 무엇이 특별한지, 왜 쓰는지, 언제 맞는지
+  - [로컬 sLLM 파인튜닝 워크플로우](./unsloth/local-sllm-finetuning-workflow.md) - 로컬 API teacher + GPU student 운영 방식
+  - [데이터셋과 Chat Template 가이드](./unsloth/dataset-and-chat-template-guide.md) - synthetic data, role format, template mismatch 방지
+  - [학습 및 배포 레시피](./unsloth/training-and-deployment-recipe.md) - 설치, SFT 코드, 하이퍼파라미터, GGUF export
+
 ### 데이터 처리 (Data Handling)
 - _준비 중_
