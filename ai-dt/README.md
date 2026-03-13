@@ -39,5 +39,12 @@
   - [데이터셋과 Chat Template 가이드](./unsloth/dataset-and-chat-template-guide.md) - synthetic data, role format, template mismatch 방지
   - [학습 및 배포 레시피](./unsloth/training-and-deployment-recipe.md) - 설치, SFT 코드, 하이퍼파라미터, GGUF export
 
+### Foundation Model / LLM 기초
+- [Foundation Model / LLM 기초](./foundation%20model/README.md)
+  - [Attention이란 무엇인가?](./foundation%20model/attention.md) - attention의 직관, Q/K/V, self-attention, causal mask
+  - [Transformer가 어떻게 LLM으로 이어졌는가?](./foundation%20model/transformer-to-llm.md) - RNN에서 Transformer, BERT/GPT/T5, foundation model로 이어지는 흐름
+  - [Encoder와 Decoder란 무엇인가?](./foundation%20model/encoder-and-decoder.md) - encoder-only, decoder-only, encoder-decoder 구조 비교
+  - [Foundation LLM은 어떻게 만들어지는가?](./foundation%20model/how-foundation-llms-are-built.md) - 데이터, 사전학습, scaling, alignment, chat model 제작 과정
+
 ### 데이터 처리 (Data Handling)
 - _준비 중_
