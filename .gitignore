@@ -2,3 +2,4 @@
 __pycache__/
 .env
 nul
+node_modules/
