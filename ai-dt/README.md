@@ -12,6 +12,12 @@
   - [LangGraph RAG](./rag/langgraph/langgraph-rag.md) - Corrective RAG 파이프라인 구현
   - [LangGraph 고급](./rag/langgraph/langgraph-advanced.md) - Human-in-the-loop, Subgraph, Persistence, Streaming
 
+
+#### LangChain + LangGraph
+- [LangChain + LangGraph 실전 가이드](./rag/langchain-langgraph/README.md)
+  - [기초 사용법](./rag/langchain-langgraph/langchain-langgraph-basics.md) - LangChain vs LangGraph 역할과 기본 코드 패턴
+  - [RAG + Tool Calling 실전](./rag/langchain-langgraph/rag-tool-calling-playbook.md) - 라우팅, 검색, 도구 호출, 운영 확장 포인트
+
 #### Milvus
 - [Milvus 시리즈 목차](./rag/milvus/README.md)
   - [Milvus 기초](./rag/milvus/milvus-basics.md) - 아키텍처, Collection, Index, 유사도 검색
