@@ -4,8 +4,6 @@ Covers pagination, sorting, _source filtering, highlighting, and
 combined patterns that don't fit the single-purpose helpers.
 """
 
-import _path_setup  # noqa: F401
-
 from opensearch_handler import (
     bulk_index,
     create_client,

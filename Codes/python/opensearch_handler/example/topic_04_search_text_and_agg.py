@@ -1,7 +1,5 @@
 """Topic 04: text search patterns and aggregations."""
 
-import _path_setup  # noqa: F401
-
 from opensearch_handler import (
     aggregate,
     bool_search,

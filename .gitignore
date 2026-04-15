@@ -1,5 +1,6 @@
 .gemini/
 __pycache__/
+*.egg-info/
 .env
 nul
 node_modules/

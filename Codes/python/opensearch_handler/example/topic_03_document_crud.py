@@ -1,7 +1,5 @@
 """Topic 03: document CRUD and bulk indexing."""
 
-import _path_setup  # noqa: F401
-
 from opensearch_handler import (
     bulk_index,
     count_documents,

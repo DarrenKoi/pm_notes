@@ -1,11 +1,10 @@
 """Topic 02: index creation, inspection, update, refresh, and cleanup."""
 
-import _path_setup  # noqa: F401
-
 from opensearch_handler import (
     create_client,
     create_index,
     delete_index,
+    get_aliases,
     get_index_mapping,
     get_index_settings,
     index_exists,
@@ -42,6 +41,7 @@ def main() -> None:
     print(f"Index created: {INDEX_NAME}")
     print("Settings keys:", list(settings[INDEX_NAME]["settings"]["index"].keys())[:6])
     print("Mapped fields:", list(mapping[INDEX_NAME]["mappings"]["properties"].keys()))
+    print("Aliases:", get_aliases(client, INDEX_NAME).get(INDEX_NAME, {}).get("aliases", {}))
 
     update_index_settings(client, INDEX_NAME, {"refresh_interval": "1s"})
     refresh_index(client, INDEX_NAME)

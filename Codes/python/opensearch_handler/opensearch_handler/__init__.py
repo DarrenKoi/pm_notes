@@ -1,8 +1,9 @@
-"""General-purpose OpenSearch handler."""
+"""General-purpose handler for OpenSearch."""
 
 from .client import create_client
 from .connection_settings import ConnectionConfig, load_config
 from .document import (
+    bulk_actions,
     bulk_index,
     delete_document,
     get_document,
@@ -13,17 +14,18 @@ from .document import (
 from .index import (
     create_index,
     delete_index,
+    get_aliases,
     get_index_mapping,
     get_index_settings,
     index_exists,
     refresh_index,
+    update_aliases,
     update_index_settings,
 )
 from .lifecycle import (
     bootstrap_aliases,
-    detect_cluster_flavor,
+    format_rollover_index,
     put_index_template,
-    put_lifecycle_policy,
     rollover_alias,
 )
 from .search import (
@@ -39,33 +41,29 @@ from .search import (
 )
 
 __all__ = [
-    # client
-    "create_client",
-    # config
     "ConnectionConfig",
     "load_config",
-    # index
+    "create_client",
     "create_index",
     "delete_index",
+    "get_aliases",
     "get_index_settings",
     "get_index_mapping",
     "index_exists",
     "refresh_index",
+    "update_aliases",
     "update_index_settings",
-    # lifecycle
-    "detect_cluster_flavor",
-    "put_index_template",
     "bootstrap_aliases",
+    "format_rollover_index",
+    "put_index_template",
     "rollover_alias",
-    "put_lifecycle_policy",
-    # document
     "index_document",
     "get_document",
     "update_document",
     "upsert_document",
     "delete_document",
+    "bulk_actions",
     "bulk_index",
-    # search
     "match_search",
     "term_search",
     "bool_search",

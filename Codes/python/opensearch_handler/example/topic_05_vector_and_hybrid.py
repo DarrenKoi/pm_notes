@@ -1,6 +1,4 @@
-"""Topic 05: k-NN vector search and hybrid retrieval."""
-
-import _path_setup  # noqa: F401
+"""Topic 05: vector search and hybrid retrieval for OpenSearch."""
 
 from opensearch_handler import (
     bulk_index,
@@ -35,6 +33,7 @@ def main() -> None:
                 "properties": {
                     "title": {"type": "text"},
                     "content": {"type": "text"},
+                    "category": {"type": "keyword"},
                     "embedding": {
                         "type": "knn_vector",
                         "dimension": 3,
@@ -57,18 +56,21 @@ def main() -> None:
                     "id": "1",
                     "title": "OpenSearch Basics",
                     "content": "Search and indexing fundamentals.",
+                    "category": "search",
                     "embedding": [0.1, 0.2, 0.3],
                 },
                 {
                     "id": "2",
                     "title": "Vector Retrieval",
                     "content": "Semantic retrieval with embeddings.",
+                    "category": "vector",
                     "embedding": [0.4, 0.5, 0.6],
                 },
                 {
                     "id": "3",
                     "title": "Hybrid Search",
                     "content": "Blend lexical relevance with vectors.",
+                    "category": "vector",
                     "embedding": [0.39, 0.49, 0.58],
                 },
             ],
@@ -78,7 +80,13 @@ def main() -> None:
 
         _print_hits(
             "knn_search",
-            knn_search(client, INDEX_NAME, "embedding", [0.4, 0.5, 0.6], k=2),
+            knn_search(
+                client,
+                INDEX_NAME,
+                "embedding",
+                [0.4, 0.5, 0.6],
+                k=2,
+            ),
         )
         _print_hits(
             "hybrid_search",
@@ -90,6 +98,7 @@ def main() -> None:
                 vector_field="embedding",
                 vector=[0.4, 0.5, 0.6],
                 k=2,
+                filters=[{"term": {"category": "vector"}}],
             ),
         )
     except Exception as exc:

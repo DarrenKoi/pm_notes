@@ -1,6 +1,16 @@
-"""Search operations: full-text, term, bool, knn, hybrid, aggregations."""
+"""Search operations for OpenSearch."""
+
+from __future__ import annotations
 
 from typing import Any, Optional, Sequence
+
+
+def _search(client: Any, index: str, body: dict[str, Any]) -> dict:
+    return client.search(index=index, body=body)
+
+
+def _count(client: Any, index: str, body: dict[str, Any]) -> dict:
+    return client.count(index=index, body=body)
 
 
 def match_search(
@@ -12,7 +22,7 @@ def match_search(
 ) -> dict:
     """Full-text match search on a single field."""
     body = {"query": {"match": {field: query}}, "size": size}
-    return client.search(index=index, body=body)
+    return _search(client, index, body)
 
 
 def term_search(
@@ -24,7 +34,7 @@ def term_search(
 ) -> dict:
     """Exact-match term search."""
     body = {"query": {"term": {field: value}}, "size": size}
-    return client.search(index=index, body=body)
+    return _search(client, index, body)
 
 
 def bool_search(
@@ -48,7 +58,7 @@ def bool_search(
         bool_clause["must_not"] = must_not
 
     body = {"query": {"bool": bool_clause}, "size": size}
-    return client.search(index=index, body=body)
+    return _search(client, index, body)
 
 
 def knn_search(
@@ -58,20 +68,31 @@ def knn_search(
     vector: Sequence[float],
     k: int = 5,
     size: int = 10,
+    filters: Optional[Sequence[dict[str, Any]]] = None,
 ) -> dict:
-    """k-NN vector similarity search (OpenSearch k-NN plugin)."""
-    body = {
-        "query": {
-            "knn": {
-                field: {
-                    "vector": list(vector),
-                    "k": k,
-                }
+    """Run OpenSearch k-NN vector similarity search."""
+    filter_list = list(filters or [])
+    knn_query = {
+        "knn": {
+            field: {
+                "vector": list(vector),
+                "k": k,
             }
-        },
-        "size": size,
+        }
     }
-    return client.search(index=index, body=body)
+    if filter_list:
+        body = {
+            "query": {
+                "bool": {
+                    "must": [knn_query],
+                    "filter": filter_list,
+                }
+            },
+            "size": size,
+        }
+    else:
+        body = {"query": knn_query, "size": size}
+    return _search(client, index, body)
 
 
 def hybrid_search(
@@ -83,23 +104,22 @@ def hybrid_search(
     vector: Sequence[float],
     k: int = 5,
     size: int = 10,
+    filters: Optional[Sequence[dict[str, Any]]] = None,
 ) -> dict:
-    """Hybrid search combining full-text match and k-NN vector similarity.
-
-    Uses a bool query with ``should`` to blend lexical and semantic scores.
-    """
-    body = {
-        "query": {
-            "bool": {
-                "should": [
-                    {"match": {text_field: query}},
-                    {"knn": {vector_field: {"vector": list(vector), "k": k}}},
-                ],
-            }
-        },
-        "size": size,
+    """Combine lexical and vector retrieval using OpenSearch syntax."""
+    filter_list = list(filters or [])
+    bool_clause: dict[str, Any] = {
+        "should": [
+            {"match": {text_field: query}},
+            {"knn": {vector_field: {"vector": list(vector), "k": k}}},
+        ],
+        "minimum_should_match": 1,
     }
-    return client.search(index=index, body=body)
+    if filter_list:
+        bool_clause["filter"] = filter_list
+
+    body = {"query": {"bool": bool_clause}, "size": size}
+    return _search(client, index, body)
 
 
 def aggregate(
@@ -109,19 +129,11 @@ def aggregate(
     query: Optional[dict[str, Any]] = None,
     size: int = 0,
 ) -> dict:
-    """Run an aggregation query.
-
-    Args:
-        client: OpenSearch client.
-        index: Target index.
-        agg_body: Aggregation definition (the value of ``"aggs"``).
-        query: Optional query to scope the aggregation.
-        size: Number of hits to return alongside aggregations (default 0).
-    """
+    """Run an aggregation query."""
     body: dict[str, Any] = {"aggs": agg_body, "size": size}
     if query:
         body["query"] = query
-    return client.search(index=index, body=body)
+    return _search(client, index, body)
 
 
 def search_raw(
@@ -130,7 +142,7 @@ def search_raw(
     body: dict[str, Any],
 ) -> dict:
     """Run an arbitrary query body."""
-    return client.search(index=index, body=body)
+    return _search(client, index, body)
 
 
 def multi_match_search(
@@ -152,7 +164,7 @@ def multi_match_search(
         },
         "size": size,
     }
-    return client.search(index=index, body=body)
+    return _search(client, index, body)
 
 
 def count_documents(
@@ -162,4 +174,4 @@ def count_documents(
 ) -> dict:
     """Return count for all docs or docs matching a query."""
     body = {"query": query} if query else {}
-    return client.count(index=index, body=body)
+    return _count(client, index, body)

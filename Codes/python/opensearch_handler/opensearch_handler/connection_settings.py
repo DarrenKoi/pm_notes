@@ -1,12 +1,6 @@
-"""Connection and index settings for OpenSearch.
+"""Connection settings for OpenSearch."""
 
-Credential pattern follows the local OS settings convention:
-  - Separate host / port (not combined URL)
-  - opensearch-py is used as the client library for OpenSearch
-
-All settings can be overridden via environment variables or by passing
-values directly to ``ConnectionConfig``.
-"""
+from __future__ import annotations
 
 import os
 from dataclasses import dataclass
@@ -24,12 +18,12 @@ def _parse_bool(value: str) -> bool:
 
 @dataclass
 class ConnectionConfig:
-    """Connection and index configuration for an OpenSearch cluster."""
+    """Connection configuration for an OpenSearch cluster."""
 
     host: str = "localhost"
     port: int = 9200
-    user: str = "admin"
-    password: str = "admin"
+    user: Optional[str] = "admin"
+    password: Optional[str] = "admin"
     use_ssl: bool = True
     verify_certs: bool = False
     ssl_show_warn: bool = False
@@ -44,46 +38,29 @@ class ConnectionConfig:
         self._validate_auth()
 
     def _validate_auth(self) -> None:
-        if not self.user or not self.password:
+        if bool(self.user) != bool(self.password):
             raise ValueError(
-                "ConnectionConfig requires non-empty user and password for http_auth."
+                "ConnectionConfig requires both user and password when basic auth "
+                "is configured."
             )
 
     @property
-    def http_auth(self) -> tuple[str, str]:
-        return (self.user, self.password)
+    def http_auth(self) -> Optional[tuple[str, str]]:
+        if self.user and self.password:
+            return (self.user, self.password)
+        return None
 
     @property
     def hosts(self) -> list[dict]:
-        """Return hosts list in the format expected by opensearch-py."""
+        """Return hosts in the format expected by opensearch-py."""
         scheme = "https" if self.use_ssl else "http"
         return [{"host": self.host, "port": self.port, "scheme": scheme}]
 
 
 def load_config(**overrides) -> ConnectionConfig:
-    """Build a ConnectionConfig with env-var and keyword overrides.
-
-    Resolution order (later wins):
-      1. Dataclass defaults
-      2. Environment variables (``OPENSEARCH_HOST``, etc.)
-      3. Explicit keyword arguments
-
-    Supported env vars:
-      - OPENSEARCH_HOST / OPENSEARCH_PORT
-      - OPENSEARCH_USER / OPENSEARCH_PASSWORD
-      - OPENSEARCH_USE_SSL  ("true"/"false")
-      - OPENSEARCH_VERIFY_CERTS  ("true"/"false")
-      - OPENSEARCH_SSL_SHOW_WARN  ("true"/"false")
-      - OPENSEARCH_CA_CERTS
-      - OPENSEARCH_BULK_CHUNK
-      - OPENSEARCH_TIMEOUT
-      - OPENSEARCH_MAX_RETRIES
-      - OPENSEARCH_RETRY_ON_TIMEOUT ("true"/"false")
-      - OPENSEARCH_HTTP_COMPRESS ("true"/"false")
-    """
+    """Build a ConnectionConfig with env-var and keyword overrides."""
     cfg = ConnectionConfig()
 
-    # Env-var layer
     host = os.getenv("OPENSEARCH_HOST")
     if host:
         cfg.host = host
@@ -93,12 +70,12 @@ def load_config(**overrides) -> ConnectionConfig:
         cfg.port = int(port)
 
     user = os.getenv("OPENSEARCH_USER")
-    if user:
-        cfg.user = user
+    if user is not None:
+        cfg.user = user or None
 
     password = os.getenv("OPENSEARCH_PASSWORD")
-    if password:
-        cfg.password = password
+    if password is not None:
+        cfg.password = password or None
 
     ssl_env = os.getenv("OPENSEARCH_USE_SSL")
     if ssl_env is not None:
@@ -136,12 +113,11 @@ def load_config(**overrides) -> ConnectionConfig:
     if http_compress is not None:
         cfg.http_compress = _parse_bool(http_compress)
 
-    # Explicit overrides layer
     for key, value in overrides.items():
         if hasattr(cfg, key):
             setattr(cfg, key, value)
-        else:
-            raise TypeError(f"Unknown config key: {key!r}")
+            continue
+        raise TypeError(f"Unknown config key: {key!r}")
 
     cfg._validate_auth()
     return cfg

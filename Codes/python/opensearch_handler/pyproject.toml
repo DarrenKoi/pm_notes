@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opensearch-handler"
+version = "0.1.0"
+description = "Helpers for OpenSearch"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "opensearch-py>=2.4.0",
+]
+
+[tool.setuptools]
+packages = ["opensearch_handler"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

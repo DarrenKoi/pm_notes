@@ -1,4 +1,4 @@
-"""Index management operations."""
+"""Index and alias management operations."""
 
 from typing import Any, Optional
 
@@ -61,3 +61,16 @@ def update_index_settings(
 def refresh_index(client: Any, name: str) -> dict:
     """Force-refresh an index so recent writes are searchable immediately."""
     return client.indices.refresh(index=name)
+
+
+def get_aliases(client: Any, name: Optional[str] = None) -> dict:
+    """Return aliases for a single index or all indexes."""
+    kwargs: dict[str, Any] = {}
+    if name:
+        kwargs["index"] = name
+    return client.indices.get_alias(**kwargs)
+
+
+def update_aliases(client: Any, actions: list[dict[str, Any]]) -> dict:
+    """Apply alias add/remove actions."""
+    return client.indices.update_aliases(body={"actions": actions})

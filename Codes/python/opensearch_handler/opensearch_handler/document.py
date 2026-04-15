@@ -1,6 +1,8 @@
 """Document CRUD and bulk operations."""
 
-from typing import Any, Optional, Sequence
+from __future__ import annotations
+
+from typing import Any, Iterable, Iterator, Optional, Sequence
 
 from opensearchpy import helpers
 
@@ -71,6 +73,23 @@ def delete_document(
     return client.delete(**kwargs)
 
 
+def bulk_actions(
+    client: Any,
+    actions: Iterable[dict[str, Any]],
+    chunk_size: int = 500,
+    refresh: bool = False,
+    raise_on_error: bool = False,
+) -> tuple[int, list]:
+    """Execute bulk actions with opensearch-py helpers."""
+    return helpers.bulk(
+        client,
+        actions,
+        chunk_size=chunk_size,
+        refresh=refresh,
+        raise_on_error=raise_on_error,
+    )
+
+
 def bulk_index(
     client: Any,
     index: str,
@@ -80,28 +99,16 @@ def bulk_index(
     refresh: bool = False,
     raise_on_error: bool = False,
 ) -> tuple[int, list]:
-    """Bulk-index a sequence of documents.
+    """Bulk-index a sequence of documents."""
 
-    Args:
-        client: OpenSearch client.
-        index: Target index name.
-        docs: Documents to index.
-        id_field: If set, uses ``doc[id_field]`` as the document ``_id``.
-        chunk_size: Number of docs per bulk request (default 500).
-        refresh: If True, refreshes index after indexing.
-        raise_on_error: Whether to raise exceptions for item-level errors.
-
-    Returns:
-        A tuple of ``(success_count, error_list)``.
-    """
-    def iter_actions():
+    def iter_actions() -> Iterator[dict[str, Any]]:
         for doc in docs:
             action: dict[str, Any] = {"_index": index, "_source": doc}
             if id_field and id_field in doc:
                 action["_id"] = doc[id_field]
             yield action
 
-    return helpers.bulk(
+    return bulk_actions(
         client,
         iter_actions(),
         chunk_size=chunk_size,

@@ -1,7 +1,5 @@
 """Topic 01: create a client and verify cluster connection."""
 
-import _path_setup  # noqa: F401
-
 from opensearch_handler import create_client, load_config
 
 
