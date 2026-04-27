@@ -42,6 +42,7 @@ status: complete
 3. [컨텍스트, 샌드박스, 프로필](./03_context_sandbox_profiles.md)로 품질과 안전성을 조정한다
 4. [세션 재사용, MCP, 고급 기능](./04_sessions_mcp_advanced.md)로 활용 범위를 넓힌다
 5. [에이전트와 스킬](./05_agents_and_skills.md)로 Codex 동작 규칙과 확장 방식을 이해한다
+6. [바이브 코딩 하네스 가이드](./harness/README.md)로 빠른 작업을 안전하게 제어하는 설정과 체크리스트를 익힌다
 
 ## 먼저 이렇게 시작
 
@@ -70,4 +71,5 @@ codex review --uncommitted
 - [컨텍스트, 샌드박스, 프로필](./03_context_sandbox_profiles.md)
 - [세션 재사용, MCP, 고급 기능](./04_sessions_mcp_advanced.md)
 - [에이전트와 스킬](./05_agents_and_skills.md)
+- [바이브 코딩 하네스 가이드](./harness/README.md)
 - [개발 환경 인덱스](../README.md)
