@@ -25,7 +25,7 @@ LLM에게 "위키에 정리해줘"만 시키면 매번 다른 스타일·다른 
 
 ---
 
-```markdown
+````markdown
 # WIKI_SCHEMA — <프로젝트명> LLM Wiki 운영 규칙
 
 > 이 파일은 LLM이 ingest/query/lint 를 수행할 때 매번 읽는 운영 규칙이다.
@@ -140,7 +140,7 @@ action: `ingest` | `query-saved` | `lint` | `manual-edit`
 - PR 제목: `[wiki] <action>: <summary>` 예: `[wiki] ingest: langgraph state notes`.
 - 리뷰어 1인 이상 승인 필요.
 - LLM 자동 ingest PR도 동일 규칙 적용.
-```
+````
 
 ---
 
