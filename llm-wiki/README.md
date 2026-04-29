@@ -232,6 +232,26 @@ Tradeoffs:
 - Native function calling changes how knowledge is used
 - Needs process discipline if you want durable wiki pages
 
+### Obsidian + Local LLM Plugin
+
+Obsidian Vault를 LLM Wiki의 프론트엔드로 사용하는 옵션. 사내처럼 외부
+LLM이 막히고 OpenAI 호환 Local LLM API만 쓸 수 있는 환경에서 가장 마찰이
+적은 조합 중 하나다. 자세한 플러그인 비교와 설정 방법은
+[Obsidian + Local LLM 연동 가이드](./obsidian-local-llm-integration.md)
+참고.
+
+Best for:
+
+- Markdown 기반 LLM Wiki를 그래프/백링크로 탐색하고 싶을 때
+- 외부 LLM을 못 쓰고 사내 OpenAI 호환 엔드포인트만 사용 가능한 환경
+- ingest/lint는 Claude Code/Codex로 PR 단위, 읽기/질의는 Obsidian으로 분리
+
+Tradeoffs:
+
+- 플러그인마다 Custom Endpoint 지원 정도가 다름 (Base URL 입력 가능 여부 확인 필수)
+- CORS 이슈 (`OLLAMA_ORIGINS=app://obsidian.md*` 등) 처리가 첫 허들
+- 위키 거버넌스(리뷰/머지)는 결국 Git 쪽에서 따로 잡아야 함
+
 ### Custom RAG or File Search
 
 Use OpenAI Retrieval/File Search, LangChain, or LlamaIndex when you need to

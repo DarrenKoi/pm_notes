@@ -25,6 +25,7 @@
 | Knowledge Mgmt | [LLM Wiki 패턴](./llm-wiki/README.md) | 🟢 기본 완료 | 2026-04-28 |
 | Knowledge Mgmt | [팀 위키 구조 가이드](./llm-wiki/team-wiki-structure.md) | 🟡 진행중 | 2026-04-29 |
 | Knowledge Mgmt | [WIKI_SCHEMA 템플릿](./llm-wiki/wiki-schema-template.md) | 🟢 기본 완료 | 2026-04-29 |
+| Knowledge Mgmt | [Obsidian + Local LLM 연동](./llm-wiki/obsidian-local-llm-integration.md) | 🟢 기본 완료 | 2026-04-29 |
 
 ## 폴더 구조
 
@@ -32,4 +33,4 @@
 - [`web-development/`](./web-development/typescript/README.md) - 웹 개발 (TypeScript, Vue, Vite)
 - [`dev-environment/`](./dev-environment/README.md) - 개발 환경 (터미널, 도구)
 - [`Codes/python/`](./Codes/python/) - Python 프로젝트 (Knowhow-ES 파이프라인, 조직 계층 트리 등)
-- [`llm-wiki/`](./llm-wiki/README.md) - LLM Wiki 패턴 연구·팀 위키 구조 가이드
+- [`llm-wiki/`](./llm-wiki/README.md) - LLM Wiki 패턴 연구·팀 위키 구조 가이드·Obsidian 연동
