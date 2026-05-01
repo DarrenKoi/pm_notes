@@ -21,6 +21,7 @@ llm-wiki/
 ├── USAGE.md                   # 이 파일
 ├── WIKI_SCHEMA.md             # ★ 운영 규칙 (LLM 이 매번 읽는 파일)
 ├── PROMPTS.md                 # ★ 팀 공통 프롬프트 모음 (모델 무관)
+├── prompts_example/           # ★ 채워진 실제 프롬프트 예시 (시나리오별)
 │
 ├── raw/                       # 불변 원본 (LLM 수정 금지)
 │   ├── journals/              # 개발 저널

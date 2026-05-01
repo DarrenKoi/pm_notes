@@ -110,7 +110,81 @@ Ingest 대상: <WIKI_ROOT>/raw/<폴더>/<파일>.md
 
 ---
 
-## 3. Query — 위키에서 먼저 답하기
+## 3. Code Ingest — 코드를 wiki 로 합성
+
+기존 코드베이스를 위키화할 때. **`raw/` 거치지 않고 `src/` 를 직접 입력**으로 사용. 두 단계로 나뉨.
+
+### 3-A. Codebase 매핑 (1 회 — 어떤 컴포넌트가 있는지 파악)
+
+```text
+<WIKI_ROOT>/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
+작성자: <MY_NAME>
+
+src/ 전체를 훑어 주요 컴포넌트(모듈·서비스·패키지) 를 나열.
+각 컴포넌트마다:
+- 책임 한 줄
+- 핵심 진입점 1~3 개 (src/<path>:<line>)
+- 외부 의존성 (라이브러리·다른 컴포넌트)
+- wiki/components/<제안 파일명>.md 후보
+
+생성·수정은 하지 말고, 위 목록만 답변으로 출력.
+이 결과를 보고 어느 컴포넌트부터 ingest 할지 결정한다.
+```
+
+### 3-B. 컴포넌트별 ingest (반복)
+
+```text
+<WIKI_ROOT>/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
+작성자: <MY_NAME>
+
+코드 ingest 대상: <코드 경로> (예: src/auth/, src/api/v2/router.py)
+출력 대상: <WIKI_ROOT>/wiki/components/<component-name>.md
+
+작업:
+1. 대상 코드를 읽고 책임·진입점·의존성·사용 패턴 추출.
+2. wiki/components/<component-name>.md 생성 또는 갱신.
+   - <WIKI_ROOT>/_templates/component.md 를 베이스로.
+   - 모든 비자명 주장에 src/<path>:<line> 인용.
+   - 외부 라이브러리는 package.json / pyproject.toml / requirements.txt 의 버전 명시.
+   - frontmatter sources 에 코드 경로 나열.
+   - frontmatter owner: <MY_NAME>.
+3. 페이지 간 cross-link 는 상대경로.
+4. <WIKI_ROOT>/wiki/index.md 의 Components 섹션 갱신.
+5. <WIKI_ROOT>/wiki/log.md 최상단에 prepend:
+   ## [<오늘 날짜>] ingest | <코드 경로> (by <MY_NAME>)
+6. raw/ 와 src/ 모두 수정 금지.
+7. 검증 안 된 추론은 > Unverified: 인용 블록.
+
+마지막에 변경 파일 목록과 open question 요약.
+```
+
+### 3-C. Runbooks 합성 (선택 — setup/deploy 절차)
+
+코드와 함께 운영 절차도 위키화:
+
+```text
+<WIKI_ROOT>/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
+작성자: <MY_NAME>
+
+코드 ingest 대상: README.md, package.json (또는 pyproject.toml), Dockerfile, .github/workflows/
+출력 대상: <WIKI_ROOT>/wiki/runbooks/{setup, deploy}.md
+
+<WIKI_ROOT>/_templates/runbook.md 를 베이스로.
+각 단계: 실제 명령어 + 기대 출력 + 실패 시 대응 포함.
+
+§3-B 와 동일한 인용·log·frontmatter 규칙 적용.
+```
+
+### 코드 ingest 만의 주의점
+
+- **한 디렉토리 = 한 컴포넌트 페이지** 원칙. 너무 큰 디렉토리는 분할 (예: `src/api/` → `api-router.md` + `api-middleware.md`).
+- 테스트 코드는 input 으로만 사용. 별도 wiki 페이지 X. 컴포넌트 페이지의 "사용 예시" 섹션 인용으로만.
+- 자동 생성 파일 (lock files, build artifacts) 은 ingest 금지.
+- 컴포넌트 코드 큰 변경 시 해당 위키 페이지 재-ingest. lint 가 `last_updated` vs source 변경 비교로 stale 감지.
+
+---
+
+## 4. Query — 위키에서 먼저 답하기
 
 질문할 때 사용. 위키가 우선, 부족하면 raw/ 보강.
 
@@ -135,9 +209,9 @@ Ingest 대상: <WIKI_ROOT>/raw/<폴더>/<파일>.md
 
 ---
 
-## 4. Save Answer — Q&A 를 wiki 페이지로 저장
+## 5. Save Answer — Q&A 를 wiki 페이지로 저장
 
-§3 답변 후 "그래, 저장해줘" 라고 할 때 사용.
+§4 답변 후 "그래, 저장해줘" 라고 할 때 사용.
 
 ```text
 <WIKI_ROOT>/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
@@ -158,7 +232,7 @@ Ingest 대상: <WIKI_ROOT>/raw/<폴더>/<파일>.md
 
 ---
 
-## 5. Lint — 월 1 회 위생 점검
+## 6. Lint — 월 1 회 위생 점검
 
 ```text
 <WIKI_ROOT>/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
@@ -184,7 +258,7 @@ Ingest 대상: <WIKI_ROOT>/raw/<폴더>/<파일>.md
 
 ---
 
-## 6. PR Description — 위키 변경 PR 본문 생성
+## 7. PR Description — 위키 변경 PR 본문 생성
 
 ingest/lint 결과를 PR 로 올릴 때 사용.
 
@@ -233,165 +307,17 @@ ingest/lint 결과를 PR 로 올릴 때 사용.
 | 웹 챗에서 파일 못 읽는다고 함 | 환경 차이 | 관련 파일을 본문에 붙여넣고, 끝에 "전체 내용 코드블록 출력" fallback 추가 |
 | 한 ingest 가 너무 많은 페이지를 건드림 | raw 파일이 너무 큼 | raw 파일을 주제별로 분할 후 각각 ingest |
 
-## 예시 — 실제 사용 시나리오
+## 예시 사용 시나리오
 
-다음 가정으로 통일 (시나리오마다 다른 부분만 강조):
+각 프롬프트의 채워진 실제 사용 예시는 [`prompts_example/`](./prompts_example/) 폴더 참조 — 한 시나리오 = 한 파일이라 빠르게 복사·수정 후 바로 사용 가능.
 
-- `<WIKI_ROOT>` = `docs/llm-wiki`
-- `<MY_NAME>` = `대영`
-- 오늘 날짜 = `2026-05-01`
-
----
-
-### 시나리오 A: Bootstrap (프로젝트 셋업, 1 회)
-
-**치환값:**
-- `<프로젝트명>` → `SKEWNONO`
-
-**실제 프롬프트:**
-
-```text
-docs/llm-wiki/ 의 LLM Wiki 부트스트랩을 마무리해줘.
-
-작업:
-1. docs/llm-wiki/WIKI_SCHEMA.md 와 docs/llm-wiki/wiki/{index.md, log.md, overview.md} 안의:
-   - <프로젝트명> → SKEWNONO
-   - YYYY-MM-DD → 2026-05-01
-   를 일괄 치환.
-2. raw/ 와 wiki/ 컴포넌트 폴더는 빈 상태 유지 (첫 ingest 전).
-3. raw/, wiki/ 하위 README.md 는 폴더 설명용이므로 손대지 말 것.
-
-작성자(owner) 정보는 부트스트랩 시점에 정하지 않는다.
-각 페이지가 ingest/save 시점에 그 작업의 작성자로 채워진다.
-
-치환된 파일 목록을 마지막에 보고.
-```
-
----
-
-### 시나리오 B: 학습 메모 Ingest (가장 흔한 경우)
-
-**상황:** LangGraph 의 state 관리를 처음 만져보고 막힌 지점을 `raw/learning-logs/20260501-langgraph-state.md` 에 5 줄 메모.
-
-**치환값:**
-- `<폴더>` → `learning-logs`
-- `<파일>` → `20260501-langgraph-state.md`
-
-**실제 프롬프트:**
-
-```text
-docs/llm-wiki/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
-작성자: 대영
-
-Ingest 대상: docs/llm-wiki/raw/learning-logs/20260501-langgraph-state.md
-
-작업 순서:
-1. 대상 raw 파일을 읽고 핵심 정보 추출.
-2. 영향받는 wiki/ 페이지 식별 — 신규 wiki/concepts/langgraph-state-management.md 예상.
-   - _templates/concept.md 를 베이스로.
-   - frontmatter 의 owner: 대영, last_updated: 2026-05-01.
-3. 모든 비자명 주장에 raw 또는 코드 경로 인용.
-4. 페이지 간 cross-link 는 상대경로로.
-5. wiki/index.md 의 Concepts 섹션에 새 페이지 등록.
-6. wiki/log.md 최상단에 ingest 항목 prepend:
-   ## [2026-05-01] ingest | raw/learning-logs/20260501-langgraph-state.md (by 대영)
-   - <변경 내역>
-7. raw/ 는 절대 수정하지 말 것.
-8. 검증 안 된 주장은 > Unverified: 블록.
-
-마지막에 변경 파일 목록과 open question 요약.
-```
-
----
-
-### 시나리오 C: 외부 자료 Ingest (Karpathy 블로그 글)
-
-**상황:** Karpathy 의 LLM Wiki gist 를 읽고 요약을 `raw/references/articles/20260501-karpathy-llm-wiki.md` 에 저장.
-
-**치환값:**
-- `<폴더>` → `references/articles`
-- `<파일>` → `20260501-karpathy-llm-wiki.md`
-
-**프롬프트 본문은 시나리오 B 와 동일**, "Ingest 대상" 줄만 다름:
-
-```text
-Ingest 대상: docs/llm-wiki/raw/references/articles/20260501-karpathy-llm-wiki.md
-```
-
-**LLM 의 예상 출력:**
-- 신규 `wiki/concepts/llm-wiki-pattern.md` 생성 (`_templates/concept.md` 베이스).
-- 기존 `wiki/concepts/rag-vs-wiki.md` 가 있으면 보강.
-- References 섹션에 `raw/references/articles/20260501-karpathy-llm-wiki.md` + 원문 URL 인용.
-
----
-
-### 시나리오 D: 위키에서 답 찾기 (Query)
-
-**상황:** "우리 RAG 파이프라인에서 임베딩 모델은 뭐 쓰지?" 가 궁금.
-
-**실제 프롬프트:**
-
-```text
-docs/llm-wiki/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
-작성자: 대영
-
-질문: 우리 RAG 파이프라인에서 임베딩 모델은 뭐 쓰지?
-
-답변 절차:
-1. docs/llm-wiki/wiki/ 에서 먼저 답을 찾고, 참조 페이지 경로 인용.
-2. 위키에 없거나 stale 의심이면 raw/ 또는 코드(src/) 보강.
-3. 답변 끝에:
-   - 답변 출처 (wiki/raw/코드/추측 중)
-   - 인용 파일 경로 목록
-4. 답이 wiki/ 에 새 페이지로 저장 가치 있으면 제안 경로 + 템플릿 + 근거 제시.
-   파일 생성은 사용자 승인 후에만.
-```
-
-**LLM 의 예상 답변 (요지):**
-
-> `wiki/components/rag-pipeline.md:42` 에 따르면 BGE-M3 사용 중.
-> 출처: wiki
-> 인용: `wiki/components/rag-pipeline.md`, `raw/decisions/20260315-embedding-choice.md`
-
----
-
-### 시나리오 E: 월 1 회 Lint
-
-**실제 프롬프트:**
-
-```text
-docs/llm-wiki/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
-작성자: 대영
-
-docs/llm-wiki/wiki/ 전체에 lint 패스 실행.
-
-점검 항목 (SCHEMA §6):
-- Stale, Contradiction, Missing citation, Broken link, Orphan, Canonical gap
-
-산출:
-- wiki/log.md 최상단에 prepend:
-  ## [2026-05-01] lint | wiki-wide (by 대영)
-- 카테고리별 bullet, 영향받는 페이지 경로 포함.
-- 자동 수정 금지.
-- 발견 0 건이면 "all clean" 명시.
-```
-
-**LLM 의 예상 log.md 항목:**
-
-```markdown
-## [2026-05-01] lint | wiki-wide (by 대영)
-
-### Stale (2)
-- wiki/components/auth-service.md — last_updated 2026-01-10, src/auth/*.py 가 2026-03-15 변경됨
-- wiki/runbooks/deploy.md — last_updated 2025-11-30, 90 일 초과
-
-### Missing citation (1)
-- wiki/concepts/embedding-basics.md §3 의 "BGE-M3 가 multilingual 에 강하다" 주장에 출처 없음
-
-### Orphan (0), Contradiction (0), Broken link (0), Canonical gap (0)
-```
-
----
+| 파일 | 시나리오 | 해당 §|
+| --- | --- | --- |
+| [`01-bootstrap.md`](./prompts_example/01-bootstrap.md) | 프로젝트 셋업 1 회 | §1 |
+| [`02-ingest-raw.md`](./prompts_example/02-ingest-raw.md) | raw 자료 합성 (학습 메모, 외부 자료) | §2 |
+| [`03-code-ingest.md`](./prompts_example/03-code-ingest.md) | 코드베이스 위키화 (매핑 → 컴포넌트 → runbooks) | §3 |
+| [`04-query.md`](./prompts_example/04-query.md) | 위키에서 답 찾기 + 예상 답변 형식 | §4 |
+| [`05-lint.md`](./prompts_example/05-lint.md) | 월 1 회 위생 점검 + 예상 log.md 출력 | §6 |
 
 ## 참고 자료 (References)
 
@@ -399,3 +325,4 @@ docs/llm-wiki/wiki/ 전체에 lint 패스 실행.
 - [USAGE.md](./USAGE.md) — 폴더 복사·부트스트랩 가이드
 - [README.md](./README.md) — LLM Wiki 패턴 일반론
 - [_templates/](./_templates/) — 페이지 템플릿
+- [`prompts_example/`](./prompts_example/) — 채워진 실제 프롬프트 예시
