@@ -108,11 +108,36 @@ Ingest 대상: docs/llm-wiki/raw/decisions/20260501-db-choice.md
 
 ---
 
+## 케이스 D: 한국어 도메인 페이지 (한글 파일명)
+
+### 상황
+
+사내 "재고 관리 규칙" 정리 메모를 `raw/specs/재고-관리-규칙.md` 에 작성. 영어 원어가 없는 도메인 용어 → SCHEMA §2 의 hybrid 정책에 따라 한글 파일명 OK.
+
+### 차이점
+
+"Ingest 대상" 한 줄만:
+
+```text
+Ingest 대상: docs/llm-wiki/raw/specs/재고-관리-규칙.md
+```
+
+### 예상 출력
+
+- 신규 `wiki/concepts/재고-관리-규칙.md` 또는 `wiki/components/재고-관리-시스템.md` (내용에 따라).
+- frontmatter `owner: 대영`, `tags: [재고, 도메인-규칙]` 같이 한글 태그도 OK.
+- cross-link 도 한글 경로: `[재고 관리 규칙](../concepts/재고-관리-규칙.md)`.
+
+> 영어 기술 용어가 섞이면 영문이 default — 예: `재고-관리-api.md` (X), `inventory-management-api.md` (O). 경계 모호하면 영문으로.
+
+---
+
 ## 패턴 요약
 
-raw 폴더가 달라도 **프롬프트 본문은 동일**, "Ingest 대상" 한 줄만 변경. 폴더 → wiki 출력 매핑은 PROMPTS.md §2 의 표 참조.
+raw 폴더가 달라도 **프롬프트 본문은 동일**, "Ingest 대상" 한 줄만 변경. 폴더 → wiki 출력 매핑은 PROMPTS.md §2 의 표, 파일명 한글/영문 선택은 WIKI_SCHEMA.md §2 참조.
 
 ## 다음 단계
 
 - [`04-query.md`](./04-query.md) — 방금 만든 페이지에 질문
 - [`03-code-ingest.md`](./03-code-ingest.md) — 코드도 위키화
+- [`../WIKI_SCHEMA.md`](../WIKI_SCHEMA.md) §2 — 파일명 hybrid 정책 (영문/한글 선택 기준)

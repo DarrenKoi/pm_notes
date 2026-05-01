@@ -88,7 +88,7 @@ Ingest 대상: <WIKI_ROOT>/raw/<폴더>/<파일>.md
      · raw/references/courses/            → wiki/concepts/ 또는 wiki/runbooks/
      · raw/references/papers/             → wiki/concepts/ (강한 인용)
      · raw/references/books/              → wiki/concepts/
-   - 파일명: 소문자-하이픈.md
+   - 파일명: SCHEMA §2 규칙 적용 (영어 기술 용어는 영문, 한글 도메인 용어는 한글 OK).
    - frontmatter 필수 (SCHEMA §2). owner 는 위 "작성자" 값(<MY_NAME>) 사용.
    - 기존 페이지를 수정하는 경우, 그 페이지의 owner 는 그대로 두되
      last_updated 만 오늘 날짜로 갱신.
