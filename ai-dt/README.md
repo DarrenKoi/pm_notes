@@ -53,4 +53,5 @@
   - [Foundation LLM은 어떻게 만들어지는가?](./foundation%20model/how-foundation-llms-are-built.md) - 데이터, 사전학습, scaling, alignment, chat model 제작 과정
 
 ### 데이터 처리 (Data Handling)
-- _준비 중_
+- [Data Handling 시리즈 목차](./data-handling/README.md)
+  - [Airflow + MinIO 파이프라인 튜토리얼](./data-handling/airflow-minio-tutorial.md) - 폐쇄망 Airflow에서 Python 코드를 순차 실행하여 MinIO 데이터를 처리하는 ETL 파이프라인
