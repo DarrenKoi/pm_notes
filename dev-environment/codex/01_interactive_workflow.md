@@ -2,7 +2,6 @@
 tags: [codex, cli, interactive, workflow]
 level: intermediate
 last_updated: 2026-03-07
-status: complete
 ---
 
 # 대화형 작업 흐름 (Interactive Workflow)

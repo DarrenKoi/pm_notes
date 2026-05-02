@@ -2,7 +2,6 @@
 tags: [terminal, zsh, file-management, cp, mv, rm, mkdir, ln]
 level: beginner
 last_updated: 2026-02-09
-status: complete
 ---
 
 # 파일 관리 (File Management)

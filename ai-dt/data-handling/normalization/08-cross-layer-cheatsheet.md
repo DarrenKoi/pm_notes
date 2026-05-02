@@ -2,7 +2,6 @@
 tags: [normalization, cheatsheet, cross-layer, rdb, mongodb, opensearch, redis, rag, ontology]
 level: intermediate
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # 정규화 Cross-Layer Cheatsheet

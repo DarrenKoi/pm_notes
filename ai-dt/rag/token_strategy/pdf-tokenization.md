@@ -2,7 +2,6 @@
 tags: [rag, tokenization, pdf, ocr, layout-analysis]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # PDF 문서 토큰화 전략 (PDF Tokenization Strategy)

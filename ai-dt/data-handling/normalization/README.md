@@ -2,7 +2,6 @@
 tags: [normalization, data-modeling, opensearch, mongodb, redis, rag, ontology]
 level: intermediate
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # 정규화 학습 노트

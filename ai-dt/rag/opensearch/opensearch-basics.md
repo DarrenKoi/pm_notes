@@ -2,7 +2,6 @@
 tags: [opensearch, search-engine, elasticsearch, vector-search]
 level: beginner
 last_updated: 2026-02-05
-status: in-progress
 ---
 
 # OpenSearch 기초 (OpenSearch Basics)

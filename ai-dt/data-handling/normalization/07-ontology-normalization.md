@@ -2,7 +2,6 @@
 tags: [ontology, normalization, taxonomy, glossary, knowledge-graph, data-modeling]
 level: advanced
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # 온톨로지 관점의 정규화

@@ -2,7 +2,6 @@
 tags: [typescript, web-development, study-roadmap]
 level: beginner
 last_updated: 2026-01-31
-status: in-progress
 ---
 
 # TypeScript 웹 개발 학습 로드맵

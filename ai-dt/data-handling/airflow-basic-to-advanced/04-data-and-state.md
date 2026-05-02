@@ -2,7 +2,6 @@
 tags: [airflow, xcom, storage, idempotency, connections]
 level: intermediate
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 04. 데이터와 상태 관리

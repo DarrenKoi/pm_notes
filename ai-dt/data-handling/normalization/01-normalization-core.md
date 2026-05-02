@@ -2,7 +2,6 @@
 tags: [normalization, data-modeling, dependency, normal-form]
 level: intermediate
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # 정규화 핵심 개념

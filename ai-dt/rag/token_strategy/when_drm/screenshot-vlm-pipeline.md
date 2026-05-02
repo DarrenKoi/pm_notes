@@ -2,7 +2,6 @@
 tags: [rag, drm, vlm, screenshot, qwen3-vl, kimi-k2, pipeline]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # Phase 1: 스크린샷 + VLM 기반 추출 파이프라인

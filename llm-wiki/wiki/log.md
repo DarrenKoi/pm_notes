@@ -1,7 +1,6 @@
 ---
 tags: [wiki, log]
 last_updated: YYYY-MM-DD
-status: in-progress
 ---
 
 # Wiki Log

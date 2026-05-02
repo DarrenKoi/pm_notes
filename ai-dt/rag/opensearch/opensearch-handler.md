@@ -2,7 +2,6 @@
 tags: [opensearch, elasticsearch, python, handler, client, bulk, search, aggregation]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # opensearch_handler — 범용 OpenSearch/ES 핸들러

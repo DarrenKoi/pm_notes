@@ -2,7 +2,6 @@
 tags: [rag, chunking, tokenization, strategy]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # 청킹 방법론 총론 (Overview of Chunking Methods)

@@ -2,7 +2,6 @@
 tags: [airflow, task-dependency, dag, sequential-execution]
 level: beginner
 last_updated: 2026-05-02
-status: complete
 ---
 
 # Airflow Task 의존성 — Python 코드 순차 실행 패턴

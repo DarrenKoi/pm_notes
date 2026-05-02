@@ -2,7 +2,6 @@
 tags: [rag, drm, vlm, chunking, markdown]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # VLM 추출 결과물의 청킹 전략

@@ -2,7 +2,6 @@
 tags: [regression, sklearn, xgboost, linear-model]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 회귀(Regression) 실전 레시피

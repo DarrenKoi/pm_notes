@@ -2,7 +2,6 @@
 tags: [opensearch, memory, conversation, rag, embedding, bge-m3]
 level: intermediate
 last_updated: 2026-02-08
-status: in-progress
 ---
 
 # OpenSearch 대화 메모리 구현 (Conversation Memory with OpenSearch)

@@ -2,7 +2,6 @@
 tags: [mcp, langgraph, langchain, agent, tool-use]
 level: intermediate
 last_updated: 2026-01-31
-status: complete
 ---
 
 # MCP + LangGraph 연동

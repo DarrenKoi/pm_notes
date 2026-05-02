@@ -2,7 +2,6 @@
 tags: [hyperparameter, gridsearch, optuna, tuning]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 하이퍼파라미터 튜닝 (Hyperparameter Tuning)

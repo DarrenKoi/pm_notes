@@ -2,7 +2,6 @@
 tags: [airflow, python, dependency, virtualenv, external-python, kubernetes]
 level: intermediate-advanced
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 05. 패키지와 실행 환경

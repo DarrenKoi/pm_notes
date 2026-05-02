@@ -6,7 +6,6 @@
 tags: [langgraph, rag, corrective-rag, retrieval]
 level: intermediate
 last_updated: 2026-01-31
-status: in-progress
 ---
 
 ## 왜 필요한가? (Why)

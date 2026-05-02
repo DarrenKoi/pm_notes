@@ -2,7 +2,6 @@
 tags: [opensearch, keyword-search, bm25, full-text-search, analyzer]
 level: intermediate
 last_updated: 2026-02-05
-status: in-progress
 ---
 
 # OpenSearch 키워드 검색 (BM25 Full-text Search)

@@ -2,7 +2,6 @@
 tags: [mcp, llm, tool-use, fastmcp]
 level: beginner
 last_updated: 2026-01-31
-status: complete
 ---
 
 # MCP 기초 (Model Context Protocol)

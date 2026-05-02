@@ -2,7 +2,6 @@
 tags: [python, uv, pip, migration, troubleshooting]
 level: intermediate
 last_updated: 2026-01-31
-status: complete
 ---
 
 # pip에서 uv로 마이그레이션 가이드

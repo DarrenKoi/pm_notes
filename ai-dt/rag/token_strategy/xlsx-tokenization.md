@@ -2,7 +2,6 @@
 tags: [rag, tokenization, excel, xlsx, tabular-data]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # Excel 문서 토큰화 전략 (XLSX Tokenization Strategy)

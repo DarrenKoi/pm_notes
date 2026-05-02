@@ -2,7 +2,6 @@
 tags: [mongodb, normalization, schema-design, embedding, reference, vector-search, rag]
 level: intermediate
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # MongoDB에서의 정규화

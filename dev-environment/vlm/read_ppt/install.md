@@ -2,7 +2,6 @@
 tags: [vlm, ocr, install, private-cloud, huggingface, vllm, transformers]
 level: intermediate
 last_updated: 2026-03-11
-status: draft
 ---
 
 # Private Cloud 설치 가이드: PaddleOCR-VL-1.5 + GOT-OCR-2.0-hf

@@ -2,7 +2,6 @@
 tags: [vite, bundler, typescript, frontend, build-tool]
 level: beginner
 last_updated: 2026-02-01
-status: in-progress
 ---
 
 # Vite 기초 가이드

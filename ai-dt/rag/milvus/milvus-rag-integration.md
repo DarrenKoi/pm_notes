@@ -2,7 +2,6 @@
 tags: [milvus, rag, langchain, langgraph, vector-store]
 level: intermediate
 last_updated: 2026-01-31
-status: in-progress
 ---
 
 # Milvus RAG 연동 (Milvus RAG Integration)

@@ -2,7 +2,6 @@
 tags: [opensearch, rag, langchain, langgraph, llm, vector-store]
 level: advanced
 last_updated: 2026-02-07
-status: in-progress
 ---
 
 # OpenSearch RAG 파이프라인 연동 (RAG Integration)

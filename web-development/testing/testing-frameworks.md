@@ -2,7 +2,6 @@
 tags: [pytest, unittest, jest, vitest, mocha, testing-framework]
 level: beginner
 last_updated: 2026-02-19
-status: in-progress
 ---
 
 # 테스트 프레임워크 비교 및 사용법

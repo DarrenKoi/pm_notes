@@ -2,7 +2,6 @@
 tags: [terminal, zsh, cat, head, tail, less, pipe, redirect]
 level: beginner
 last_updated: 2026-02-09
-status: complete
 ---
 
 # 파일 내용 조회 (File Content)

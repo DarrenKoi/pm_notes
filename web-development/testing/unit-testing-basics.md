@@ -2,7 +2,6 @@
 tags: [unit-test, testing, pytest, vitest, jest, tdd]
 level: beginner
 last_updated: 2026-02-19
-status: in-progress
 ---
 
 # Unit Testing (단위 테스트) 기초

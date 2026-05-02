@@ -2,7 +2,6 @@
 tags: [airflow, dag, operator, scheduler, worker]
 level: beginner
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 01. Airflow 기본 개념

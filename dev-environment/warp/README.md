@@ -2,7 +2,6 @@
 tags: [warp, terminal, ai-agent, productivity]
 level: intermediate
 last_updated: 2026-03-28
-status: complete
 ---
 
 # Warp 터미널 실전 가이드

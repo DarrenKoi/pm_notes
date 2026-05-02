@@ -2,7 +2,6 @@
 tags: [airflow, dependency, schedule, retry, timeout]
 level: beginner-intermediate
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 03. 의존성, 스케줄, 재시도

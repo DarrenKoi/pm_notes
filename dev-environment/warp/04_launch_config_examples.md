@@ -2,7 +2,6 @@
 tags: [warp, launch-configurations, workspace]
 level: intermediate
 last_updated: 2026-03-28
-status: complete
 ---
 
 # Launch Configuration 예제

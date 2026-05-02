@@ -2,7 +2,6 @@
 tags: [airflow, event-driven, sensor, dataset, trigger, webhook]
 level: intermediate
 last_updated: 2026-05-02
-status: complete
 ---
 
 # Airflow Event-Driven Execution — 이벤트 기반 실행 패턴

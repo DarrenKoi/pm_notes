@@ -2,7 +2,6 @@
 tags: [vue, typescript, frontend, composition-api]
 level: beginner
 last_updated: 2026-01-31
-status: complete
 ---
 
 # Vue 3 + TypeScript 시작하기

@@ -2,7 +2,6 @@
 tags: [llm, harness-engineering, evaluation, agents, mcp, openai]
 level: intermediate
 last_updated: 2026-04-14
-status: complete
 ---
 
 # Harness Engineering for LLM

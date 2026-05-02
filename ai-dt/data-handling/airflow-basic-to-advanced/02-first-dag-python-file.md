@@ -2,7 +2,6 @@
 tags: [airflow, bashoperator, pythonoperator, first-dag]
 level: beginner
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 02. 첫 번째 DAG 만들기

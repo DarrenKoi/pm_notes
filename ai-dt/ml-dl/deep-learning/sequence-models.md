@@ -2,7 +2,6 @@
 tags: [rnn, lstm, gru, time-series, pytorch]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 시퀀스 모델 (Sequence Models): RNN, LSTM, GRU

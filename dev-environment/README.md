@@ -2,7 +2,6 @@
 tags: [dev-environment, terminal, tools]
 level: beginner
 last_updated: 2026-03-28
-status: in-progress
 ---
 
 # 개발 환경 (Dev Environment)

@@ -2,7 +2,6 @@
 tags: [overview]
 level: beginner
 last_updated: YYYY-MM-DD
-status: in-progress
 sources: []
 ---
 

@@ -2,7 +2,6 @@
 tags: [ml, dl, scikit-learn, pytorch, pipeline]
 level: beginner-to-advanced
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # ML/DL 실전 가이드

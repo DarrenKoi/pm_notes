@@ -1,7 +1,6 @@
 ---
 tags: [decision, adr]
 last_updated: YYYY-MM-DD
-status: proposed | accepted | superseded-by:<file> | deprecated
 sources: [raw/decisions/<file>.md]
 ---
 

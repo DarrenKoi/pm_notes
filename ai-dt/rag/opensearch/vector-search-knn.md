@@ -2,7 +2,6 @@
 tags: [opensearch, vector-search, knn, embedding, semantic-search]
 level: intermediate
 last_updated: 2026-02-05
-status: in-progress
 ---
 
 # OpenSearch 벡터 검색 (k-NN Vector Search)

@@ -2,7 +2,6 @@
 tags: [rag, drm, hybrid, migration, pipeline]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # Phase 2: DRM 해제 후 하이브리드 전략

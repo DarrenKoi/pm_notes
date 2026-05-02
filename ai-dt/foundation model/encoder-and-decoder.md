@@ -2,7 +2,6 @@
 tags: [encoder, decoder, transformer, bert, gpt, t5]
 level: beginner-to-intermediate
 last_updated: 2026-03-14
-status: in-progress
 ---
 
 # Encoder와 Decoder란 무엇인가?

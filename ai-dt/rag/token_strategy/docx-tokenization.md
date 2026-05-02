@@ -2,7 +2,6 @@
 tags: [rag, tokenization, word, docx, document-structure]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # Word 문서 토큰화 전략 (DOCX Tokenization Strategy)

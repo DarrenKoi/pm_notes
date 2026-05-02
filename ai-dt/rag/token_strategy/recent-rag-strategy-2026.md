@@ -2,7 +2,6 @@
 tags: [rag, tokenization, chunking, embedding, hybrid-search, enterprise]
 level: advanced
 last_updated: 2026-03-14
-status: complete
 ---
 
 # 최근 RAG 전략 정리 (2026) - 사내 구축 관점

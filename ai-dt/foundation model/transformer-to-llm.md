@@ -2,7 +2,6 @@
 tags: [transformer, llm, foundation-model, bert, gpt, t5]
 level: beginner-to-advanced
 last_updated: 2026-03-14
-status: in-progress
 ---
 
 # Transformer가 어떻게 LLM으로 이어졌는가?

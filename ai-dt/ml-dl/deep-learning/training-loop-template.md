@@ -2,7 +2,6 @@
 tags: [pytorch, training-loop, early-stopping, checkpointing]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # PyTorch 학습 루프 템플릿

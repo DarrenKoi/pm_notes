@@ -2,7 +2,6 @@
 tags: [pipeline, sklearn, preprocessing, column-transformer]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # sklearn 데이터 파이프라인 템플릿

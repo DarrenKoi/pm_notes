@@ -2,7 +2,6 @@
 tags: [fastapi, model-serving, deployment, rest-api]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # FastAPI ML 모델 서빙 가이드

@@ -2,7 +2,6 @@
 tags: [codex, harness, vibe-coding, governance]
 level: intermediate
 last_updated: 2026-04-28
-status: complete
 ---
 
 # 바이브 코딩 하네스 가이드

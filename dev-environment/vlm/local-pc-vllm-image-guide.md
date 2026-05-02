@@ -2,7 +2,6 @@
 tags: [vlm, vllm, requests, local-client]
 level: beginner
 last_updated: 2026-03-10
-status: active
 ---
 
 # 로컬 PC에서 `requests`로 이미지 보내기

@@ -2,7 +2,6 @@
 tags: [evaluation, metrics, roc-auc, confusion-matrix]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 모델 평가 메트릭 (Model Evaluation Metrics)

@@ -106,7 +106,6 @@ knowledge-base/
 tags: [rag, embedding, milvus]
 level: intermediate
 last_updated: 2025-01-31
-status: in-progress | complete | needs-review
 ---
 ```
 

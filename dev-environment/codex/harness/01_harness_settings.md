@@ -2,7 +2,6 @@
 tags: [codex, harness, settings, sandbox, mcp]
 level: intermediate
 last_updated: 2026-04-28
-status: complete
 ---
 
 # 하네스 설정 맵

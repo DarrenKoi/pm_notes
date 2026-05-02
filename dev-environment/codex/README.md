@@ -2,7 +2,6 @@
 tags: [codex, cli, ai-agent, productivity]
 level: intermediate
 last_updated: 2026-03-07
-status: complete
 ---
 
 # Codex CLI 실전 가이드

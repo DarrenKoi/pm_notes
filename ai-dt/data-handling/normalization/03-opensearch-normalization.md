@@ -2,7 +2,6 @@
 tags: [opensearch, normalization, search, normalizer, nested, hybrid-search, rag]
 level: advanced
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # OpenSearch에서의 정규화

@@ -2,7 +2,6 @@
 tags: [component]
 level: intermediate
 last_updated: YYYY-MM-DD
-status: in-progress
 sources: [raw/specs/<file>.md, src/<path>]
 ---
 

@@ -2,7 +2,6 @@
 tags: [attention, self-attention, transformer, seq2seq]
 level: beginner-to-intermediate
 last_updated: 2026-03-14
-status: in-progress
 ---
 
 # Attention이란 무엇인가?

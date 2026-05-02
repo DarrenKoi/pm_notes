@@ -2,7 +2,6 @@
 tags: [foundation-model, llm, transformer, attention, encoder, decoder]
 level: beginner-to-advanced
 last_updated: 2026-03-14
-status: in-progress
 ---
 
 # Foundation Model / LLM 기초

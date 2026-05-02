@@ -2,7 +2,6 @@
 tags: [codex, cli, resume, mcp, advanced]
 level: advanced
 last_updated: 2026-03-07
-status: complete
 ---
 
 # 세션 재사용, MCP, 고급 기능 (Sessions, MCP, Advanced)

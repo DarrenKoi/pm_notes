@@ -2,7 +2,6 @@
 tags: [airflow, local-development, testing, ci, deployment]
 level: intermediate
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 06. 로컬 개발과 테스트

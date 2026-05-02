@@ -2,7 +2,6 @@
 tags: [transfer-learning, fine-tuning, pretrained, pytorch]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 전이학습(Transfer Learning)

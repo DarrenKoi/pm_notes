@@ -2,7 +2,6 @@
 tags: [codex, cli, agents, skills, instructions]
 level: intermediate
 last_updated: 2026-03-07
-status: complete
 ---
 
 # 에이전트와 스킬 (Agents & Skills)

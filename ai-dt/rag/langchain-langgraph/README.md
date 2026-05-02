@@ -6,7 +6,6 @@
 tags: [langchain, langgraph, rag, tool-calling, agent]
 level: beginner → advanced
 last_updated: 2026-04-08
-status: in-progress
 ---
 
 ## 이 시리즈로 배우는 것

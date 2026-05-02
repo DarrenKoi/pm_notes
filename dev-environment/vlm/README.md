@@ -2,7 +2,6 @@
 tags: [vlm, vllm, private-cloud, requests, h200]
 level: beginner
 last_updated: 2026-03-10
-status: active
 ---
 
 # VLM Cloud Notes

@@ -2,7 +2,6 @@
 tags: [opensearch, performance, tuning, scaling, sharding, heap]
 level: advanced
 last_updated: 2026-02-07
-status: in-progress
 ---
 
 # OpenSearch 성능 최적화 (Performance & Scaling)

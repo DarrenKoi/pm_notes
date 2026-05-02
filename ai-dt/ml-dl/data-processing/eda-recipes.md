@@ -2,7 +2,6 @@
 tags: [eda, pandas, matplotlib, seaborn]
 level: beginner
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # EDA 레시피 모음 (Exploratory Data Analysis Recipes)

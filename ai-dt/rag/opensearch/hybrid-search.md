@@ -2,7 +2,6 @@
 tags: [opensearch, hybrid-search, vector-search, keyword-search, rrf]
 level: advanced
 last_updated: 2026-02-05
-status: in-progress
 ---
 
 # OpenSearch 하이브리드 검색 (Hybrid Search)

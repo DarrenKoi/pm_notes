@@ -2,7 +2,6 @@
 tags: [opensearch, python, client, performance, async, bulk]
 level: intermediate
 last_updated: 2026-02-07
-status: in-progress
 ---
 
 # OpenSearch Python 클라이언트 활용 (Advanced Python Client)

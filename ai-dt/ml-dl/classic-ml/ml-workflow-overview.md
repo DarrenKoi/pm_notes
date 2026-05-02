@@ -2,7 +2,6 @@
 tags: [ml, workflow, cross-validation, metrics]
 level: beginner
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # ML 워크플로우 개요

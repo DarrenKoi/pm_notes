@@ -2,7 +2,6 @@
 tags: [vue, state-management, props, emit, pinia]
 level: intermediate
 last_updated: 2026-02-01
-status: complete
 ---
 
 # Props/Emit vs Pinia: Vue 상태 관리 패턴 선택 가이드

@@ -2,7 +2,6 @@
 tags: [warp, terminal, basics]
 level: beginner
 last_updated: 2026-03-28
-status: complete
 ---
 
 # 설치 후 바로 익힐 기본기

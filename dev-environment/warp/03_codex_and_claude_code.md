@@ -2,7 +2,6 @@
 tags: [warp, codex, claude-code, ai-agent]
 level: intermediate
 last_updated: 2026-03-28
-status: complete
 ---
 
 # Warp에서 Codex와 Claude Code 잘 쓰기

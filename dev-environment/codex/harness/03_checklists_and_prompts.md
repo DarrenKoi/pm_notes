@@ -2,7 +2,6 @@
 tags: [codex, harness, checklist, prompts]
 level: practical
 last_updated: 2026-04-28
-status: complete
 ---
 
 # 체크리스트와 프롬프트 템플릿

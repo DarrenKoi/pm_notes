@@ -2,7 +2,6 @@
 tags: [rag, tokenization, document-processing, chunking]
 level: intermediate
 last_updated: 2026-02-12
-status: in-progress
 ---
 
 # 문서 토큰화 전략 (Document Tokenization Strategy)

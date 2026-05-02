@@ -2,7 +2,6 @@
 tags: [pandas, polars, csv, json, parquet, excel, data-loading]
 level: beginner
 last_updated: 2026-02-14
-status: complete
 ---
 
 # 데이터 로딩 포맷 가이드 (CSV, JSON, Parquet, Excel)

@@ -2,7 +2,6 @@
 tags: [codex, vibe-coding, workflow, quality]
 level: intermediate
 last_updated: 2026-04-28
-status: complete
 ---
 
 # 바이브 코딩 제어 워크플로

@@ -2,7 +2,6 @@
 tags: [rag, tokenization, powerpoint, pptx, slides]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # PowerPoint 문서 토큰화 전략 (PPTX Tokenization Strategy)

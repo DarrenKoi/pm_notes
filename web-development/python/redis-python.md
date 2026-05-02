@@ -2,7 +2,6 @@
 tags: [redis, cache, queue, python, ttl]
 level: intermediate
 last_updated: 2026-01-31
-status: in-progress
 ---
 
 # Redis with Python

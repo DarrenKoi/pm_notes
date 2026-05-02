@@ -2,7 +2,6 @@
 tags: [llm, rag, normalization, retrieval, metadata, glossary, embeddings]
 level: advanced
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # LLM과 RAG에서의 정규화

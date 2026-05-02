@@ -2,7 +2,6 @@
 tags: [opensearch, elasticsearch, knowhow, architecture, bulk-index, retrieval]
 level: intermediate
 last_updated: 2026-02-12
-status: complete
 ---
 
 # knowhow-elasticsearch 프로젝트 구조

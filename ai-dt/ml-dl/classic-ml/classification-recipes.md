@@ -2,7 +2,6 @@
 tags: [classification, sklearn, xgboost, lightgbm]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 분류(Classification) 실전 레시피

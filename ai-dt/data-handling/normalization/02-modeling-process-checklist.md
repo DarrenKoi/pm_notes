@@ -2,7 +2,6 @@
 tags: [normalization, data-modeling, checklist, denormalization]
 level: intermediate
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # 모델링 프로세스와 체크리스트

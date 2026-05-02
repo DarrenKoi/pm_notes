@@ -2,7 +2,6 @@
 tags: [opensearch, index-template, mapping, alias, rollover, ism]
 level: intermediate
 last_updated: 2026-02-12
-status: in-progress
 ---
 
 # OpenSearch Settings 실무 가이드

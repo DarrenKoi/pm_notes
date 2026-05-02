@@ -2,7 +2,6 @@
 tags: [llm-wiki, starter-template]
 level: intermediate
 last_updated: 2026-05-01
-status: complete
 ---
 
 # LLM Wiki Starter — 사용법

@@ -2,7 +2,6 @@
 tags: [model-saving, joblib, torch-save, onnx]
 level: beginner
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 모델 저장과 로딩 (Model Saving & Loading)

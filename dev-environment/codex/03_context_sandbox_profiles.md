@@ -2,7 +2,6 @@
 tags: [codex, cli, sandbox, approval, profiles, config]
 level: intermediate
 last_updated: 2026-03-07
-status: complete
 ---
 
 # 컨텍스트, 샌드박스, 프로필 (Context, Sandbox, Profiles)

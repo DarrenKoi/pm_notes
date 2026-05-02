@@ -2,7 +2,6 @@
 tags: [clustering, kmeans, dbscan, sklearn]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 클러스터링(Clustering) 실전 가이드

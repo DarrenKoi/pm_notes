@@ -2,7 +2,6 @@
 tags: [cnn, image-classification, torchvision, pretrained]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # CNN 이미지 분류 (Image Classification)

@@ -2,7 +2,6 @@
 tags: [milvus, vector-db, embedding, similarity-search]
 level: beginner
 last_updated: 2026-01-31
-status: in-progress
 ---
 
 # Milvus 기초 (Milvus Basics)

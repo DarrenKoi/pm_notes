@@ -6,7 +6,6 @@
 tags: [langgraph, rag, ai-workflow]
 level: beginner → advanced
 last_updated: 2026-01-31
-status: in-progress
 ---
 
 ## 학습 로드맵

@@ -2,7 +2,6 @@
 tags: [typescript, tsconfig, eslint, prettier, project-setup]
 level: beginner
 last_updated: 2026-02-01
-status: in-progress
 ---
 
 # TypeScript 프로젝트 설정 가이드

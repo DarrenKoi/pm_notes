@@ -2,7 +2,6 @@
 tags: [airflow, orchestration, minio, data-pipeline, etl]
 level: beginner
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # Airflow + MinIO 파이프라인 튜토리얼

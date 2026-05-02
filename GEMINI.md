@@ -56,7 +56,6 @@ Use a YAML frontmatter block at the top of files to add metadata:
 tags: [tag1, tag2, tag3]
 level: beginner | intermediate | advanced
 last_updated: YYYY-MM-DD
-status: in-progress | complete | needs-review
 ---
 ```
 

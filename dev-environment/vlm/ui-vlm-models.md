@@ -2,7 +2,6 @@
 tags: [vlm, ui-grounding, gui-agent, models]
 level: beginner
 last_updated: 2026-03-10
-status: active
 ---
 
 # UI 특화 VLM 모델 메모

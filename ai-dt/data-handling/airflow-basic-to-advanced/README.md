@@ -2,7 +2,6 @@
 tags: [airflow, tutorial, python, dag, orchestration]
 level: beginner-to-advanced
 last_updated: 2026-05-02
-status: complete
 ---
 
 # Airflow 기초부터 고급까지

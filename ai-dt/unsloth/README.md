@@ -2,7 +2,6 @@
 tags: [llm, sllm, finetuning, unsloth, qlora, lora]
 level: intermediate
 last_updated: 2026-03-11
-status: in-progress
 ---
 
 # Unsloth 기반 sLLM 파인튜닝 가이드

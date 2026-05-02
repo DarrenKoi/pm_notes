@@ -2,7 +2,6 @@
 tags: [terminal, zsh, navigation, ls, cd, pwd]
 level: beginner
 last_updated: 2026-02-09
-status: complete
 ---
 
 # 파일 시스템 탐색 (Navigation & Listing)

@@ -2,7 +2,6 @@
 tags: [vlm, vllm, private-cloud, h200, requests]
 level: beginner
 last_updated: 2026-03-10
-status: active
 ---
 
 # Private Cloud에서 `vLLM` 시작

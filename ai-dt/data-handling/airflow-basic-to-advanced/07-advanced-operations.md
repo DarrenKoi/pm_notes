@@ -2,7 +2,6 @@
 tags: [airflow, sensor, dataset, dynamic-task-mapping, backfill, operations]
 level: advanced
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 07. 고급 운영 패턴

@@ -2,7 +2,6 @@
 tags: [memory, conversation, rag, summarization, user-profiling]
 level: intermediate
 last_updated: 2026-02-03
-status: in-progress
 ---
 
 # LLM 대화 메모리 시스템 (Conversation Memory)

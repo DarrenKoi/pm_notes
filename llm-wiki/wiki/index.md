@@ -1,7 +1,6 @@
 ---
 tags: [wiki, index]
 last_updated: YYYY-MM-DD
-status: in-progress
 ---
 
 # Wiki Index

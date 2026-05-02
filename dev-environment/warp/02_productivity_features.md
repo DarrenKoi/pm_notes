@@ -2,7 +2,6 @@
 tags: [warp, productivity, workflows, sessions]
 level: intermediate
 last_updated: 2026-03-28
-status: complete
 ---
 
 # 생산성을 높이는 핵심 기능

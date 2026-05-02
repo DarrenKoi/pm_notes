@@ -2,7 +2,6 @@
 tags: [python, uv, package-manager, tooling]
 level: beginner
 last_updated: 2026-01-31
-status: complete
 ---
 
 # uv - 차세대 Python 패키지 매니저

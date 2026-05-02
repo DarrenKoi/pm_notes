@@ -2,7 +2,6 @@
 tags: [airflow, bitbucket, git-sync, secrets, company-env]
 level: intermediate-advanced
 last_updated: 2026-05-02
-status: complete
 ---
 
 # 08. Bitbucket Git Sync와 코드 기반 Secret 운영

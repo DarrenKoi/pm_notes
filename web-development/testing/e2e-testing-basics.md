@@ -2,7 +2,6 @@
 tags: [e2e, testing, playwright, cypress, automation]
 level: beginner
 last_updated: 2026-02-19
-status: in-progress
 ---
 
 # End-to-End Testing (E2E 테스트) 기초

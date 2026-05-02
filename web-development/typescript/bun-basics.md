@@ -2,7 +2,6 @@
 tags: [bun, typescript, runtime, package-manager, test-runner]
 level: beginner
 last_updated: 2026-04-04
-status: in-progress
 ---
 
 # Bun 시작 가이드

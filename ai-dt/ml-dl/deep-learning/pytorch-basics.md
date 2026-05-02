@@ -2,7 +2,6 @@
 tags: [pytorch, tensor, dataset, dataloader]
 level: beginner
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # PyTorch 기초 가이드

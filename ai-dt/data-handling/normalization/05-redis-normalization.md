@@ -2,7 +2,6 @@
 tags: [redis, normalization, cache, key-design, hash, json, search, vector]
 level: intermediate
 last_updated: 2026-05-02
-status: in-progress
 ---
 
 # Redis에서의 정규화

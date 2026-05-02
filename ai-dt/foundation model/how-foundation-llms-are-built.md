@@ -2,7 +2,6 @@
 tags: [foundation-model, llm, pretraining, scaling, alignment, rlhf]
 level: intermediate
 last_updated: 2026-03-14
-status: in-progress
 ---
 
 # Foundation LLM은 어떻게 만들어지는가?

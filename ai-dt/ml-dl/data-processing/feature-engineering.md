@@ -2,7 +2,6 @@
 tags: [feature-engineering, sklearn, encoding, scaling]
 level: intermediate
 last_updated: 2026-02-14
-status: in-progress
 ---
 
 # 피처 엔지니어링(Feature Engineering) 실전 가이드

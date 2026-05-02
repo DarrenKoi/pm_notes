@@ -2,7 +2,6 @@
 tags: [terminal, zsh, grep, find, chmod, chown, xargs, permissions]
 level: beginner
 last_updated: 2026-02-09
-status: complete
 ---
 
 # 검색과 권한 (Search & Permissions)

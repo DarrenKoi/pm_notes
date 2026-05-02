@@ -2,7 +2,6 @@
 tags: [codex, cli, exec, review, automation]
 level: intermediate
 last_updated: 2026-03-07
-status: complete
 ---
 
 # 비대화형 실행과 리뷰 (Exec & Review)

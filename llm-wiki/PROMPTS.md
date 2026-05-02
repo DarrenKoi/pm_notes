@@ -2,7 +2,6 @@
 tags: [llm-wiki, prompts]
 level: beginner
 last_updated: 2026-05-01
-status: complete
 ---
 
 # LLM Wiki — 개인용 프롬프트 모음

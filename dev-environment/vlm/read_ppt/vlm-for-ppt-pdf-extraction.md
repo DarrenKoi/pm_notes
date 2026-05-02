@@ -2,7 +2,6 @@
 tags: [vlm, ocr, ppt, pdf, document-extraction, structured-output, company-api]
 level: intermediate
 last_updated: 2026-03-11
-status: in-progress
 ---
 
 # PPT/PDF 슬라이드 이미지 -> 구조화 텍스트 추출을 위한 OCR-first 파이프라인

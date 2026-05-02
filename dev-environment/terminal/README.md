@@ -2,7 +2,6 @@
 tags: [terminal, zsh, macos, cli]
 level: beginner
 last_updated: 2026-02-09
-status: complete
 ---
 
 # Mac 터미널(zsh) 필수 명령어

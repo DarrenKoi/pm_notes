@@ -2,7 +2,6 @@
 tags: [rag, tokenization, drm, vlm, screenshot, enterprise]
 level: intermediate
 last_updated: 2026-02-12
-status: in-progress
 ---
 
 # DRM 환경에서의 문서 토큰화 전략

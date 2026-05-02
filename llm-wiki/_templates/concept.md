@@ -2,7 +2,6 @@
 tags: [concept, <domain>]
 level: beginner | intermediate | advanced
 last_updated: YYYY-MM-DD
-status: in-progress
 sources: [raw/references/<kind>/<file>.md]
 ---
 
