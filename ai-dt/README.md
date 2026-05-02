@@ -55,3 +55,4 @@
 ### 데이터 처리 (Data Handling)
 - [Data Handling 시리즈 목차](./data-handling/README.md)
   - [Airflow + MinIO 파이프라인 튜토리얼](./data-handling/airflow-minio-tutorial.md) - 폐쇄망 Airflow에서 Python 코드를 순차 실행하여 MinIO 데이터를 처리하는 ETL 파이프라인
+  - [데이터 정규화 시리즈](./data-handling/normalization/README.md) - RDB/OpenSearch/MongoDB/Redis/RAG/온톨로지 관점에서 정규화를 정리한 8편 시리즈 (cross-layer cheatsheet 포함)

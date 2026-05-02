@@ -10,6 +10,7 @@
 | AI/DT | [RAG/Milvus](./ai-dt/rag/milvus/README.md) | 🟡 진행중 | 2026-01-31 |
 | AI/DT | [MCP](./ai-dt/mcp/README.md) | 🟡 진행중 | 2026-01-31 |
 | AI/DT | [데이터 처리 (Airflow + MinIO)](./ai-dt/data-handling/airflow-minio-tutorial.md) | 🟡 진행중 | 2026-05-02 |
+| AI/DT | [데이터 정규화 시리즈](./ai-dt/data-handling/normalization/README.md) | 🟡 진행중 | 2026-05-02 |
 | Web | FastAPI | 🔴 시작 전 | - |
 | Web | [TypeScript 프로젝트 설정](./web-development/typescript/tsconfig-setup.md) | 🟡 진행중 | 2026-02-01 |
 | Web | [Vite 기초](./web-development/typescript/vite-basics.md) | 🟡 진행중 | 2026-02-01 |
