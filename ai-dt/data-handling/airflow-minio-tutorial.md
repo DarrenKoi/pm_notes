@@ -440,19 +440,111 @@ git push
 
 배포 후 Web UI에서 DAG가 보이는지 확인 (수 초~수 분 소요).
 
-#### 로컬에서 빠르게 검증
-DAG 구문 오류는 운영 환경에 올리기 전에 잡는 게 좋다:
+#### 로컬(Windows)에서 검증하기
+
+> Airflow는 `pwd`, `grp`, `fcntl` 같은 POSIX 전용 모듈을 사용하므로 **Windows Python에 직접 설치되지 않는다**. 따라서 로컬 검증은 (1) Airflow 없이 파싱만, (2) WSL2/Docker로 Linux 환경을 빌려서 진행한다.
+
+##### 레벨 1 — Airflow 없이 파싱·import만 검사 (가장 가벼움)
+운영 환경에 올리기 전 90%의 실수(오타, import 에러, 모듈 경로)는 이 단계에서 잡힌다. PowerShell/cmd에서:
+
+```powershell
+# 가상환경 만들고 최소 의존성만
+python -m venv .venv
+.venv\Scripts\activate
+pip install "apache-airflow==2.9.*" --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.11.txt
+# (Windows에선 일부 패키지 install이 실패할 수 있음 — 그땐 레벨 2로)
+
+# DAG import만 시도 (스케줄러 없이도 동작)
+python dags/minio_analysis_pipeline.py
+```
+
+import만이라도 통과하면 DAG 구조 자체는 유효하다. 더 가볍게는 **Airflow 설치 없이** Operator/decorator를 mock해서 import만 검증하는 방법도 있다.
+
+##### 레벨 2 — WSL2 + `airflow standalone` (가벼우면서 UI까지)
+PowerShell에서 한 번만:
+
+```powershell
+wsl --install -d Ubuntu-22.04
+```
+
+WSL Ubuntu 안에서:
 
 ```bash
-# 1. import 에러 검사
-python dags/minio_analysis_pipeline.py
+sudo apt update && sudo apt install -y python3-venv
+python3 -m venv ~/airflow-venv && source ~/airflow-venv/bin/activate
 
-# 2. DAG 파싱 검사
-airflow dags list-import-errors
+export AIRFLOW_HOME=~/airflow
+pip install "apache-airflow==2.9.3" \
+  --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.10.txt"
 
-# 3. 단일 Task만 격리 실행 (Connection 등 필요)
-airflow tasks test minio_analysis_pipeline download 2026-05-02
+# DAG 디렉토리를 Windows 쪽 repo로 심볼릭 링크
+ln -s /mnt/c/Code/pm_notes/dags ~/airflow/dags
+
+# scheduler + webserver를 한 프로세스로 (개발 전용)
+airflow standalone
 ```
+
+`http://localhost:8080`에서 Web UI 접속, 초기 admin 비밀번호는 콘솔에 출력된다. DAG가 Graph View에 뜨는지, Task 의존성이 의도대로 그려지는지 확인.
+
+##### 레벨 3 — Docker Compose (운영과 가장 유사)
+Docker Desktop이 깔려 있으면 공식 compose 파일로 한 방에 띄울 수 있다.
+
+```powershell
+mkdir airflow-local; cd airflow-local
+curl -O https://airflow.apache.org/docs/apache-airflow/2.9.3/docker-compose.yaml
+mkdir dags, logs, plugins, config
+"AIRFLOW_UID=50000" | Out-File -Encoding ascii .env
+
+# 초기화 1회
+docker compose up airflow-init
+
+# 기동
+docker compose up -d
+```
+
+repo의 `dags/` 폴더를 `airflow-local/dags/`에 복사하거나 compose 파일의 `volumes:` 경로를 repo 경로로 바꾸면 된다. UI는 `http://localhost:8080` (계정: `airflow`/`airflow`).
+
+> **주의**: compose 파일의 볼륨 매핑에 Windows 절대 경로를 쓸 땐 `C:\Code\pm_notes\dags`처럼 Docker Desktop이 인식 가능한 형태로. WSL2 백엔드면 `/c/Code/pm_notes/dags` 형식도 가능.
+
+##### 레벨 4 — Astro CLI (개인 개발 가장 편함)
+Astronomer가 만든 dev 도구. Docker Desktop 위에서 한 줄로 동작.
+
+```powershell
+winget install -e --id Astronomer.Astro
+astro dev init       # Airflow 프로젝트 스캐폴딩 생성
+# dags/, requirements.txt, packages.txt 등이 만들어짐
+astro dev start      # 컨테이너 4개 (webserver/scheduler/triggerer/postgres) 기동
+```
+
+#### 단일 Task만 실행해서 디버깅
+WSL/Docker 환경 안에서:
+
+```bash
+# 특정 Task 1개만 실행 (실제 Connection 사용)
+airflow tasks test minio_analysis_pipeline download 2026-05-02
+
+# DAG 전체를 scheduler 없이 한 번 돌려보기
+airflow dags test minio_analysis_pipeline 2026-05-02
+
+# 파싱 에러 일괄 확인
+airflow dags list-import-errors
+```
+
+`tasks test`는 metadata DB에 결과를 기록하지 않으므로 부작용 없이 반복 실행할 수 있다 — 디버깅 1순위.
+
+#### Windows ↔ Linux 환경 차이에서 자주 깨지는 것
+
+| 항목 | Windows 로컬 | Linux 운영 | 대처 |
+|------|-------------|-----------|------|
+| 임시 디렉토리 | `C:\Users\..\AppData\Local\Temp` | `/tmp` | 코드에서 `tempfile.gettempdir()` 사용, DAG 파라미터로 경로 주입 |
+| 경로 구분자 | `\` | `/` | `pathlib.Path`만 사용, 문자열 결합 금지 |
+| 줄바꿈 | CRLF | LF | repo 루트에 `.gitattributes`로 `*.py text eol=lf` 강제 |
+| 파일 권한 | 의미 없음 | `chmod +x` 필요 | `BashOperator`보다 `PythonOperator` 우선 |
+| 셸 명령 | PowerShell/cmd | bash | `BashOperator`의 `bash_command`는 항상 `set -euo pipefail`로 시작 |
+| 한글 인코딩 | cp949 기본 | UTF-8 | 파일 read/write 시 `encoding="utf-8"` 명시 |
+| MinIO 엔드포인트 | `localhost:9000` (Docker) | `minio.your-company.com:9000` | Connection으로 추상화, 코드에 하드코딩 금지 |
+
+> 이 차이들 때문에 "로컬에서 됐는데 운영에서 깨지는" 일이 발생한다. 가능하면 **레벨 3(Docker)** 이상으로 운영과 같은 OS·같은 Python 버전에서 한 번 더 검증하는 게 안전하다.
 
 #### Web UI에서 자주 보는 곳
 - **Graph View**: 의존성 흐름 시각화
@@ -462,7 +554,312 @@ airflow tasks test minio_analysis_pipeline download 2026-05-02
 
 ---
 
-### 5. 자주 만나는 문제 (Troubleshooting)
+### 5. Logging & 관찰성 (Observability)
+
+> 매니지드 Airflow에서 우리가 할 수 있는 건 **DAG 코드 안에서 로그를 잘 남기는 것**과 **UI에서 추적 가능한 형태로 신호를 노출하는 것** 두 가지다.
+
+#### Airflow가 로그를 잡는 원리
+- 각 Task Instance가 시작될 때 Airflow는 `airflow.task` 로거에 **파일 핸들러**를 붙인다 (재시도마다 별도 파일)
+- Python 표준 `logging`으로 찍은 로그, `print()`, 그리고 unhandled exception은 모두 이 핸들러로 흘러간다
+- UI의 Grid View → Task 클릭 → **Log** 탭이 이 파일을 그대로 렌더링한다 (재시도 별로 `Try 1, Try 2` 탭 분리)
+
+#### 권장 패턴: 표준 logging 사용
+
+```python
+# tasks/download.py
+import logging
+from pathlib import Path
+from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+
+log = logging.getLogger(__name__)  # Airflow가 자동으로 task logger에 연결
+
+
+def download_from_minio(bucket: str, prefix: str, local_dir: str, conn_id: str = "minio_default") -> list[str]:
+    log.info("Start download bucket=%s prefix=%s", bucket, prefix)
+
+    hook = S3Hook(aws_conn_id=conn_id)
+    Path(local_dir).mkdir(parents=True, exist_ok=True)
+
+    keys = hook.list_keys(bucket_name=bucket, prefix=prefix) or []
+    log.info("Discovered %d keys under %s", len(keys), prefix)
+
+    if not keys:
+        log.error("No objects under s3://%s/%s — upstream system may be late", bucket, prefix)
+        raise ValueError(f"No objects under s3://{bucket}/{prefix}")
+
+    downloaded = []
+    for i, key in enumerate(keys, 1):
+        if key.endswith("/"):
+            continue
+        local_path = str(Path(local_dir) / Path(key).name)
+        try:
+            hook.get_key(key, bucket_name=bucket).download_file(local_path)
+            downloaded.append(local_path)
+        except Exception:
+            log.exception("Failed to download %s", key)  # traceback 자동 포함
+            raise
+
+        # 100개마다 한 번씩 진행상황 (수만 개일 때 로그 폭주 방지)
+        if i % 100 == 0:
+            log.info("Progress: %d/%d", i, len(keys))
+
+    log.info("Done. Downloaded %d files to %s", len(downloaded), local_dir)
+    return downloaded
+```
+
+핵심 규칙:
+- `print()` 대신 **`logging`**: timestamp/level/모듈명이 자동으로 붙어 grep·필터링이 쉬움
+- 에러는 `log.exception(...)`: 한 줄로 메시지 + 전체 traceback 동시 기록
+- 반복문에서는 **batch로 요약** 로그 (수만 줄 로그는 UI 렌더가 느려지고 핵심을 가림)
+- `%s`, `%d` 포맷 사용 (logging 모듈이 lazy evaluation — 로그 비활성화 시 문자열 연산 스킵)
+
+#### "끝났다" vs "제대로 됐다"를 구분하기
+
+UI의 초록불은 **exit code 0**만 보장한다. 의도한 결과가 나왔는지 확인하려면 Task 끝부분에 검증을 둔다:
+
+```python
+def preprocess(file_paths: list[str], output_path: str) -> str:
+    # ... 처리 ...
+    cleaned.to_parquet(output_path, index=False)
+
+    # 검증: 핵심 가정이 맞는지
+    if len(cleaned) == 0:
+        raise ValueError("Preprocessed result is empty — upstream data quality issue?")
+
+    expected_cols = {"timestamp", "lot_id", "value"}
+    missing = expected_cols - set(cleaned.columns)
+    if missing:
+        raise ValueError(f"Missing required columns: {missing}")
+
+    log.info("Validated: %d rows, %d cols", len(cleaned), len(cleaned.columns))
+    return output_path
+```
+
+빨리 실패하는 게 늦게 이상한 결과를 만드는 것보다 훨씬 디버깅하기 쉽다.
+
+#### XCom으로 핵심 지표 노출 (UI에서 한눈에)
+
+함수 return 값이 자동으로 XCom에 저장돼 UI의 **XCom 탭**에서 보인다. 로그를 펴보지 않고도 "어제 run에서 몇 건 처리됐지?"를 즉답할 수 있다.
+
+```python
+@task
+def analyze(input_path: str) -> dict:
+    df = pd.read_parquet(input_path)
+    summary = {
+        "rows": len(df),
+        "null_rate": float(df.isna().mean().mean()),
+        "duration_sec": elapsed,
+        "output_key": output_key,
+    }
+    log.info("Analysis summary: %s", summary)
+    return summary  # → XCom에 저장됨
+```
+
+> 큰 데이터(수백 KB+)는 XCom에 넣지 말 것 — metadata DB에 쌓여 성능 저하. **요약 dict, 경로, 카운트만**.
+
+#### Task Context의 logger 직접 쓰기
+
+`@task` 함수 안에서 Airflow context에 접근하면 task logger를 명시적으로 쓸 수 있다:
+
+```python
+@task
+def download(**context):
+    log = context["ti"].log  # 또는 logging.getLogger("airflow.task")
+    log.info("execution_date=%s try_number=%d", context["ds"], context["ti"].try_number)
+```
+
+대부분은 `logging.getLogger(__name__)`로 충분하지만, **재시도 횟수**나 **execution_date**처럼 task 메타데이터를 로그에 함께 찍고 싶을 때 유용하다.
+
+#### 매니지드 환경에서 로그가 안 보일 때
+
+| 증상 | 확인 |
+|------|------|
+| Log 탭에 `*** Falling back to local log` | 원격 스토리지(S3/MinIO) ship 실패. 운영팀에 권한·연결 문의 |
+| 며칠 지난 run의 로그가 비어 있음 | UI 캐시 만료 — `remote_base_log_folder` 위치를 운영팀에 확인해 직접 다운로드 |
+| Task가 **success**인데 코드가 안 돈 것 같음 | `print` 만 쓰고 있을 가능성. 표준 `logging` + 시작/종료 sentinel 로그 추가 |
+| 로그가 너무 길어 UI 렌더가 느림 | 반복문 batch 요약, 큰 dict는 `repr` 대신 핵심 키만 |
+| 운영팀이 로그 보존 N일이라고 함 | 중요 run의 핵심 메트릭은 `analyze` Task에서 **MinIO에 별도 JSON으로 저장**해두기 |
+
+#### 운영팀에 한 번만 확인해두면 좋은 것
+- `[logging] remote_logging`, `remote_base_log_folder`, `remote_log_conn_id` 설정값
+- 로그 보존 기간 (예: 30일 후 삭제 정책)
+- 로그를 ELK/Loki/Splunk 같은 사내 중앙 시스템에도 보내는지 — 그렇다면 검색이 훨씬 빨라짐
+- `EXTRA_LOGGING_LEVEL`이나 DAG 단위 로그 레벨 override가 가능한지
+
+#### 보강 옵션: OpenSearch에 로그/이벤트 직접 보내기
+
+매니지드 Airflow의 로그 보존이 짧거나, DAG 간 비교·집계가 필요할 때 OpenSearch를 보조 저장소로 쓰는 게 유효하다. **단, 방식 선택이 결과를 가른다**.
+
+##### 0순위: 인프라 레벨 ship이 이미 있는지 확인
+사내에 OpenSearch가 있다면 운영팀이 이미 **Filebeat/Fluentd/Fluent Bit**로 Airflow의 task 로그를 인덱싱하고 있을 가능성이 매우 높다. 그렇다면:
+- 우리는 DAG 코드를 바꿀 필요 없음
+- 인덱스 패턴(예: `airflow-task-logs-*`)과 검색 권한만 받으면 끝
+- Kibana/OpenSearch Dashboards에서 `dag_id:"minio_analysis_pipeline"` 같은 쿼리로 즉시 검색 가능
+
+운영팀에 "Airflow 로그가 OpenSearch에 들어오고 있나요? 인덱스 이름 알려주세요" 한 줄 질문이 1순위다.
+
+##### 그게 없을 때: 두 가지 패턴
+
+| 방식 | 무엇을 보내나 | 장점 | 단점 |
+|------|---------------|------|------|
+| **A. Logging Handler로 모든 로그 라인** | 모든 `log.info/error` | Kibana에서 raw 로그 그대로 검색 | 매 라인 네트워크 호출 → 느림. 버퍼링 필수. 네트워크 blip 시 로그 손실 위험 |
+| **B. 구조화 이벤트만 (권장)** | start/end/metric/error 같은 핵심 시점만 JSON 1건 인덱싱 | 가볍고 쿼리 가독성 좋음. raw 로그는 어차피 Airflow에 있음. 비용 적음 | "특정 줄에서 뭐 찍혔는지"는 여전히 Airflow UI를 봐야 함 |
+
+대부분의 경우 **B**가 정답. raw 로그까지 OpenSearch에 다 넣고 싶으면 A를 쓰되 반드시 **버퍼링 + bulk flush** 형태로.
+
+##### 패턴 B: 구조화 이벤트 인덱싱
+
+```python
+# tasks/observability.py
+import logging
+import os
+import socket
+import time
+from contextlib import contextmanager
+from datetime import datetime, timezone
+
+from opensearchpy import OpenSearch
+from airflow.hooks.base import BaseHook
+
+log = logging.getLogger(__name__)
+
+
+def _client() -> OpenSearch:
+    """Connection 'opensearch_default'에서 host/auth 읽기."""
+    conn = BaseHook.get_connection("opensearch_default")
+    return OpenSearch(
+        hosts=[{"host": conn.host, "port": conn.port or 9200}],
+        http_auth=(conn.login, conn.password) if conn.login else None,
+        use_ssl=conn.schema == "https",
+        verify_certs=False,  # 사내 CA는 별도 설정
+        timeout=10,
+    )
+
+
+def emit_event(event_type: str, payload: dict, context: dict | None = None) -> None:
+    """OpenSearch에 1개 이벤트 인덱싱. 실패해도 Task는 망치지 않는다."""
+    doc = {
+        "@timestamp": datetime.now(timezone.utc).isoformat(),
+        "event_type": event_type,            # "task_start" / "task_end" / "metric" / "error"
+        "host": socket.gethostname(),
+        "dag_id": (context or {}).get("dag", {}).dag_id if context else None,
+        "task_id": (context or {}).get("task", {}).task_id if context else None,
+        "run_id": (context or {}).get("run_id") if context else None,
+        "execution_date": (context or {}).get("ds") if context else None,
+        "try_number": (context or {}).get("ti", {}).try_number if context else None,
+        **payload,
+    }
+    index = f"airflow-events-{datetime.now(timezone.utc):%Y.%m}"
+    try:
+        _client().index(index=index, body=doc)
+    except Exception:
+        # 관찰성 시스템이 본 작업을 깨면 안 된다 — 경고만 남기고 통과
+        log.warning("Failed to emit event to OpenSearch", exc_info=True)
+
+
+@contextmanager
+def observed_task(name: str, **context):
+    """Task를 감싸서 시작·종료·실패·소요시간을 자동 인덱싱."""
+    start = time.perf_counter()
+    emit_event("task_start", {"name": name}, context)
+    try:
+        yield
+    except Exception as e:
+        emit_event(
+            "task_error",
+            {"name": name, "error_type": type(e).__name__, "error_msg": str(e)},
+            context,
+        )
+        raise
+    finally:
+        elapsed = time.perf_counter() - start
+        emit_event("task_end", {"name": name, "duration_sec": round(elapsed, 3)}, context)
+```
+
+DAG에서 사용:
+
+```python
+from tasks.observability import observed_task, emit_event
+
+@task
+def analyze(input_path: str, **context) -> dict:
+    with observed_task("analyze", **context):
+        df = pd.read_parquet(input_path)
+
+        # 핵심 메트릭은 별도 이벤트로
+        emit_event("metric", {
+            "metric": "input_rows",
+            "value": len(df),
+            "input_path": input_path,
+        }, context)
+
+        result = df.describe()
+        # ... 업로드 ...
+        return {"rows": len(df)}
+```
+
+이렇게 하면 OpenSearch에서:
+- `event_type:task_error AND dag_id:"minio_analysis_pipeline"` → 최근 실패 모음
+- `event_type:metric AND metric:"input_rows"` 시계열 → 일별 입력 행 수 추이
+- `event_type:task_end` aggregation → 평균 처리 시간 / 95th percentile
+
+##### 패턴 A를 굳이 쓴다면: 버퍼링 핸들러
+
+```python
+import atexit, logging, queue
+from logging.handlers import QueueHandler, QueueListener
+from opensearchpy import helpers
+
+class OpenSearchBulkHandler(logging.Handler):
+    def __init__(self, client, index_pattern, batch_size=100, flush_interval=5):
+        super().__init__()
+        self.buffer = []
+        self.client = client
+        self.index_pattern = index_pattern
+        self.batch_size = batch_size
+
+    def emit(self, record):
+        self.buffer.append({
+            "_index": datetime.utcnow().strftime(self.index_pattern),
+            "_source": {
+                "@timestamp": datetime.utcnow().isoformat(),
+                "level": record.levelname,
+                "logger": record.name,
+                "message": record.getMessage(),
+                # context는 LogRecord.extra로 주입
+            },
+        })
+        if len(self.buffer) >= self.batch_size:
+            self.flush()
+
+    def flush(self):
+        if not self.buffer:
+            return
+        try:
+            helpers.bulk(self.client, self.buffer)
+        except Exception:
+            pass  # 로그가 본 작업을 깨면 안 됨
+        finally:
+            self.buffer.clear()
+
+# Task 시작 시 attach, 종료 시 flush
+handler = OpenSearchBulkHandler(_client(), "airflow-logs-%Y.%m.%d")
+logging.getLogger().addHandler(handler)
+atexit.register(handler.flush)
+```
+
+> 진짜 production이라면 `QueueHandler`/`QueueListener`로 별도 스레드에서 flush하도록 분리하는 게 안전 — 메인 스레드 block을 막을 수 있다.
+
+##### 주의사항
+- **opensearch-py 패키지 설치**: 폐쇄망이면 사내 PyPI 미러 사용 (앞서 본 방법 A/B/C/D)
+- **인덱스 라이프사이클(ISM) 정책**: 인덱스가 무한정 커지지 않도록 운영팀과 협의해 ILM/ISM 설정 (예: 30일 후 close, 90일 후 delete)
+- **PII/기밀**: Task 로그에 장비ID·사번·민감 데이터가 섞이지 않게 인덱싱 전 필터
+- **인증 정보**: OpenSearch user/password는 반드시 Airflow Connection으로, 코드에 박지 말 것
+- **순환 의존**: OpenSearch가 죽으면 우리 DAG도 같이 죽는 구조를 만들면 안 된다 — `try/except`로 관찰성 코드는 본 작업과 격리
+
+---
+
+### 6. 자주 만나는 문제 (Troubleshooting)
 
 | 증상 | 원인 / 해결 |
 |------|-------------|
