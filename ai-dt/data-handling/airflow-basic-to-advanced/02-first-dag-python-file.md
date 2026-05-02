@@ -148,9 +148,50 @@ if __name__ == "__main__":
 
 `set -euo pipefail`은 shell command가 중간에 실패했을 때 Task가 정상 성공으로 표시되는 일을 줄이기 위한 방어 장치다.
 
+각 옵션의 의미:
+
+- `set`: 현재 shell 실행 옵션을 바꾼다.
+- `-e`: command가 실패하면 즉시 shell을 종료한다.
+- `-u`: 정의되지 않은 변수를 사용하면 에러로 처리한다.
+- `-o pipefail`: pipe로 연결된 command 중 하나라도 실패하면 전체 command를 실패로 처리한다.
+
+예를 들어 아래 command는 `python`이 실패해도 `tee`가 성공하면 전체 command가 성공처럼 보일 수 있다.
+
+```bash
+python hello_job.py --date 2026-05-02 | tee output.log
+```
+
+`pipefail`을 켜면 앞쪽의 `python` 실패도 Airflow Task 실패로 전달된다.
+
+처음에는 아래 정도로 이해하면 된다.
+
+```bash
+set -euo pipefail
+```
+
+의미:
+
+```text
+shell script 안에서 실패를 조용히 넘기지 말고, 가능한 빨리 실패로 멈춰라.
+```
+
+단, 이것은 `BashOperator`처럼 shell command를 실행할 때 필요한 설정이다. `PythonOperator`는 shell을 거치지 않고 Python 함수를 직접 실행하므로 `set -euo pipefail`을 쓰지 않는다.
+
 ## 방식 B. PythonOperator로 실행
 
 Python 파일이 함수 형태로 정리되어 있다면 `PythonOperator`를 사용할 수 있다.
+
+`PythonOperator`는 "shell command 문자열을 실행"하는 방식이 아니라, Airflow Worker 안에서 Python 함수를 직접 호출하는 방식이다.
+
+```text
+BashOperator
+  -> bash command 실행
+  -> python hello_job.py --date 2026-05-02
+
+PythonOperator
+  -> Python 함수 직접 실행
+  -> main(run_date="2026-05-02")
+```
 
 ```text
 dags/
@@ -190,16 +231,101 @@ with DAG(
     )
 ```
 
+여기서 중요한 부분:
+
+- `python_callable=main`: 실행할 Python 함수를 지정한다.
+- `op_kwargs={"run_date": "{{ ds }}"}`: `main(run_date="...")`처럼 keyword argument를 넘긴다.
+- `{{ ds }}`: Airflow가 Task 실행 시점에 날짜 문자열로 바꿔준다.
+
+실제 실행 시점에는 아래처럼 호출되는 것과 비슷하다.
+
+```python
+main(run_date="2026-05-02")
+```
+
+`PythonOperator`를 쓰려면 기존 Python 파일을 CLI 전용 구조가 아니라, import 가능한 함수 구조로 만드는 것이 좋다.
+
+```python
+# jobs/hello_job.py
+def main(run_date: str) -> None:
+    print(f"Hello Airflow. run_date={run_date}")
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--date", required=True)
+    args = parser.parse_args()
+
+    main(args.date)
+```
+
+이렇게 만들면 두 방식이 모두 가능하다.
+
+로컬 CLI 실행:
+
+```bash
+python jobs/hello_job.py --date 2026-05-02
+```
+
+Airflow `PythonOperator` 실행:
+
+```python
+PythonOperator(
+    task_id="run_hello",
+    python_callable=main,
+    op_kwargs={"run_date": "{{ ds }}"},
+)
+```
+
+시간 구간이 필요한 작업도 `op_kwargs`로 넘길 수 있다.
+
+```python
+run_hourly = PythonOperator(
+    task_id="run_hourly",
+    python_callable=process_interval,
+    op_kwargs={
+        "start_ts": "{{ data_interval_start }}",
+        "end_ts": "{{ data_interval_end }}",
+    },
+)
+```
+
+함수는 아래처럼 받는다.
+
+```python
+def process_interval(start_ts: str, end_ts: str) -> None:
+    print(f"process interval: {start_ts} <= data < {end_ts}")
+```
+
+Airflow context를 함수 안에서 직접 읽을 수도 있다.
+
+```python
+from airflow.operators.python import get_current_context
+
+
+def main() -> None:
+    context = get_current_context()
+    run_date = context["ds"]
+    print(f"Hello Airflow. run_date={run_date}")
+```
+
+다만 처음에는 `get_current_context()`보다 `op_kwargs`로 필요한 값만 명시적으로 넘기는 방식이 더 이해하기 쉽다.
+
 장점:
 
 - shell command 문자열이 줄어든다.
 - Python 함수 단위로 테스트하기 쉽다.
 - XCom 반환값을 다루기 쉽다.
+- Python 예외가 그대로 Task 실패로 기록된다.
 
 단점:
 
 - Python import 경로가 Airflow 서버에서 맞아야 한다.
 - DAG import 시점에 무거운 import가 실행되지 않도록 주의해야 한다.
+- 필요한 Python 패키지가 Airflow Worker 환경에 설치되어 있어야 한다.
+- 큰 데이터 자체를 return 값으로 넘기면 XCom이 커지므로 피해야 한다.
 
 ## 방식 C. TaskFlow API로 실행
 
