@@ -134,7 +134,7 @@ def load_to_db(rows):
         insert(row)
 ```
 
-같은 날짜를 재실행하면 중복 insert가 생길 수 있다.
+같은 날짜 또는 같은 시간 구간을 재실행하면 중복 insert가 생길 수 있다.
 
 ## 좋은 예
 
@@ -171,9 +171,27 @@ s3://clean/sales/dt=2026-05-02/data.parquet
 
 이렇게 하면 중간 실패로 불완전한 파일이 최종 경로에 남는 문제를 줄일 수 있다.
 
-## 날짜 파티션
+## 날짜/시간 파티션
 
-Airflow에서는 처리 날짜를 명시적으로 받는다.
+Airflow에서는 처리 날짜 또는 처리 시간 구간을 명시적으로 받는다.
+
+단, 모든 작업이 날짜/시간 인자를 필요로 하는 것은 아니다. Python 파일이 "현재 상태를 확인하고 필요한 일을 수행"하는 운영성 작업이라면 인자 없이 실행하고 Airflow UI에서 성공/실패만 추적해도 된다.
+
+인자 없이 실행해도 괜찮은 예:
+
+- 매시간 health check
+- queue에 쌓인 일을 가능한 만큼 처리
+- 외부 시스템의 최신 상태를 동기화
+- 항상 최신 파일 하나만 처리
+- 실패해도 다음 시간에 다시 최신 상태를 보면 되는 작업
+
+인자가 필요한 예:
+
+- `2026-05-02 10:00~11:00` 데이터만 처리
+- 특정 날짜/시간 파티션 파일 생성
+- 실패한 시간 구간만 다시 실행
+- 과거 데이터를 backfill
+- 같은 입력으로 재실행하면 같은 결과가 나와야 하는 데이터 파이프라인
 
 ```python
 def main(run_date: str) -> None:
@@ -188,6 +206,35 @@ BashOperator(
     task_id="preprocess",
     bash_command="python preprocess.py --date {{ ds }}",
 )
+```
+
+매시간 실행이면 날짜만으로는 부족하다.
+
+```python
+def main(start_ts: str, end_ts: str) -> None:
+    # 예: start_ts = "2026-05-02T10:00:00+09:00"
+    # 예: end_ts = "2026-05-02T11:00:00+09:00"
+    ...
+```
+
+DAG에서는 처리 구간을 넘긴다.
+
+```python
+BashOperator(
+    task_id="preprocess_hourly",
+    bash_command=(
+        "python preprocess.py "
+        "--start-ts '{{ data_interval_start }}' "
+        "--end-ts '{{ data_interval_end }}'"
+    ),
+)
+```
+
+파일 저장 경로는 시간 파티션까지 포함한다.
+
+```python
+def make_hourly_output_path(run_date: str, run_hour: str) -> str:
+    return f"s3://clean/sales/dt={run_date}/hour={run_hour}/data.parquet"
 ```
 
 중요한 처리 기준에는 `datetime.now()`를 쓰지 않는다.
@@ -207,11 +254,16 @@ def main(run_date: str) -> None:
     ...
 ```
 
-## Connection 사용
+hourly 작업에서는 이렇게 받는다.
 
-DB, S3, MinIO, API key는 코드에 직접 넣지 않는다.
+```python
+def main(start_ts: str, end_ts: str) -> None:
+    ...
+```
 
-Airflow Connection에 저장하고 `conn_id`로 참조한다.
+## Secret 관리
+
+일반적인 Airflow 운영에서는 DB, S3, MinIO, API key를 Airflow Connection에 저장하고 `conn_id`로 참조한다.
 
 ```python
 from airflow.hooks.base import BaseHook
@@ -230,9 +282,53 @@ def get_db_config():
 
 S3/MinIO는 회사에 따라 AWS provider의 S3Hook을 쓰거나 boto3/minio client를 직접 쓴다. provider가 설치되어 있는지 먼저 확인해야 한다.
 
-## Variable 사용
+하지만 현재 사내 환경에서는 Airflow Connection/Variable 접근이 불가능하므로 이 방식을 사용할 수 없다. 대신 Bitbucket Git Sync repository 안에 `secrets.py`와 `config.py`를 두는 방식으로 정리한다.
 
-자주 바뀌는 설정은 Variable로 둘 수 있다.
+```text
+dags/
+└── company_job/
+    ├── __init__.py
+    ├── config.py
+    ├── secrets.py
+    ├── clients.py
+    └── jobs/
+```
+
+예:
+
+```python
+# dags/company_job/secrets.py
+
+WAREHOUSE_DB = {
+    "host": "warehouse.company.internal",
+    "port": 5432,
+    "database": "analytics",
+    "user": "batch_user",
+    "password": "REPLACE_WITH_REAL_PASSWORD",
+}
+```
+
+```python
+# dags/company_job/clients.py
+
+def get_db_config() -> dict:
+    from company_job.secrets import WAREHOUSE_DB
+
+    return WAREHOUSE_DB
+```
+
+주의:
+
+- secret은 `secrets.py` 한 곳에 모은다.
+- secret 값을 로그에 출력하지 않는다.
+- Bitbucket repository 접근 권한을 최소화한다.
+- secret이 노출되면 key rotation을 한다.
+
+자세한 내용은 [08. Bitbucket Git Sync와 코드 기반 Secret 운영](./08-bitbucket-git-sync-and-code-secrets.md)을 따른다.
+
+## 설정값 관리
+
+일반적인 Airflow에서는 자주 바뀌는 설정을 Variable로 둘 수 있다.
 
 ```python
 from airflow.models import Variable
@@ -257,6 +353,16 @@ def run():
 
 ```python
 bash_command="python job.py --bucket {{ var.value.company_data_bucket }}"
+```
+
+현재 환경에서는 Variable 접근이 불가능하므로 설정값은 `config.py`에 둔다.
+
+```python
+# dags/company_job/config.py
+
+RAW_PREFIX = "raw/sales"
+CLEAN_PREFIX = "clean/sales"
+DEFAULT_RETRIES = 2
 ```
 
 ## 로그에 남기면 안 되는 것
@@ -318,10 +424,10 @@ subprocess.run(command, check=True)
 
 - Task 간 큰 데이터는 외부 저장소에 저장하는가
 - XCom에는 작은 값만 넣는가
-- 출력 경로가 날짜 파티션을 포함하는가
-- 같은 날짜 재실행 시 중복이 생기지 않는가
+- 출력 경로가 날짜/시간 파티션을 포함하는가
+- 같은 처리 구간 재실행 시 중복이 생기지 않는가
 - 실패 중간 산출물이 최종 경로에 남지 않는가
-- secret을 Connection이나 secret backend로 관리하는가
+- 현재 환경에서는 secret을 `secrets.py`에 모으고 Bitbucket 권한을 제한했는가
 - 로그에 민감정보를 찍지 않는가
 - 코드가 실패를 삼키지 않고 예외를 발생시키는가
 

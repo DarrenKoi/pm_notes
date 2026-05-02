@@ -151,7 +151,7 @@ mypy==1.10.1
 | 특정 DAG만 다른 버전 필요 | `PythonVirtualenvOperator` |
 | 매 실행마다 설치가 느림 | `ExternalPythonOperator` |
 | 시스템 패키지, Java, CLI, GPU 필요 | 컨테이너 실행 |
-| 회사가 DAG 업로드만 허용 | 서버 설치 버전에 맞춰 코드 수정 |
+| 회사가 Bitbucket Git Sync만 허용 | DAG repository에는 코드만 넣고, 서버 설치 버전에 맞춰 코드 수정 |
 | 외부 PyPI 차단 | 사내 Nexus/Artifactory/wheelhouse 사용 |
 
 ## 전략 A. Airflow Worker 기본 환경 사용
@@ -249,7 +249,9 @@ task = PythonVirtualenvOperator(
 )
 ```
 
-회사 정책상 DAG 코드에 repository 주소나 credential을 넣지 못할 수 있다. 이 경우 운영팀에 pip config 또는 Airflow Connection 기반 설정이 가능한지 확인한다.
+현재 환경처럼 Connection 접근이 불가능하면 Airflow Connection 기반 package index 설정은 사용할 수 없다. 이 경우 운영팀이 Worker의 pip config를 설정해주거나, DAG 코드의 `pip_install_options`에 사내 Nexus 주소를 직접 넣어야 한다.
+
+credential이 필요한 package index라면 코드에 넣는 순간 Bitbucket repository가 credential 저장소가 된다. 접근 권한과 key rotation 정책을 반드시 확인한다.
 
 ## 전략 C. ExternalPythonOperator
 
@@ -326,7 +328,12 @@ with DAG(
         namespace="airflow",
         image="harbor.your-company.com/data/company-job:1.0.0",
         cmds=["python", "-m", "company_jobs.analyze"],
-        arguments=["--date", "{{ ds }}"],
+        arguments=[
+            "--start-ts",
+            "{{ data_interval_start }}",
+            "--end-ts",
+            "{{ data_interval_end }}",
+        ],
         get_logs=True,
     )
 ```
@@ -451,6 +458,7 @@ python -m pip install -r requirements-app.txt --constraint "${CONSTRAINT_URL}"
 - 사내 Nexus/Artifactory 주소를 확인했는가
 - venv/container 사용 권한을 확인했는가
 - Worker가 여러 대일 때 환경이 모두 같은지 확인했는가
+- Bitbucket Git Sync가 requirements를 자동 설치하지 않는다는 점을 확인했는가
 
 ## 다음 단계
 

@@ -48,12 +48,42 @@ if __name__ == "__main__":
 
 - 로컬에서도 실행할 수 있다.
 - Airflow에서도 같은 방식으로 실행할 수 있다.
-- 처리 날짜를 명시적으로 받을 수 있다.
+- 처리 날짜 또는 처리 시간 구간을 명시적으로 받을 수 있다.
 - 테스트하기 쉽다.
 
 ## 방식 A. BashOperator로 실행
 
 기존 Python 파일을 거의 그대로 실행하려면 `BashOperator`가 가장 쉽다.
+
+스크립트가 인자를 필요로 하지 않고, Airflow Web UI에서 실행 성공/실패만 추적하면 되는 경우에는 인자 없이 실행해도 된다.
+
+```python
+# dags/simple_job_dag.py
+from datetime import datetime
+
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+
+
+SCRIPT_PATH = "/opt/airflow/dags/jobs/simple_job.py"
+
+
+with DAG(
+    dag_id="simple_job_dag",
+    start_date=datetime(2026, 5, 1),
+    schedule="@hourly",
+    catchup=False,
+    tags=["tutorial"],
+) as dag:
+    run_simple = BashOperator(
+        task_id="run_simple",
+        bash_command=f"set -euo pipefail; python {SCRIPT_PATH}",
+    )
+```
+
+이 경우에도 Airflow UI에서는 매시간 DAG Run, Task 상태, 로그를 볼 수 있다.
+
+다만 스크립트가 특정 날짜나 시간대 데이터를 처리해야 한다면 인자를 넘긴다.
 
 ```python
 # dags/hello_job_dag.py
@@ -81,7 +111,40 @@ with DAG(
 
 `schedule=None`은 자동 스케줄 없이 수동 실행만 하겠다는 뜻이다. 처음 테스트할 때는 이 설정이 안전하다.
 
-`{{ ds }}`는 Airflow가 실행 날짜를 `YYYY-MM-DD` 형식으로 넣어주는 Jinja template이다.
+`{{ ds }}`는 Airflow가 실행 날짜를 `YYYY-MM-DD` 형식으로 넣어주는 Jinja template이다. daily 작업에는 이 정도로 충분할 수 있다.
+
+매시간 실행하는 파일이면 날짜만 넘기지 말고 시간 구간을 넘긴다.
+
+```python
+run_hourly = BashOperator(
+    task_id="run_hourly",
+    bash_command=(
+        f"set -euo pipefail; python {SCRIPT_PATH} "
+        "--start-ts '{{ data_interval_start }}' "
+        "--end-ts '{{ data_interval_end }}'"
+    ),
+)
+```
+
+Python 파일도 hourly 인자를 받도록 만든다.
+
+```python
+# hourly_job.py
+import argparse
+
+
+def main(start_ts: str, end_ts: str) -> None:
+    print(f"process interval: {start_ts} <= data < {end_ts}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start-ts", required=True)
+    parser.add_argument("--end-ts", required=True)
+    args = parser.parse_args()
+
+    main(start_ts=args.start_ts, end_ts=args.end_ts)
+```
 
 `set -euo pipefail`은 shell command가 중간에 실패했을 때 Task가 정상 성공으로 표시되는 일을 줄이기 위한 방어 장치다.
 
@@ -142,6 +205,31 @@ with DAG(
 
 Airflow 2.x에서는 `@task` 방식도 많이 사용한다.
 
+`@task`의 의미는 "이 Python 함수를 Airflow Task로 바꾼다"는 뜻이다.
+
+중요한 점:
+
+- `@task`가 붙은 함수는 DAG 안에서 Task가 된다.
+- DAG 파일을 파싱할 때 함수 본문이 바로 실행되는 것은 아니다.
+- DAG 안에서 `run_hello()`처럼 호출하면 실제 Python 실행이 아니라 Task 정의가 만들어진다.
+- 실제 함수 본문은 Scheduler가 해당 Task를 Worker에 보냈을 때 실행된다.
+- 함수의 `return` 값은 자동으로 XCom에 저장된다.
+- 다른 `@task` 함수의 인자로 넘기면 Airflow가 Task 의존성을 자동으로 만든다.
+
+일반 Python 관점과 Airflow 관점이 다르다.
+
+```python
+@task
+def extract() -> str:
+    print("this runs on worker")
+    return "s3://bucket/raw/data.csv"
+
+
+raw_path = extract()
+```
+
+위 코드에서 `raw_path = extract()`는 DAG 파싱 시점에 `print()`를 실행하지 않는다. `raw_path`는 실제 문자열이 아니라 "extract Task가 나중에 반환할 값"을 가리키는 Airflow 객체다.
+
 ```python
 from datetime import datetime
 
@@ -170,7 +258,47 @@ hello_pipeline()
 
 `@task` 내부에서 import하는 이유는 DAG 파싱을 가볍게 만들기 위해서다. `pandas`, `torch`, `tensorflow`처럼 import가 무거운 패키지는 Task 내부에서 import하는 것이 안전하다.
 
-## DAG 업로드 후 확인할 것
+TaskFlow API에서 의존성은 함수 호출처럼 표현할 수 있다.
+
+```python
+@task
+def download() -> str:
+    return "minio://bucket/raw.csv"
+
+
+@task
+def preprocess(raw_path: str) -> str:
+    return raw_path.replace("raw", "clean")
+
+
+@task
+def report(clean_path: str) -> None:
+    print(clean_path)
+
+
+raw = download()
+clean = preprocess(raw)
+report(clean)
+```
+
+이 코드는 `download -> preprocess -> report` 순서로 실행된다. `raw`와 `clean`은 실제 파일 내용이 아니라 XCom으로 전달되는 작은 값이다.
+
+기존 `.py` 파일을 그냥 실행만 하고 싶으면 `BashOperator`가 더 단순하다. Python 함수 단위로 DAG를 깔끔하게 구성하고 반환값을 다음 Task에 넘기고 싶으면 `@task`가 편하다.
+
+## Bitbucket Git Sync 후 확인할 것
+
+현재 사내 환경에서는 DAG 파일을 서버에 직접 업로드하지 않고 Bitbucket repository에 push한다. Airflow는 지정된 repository와 branch를 Git Sync로 읽는다.
+
+배포 흐름:
+
+```text
+local edit
+  -> git commit
+  -> git push Bitbucket
+  -> Airflow Git Sync
+  -> Scheduler DAG parse
+  -> Airflow UI 확인
+```
 
 회사 Airflow UI에서 다음을 확인한다.
 
@@ -179,6 +307,8 @@ hello_pipeline()
 3. 수동 실행이 가능한가
 4. Task 로그에 `Hello Airflow`가 찍히는가
 5. 실패 시 traceback이 로그에 보이는가
+
+push 직후 바로 반영되지 않을 수 있다. Git Sync interval이 몇 분인지 운영팀에 확인한다.
 
 ## DAG가 UI에 안 보일 때
 
@@ -222,7 +352,7 @@ airflow tasks test hello_job_dag run_hello 2026-05-02
 - 처음부터 매일 자동 스케줄을 켜지 않는다.
 - 여러 파일을 한 번에 모두 연결하지 않는다.
 - 패키지 설치까지 동시에 해결하려고 하지 않는다.
-- secret을 코드에 넣지 않는다.
+- secret을 여러 코드 파일에 흩뿌리지 않는다. 현재 환경에서는 `secrets.py`에 모으고 로그에 찍지 않는다.
 - 로컬 절대 경로를 사용하지 않는다.
 
 먼저 작은 Task 하나를 성공시키고, 그 다음에 단계를 늘린다.
