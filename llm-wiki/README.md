@@ -1,4 +1,4 @@
-# LLM Wiki Research and Company Setup Guide
+# LLM Wiki Research and Local Setup Guide
 
 Researched: 2026-04-28
 
@@ -9,23 +9,22 @@ retrieval augmented generation (RAG), where the model retrieves raw chunks every
 time a question is asked, an LLM Wiki compiles source material into durable,
 cross-linked Markdown pages.
 
-For company projects, the best practical setup is a hybrid:
+For local personal projects, the best practical setup is a hybrid:
 
 1. Use an LLM Wiki for durable project memory.
 2. Use RAG or search for raw-source lookup.
-3. Use Git and pull request review before generated wiki updates become official.
+3. Use Git diff and small commits to review generated wiki updates.
 
-Do not put confidential company data into a public hosted demo. Start with a
-local or self-hosted workflow.
+Keep the wiki on the local PC unless there is a clear reason to share it.
 
 ## What LLM Wiki Means
 
 The LLM Wiki pattern was described by Andrej Karpathy as a way to build a
-personal or team knowledge base with three layers:
+personal knowledge base with three layers:
 
 | Layer | Purpose |
 | --- | --- |
-| Raw sources | Immutable source material such as specs, notes, transcripts, tickets, and documents. |
+| Raw sources | Immutable source material such as specs, ADR drafts, incidents, journals, and reference notes. |
 | Wiki | LLM-generated Markdown pages with summaries, concepts, entities, decisions, and cross-links. |
 | Schema | Instructions that define how the LLM should ingest, query, cite, update, and lint the wiki. |
 
@@ -72,11 +71,10 @@ Lint should look for:
 - Important concepts without canonical pages
 - Data gaps that need more source material
 
-## Recommended Company Setup
+## Recommended Local Setup
 
-Create one LLM Wiki per active project or product area. Keep it inside the
-project repository when possible, because Git provides history, review, and
-rollback.
+Create one LLM Wiki per active project or notes area. Keep it inside the local
+project repository when possible, because Git provides history and rollback.
 
 Recommended folder structure:
 
@@ -84,12 +82,15 @@ Recommended folder structure:
 docs/llm-wiki/
   WIKI_SCHEMA.md
   raw/
+    journals/
     specs/
-    meetings/
     decisions/
     incidents/
-    tickets/
-    architecture/
+    references/
+      articles/
+      courses/
+      papers/
+      books/
   wiki/
     index.md
     log.md
@@ -108,9 +109,9 @@ llm-wiki/
   README.md
 ```
 
-## First Pilot Plan
+## First Personal Setup
 
-Start with one currently active company project.
+Start with one currently active local project.
 
 1. Create `docs/llm-wiki/` inside the project repository.
 2. Add `WIKI_SCHEMA.md` with project-specific rules.
@@ -123,10 +124,10 @@ Start with one currently active company project.
    - major design decisions
    - release notes
    - incident reports
-   - summarized meeting notes
+   - meeting-derived ADR or spec notes
    - important Jira, Linear, or GitHub issues
 4. Ask the LLM to ingest one source at a time.
-5. Review generated changes before committing.
+5. Review generated changes with `git diff` before committing.
 6. Run a weekly lint pass.
 
 ## Suggested `WIKI_SCHEMA.md` Rules
@@ -136,7 +137,7 @@ Use a schema file to keep the LLM disciplined.
 Minimum rules:
 
 - Raw sources are immutable. Never rewrite files under `raw/`.
-- The wiki is LLM-maintained but human-reviewed.
+- The wiki is LLM-maintained but personally reviewed.
 - Every non-trivial claim must cite a raw source path or URL.
 - Unverified claims must be marked as `Unverified`.
 - Conflicting claims must be marked as `Conflict`.
@@ -145,7 +146,7 @@ Minimum rules:
 - Append an entry to `wiki/log.md` after every ingest, query saved as a page, or lint pass.
 - Prefer small, focused pages over large catch-all documents.
 - Use relative links between wiki pages.
-- Open a pull request for review before generated wiki updates become official.
+- Review `git diff` before generated wiki updates become official.
 
 Example log format:
 
@@ -154,21 +155,21 @@ Example log format:
 
 - Added `wiki/runbooks/deployment.md`
 - Updated `wiki/components/backend-api.md`
-- Found one open question about staging rollback ownership
+- Found one open question about staging rollback responsibility
 ```
 
 ## Tooling Options
 
 ### Markdown, Git, and Codex or Claude Code
 
-This is the lowest-friction option for engineering teams.
+This is the lowest-friction option for local engineering notes.
 
 Best for:
 
-- Project teams already using Git
+- Projects already using Git
 - Engineering documentation
 - Architecture and decision memory
-- Reviewable knowledge updates
+- Reviewable local knowledge updates
 
 Tradeoffs:
 
@@ -184,7 +185,7 @@ S3-compatible storage, and an MCP server for Claude.
 
 Best for:
 
-- Teams that want a web UI
+- Local users who want a web UI
 - Uploaded documents
 - MCP-based LLM operation
 - Source viewing and wiki rendering
@@ -193,12 +194,12 @@ Tradeoffs:
 
 - More infrastructure than a simple Markdown folder
 - Needs Supabase and S3-compatible storage
-- Should be security-reviewed before company use
+- Should be security-reviewed before serious use
 
 ### Onyx
 
 Onyx is a broader enterprise knowledge assistant with connectors and RAG
-infrastructure. It is useful when the company needs to index systems such as
+infrastructure. It is useful when you need to index systems such as
 GitHub, GitLab, Confluence, Jira, Slack, Google Drive, SharePoint, Notion, and
 other sources.
 
@@ -217,14 +218,14 @@ Tradeoffs:
 
 ### Open WebUI Knowledge
 
-Open WebUI provides knowledge bases where teams can upload project docs and
+Open WebUI provides knowledge bases where users can upload project docs and
 attach them to models. It supports focused retrieval and full-context modes.
 
 Best for:
 
 - Lightweight internal document chat
 - Fast local or self-hosted experiments
-- Teams already using Open WebUI
+- Local setups already using Open WebUI
 
 Tradeoffs:
 
@@ -252,25 +253,26 @@ Tradeoffs:
 
 ## Security and Governance Rules
 
-For company use, make these rules non-negotiable:
+For local use, make these rules non-negotiable:
 
 - Keep raw sources immutable.
 - Keep generated wiki pages in Git or another versioned system.
-- Require human review for generated changes.
-- Separate wikis by project and access boundary.
+- Review generated changes before committing.
+- Separate wikis by project or notes area.
 - Do not ingest secrets, credentials, private customer data, or unrestricted chat exports.
-- Prefer summarized meeting notes over raw meeting transcripts when sensitive content may appear.
+- Do not keep raw meeting transcripts in the wiki. Convert meeting takeaways
+  into ADR drafts, specs, incidents, or journals.
 - Require citations for all operationally important claims.
 - Mark uncertainty clearly.
-- Add owners for key pages such as deployment, incident response, and architecture overview.
 - Run periodic lint checks.
 
 ## Practical Starting Commands
 
-Inside a company project repository:
+Inside a local project repository:
 
 ```bash
-mkdir -p docs/llm-wiki/raw/{specs,meetings,decisions,incidents,tickets,architecture}
+mkdir -p docs/llm-wiki/raw/{journals,specs,decisions,incidents}
+mkdir -p docs/llm-wiki/raw/references/{articles,courses,papers,books}
 mkdir -p docs/llm-wiki/wiki/{components,concepts,decisions,runbooks,sources}
 touch docs/llm-wiki/WIKI_SCHEMA.md
 touch docs/llm-wiki/wiki/index.md
@@ -290,16 +292,16 @@ Mark uncertain claims and cite source paths.
 
 ## Evaluation Checklist
 
-Before rolling out beyond the pilot project, verify:
+Before relying on the wiki long-term, verify:
 
-- Can a new engineer understand the project from `wiki/overview.md`?
+- Can future you understand the project from `wiki/overview.md`?
 - Are major components documented?
 - Are major architectural decisions documented?
 - Can the wiki answer common onboarding questions?
 - Are claims cited?
 - Are secrets excluded?
 - Are stale or contradictory pages flagged?
-- Does the review process catch bad LLM edits?
+- Does `git diff` review catch bad LLM edits?
 - Is the maintenance cost lower than the old documentation workflow?
 
 ## Sources

@@ -10,7 +10,6 @@
 
 ```text
 docs/llm-wiki/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
-작성자: 대영
 
 질문: 우리 RAG 파이프라인에서 임베딩 모델은 뭐 쓰지?
 

@@ -3,7 +3,6 @@ tags: [overview]
 level: beginner
 last_updated: YYYY-MM-DD
 status: in-progress
-owner: <작성자>
 sources: []
 ---
 

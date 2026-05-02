@@ -2,7 +2,6 @@
 tags: [decision, adr]
 last_updated: YYYY-MM-DD
 status: proposed | accepted | superseded-by:<file> | deprecated
-owner: <작성자>
 sources: [raw/decisions/<file>.md]
 ---
 
@@ -68,5 +67,5 @@ sources: [raw/decisions/<file>.md]
 ## 참고 자료 (References)
 
 - 원본 초안: [raw/decisions/<file>.md](../../raw/decisions/<file>.md)
-- 미팅 요약: [raw/meetings/<file>.md](../../raw/meetings/<file>.md)
+- 관련 스펙: [raw/specs/<file>.md](../../raw/specs/<file>.md)
 - 외부:

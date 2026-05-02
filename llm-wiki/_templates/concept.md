@@ -3,8 +3,7 @@ tags: [concept, <domain>]
 level: beginner | intermediate | advanced
 last_updated: YYYY-MM-DD
 status: in-progress
-owner: <작성자>
-sources: [raw/learning-logs/<file>.md]
+sources: [raw/references/<kind>/<file>.md]
 ---
 
 # <개념명>
@@ -54,6 +53,6 @@ sources: [raw/learning-logs/<file>.md]
 
 ## 참고 자료 (References)
 
-- 원본 메모: [raw/learning-logs/<file>.md](../../raw/learning-logs/<file>.md)
+- 원본 자료/학습 메모: [raw/references/<kind>/<file>.md](../../raw/references/<kind>/<file>.md)
 - 관련 컴포넌트: [components/<name>.md](../components/<name>.md)
 - 외부 문서:

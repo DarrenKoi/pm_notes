@@ -8,4 +8,4 @@
 
 ingest 시 LLM 이 `wiki/concepts/<topic>.md` 의 References 섹션 강한 인용으로 들어간다.
 
-이 폴더 안 쓰는 팀이면 `git rm -r raw/references/papers/` 해도 무방.
+이 폴더를 안 쓰면 `git rm -r raw/references/papers/` 해도 무방.

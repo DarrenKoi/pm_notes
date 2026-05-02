@@ -1,9 +1,11 @@
 # raw/references/
 
-외부에서 가져온 학습 자료. 본인이 작성한 메모(`learning-logs/`, `journals/`) 와 분리.
+외부에서 가져온 학습 자료와 그 자료를 바탕으로 한 본인 학습 메모를 보관한다.
 
-- **무엇이 들어가나**: 블로그 글 요약, 강의·튜토리얼 노트, 논문 요약, 책 챕터 노트.
-- **무엇이 들어가지 않나**: 본인의 학습 reaction (→ `learning-logs/`), 작업 일지 (→ `journals/`).
+- **무엇이 들어가나**: 블로그 글 요약, 강의·튜토리얼 노트, 논문 요약,
+  책 챕터 노트, 해당 자료를 읽으며 생긴 본인 메모.
+- **무엇이 들어가지 않나**: 특정 프로젝트 작업 일지 (→ `journals/`),
+  확정된 의사결정 (→ `decisions/`).
 
 ## 하위 분류
 
@@ -20,20 +22,23 @@
 
 - **전문 복사 금지.** 외부 콘텐츠를 그대로 붙여넣지 말 것.
 - **요약·발췌·자기 노트만.** 인용 시 출처 URL·저자·발행일 명시.
-- 회사 내부 자료를 references/ 에 넣을 땐 NDA·기밀 등급 확인.
+- 비공개 자료를 references/ 에 넣을 땐 기밀·저작권 조건 확인.
 
 ## ingest 결과
 
 ingest 시 LLM 이 합성하는 곳:
 
-- `articles/`, `courses/`, `papers/`, `books/` → 주로 `wiki/concepts/<topic>.md` (Why → What → How → References 구조)
+- `articles/`, `courses/`, `papers/`, `books/`
+  → 주로 `wiki/concepts/<topic>.md` (Why → What → How → References 구조)
 - 절차 위주 튜토리얼 → `wiki/runbooks/<task>.md` 로 갈 수 있음
 
 각 wiki 페이지의 References 섹션에 `raw/references/<폴더>/<파일>.md` 로 출처 인용된다.
 
 ## 파일 작성 규칙
 
-- 파일명: 소문자-하이픈 (SCHEMA §2). 날짜 prefix 는 자료 캡처 시점이 회상에 도움될 때만 — 정적인 주제 (책·코스·논문) 는 자유.
+- 파일명: 소문자-하이픈 (SCHEMA §2).
+  날짜 prefix 는 자료 캡처 시점이 회상에 도움될 때만.
+  정적인 주제 (책·코스·논문) 는 자유.
 - 본문 권장 구조:
   ```markdown
   # <자료 제목>
@@ -50,5 +55,5 @@ ingest 시 LLM 이 합성하는 곳:
   > "원문 인용" — 페이지/타임스탬프
 
   ## 내 메모 / 비판 / 적용 아이디어
-  - (선택) 본인 코멘트
+  - 막힌 지점, 새로 배운 점, 적용 아이디어
   ```

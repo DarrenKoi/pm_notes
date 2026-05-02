@@ -1,6 +1,6 @@
 # 01. Bootstrap — 프로젝트 셋업 (1 회)
 
-> 새 프로젝트에 starter 폴더 (`docs/llm-wiki/`) 를 복사한 직후 1 회 실행. 일반 팀원은 이 단계 건너뛰고 [`02-ingest-raw.md`](./02-ingest-raw.md) 부터.
+> 새 프로젝트에 starter 폴더 (`docs/llm-wiki/`) 를 복사한 직후 1 회 실행.
 
 ## 상황
 
@@ -27,9 +27,6 @@ docs/llm-wiki/ 의 LLM Wiki 부트스트랩을 마무리해줘.
    를 일괄 치환.
 2. raw/ 와 wiki/ 컴포넌트 폴더는 빈 상태 유지 (첫 ingest 전).
 3. raw/, wiki/ 하위 README.md 는 폴더 설명용이므로 손대지 말 것.
-
-작성자(owner) 정보는 부트스트랩 시점에 정하지 않는다.
-각 페이지가 ingest/save 시점에 그 작업의 작성자로 채워진다.
 
 치환된 파일 목록을 마지막에 보고.
 ```

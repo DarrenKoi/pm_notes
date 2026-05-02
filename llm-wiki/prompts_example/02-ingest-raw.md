@@ -2,15 +2,18 @@
 
 > raw/ 에 파일을 추가한 후 wiki 페이지로 합성하는 가장 흔한 작업. 한 번에 한 raw 파일만.
 
-## 케이스 A: 학습 메모 (가장 흔함)
+## 케이스 A: 참고 자료 기반 학습 메모 (가장 흔함)
 
 ### 상황
 
-LangGraph 의 state 관리를 처음 만져보고 막힌 지점을 5 줄 메모로 작성:
+LangGraph 공식 튜토리얼을 보며 state 관리를 처음 만져보고 막힌 지점을 5 줄 메모로 작성:
 
 ```bash
-cat > docs/llm-wiki/raw/learning-logs/20260501-langgraph-state.md <<EOF
+cat > docs/llm-wiki/raw/references/courses/20260501-langgraph-state.md <<EOF
 # LangGraph state 관리
+
+- 출처: https://langchain-ai.github.io/langgraph/
+- 캡처: 2026-05-01
 
 - StateGraph 의 state 는 TypedDict 또는 Pydantic 모델
 - 노드가 dict 를 반환하면 state 에 merge 됨 (replace 아님)
@@ -24,27 +27,26 @@ EOF
 
 | 변수 | 값 |
 | --- | --- |
-| `<폴더>` | `learning-logs` |
+| `<폴더>` | `references/courses` |
 | `<파일>` | `20260501-langgraph-state.md` |
 
 ### 실제 프롬프트
 
 ```text
 docs/llm-wiki/WIKI_SCHEMA.md 를 운영 규칙으로 읽고 그대로 따라줘.
-작성자: 대영
 
-Ingest 대상: docs/llm-wiki/raw/learning-logs/20260501-langgraph-state.md
+Ingest 대상: docs/llm-wiki/raw/references/courses/20260501-langgraph-state.md
 
 작업 순서:
 1. 대상 raw 파일을 읽고 핵심 정보 추출.
 2. 영향받는 wiki/ 페이지 식별 — 신규 wiki/concepts/langgraph-state-management.md 예상.
    - _templates/concept.md 를 베이스로.
-   - frontmatter 의 owner: 대영, last_updated: 2026-05-01.
+   - frontmatter 의 last_updated: 2026-05-01.
 3. 모든 비자명 주장에 raw 또는 코드 경로 인용.
 4. 페이지 간 cross-link 는 상대경로로.
 5. wiki/index.md 의 Concepts 섹션에 새 페이지 등록.
 6. wiki/log.md 최상단에 ingest 항목 prepend:
-   ## [2026-05-01] ingest | raw/learning-logs/20260501-langgraph-state.md (by 대영)
+   ## [2026-05-01] ingest | raw/references/courses/20260501-langgraph-state.md
    - <변경 내역>
 7. raw/ 는 절대 수정하지 말 것.
 8. 검증 안 된 주장은 > Unverified: 블록.
@@ -112,7 +114,7 @@ Ingest 대상: docs/llm-wiki/raw/decisions/20260501-db-choice.md
 
 ### 상황
 
-사내 "재고 관리 규칙" 정리 메모를 `raw/specs/재고-관리-규칙.md` 에 작성. 영어 원어가 없는 도메인 용어 → SCHEMA §2 의 hybrid 정책에 따라 한글 파일명 OK.
+개인 프로젝트의 "재고 관리 규칙" 정리 메모를 `raw/specs/재고-관리-규칙.md` 에 작성. 영어 원어가 없는 도메인 용어 → SCHEMA §2 의 hybrid 정책에 따라 한글 파일명 OK.
 
 ### 차이점
 
@@ -125,7 +127,7 @@ Ingest 대상: docs/llm-wiki/raw/specs/재고-관리-규칙.md
 ### 예상 출력
 
 - 신규 `wiki/concepts/재고-관리-규칙.md` 또는 `wiki/components/재고-관리-시스템.md` (내용에 따라).
-- frontmatter `owner: 대영`, `tags: [재고, 도메인-규칙]` 같이 한글 태그도 OK.
+- frontmatter `tags: [재고, 도메인-규칙]` 같이 한글 태그도 OK.
 - cross-link 도 한글 경로: `[재고 관리 규칙](../concepts/재고-관리-규칙.md)`.
 
 > 영어 기술 용어가 섞이면 영문이 default — 예: `재고-관리-api.md` (X), `inventory-management-api.md` (O). 경계 모호하면 영문으로.

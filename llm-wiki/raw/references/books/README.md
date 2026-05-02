@@ -8,4 +8,4 @@
 
 ingest 시 LLM 이 `wiki/concepts/<topic>.md` 로 합성. 책 한 권의 여러 챕터가 같은 wiki 페이지로 모일 수도 있음.
 
-이 폴더 안 쓰는 팀이면 `git rm -r raw/references/books/` 해도 무방.
+이 폴더를 안 쓰면 `git rm -r raw/references/books/` 해도 무방.

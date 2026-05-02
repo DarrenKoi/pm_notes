@@ -3,7 +3,6 @@ tags: [runbook, <task>]
 level: beginner | intermediate
 last_updated: YYYY-MM-DD
 status: in-progress
-owner: <작성자>
 sources: [raw/specs/<file>.md, src/<path>]
 ---
 
