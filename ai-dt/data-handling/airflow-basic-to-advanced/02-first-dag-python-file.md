@@ -436,6 +436,122 @@ local edit
 
 push 직후 바로 반영되지 않을 수 있다. Git Sync interval이 몇 분인지 운영팀에 확인한다.
 
+## Git Sync에서 다른 Python 파일 import하기
+
+Git Sync 방식이어도 DAG 파일에서 같은 repository 안의 다른 Python 파일을 import해서 사용할 수 있다.
+
+예를 들어 FTP 다운로드 로직을 별도 파일로 분리해 두고, DAG 파일에서는 그 함수를 호출하는 구조가 가능하다.
+
+```text
+dags/
+├── ftp_download_dag.py
+└── jobs/
+    ├── __init__.py
+    └── ftp_download_handler.py
+```
+
+```python
+# dags/jobs/ftp_download_handler.py
+def download_ftp_files(run_date: str) -> None:
+    print(f"download ftp files for {run_date}")
+```
+
+```python
+# dags/ftp_download_dag.py
+from datetime import datetime
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+
+from jobs.ftp_download_handler import download_ftp_files
+
+
+with DAG(
+    dag_id="ftp_download_dag",
+    start_date=datetime(2026, 5, 1),
+    schedule=None,
+    catchup=False,
+    tags=["ftp"],
+) as dag:
+    download = PythonOperator(
+        task_id="download_ftp",
+        python_callable=download_ftp_files,
+        op_kwargs={"run_date": "{{ ds }}"},
+    )
+```
+
+중요한 조건은 두 가지다.
+
+1. Scheduler와 Worker가 같은 파일을 볼 수 있어야 한다.
+2. Airflow의 Python import path에서 해당 module을 찾을 수 있어야 한다.
+
+`같은 git root에 있다`는 사실만으로 항상 충분하지는 않다. Airflow 설정에서 실제 `dags_folder`가 repository root 전체인지, `repo/dags` 같은 하위 폴더인지 확인해야 한다. 안전하게 시작하려면 DAG 파일과 helper module을 같은 `dags/` 아래에 두고 package처럼 구성한다.
+
+```text
+dags/
+└── jobs/
+    ├── __init__.py
+    └── ftp_download_handler.py
+```
+
+그리고 DAG에서는 상대 import보다 명확한 absolute import를 사용한다.
+
+```python
+from jobs.ftp_download_handler import download_ftp_files
+```
+
+FTP handler처럼 외부 시스템에 접속하는 코드는 import 시점에 실행되면 안 된다.
+
+나쁜 예:
+
+```python
+# jobs/ftp_download_handler.py
+client = FTPClient()
+client.connect()
+
+
+def download_ftp_files(run_date: str) -> None:
+    client.download(run_date)
+```
+
+이 코드는 DAG가 실행되기 전, Scheduler가 DAG 파일을 파싱하는 순간 FTP 접속을 시도할 수 있다. 그러면 DAG import error가 나거나 Scheduler가 느려진다.
+
+좋은 예:
+
+```python
+# jobs/ftp_download_handler.py
+def download_ftp_files(run_date: str) -> None:
+    client = FTPClient()
+    client.connect()
+    client.download(run_date)
+```
+
+더 안전하게 하려면 DAG 파일에서도 Task 실행 함수 안에서 import한다.
+
+```python
+def run_download(run_date: str) -> None:
+    from jobs.ftp_download_handler import download_ftp_files
+
+    download_ftp_files(run_date)
+
+
+download = PythonOperator(
+    task_id="download_ftp",
+    python_callable=run_download,
+    op_kwargs={"run_date": "{{ ds }}"},
+)
+```
+
+이 패턴은 DAG 파싱을 가볍게 유지하는 데 도움이 된다.
+
+정리:
+
+- helper Python 파일을 별도로 두고 import해도 된다.
+- 단, Scheduler와 Worker가 모두 그 파일에 접근할 수 있어야 한다.
+- import 시점에는 FTP 접속, DB 연결, 큰 파일 로딩 같은 작업을 하지 않는다.
+- 실제 외부 접속은 `PythonOperator`가 호출하는 함수 안에서 실행한다.
+- 외부 Python package가 필요하면 Airflow Worker 환경에도 설치되어 있어야 한다.
+
 ## DAG가 UI에 안 보일 때
 
 가능한 원인:
