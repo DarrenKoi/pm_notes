@@ -56,3 +56,13 @@
 - [Data Handling 시리즈 목차](./data-handling/README.md)
   - [Airflow + MinIO 파이프라인 튜토리얼](./data-handling/airflow-minio-tutorial.md) - 폐쇄망 Airflow에서 Python 코드를 순차 실행하여 MinIO 데이터를 처리하는 ETL 파이프라인
   - [데이터 정규화 시리즈](./data-handling/normalization/README.md) - RDB/OpenSearch/MongoDB/Redis/RAG/온톨로지 관점에서 정규화를 정리한 8편 시리즈 (cross-layer cheatsheet 포함)
+
+### AI Coding Dictionary (용어 사전)
+- [AI Coding Dictionary 한국어 학습 노트](./ai-coding-dictionary/README.md) - Matt Pocock의 [dictionary-of-ai-coding](https://github.com/mattpocock/dictionary-of-ai-coding) 한국어 정리 (60+ 용어, 7개 섹션)
+  - [01. The Model](./ai-coding-dictionary/01-the-model.md) - Model, Parameters, Token, Inference, Prefix cache 등 모델·비용 구조
+  - [02. Sessions, Context Windows & Turns](./ai-coding-dictionary/02-sessions-context-windows-turns.md) - Session/Turn/Request 계층, Stateless vs Stateful
+  - [03. Tools & Environment](./ai-coding-dictionary/03-tools-environment.md) - Tool, MCP, Sandbox, Permission/Agent mode
+  - [04. Failure Modes](./ai-coding-dictionary/04-failure-modes.md) - Hallucination(2종), Sycophancy, Attention degradation, Smart/Dumb zone
+  - [05. Handoffs](./ai-coding-dictionary/05-handoffs.md) - Clearing, Spec, Ticket, Compaction
+  - [06. Memory and Steering](./ai-coding-dictionary/06-memory-and-steering.md) - Memory system, AGENTS.md, Skill, Subagent
+  - [07. Patterns of Work](./ai-coding-dictionary/07-patterns-of-work.md) - AFK, Vibe coding, Grilling, Human/Automated review
