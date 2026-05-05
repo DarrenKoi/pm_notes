@@ -26,3 +26,4 @@ ai-dt/
 | RAG/Milvus | 🟡 진행 중 | basics, rag 통합 |
 | MCP | 🟡 진행 중 | basics, langgraph 통합 |
 | Data Handling | 🔴 시작 전 | - |
+| AI Coding Dictionary | 🟢 1차 완료 | 7개 섹션, 60+ 용어 한국어 정리 |
