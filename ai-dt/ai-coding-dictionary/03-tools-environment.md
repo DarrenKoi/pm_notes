@@ -19,69 +19,69 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### Environment (환경)
 
-[Agent](./02-sessions-context-windows-turns.md#agent)가 **작용하는 세계**. [Harness](./01-the-model.md#harness) 바깥에서, agent가 [Tool results](#tool-result)를 통해 인지하고 [Tool calls](#tool-call)로 변경하는 모든 것.
+[Agent](./02-sessions-context-windows-turns.md#agent)가 **실제로 작용하는 무대**. [Harness](./01-the-model.md#harness) 바깥에 있으며, agent가 [Tool results](#tool-result)를 통해 인지하고 [Tool calls](#tool-call)로 변경하는 모든 대상이 환경에 해당한다.
 
-> 하네스는 *agent를 실행*하고, 환경은 *agent가 일하는 작업장*이다.
+> 하네스는 *agent를 실행시키는 쪽*, 환경은 *agent가 일하는 작업장 쪽*이다.
 
-[`AGENTS.md`](./06-memory-and-steering.md#agentsmd) 같은 파일은 environment에 있고, 하네스는 그걸 [Context window](./02-sessions-context-windows-turns.md#context-window)로 *로드*하는 역할이다. [Filesystem](#filesystem)이 가장 흔한 환경이지만, DB·원격 API·브라우저 세션 모두 환경이 될 수 있다.
+[`AGENTS.md`](./06-memory-and-steering.md#agentsmd) 같은 파일은 environment에 존재하고, 하네스는 그것을 [Context window](./02-sessions-context-windows-turns.md#context-window)로 *불러오는* 역할을 한다. 가장 흔한 환경은 [Filesystem](#filesystem)이지만, DB나 원격 API, 브라우저 세션도 모두 환경이 될 수 있다.
 
-**❌ 피할 표현**: 런타임이나 하네스 자체를 "environment"라고 부르지 말 것 — 하네스는 *래퍼*, 환경은 *작업장*.
+**❌ 피할 표현**: 런타임이나 하네스 자체를 "environment"라고 부르지 말 것. 하네스는 *래퍼*고, 환경은 *작업장*이다.
 
 **💬 실전 대화 예시**
 > "에이전트가 staging DB 스키마를 못 봐."
-> "Environment에 연결해 — staging에 read-only로 스코프된 `psql` [tool](#tool)을 줘. 하네스는 멀쩡해, 작용할 대상이 없을 뿐이야."
+> "Environment 쪽에 연결해 줘야 해. staging에 read-only로 스코프된 `psql` [tool](#tool)을 붙여 줘. 하네스 자체는 멀쩡한데, 작용할 대상이 없을 뿐이야."
 
 ---
 
 ### Filesystem (파일시스템)
 
-[Agent](./02-sessions-context-windows-turns.md#agent)가 읽고, 쓰고, 실행하는 **파일과 디렉토리의 트리** — 코딩 에이전트의 **기본 [Environment](#environment)**. [AGENTS.md](./06-memory-and-steering.md#agentsmd), [Skills](./06-memory-and-steering.md#skill), 소스 코드, 빌드 스크립트, [Tool](#tool) 설정이 다 파일시스템에 산다. 하네스가 "프로젝트에서 시작"한다는 건 에이전트를 그 파일시스템에 가리킨다는 뜻이다.
+[Agent](./02-sessions-context-windows-turns.md#agent)가 읽고, 쓰고, 실행하는 **파일과 디렉토리의 트리**. 코딩 에이전트에서는 이게 **기본 [Environment](#environment)**가 된다. [AGENTS.md](./06-memory-and-steering.md#agentsmd), [Skills](./06-memory-and-steering.md#skill), 소스 코드, 빌드 스크립트, [Tool](#tool) 설정 등이 모두 이 파일시스템 안에 들어 있다. 하네스가 "프로젝트에서 시작한다"는 말은, 결국 에이전트가 그 파일시스템을 바라보도록 세팅한다는 뜻이다.
 
 **💬 실전 대화 예시**
 > "왜 내 AGENTS.md를 안 읽어?"
-> "다른 파일시스템에서 돌고 있어 — [Sandbox](#sandbox)가 프로젝트 루트가 아니라 부모 디렉토리를 마운트했어. 하네스 다시 가리켜."
+> "지금 다른 파일시스템에서 돌고 있어. [Sandbox](#sandbox)가 프로젝트 루트가 아니라 부모 디렉토리를 마운트해 둬서 그래. 하네스가 가리키는 위치를 다시 잡아 줘."
 
 ---
 
 ### Tool (도구)
 
-[Harness](./01-the-model.md#harness)가 [Agent](./02-sessions-context-windows-turns.md#agent)에게 노출하는 **함수** — Read, Write, Bash, Search 등. 도구는 에이전트가 [Environment](#environment)를 인지하고 변경하는 **유일한 통로**다: 도구 없이는 환경을 보지도 바꾸지도 못한다. 매 도구 호출은 추가 [Model provider request](./01-the-model.md#model-provider-request) 비용이 든다 — 결과가 모델로 돌아가야 다음 행동을 정할 수 있으니까.
+[Harness](./01-the-model.md#harness)가 [Agent](./02-sessions-context-windows-turns.md#agent)에게 노출하는 **함수들**. Read, Write, Bash, Search 같은 것들이 여기에 해당한다. 도구는 에이전트가 [Environment](#environment)를 인지하고 변경할 수 있는 **유일한 통로**다. 도구가 없으면 환경을 들여다볼 수도, 바꿀 수도 없다. 또한 도구 호출은 매번 추가 [Model provider request](./01-the-model.md#model-provider-request) 비용을 발생시킨다. 도구 결과가 모델로 다시 돌아와야 그다음 행동을 결정할 수 있기 때문이다.
 
 **💬 실전 대화 예시**
-> "에이전트가 staging을 직접 쿼리할 수 있어?"
-> "하네스에 `psql` tool 추가해, staging에 read-only로 스코프해서. Tool이 없으면 [Filesystem](#filesystem) 바깥은 다 깜깜이야."
+> "에이전트가 staging을 직접 쿼리할 수 있게 만들 수 있어?"
+> "하네스에 `psql` tool을 붙이면 돼. staging에 read-only로 스코프해서 주면 안전해. Tool이 없으면 [Filesystem](#filesystem) 바깥 세계는 에이전트한텐 깜깜이야."
 
-🏢 **실무 적용**: 사내에서 LangGraph로 에이전트 짜면서 외부 시스템 붙일 때, 매번 "tool 하나 = model provider request 하나 더"라는 비용을 잊지 말 것. **batch tool**이나 **multi-tool**로 묶을 수 있는 건 묶기.
+🏢 **실무 적용**: 사내에서 LangGraph로 에이전트를 짜면서 외부 시스템을 붙일 때, "tool 하나 추가 = model provider request 한 번 추가"라는 비용 구조를 항상 염두에 둬야 한다. **batch tool**이나 **multi-tool**로 묶을 수 있는 호출은 가능한 한 묶어서 처리하는 게 좋다.
 
 ---
 
 ### Tool call (도구 호출)
 
-[Model](./01-the-model.md#model)의 출력 중에서 **도구 이름과 인자를 명시한 부분** — 그냥 구조화된 텍스트일 뿐이다. **그 자체로는 아무 일도 하지 않는다**; [Harness](./01-the-model.md#harness)가 이걸 읽고 실행해야 일이 된다. 하나의 [Model provider request](./01-the-model.md#model-provider-request)에서 모델이 만들어낸다.
+[Model](./01-the-model.md#model)의 출력 중에서 **도구 이름과 인자를 명시한 부분**. 본질적으로는 그냥 구조화된 텍스트일 뿐이다. **그 자체만으로는 아무 일도 일어나지 않고**, [Harness](./01-the-model.md#harness)가 그것을 읽어서 실제로 실행해야 비로소 동작이 발생한다. 하나의 [Model provider request](./01-the-model.md#model-provider-request) 안에서 모델이 만들어낸다.
 
 **💬 실전 대화 예시**
 > "테스트 돌렸다는데 파일 타임스탬프가 안 바뀌었어."
-> "트랜스크립트 봐 — 실제로 tool call을 뱉었어, 아니면 돌렸다고 *서술만* 했어? 모델이 호출을 만들어도 하네스가 실행 안 했으면 아무 일도 안 일어난 거야."
+> "트랜스크립트 한번 확인해 봐. 실제로 tool call을 뱉었어, 아니면 그냥 *돌렸다는 서술*만 한 거야? 모델이 호출을 만들었어도 하네스가 실행하지 않았다면 아무 일도 안 일어난 거야."
 
 ---
 
 ### Tool result (도구 결과)
 
-[Harness](./01-the-model.md#harness)가 [Tool call](#tool-call)을 실행한 뒤 돌려보내는 것 — 파일 내용, 명령 출력, 에러 등. **[Agent](./02-sessions-context-windows-turns.md#agent)가 [Environment](#environment)를 보는 유일한 창**. *다음* [Model provider request](./01-the-model.md#model-provider-request)에서 모델로 전달되어, 모델이 그걸 가지고 무엇을 할지 결정한다. **Tool call과 tool result는 같은 교환의 양 끝**이고, 둘 다 한 [Turn](./02-sessions-context-windows-turns.md#turn) 안에 있다.
+[Harness](./01-the-model.md#harness)가 [Tool call](#tool-call)을 실행한 뒤 다시 돌려주는 결과물. 파일 내용, 명령어 출력, 에러 메시지 등이 여기에 들어간다. **[Agent](./02-sessions-context-windows-turns.md#agent)가 [Environment](#environment)를 들여다볼 수 있는 유일한 창구**이기도 하다. 이 결과는 *다음* [Model provider request](./01-the-model.md#model-provider-request)에서 모델로 전달되고, 모델은 그걸 토대로 다음 행동을 결정한다. **Tool call과 tool result는 같은 한 차례 교환의 양 끝이고**, 둘 다 한 [Turn](./02-sessions-context-windows-turns.md#turn) 안에서 일어난다.
 
 **💬 실전 대화 예시**
-> "파일이 비었다는 듯이 추론하고 있어."
-> "Tool result가 권한 거부로 돌아왔어, 내용이 아니라. 모델은 에러 문자열만 봤어 — 파일을 들여다본 게 아니야."
+> "파일이 비어 있는 것처럼 추론하고 있어."
+> "Tool result가 파일 내용이 아니라 권한 거부 에러로 돌아왔어. 모델은 에러 문자열만 본 셈이지, 파일을 실제로 들여다본 게 아니야."
 
 ---
 
 ### MCP (Model Context Protocol)
 
-외부 도구 서버를 [Harness](./01-the-model.md#harness)에 꽂는 **프로토콜** — [Agent](./02-sessions-context-windows-turns.md#agent)가 하네스 기본 도구를 넘어서 더 많은 [Tools](#tool)을 얻는 방식. 에이전트는 절대 "MCP를 호출"하지 않는다 — 에이전트는 **도구**를 호출하고, 그 도구가 우연히 MCP 서버에서 온 것일 뿐이다. 리소스(읽기 전용 데이터)와 프롬프트(재사용 템플릿)도 노출하지만, 주된 용도는 도구 제공.
+외부 도구 서버를 [Harness](./01-the-model.md#harness)에 꽂아 쓸 수 있게 해주는 **프로토콜**. [Agent](./02-sessions-context-windows-turns.md#agent)가 하네스의 기본 도구 외에도 더 많은 [Tools](#tool)을 확보하는 방식이라고 보면 된다. 에이전트는 절대 "MCP를 호출"하지 않는다는 점에 주의해야 한다. 에이전트가 호출하는 건 어디까지나 **도구**이고, 그 도구의 출처가 MCP 서버일 뿐이다. MCP는 리소스(읽기 전용 데이터)와 프롬프트(재사용 가능한 템플릿)도 노출할 수 있지만, 주된 용도는 도구 제공이다.
 
 **💬 실전 대화 예시**
-> "에이전트가 Linear에서 티켓 읽어야 해."
-> "하네스에 Linear MCP 서버 설정해 — Linear API를 도구로 노출해줘. 커스텀 wrapper 안 짜도 돼."
+> "에이전트가 Linear에서 티켓을 읽어야 해."
+> "하네스에 Linear MCP 서버를 붙이면 돼. Linear API를 도구 형태로 노출해 주거든. 따로 커스텀 wrapper를 짤 필요가 없어."
 
 🏢 **실무 적용**: 자세한 내용은 [MCP 기초](../mcp/mcp-basics.md), [MCP + LangGraph](../mcp/mcp-langgraph-integration.md) 참고.
 
@@ -89,55 +89,55 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### Permission request (권한 요청)
 
-[Harness](./01-the-model.md#harness)가 사전 승인되지 않은 [Tool call](#tool-call)을 실행하기 전에 사용자에게 보여주는 것. 모델이 tool call을 만들면, 즉시 실행하는 게 아니라 하네스가 멈추고 묻는다. 승인 → 실행. 거부 → 거부 사실을 [Tool result](#tool-result)로 모델에 보고. **하네스가 위험·민감 동작에 [Human-in-the-loop](./07-patterns-of-work.md#human-in-the-loop)을 끼워넣는 메커니즘**.
+[Harness](./01-the-model.md#harness)가 사전 승인되지 않은 [Tool call](#tool-call)을 실행하기 직전에 사용자에게 띄우는 확인 절차. 모델이 tool call을 만들었다고 곧바로 실행되는 게 아니라, 하네스가 일단 멈추고 사용자에게 묻는다. 승인하면 실행되고, 거부하면 거부됐다는 사실이 [Tool result](#tool-result)로 모델에 보고된다. **하네스가 위험하거나 민감한 동작에 [Human-in-the-loop](./07-patterns-of-work.md#human-in-the-loop)을 끼워넣는 핵심 메커니즘**이다.
 
 **💬 실전 대화 예시**
-> "권한 요청에서 10분이나 막혀 있었어 — 회의 중이었거든."
-> "그게 human-in-the-loop의 비용이야. 안전한 [tools](#tool)은 미리 승인해서, 진짜 위험한 호출에서만 요청이 뜨도록 해."
+> "권한 요청 화면에서 10분이나 막혀 있었어. 회의 중이었거든."
+> "그게 human-in-the-loop를 쓰는 데 따르는 비용이야. 안전한 [tools](#tool)은 미리 승인해 두고, 진짜 위험한 호출에서만 요청이 뜨게 만들어 두면 돼."
 
 ---
 
 ### Permission mode (권한 모드)
 
-[Agent mode](#agent-mode)에서 **권한 게이팅 부분**만 떼어낸 슬라이스 — 어떤 [Tool calls](#tool-call)이 [Permission request](#permission-request)을 띄우고, 어떤 게 자동 실행되는지. 하네스가 행동 지시문을 함께 묶어 팔기 시작하기 *전*의 원래 모드 시스템 목적이다.
+[Agent mode](#agent-mode)에서 **권한 게이팅 부분**만 따로 떼어낸 영역. 어떤 [Tool calls](#tool-call)이 [Permission request](#permission-request)를 띄우고, 어떤 호출이 자동으로 실행되는지를 결정한다. 하네스가 행동 지시문까지 같이 묶어 팔기 *이전의*, 모드 시스템 본래의 목적이라고 볼 수 있다.
 
 **💬 실전 대화 예시**
-> "grep 할 때마다 멈춰서 [AFK](./07-patterns-of-work.md#afk) 런이 다 망가졌어."
-> "Read-only 도구는 permission mode를 느슨하게, write/shell은 prompt 유지. 리서치 세션의 권한 요청은 대부분 노이즈야."
+> "grep 한 번 할 때마다 멈춰 서서 [AFK](./07-patterns-of-work.md#afk) 런이 다 망가졌어."
+> "Read-only 도구들은 permission mode를 느슨하게 풀어 두고, write나 shell처럼 위험한 쪽만 prompt를 유지하는 게 좋아. 리서치 세션에서 뜨는 권한 요청은 대부분 노이즈에 가까워."
 
 ---
 
 ### Agent mode (에이전트 모드)
 
-런타임에 [Agent](./02-sessions-context-windows-turns.md#agent)가 어떻게 동작할지 정하는 **프리셋** — [Permission mode](#permission-mode)와 [System prompt](./02-sessions-context-windows-turns.md#system-prompt)에 주입되는 행동 지시문을 묶어둔 것.
+런타임에서 [Agent](./02-sessions-context-windows-turns.md#agent)가 어떻게 동작할지 결정하는 **프리셋**. [Permission mode](#permission-mode)와 [System prompt](./02-sessions-context-windows-turns.md#system-prompt)에 주입되는 행동 지시문을 한 묶음으로 만들어 둔 것이라고 보면 된다.
 
 **예시**:
-- *기본 모드* — 위험 호출에서 prompt
-- *plan mode* — edit을 막고 리서치 쪽으로 유도
-- *accept-edits* — edit 자동 승인
-- *bypass permissions* (구어로 **YOLO mode**) — 모든 걸 자동 승인
+- *기본 모드*: 위험한 호출에서는 prompt를 띄움
+- *plan mode*: edit을 막고 리서치 쪽으로 유도
+- *accept-edits*: edit을 자동으로 승인
+- *bypass permissions* (구어로 **YOLO mode**): 모든 호출을 자동 승인
 
-세션 도중에도 전환 가능.
+세션 도중에도 모드를 자유롭게 전환할 수 있다.
 
-**벤더 차이**: Claude Code는 "permission modes", Codex는 "approval modes" — 둘 다 행동 묶음 이전 세대 명칭.
+**벤더 차이**: Claude Code에서는 "permission modes", Codex에서는 "approval modes"라고 부른다. 둘 다 행동 지시문 묶음이 도입되기 이전 세대의 명칭이다.
 
 **💬 실전 대화 예시**
-> "계획만 짜라고 했는데 자꾸 파일을 편집해."
-> "Plan mode로 바꿔 — write를 막고 리서치만 하게."
-> "그럼 나중에 [AFK](./07-patterns-of-work.md#afk) 런은?"
-> "Bypass mode인데, [Sandbox](#sandbox) 안에서만."
+> "계획만 짜 달라고 했는데 자꾸 파일을 편집해."
+> "Plan mode로 바꿔. write를 막고 리서치만 하게 해 줘."
+> "그럼 나중에 [AFK](./07-patterns-of-work.md#afk) 런 돌릴 때는?"
+> "그땐 bypass mode로 가되, 반드시 [Sandbox](#sandbox) 안에서만 돌려야 해."
 
 ---
 
 ### Sandbox (샌드박스)
 
-[Agent](./02-sessions-context-windows-turns.md#agent)가 그 안에서 도는 **격리된 [Environment](#environment)** — 컨테이너, VM, 일회용 [Filesystem](#filesystem), 권한 제한 셸. 에이전트 동작의 **반경(blast radius)** 을 제한한다: 파괴적 명령을 돌리거나 악성 콘텐츠를 받아도 피해가 격리된다. **[AFK](./07-patterns-of-work.md#afk)를 실용적으로 만드는 안전 기반**.
+[Agent](./02-sessions-context-windows-turns.md#agent)가 그 안에서 동작하는 **격리된 [Environment](#environment)**. 컨테이너, VM, 일회용 [Filesystem](#filesystem), 권한이 제한된 셸 같은 형태가 대표적이다. 샌드박스의 핵심 역할은 에이전트 동작의 **영향 반경(blast radius)을 제한**하는 것이다. 파괴적인 명령을 실행하거나 악성 콘텐츠를 받아도 그 피해가 샌드박스 안에 갇히기 때문이다. **[AFK](./07-patterns-of-work.md#afk)를 실용적으로 만들어 주는 안전 기반**이라고 봐도 된다.
 
 **💬 실전 대화 예시**
-> "밤새 [bypass-permissions](#agent-mode)로 돌리고 싶은데 아직 무서워."
-> "Sandbox에 넣어 — 새 컨테이너, credential 마운트 안 함, 외부망 차단. 최악의 경우라도 자기 파일시스템만 날리고, 컨테이너 버리면 끝이야."
+> "밤새 [bypass-permissions](#agent-mode)로 돌리고는 싶은데 아직 좀 무서워."
+> "Sandbox 안에 넣어 두면 안전해. 새 컨테이너에 credential은 마운트하지 않고, 외부망도 차단해 둬. 최악의 경우라도 자기 파일시스템만 날아가고, 컨테이너만 버리면 끝이야."
 
-🏢 **실무 적용**: 사내에서 자동화 에이전트를 운영할 때 **반드시 read-only DB credential, 격리 네트워크, 폐기 가능 컨테이너** 조합으로 시작. 실패해도 잃을 게 없는 환경에서만 bypass mode를 쓴다.
+🏢 **실무 적용**: 사내에서 자동화 에이전트를 운영할 때는 **read-only DB credential + 격리 네트워크 + 폐기 가능한 컨테이너** 조합으로 시작하는 것이 안전하다. bypass mode는 실패해도 잃을 게 없는 환경에서만 사용해야 한다.
 
 ## 이 섹션 요약 (Cheatsheet)
 

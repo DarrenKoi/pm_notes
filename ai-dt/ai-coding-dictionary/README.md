@@ -7,18 +7,18 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 # AI Coding Dictionary (한국어 학습 노트)
 
-> Matt Pocock의 [Dictionary of AI Coding](https://github.com/mattpocock/dictionary-of-ai-coding)을 한국어로 정리한 학습 노트. AI 코딩 도구(Claude Code, Cursor, Codex 등)를 쓰면서 마주치는 용어를 "왜 필요한가 → 무엇인가 → 어떻게 쓰는가" 흐름으로 정리한다.
+> Matt Pocock의 [Dictionary of AI Coding](https://github.com/mattpocock/dictionary-of-ai-coding)을 한국어로 풀어 정리한 학습 노트. Claude Code, Cursor, Codex 같은 AI 코딩 도구를 쓰면서 마주치는 용어를 "왜 필요한가 → 무엇인가 → 어떻게 쓰는가" 순서로 정리했다.
 
 ## 왜 필요한가? (Why)
 
-- AI 코딩 도구를 쓰면 토큰, 컨텍스트, 하네스, 에이전트 모드 같은 **새로운 어휘**가 쏟아진다.
-- 같은 모델인데 도구마다 동작이 다르거나, 같은 프롬프트인데 비용이 폭증하는 현상은 **용어를 모르면 디버깅이 불가능**하다.
-- 원문 저자의 말처럼: *"모호함의 상당 부분은 의도적으로 만들어진 것이다. AI 코딩 산업에는 이 어휘를 어렵게 유지해서 이득을 보는 VC 자금이 흐른다."*
-- 이 사전을 한 번 훑으면 **bill, attention, context degradation 같은 현상에 이름을 붙일 수 있게 된다** → 그게 디버깅의 시작.
+- AI 코딩 도구를 사용하다 보면 토큰, 컨텍스트, 하네스, 에이전트 모드 같은 **낯선 어휘**가 한꺼번에 쏟아진다.
+- 같은 모델인데 도구마다 동작이 다르거나 같은 프롬프트인데 비용이 폭증하는 현상은, **용어를 정확히 알지 못하면 디버깅 자체가 불가능**하다.
+- 원문 저자의 표현을 빌리면: *"모호함의 상당 부분은 의도적으로 만들어진 것이다. AI 코딩 업계에는, 이 어휘를 어렵게 유지함으로써 이득을 보는 VC 자금이 흐른다."*
+- 이 사전을 한 번이라도 훑어 두면 **요금, 어텐션, 컨텍스트 저하 같은 현상에 이름을 붙일 수 있게 된다.** 그리고 이름을 붙일 수 있다는 것이 디버깅의 출발점이다.
 
 ## 핵심 개념 (What) — 7개 섹션
 
-원문은 약 60개 용어를 7개 섹션으로 나눈다. 각 섹션은 별도 문서로 정리했다.
+원문은 약 60개의 용어를 7개 섹션으로 나누고 있다. 이 노트에서도 같은 구조를 따라, 섹션마다 별도 문서로 정리했다.
 
 | # | 섹션 | 다루는 것 | 문서 |
 |---|------|-----------|------|
@@ -34,11 +34,11 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### 학습 순서 추천
 
-1. **Section 1 (The Model)** 먼저 — 모델/하네스/추론/토큰의 구분을 잡지 않으면 나머지가 무너진다.
-2. **Section 2 (Sessions)** — `Session > Turn > Model provider request` 계층을 이해하면 비용 계산이 가능해진다.
-3. **Section 3 (Tools & Environment)** — Claude Code/Cursor 같은 하네스가 실제로 무엇을 하는지 보인다.
-4. **Section 4 (Failure Modes)** — 일상에서 마주치는 "왜 이상하지?"의 90%가 여기 있다.
-5. 5~7은 **실무 운영 단계** — 긴 작업을 어떻게 나누고(Handoff), 무엇을 기억시키고(Memory), 어떤 패턴으로 협업할지(AFK, Grilling).
+1. **Section 1 (The Model)** 부터 시작하는 것이 좋다. 모델/하네스/추론/토큰의 구분이 잡혀 있지 않으면 나머지 섹션들이 모두 흔들린다.
+2. **Section 2 (Sessions)** 에서 `Session > Turn > Model provider request` 계층을 이해해 두면, 그제야 비용 구조를 머릿속에서 계산할 수 있게 된다.
+3. **Section 3 (Tools & Environment)** 을 보면, Claude Code나 Cursor 같은 하네스가 실제로 어떤 일을 하는지가 분명히 드러난다.
+4. **Section 4 (Failure Modes)** 는 일상에서 마주치는 "왜 이상하지?"의 90% 이상이 모여 있는 섹션이다.
+5. **5~7번 섹션은 실무 운영 단계**에 해당한다. 긴 작업을 어떻게 나눌지(Handoff), 무엇을 기억시킬지(Memory), 어떤 패턴으로 협업할지(AFK, Grilling) 같은 주제들을 다룬다.
 
 ### 빠른 참조 (Cheatsheet 용도)
 
@@ -51,9 +51,9 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### 표기 규칙 (이 노트 한정)
 
-- 원문 용어는 **영문 그대로** 표기하되, 처음 등장 시 한글 의역을 병기한다. 예: `Harness(하네스)`.
-- 원문에 있는 *Avoid* 박스(피해야 할 표현)는 **❌ 피할 표현** 으로, *Usage* 박스는 **💬 실전 대화 예시** 로 옮긴다.
-- 사내 실무 연결 포인트는 **🏢 실무 적용** 박스로 별도 표기. (Recipe Setup 자동화, SKEWNONO 등 사내 시스템에 어떻게 매핑되는지)
+- 원문 용어는 **영문 그대로** 표기하되, 처음 등장할 때 한글 의역을 함께 적는다. 예: `Harness(하네스)`.
+- 원문의 *Avoid* 박스(피해야 할 표현)는 **❌ 피할 표현**으로, *Usage* 박스는 **💬 실전 대화 예시**로 옮겨 적는다.
+- 사내 실무와 연결되는 포인트는 **🏢 실무 적용** 박스로 따로 표시한다. Recipe Setup 자동화, SKEWNONO 등 사내 시스템에 어떻게 매핑되는지를 정리하는 자리다.
 
 ## 참고 자료 (References)
 
