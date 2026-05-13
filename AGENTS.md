@@ -10,20 +10,6 @@ This repository is a mixed knowledge base plus runnable examples.
 
 Keep docs close to their topic (`README.md` in each module), and keep runnable code within its module folder.
 
-## Build, Test, and Development Commands
-There is no single root build command; run commands per module.
-- Job Scheduler backend:
-  - `cd web-development/python/flask/job-scheduler`
-  - `uv sync`
-  - `uv run src/app.py` (starts Flask on `:5050`)
-- Job Scheduler frontend:
-  - `cd web-development/python/flask/job-scheduler/frontend`
-  - `npm install`
-  - `npm run dev` (Nuxt dev server on `:3000`)
-  - `npm run lint`, `npm run typecheck`, `npm run build`
-- Example Python module:
-  - `cd Codes/python/history-opensearch`
-  - `pip install -r requirements.txt && python main.py`
 
 ## Coding Style & Naming Conventions
 - Python: 4-space indentation, `snake_case` functions/variables, `PascalCase` classes, type hints for new/changed code.
