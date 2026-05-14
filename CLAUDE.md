@@ -229,7 +229,7 @@ Five canonical triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `
 
 ### Domain docs
 
-Single-context layout — one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Multi-context layout — `CONTEXT-MAP.md` at the repo root points to per-subproject `CONTEXT.md` files (e.g. `ai-dt/roadmap/CONTEXT.md`). See `docs/agents/domain.md`.
 
 ---
 
