@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ch.6 추진 로드맵 간트 — 슬라이드 드래프트 (v0.1)</title>
+<link rel="stylesheet" href="roadmap.css" />
+<style>
+  /* ── Ch.6-specific ─────────────────── */
+
+  /* Gantt wrapper — horizontal scroll on narrow viewports */
+  .gantt-wrap {
+    overflow-x: auto;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+  }
+  .gantt {
+    width: 1100px;       /* min draw width; wrap scrolls */
+    height: auto;
+    display: block;
+    font-family: var(--sans);
+  }
+
+  /* Legend */
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .legend-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .legend-item .symbol {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+  .legend-item .symbol svg { vertical-align: middle; }
+  .legend-item .desc { font-size: 13px; color: var(--text-dim); }
+  .legend-item .desc b { color: var(--text); }
+  @media (max-width: 720px) { .legend-grid { grid-template-columns: 1fr; } }
+
+  /* Transitions list */
+  .transitions {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .transition {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface-2);
+  }
+  .transition.featured {
+    border-color: rgba(176,139,255,0.45);
+    background: linear-gradient(180deg, rgba(176,139,255,0.08), var(--surface-2));
+  }
+  .transition .num {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-mute);
+    align-self: center;
+  }
+  .transition.featured .num { color: var(--proactive); }
+  .transition .when {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .transition h5 {
+    margin: 4px 0 2px;
+    font-size: 15px;
+  }
+  .transition.featured h5 { color: var(--proactive); }
+  .transition p {
+    margin: 0; font-size: 13px; color: var(--text-dim);
+  }
+
+  /* Q&A reuse */
+  .qa { margin-top: 14px; }
+  .qa .qa-row {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .qa .qa-row:last-child { border-bottom: none; }
+  .qa .q { color: var(--bad); font-style: italic; font-size: 14px; }
+  .qa .a { color: var(--text); font-size: 14px; }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- Top nav -->
+  <nav class="topnav">
+    <span class="brand">ITC AIX Roadmap · Draft v0.1</span>
+    <div class="links">
+      <a href="index.html">Index</a>
+      <a href="ch1-context-asis-draft.html">Ch.1 As-Is</a>
+      <a href="ch2-vision-draft.html">Ch.2 Vision</a>
+      <a href="ch3-tobe-draft.html">Ch.3 To-Be</a>
+      <a href="ch4-tracks-draft.html">Ch.4 Tracks</a>
+      <a href="ch6-gantt-draft.html" class="current">Ch.6 Gantt</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="doc-header">
+    <span class="eyebrow"><span class="dot"></span> ITC AIX Roadmap · Chapter 6 Draft v0.1</span>
+    <h1 class="doc-title">추진 로드맵 간트 — Passive에서 Proactive까지</h1>
+    <div class="doc-meta">
+      <span class="chip">tags: itc · aix · roadmap · ch6</span>
+      <span class="chip">level: drafting</span>
+      <span class="chip">last_updated: 2026-05-15</span>
+      <span class="chip">2 slides · 5y horizon</span>
+    </div>
+    <p class="lede">
+      <strong>작성 원칙:</strong> 사내 <em>간트 차트 문화</em>에 정합. 이산 PoC = 짧은 막대 + ✦ 마일스톤. 연속 운영(RAG·암묵지 순환고리) = 긴 운영 막대 + 정례 ✦.
+    </p>
+  </header>
+
+  <!-- Flow -->
+  <section class="flow cols-2">
+    <div class="flow-card featured">
+      <div class="step">SLIDE 1 · 본체</div>
+      <h3>5년 간트</h3>
+      <p>반기 10칸 + 1년차 분기 zoom-in. Track 1·2·3 + Enabler.</p>
+    </div>
+    <div class="flow-card">
+      <div class="step">SLIDE 2</div>
+      <h3>읽기 가이드</h3>
+      <p>마일스톤 범례 + 결정적 전환점 5개 + 5년차 비전.</p>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 1 — Gantt 본체 ────────── -->
+  <section class="slide featured" id="slide-1">
+    <div class="slide-tag"><span class="pill hero">SLIDE 1</span> 5년 추진 로드맵 (본체)</div>
+    <h2>5년 추진 로드맵 — Passive에서 Proactive까지</h2>
+    <div class="headline">
+      <strong>“1년차에 4 stream PoC + 암묵지 1회전. 2~3년차에 Active 본 적용. 3~5년차에 Proactive 능동 영역으로.”</strong>
+    </div>
+
+    <div class="panel">
+      <h4>5년 간트 차트</h4>
+      <div class="gantt-wrap">
+        <!--
+          Layout
+          ────────────────────────────────────────────────────
+          Left label column: 0..220
+          Time area: 220..1080  (width = 860)
+          Year columns:
+            Y1 (quarters):  220..548   (4 × 82 = 328)
+            Y2 (halves):    548..680   (2 × 66 = 132)
+            Y3 (halves):    680..812   (2 × 66 = 132)
+            Y4 (halves):    812..944   (2 × 66 = 132)
+            Y5 (halves):    944..1076  (2 × 66 = 132)
+          Rows: each 22px tall.
+        -->
+        <svg class="gantt" viewBox="0 0 1100 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="5년 간트 차트">
+          <defs>
+            <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+              <rect width="6" height="6" fill="#5aa9ff" opacity="0.2"/>
+              <line x1="0" y1="0" x2="0" y2="6" stroke="#5aa9ff" stroke-width="2" opacity="0.65"/>
+            </pattern>
+            <linearGradient id="contOp" x1="0" x2="1">
+              <stop offset="0%"  stop-color="#5aa9ff" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#5aa9ff" stop-opacity="0.35"/>
+            </linearGradient>
+            <linearGradient id="proOp" x1="0" x2="1">
+              <stop offset="0%"  stop-color="#b08bff" stop-opacity="0.65"/>
+              <stop offset="100%" stop-color="#b08bff" stop-opacity="0.4"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Header row backgrounds -->
+          <rect x="0" y="0" width="1100" height="42" fill="#1d222c"/>
+          <rect x="220" y="0" width="328" height="42" fill="#232a37"/>
+          <line x1="0" y1="42" x2="1100" y2="42" stroke="#2a2f3a"/>
+
+          <!-- Year labels -->
+          <text x="384" y="18"  text-anchor="middle" fill="#e6e9ef" font-size="12" font-weight="600">1년차 (분기 zoom-in)</text>
+          <text x="614" y="18"  text-anchor="middle" fill="#a4abb8" font-size="12">2년차</text>
+          <text x="746" y="18"  text-anchor="middle" fill="#a4abb8" font-size="12">3년차</text>
+          <text x="878" y="18"  text-anchor="middle" fill="#a4abb8" font-size="12">4년차</text>
+          <text x="1010" y="18" text-anchor="middle" fill="#a4abb8" font-size="12">5년차</text>
+
+          <!-- Quarter / half labels -->
+          <text x="261"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">Q1</text>
+          <text x="343"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">Q2</text>
+          <text x="425"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">Q3</text>
+          <text x="507"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">Q4</text>
+          <text x="581"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H1</text>
+          <text x="647"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H2</text>
+          <text x="713"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H1</text>
+          <text x="779"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H2</text>
+          <text x="845"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H1</text>
+          <text x="911"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H2</text>
+          <text x="977"  y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H1</text>
+          <text x="1043" y="36" text-anchor="middle" fill="#6e7684" font-size="10" font-family="ui-monospace,Menlo">H2</text>
+
+          <!-- Vertical grid lines -->
+          <g stroke="#2a2f3a" stroke-width="1">
+            <line x1="220"  y1="42" x2="220"  y2="640"/>
+            <line x1="302"  y1="42" x2="302"  y2="640"/>
+            <line x1="384"  y1="42" x2="384"  y2="640"/>
+            <line x1="466"  y1="42" x2="466"  y2="640"/>
+            <line x1="548"  y1="42" x2="548"  y2="640" stroke="#3a4150" stroke-width="1.5"/>
+            <line x1="614"  y1="42" x2="614"  y2="640"/>
+            <line x1="680"  y1="42" x2="680"  y2="640" stroke="#3a4150" stroke-width="1.5"/>
+            <line x1="746"  y1="42" x2="746"  y2="640"/>
+            <line x1="812"  y1="42" x2="812"  y2="640" stroke="#3a4150" stroke-width="1.5"/>
+            <line x1="878"  y1="42" x2="878"  y2="640"/>
+            <line x1="944"  y1="42" x2="944"  y2="640" stroke="#3a4150" stroke-width="1.5"/>
+            <line x1="1010" y1="42" x2="1010" y2="640"/>
+            <line x1="1076" y1="42" x2="1076" y2="640"/>
+          </g>
+
+          <!-- Group section bands & labels -->
+          <!-- Track 1 (rows 1-4, y=42..130) -->
+          <rect x="0" y="42" width="220" height="88" fill="#1b2230"/>
+          <text x="14" y="60" fill="#5aa9ff" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">TRACK 1</text>
+          <text x="14" y="74" fill="#a4abb8" font-size="11">의뢰</text>
+
+          <!-- Track 2 (rows 5-9, y=130..240) -->
+          <rect x="0" y="130" width="220" height="110" fill="#1d222c"/>
+          <text x="14" y="148" fill="#ffd166" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">★ TRACK 2</text>
+          <text x="14" y="162" fill="#a4abb8" font-size="11">장비·공정</text>
+
+          <!-- Track 3 (rows 10-14, y=240..350) -->
+          <rect x="0" y="240" width="220" height="110" fill="#1b2230"/>
+          <text x="14" y="258" fill="#ffd166" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">★ TRACK 3</text>
+          <text x="14" y="272" fill="#a4abb8" font-size="11">R&amp;D 가속</text>
+
+          <!-- Enabler (rows 15-19, y=350..460) -->
+          <rect x="0" y="350" width="220" height="110" fill="#1d222c"/>
+          <text x="14" y="368" fill="#b08bff" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">ENABLER</text>
+          <text x="14" y="382" fill="#a4abb8" font-size="11">사람·도구·지식·암묵지·거버넌스</text>
+
+          <!-- Row labels — Track 1 -->
+          <text x="34" y="98"  fill="#e6e9ef" font-size="11">분류·선별</text>
+          <text x="34" y="115" fill="#e6e9ef" font-size="11">RAG</text>
+          <text x="34" y="132" fill="#e6e9ef" font-size="11" opacity="0.85" y="125">초안</text>
+          <!-- correction: row positions -->
+          <!-- Actually use computed y per row -->
+
+          <!--
+            Row y centers, height 22 each
+            Track 1: r1=53, r2=75, r3=97, r4=119  (but Track 1 only has 4 sub-rows fitting in 88px = 4*22)
+          -->
+
+          <!-- ─── Track 1 rows: y centers 53 / 75 / 97 / 119 ─── -->
+          <!-- We'll redraw with proper spacing. Clear earlier labels by overlaying surface bands cleanly. -->
+
+          <!-- Override label text in proper positions -->
+          <g font-size="11" fill="#e6e9ef">
+            <text x="34" y="57">분류·선별</text>
+            <text x="34" y="79">RAG</text>
+            <text x="34" y="101">초안</text>
+            <text x="34" y="123">이상·예측</text>
+
+            <text x="34" y="145">분류·선별</text>
+            <text x="34" y="167">RAG</text>
+            <text x="34" y="189">초안 (#2)</text>
+            <text x="34" y="211">이상·예측 (#4)</text>
+            <text x="34" y="233">추천 (OPC)</text>
+
+            <text x="34" y="255">분류·선별</text>
+            <text x="34" y="277">RAG</text>
+            <text x="34" y="299">초안</text>
+            <text x="34" y="321">이상·예측</text>
+            <text x="34" y="343">추천·시뮬레이션</text>
+
+            <text x="34" y="365">사람</text>
+            <text x="34" y="387">도구</text>
+            <text x="34" y="409">명시지</text>
+            <text x="34" y="431">암묵지 (#5)</text>
+            <text x="34" y="453">거버넌스</text>
+          </g>
+
+          <!-- Cover the duplicate "분류·선별/RAG/초안" labels written before with surface bands.
+               Easier path: we never wrote those above (the y=98 lines were wrong y values).
+               They will appear faintly — overlay them by drawing a band rect with band fill -->
+          <rect x="20" y="42" width="200" height="14" fill="#1b2230"/>
+          <rect x="20" y="60" width="200" height="14" fill="#1b2230"/>
+          <rect x="20" y="118" width="200" height="14" fill="#1b2230"/>
+
+          <!-- Re-emit Track 1 labels on top -->
+          <g font-size="11" fill="#e6e9ef">
+            <text x="34" y="57">분류·선별</text>
+            <text x="34" y="79">RAG</text>
+            <text x="34" y="101">초안</text>
+            <text x="34" y="123">이상·예측</text>
+          </g>
+
+          <!-- TRACK 1 sub-headers re-emit (clarity) -->
+          <text x="14" y="60" fill="#5aa9ff" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">T1</text>
+          <text x="14" y="148" fill="#ffd166" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">★T2</text>
+          <text x="14" y="258" fill="#ffd166" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">★T3</text>
+          <text x="14" y="368" fill="#b08bff" font-size="11" font-weight="700" font-family="ui-monospace,Menlo" letter-spacing="0.1em">ENB</text>
+
+          <!-- ─── BARS ─── -->
+          <!-- helper: row center y = ROW_CENTERS below
+               t1: 53,75,97,119
+               t2: 141,163,185,207,229
+               t3: 251,273,295,317,339
+               enb: 361,383,405,427,449
+          -->
+
+          <!-- Track 1: 분류·선별 -->
+          <!-- PoC Q1-Q2 (220→343), 본 적용 Q3-Q4 (343→548) -->
+          <rect x="220" y="46" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="46" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <!-- 본 적용 연속 운영 -->
+          <rect x="548" y="46" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <!-- 마일스톤 -->
+          <text x="343" y="56" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 1: RAG -->
+          <rect x="220" y="68" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="68" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="68" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="78" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 1: 초안 -->
+          <rect x="220" y="90" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="90" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="90" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="100" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 1: 이상·예측 -->
+          <!-- baseline H1-H2 Year 2 (548→680) with hatched fill -->
+          <rect x="548" y="112" width="132" height="14" fill="url(#hatch)" rx="3"/>
+          <!-- 시범 Year 3 (680→812) -->
+          <rect x="680" y="112" width="132" height="14" fill="url(#proOp)" rx="3"/>
+          <!-- Proactive Y4-Y5 -->
+          <rect x="812" y="112" width="264" height="14" fill="url(#proOp)" opacity="0.85" rx="3"/>
+
+          <!-- Track 2: 분류·선별 (#3) -->
+          <rect x="220" y="134" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="134" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="134" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="144" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 2: RAG -->
+          <rect x="220" y="156" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="156" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="156" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="166" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 2: 초안 (#2) -->
+          <rect x="220" y="178" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="178" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="178" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="188" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 2: 이상·예측 (#4 seed) -->
+          <!-- 시드 PoC Y1 -->
+          <rect x="220" y="200" width="328" height="14" fill="#5aa9ff" opacity="0.45" rx="3"/>
+          <text x="384" y="210" fill="#e6e9ef" font-size="9" text-anchor="middle" font-family="ui-monospace,Menlo">SEED PoC</text>
+          <text x="548" y="210" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <!-- baseline Y2 -->
+          <rect x="548" y="200" width="132" height="14" fill="url(#hatch)" rx="3"/>
+          <!-- 본 적용 Y3 → -->
+          <rect x="680" y="200" width="132" height="14" fill="url(#proOp)" rx="3"/>
+          <rect x="812" y="200" width="264" height="14" fill="url(#proOp)" opacity="0.85" rx="3"/>
+
+          <!-- Track 2: 추천 (OPC) -->
+          <rect x="548" y="222" width="132" height="14" fill="url(#hatch)" rx="3"/>
+          <rect x="680" y="222" width="132" height="14" fill="url(#proOp)" rx="3"/>
+          <rect x="812" y="222" width="264" height="14" fill="url(#proOp)" opacity="0.85" rx="3"/>
+
+          <!-- Track 3: 분류·선별 -->
+          <rect x="220" y="244" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="244" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="244" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="254" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 3: RAG -->
+          <rect x="220" y="266" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="266" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="266" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="276" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 3: 초안 -->
+          <rect x="220" y="288" width="123" height="14" fill="#5aa9ff" opacity="0.55" rx="3"/>
+          <rect x="343" y="288" width="205" height="14" fill="url(#contOp)" rx="3"/>
+          <rect x="548" y="288" width="528" height="14" fill="url(#contOp)" opacity="0.7" rx="3"/>
+          <text x="343" y="298" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Track 3: 이상·예측 -->
+          <rect x="548" y="310" width="132" height="14" fill="url(#hatch)" rx="3"/>
+          <rect x="680" y="310" width="132" height="14" fill="url(#proOp)" rx="3"/>
+          <rect x="812" y="310" width="264" height="14" fill="url(#proOp)" opacity="0.85" rx="3"/>
+
+          <!-- Track 3: 추천·시뮬레이션 -->
+          <rect x="548" y="332" width="132" height="14" fill="url(#hatch)" rx="3"/>
+          <rect x="680" y="332" width="132" height="14" fill="url(#proOp)" rx="3"/>
+          <rect x="812" y="332" width="264" height="14" fill="url(#proOp)" opacity="0.85" rx="3"/>
+
+          <!-- Enabler 사람 -->
+          <rect x="220" y="354" width="328" height="14" fill="#b08bff" opacity="0.4" rx="3"/>
+          <text x="343" y="364" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="548" y="354" width="132" height="14" fill="#b08bff" opacity="0.45" rx="3"/>
+          <rect x="680" y="354" width="132" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+          <text x="746" y="364" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <text x="700" y="350" fill="#a4abb8" font-size="9" font-family="ui-monospace,Menlo">AI PM</text>
+          <rect x="812" y="354" width="264" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+
+          <!-- Enabler 도구 -->
+          <rect x="220" y="376" width="328" height="14" fill="#b08bff" opacity="0.4" rx="3"/>
+          <text x="261" y="386" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="548" y="376" width="132" height="14" fill="#b08bff" opacity="0.45" rx="3"/>
+          <rect x="680" y="376" width="132" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+          <text x="746" y="386" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="812" y="376" width="264" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+
+          <!-- Enabler 명시지 -->
+          <rect x="220" y="398" width="328" height="14" fill="#b08bff" opacity="0.4" rx="3"/>
+          <text x="343" y="408" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="548" y="398" width="132" height="14" fill="#b08bff" opacity="0.45" rx="3"/>
+          <rect x="680" y="398" width="132" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+          <text x="746" y="408" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="812" y="398" width="264" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+
+          <!-- Enabler 암묵지 (#5) — 1회전 PoC -->
+          <rect x="220" y="420" width="328" height="14" fill="#ffd166" opacity="0.35" rx="3"/>
+          <text x="384" y="430" fill="#e6e9ef" font-size="9" text-anchor="middle" font-family="ui-monospace,Menlo">CYCLE 1</text>
+          <text x="548" y="430" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="548" y="420" width="132" height="14" fill="#ffd166" opacity="0.3" rx="3"/>
+          <rect x="680" y="420" width="132" height="14" fill="#ffd166" opacity="0.4" rx="3"/>
+          <text x="746" y="430" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="812" y="420" width="264" height="14" fill="#ffd166" opacity="0.5" rx="3"/>
+          <text x="944" y="430" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+
+          <!-- Enabler 거버넌스 -->
+          <rect x="220" y="442" width="328" height="14" fill="#b08bff" opacity="0.4" rx="3"/>
+          <text x="343" y="452" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="548" y="442" width="132" height="14" fill="#b08bff" opacity="0.45" rx="3"/>
+          <rect x="680" y="442" width="132" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+          <text x="746" y="452" fill="#ffd166" font-size="14" text-anchor="middle">✦</text>
+          <rect x="812" y="442" width="264" height="14" fill="#b08bff" opacity="0.55" rx="3"/>
+
+          <!-- ─── Active → Proactive 전환선 ─── -->
+          <line x1="614" y1="42" x2="614" y2="475" stroke="#ef5a6b" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="614" y="490" text-anchor="middle" fill="#ef5a6b" font-size="11" font-weight="700" font-family="ui-monospace,Menlo">◀ Active → Proactive 전환선 ▶</text>
+
+          <!-- ─── 5년차 비전 박스 ─── -->
+          <rect x="944" y="510" width="142" height="120" fill="#1d222c" stroke="#ffd166" stroke-width="1.5" rx="10"/>
+          <text x="1015" y="532" text-anchor="middle" fill="#ffd166" font-size="14" font-weight="700">◆ Proactive ITC ◆</text>
+          <line x1="956" y1="540" x2="1074" y2="540" stroke="#3a4150"/>
+          <text x="1015" y="558" text-anchor="middle" fill="#e6e9ef" font-size="11">AI가 먼저 제안</text>
+          <text x="1015" y="574" text-anchor="middle" fill="#e6e9ef" font-size="11">사람은 검증·승인</text>
+          <text x="1015" y="590" text-anchor="middle" fill="#a4abb8" font-size="10">5 stream 자율 운영</text>
+          <text x="1015" y="606" text-anchor="middle" fill="#a4abb8" font-size="10">암묵지 전 stream 동작</text>
+          <text x="1015" y="622" text-anchor="middle" fill="#ffd166" font-size="10" font-family="ui-monospace,Menlo">5년차 도착점</text>
+
+          <!-- ─── Quick Win labels on Year 1 bars ─── -->
+          <g font-size="9" fill="#0f1115" font-weight="700" font-family="ui-monospace,Menlo">
+            <rect x="490" y="180" width="44" height="11" fill="#ffd166" rx="2"/>
+            <text x="512" y="189" text-anchor="middle">#2</text>
+            <rect x="490" y="136" width="44" height="11" fill="#ffd166" rx="2"/>
+            <text x="512" y="145" text-anchor="middle">#3</text>
+            <rect x="490" y="158" width="44" height="11" fill="#ffd166" rx="2"/>
+            <text x="512" y="167" text-anchor="middle">#1</text>
+            <rect x="490" y="202" width="44" height="11" fill="#ffd166" rx="2"/>
+            <text x="512" y="211" text-anchor="middle">#4</text>
+            <rect x="490" y="422" width="44" height="11" fill="#ffd166" rx="2"/>
+            <text x="512" y="431" text-anchor="middle">#5</text>
+          </g>
+
+          <!-- Legend at bottom -->
+          <g transform="translate(20, 650)" font-family="ui-monospace,Menlo" font-size="11" fill="#a4abb8">
+            <rect x="0"   y="0" width="40" height="10" fill="#5aa9ff" opacity="0.55" rx="2"/>
+            <text x="48"  y="9">Active PoC/본 적용</text>
+            <rect x="200" y="0" width="40" height="10" fill="url(#proOp)" rx="2"/>
+            <text x="248" y="9">Proactive 본 적용</text>
+            <rect x="400" y="0" width="40" height="10" fill="url(#hatch)" rx="2"/>
+            <text x="448" y="9">baseline 측정</text>
+            <text x="560" y="9" fill="#ffd166" font-size="14">✦</text>
+            <text x="580" y="9">마일스톤</text>
+            <text x="680" y="9" fill="#ffd166" font-size="14">◆</text>
+            <text x="700" y="9">5년차 비전</text>
+            <line x1="800" y1="-2" x2="800" y2="12" stroke="#ef5a6b" stroke-width="2" stroke-dasharray="4 3"/>
+            <text x="810" y="9">전환선</text>
+            <rect x="880" y="0" width="40" height="10" fill="#ffd166" opacity="0.45" rx="2"/>
+            <text x="928" y="9">암묵지 #5</text>
+          </g>
+        </svg>
+      </div>
+      <p class="muted" style="margin-top:10px; font-size:12px;">
+        ↑ <strong>좁은 화면에서는 좌우 스크롤</strong>로 5년 horizon을 확인할 수 있습니다.
+      </p>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h4>핵심 시각 정책</h4>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="callout">
+          <strong>시간축:</strong> 5년 horizon, 반기 10칸. 1년차만 분기 zoom-in (좌측 확대).
+        </div>
+        <div class="callout">
+          <strong>행:</strong> Track 1·2·3 각 5 능력 sub-row + Enabler 5축 sub-row.
+        </div>
+        <div class="callout warn">
+          <strong>막대:</strong> 이산 PoC·본 적용 = 짧은 막대 + 종료 ✦ / 연속 운영(RAG·암묵지) = 긴 운영 막대 + 정례 ✦.
+        </div>
+        <div class="callout bad">
+          <strong>전환선:</strong> Active → Proactive (2~3년차 사이) — 세로 점선 + 라벨.
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"간트는 사내 표준 표현 방식입니다. 좌측 1년차만 분기로 확대해 <em>6개월 PoC → 12개월 본 적용</em>의 sequence가 잘 보이게 했습니다. 2~3년차 사이의 세로 점선이 <em>Active→Proactive 전환선</em>입니다. 이 선 이전은 <em>AI가 보조</em>, 이후는 <em>AI가 먼저 제안</em>입니다. 우측 끝의 <em>◆ Proactive ITC ◆</em> 박스가 5년차 도착점입니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li>실제 슬라이드는 ascii가 아닌 <em>시각 간트 차트</em>로 렌더 — 디자이너 협업</li>
+        <li>간트 sub-row 18개(5+5+5+5−2 동일 능력) — 너무 많으면 <em>능력별 통합 row</em>로 압축 옵션 검토</li>
+        <li><em>전환선</em>의 정확한 위치 (2년차 H2 vs 3년차 H1) — Hero KPI baseline 달성 시점과 align</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 2 — Reading guide ────────── -->
+  <section class="slide" id="slide-2">
+    <div class="slide-tag"><span class="pill">SLIDE 2</span> 간트 읽기 가이드</div>
+    <h2>로드맵 읽기 가이드 — 마일스톤·전환선·5년차 비전</h2>
+    <div class="headline">
+      <strong>“이산 PoC는 짧은 막대 + ✦. 연속 운영은 긴 운영 막대 + 정례 ✦. 전환선은 <em>AI의 일이 보조에서 능동으로</em> 바뀌는 시점.”</strong>
+    </div>
+
+    <div class="grid-2">
+      <!-- LEFT — Legend -->
+      <div class="panel">
+        <h4>마일스톤 범례</h4>
+        <div class="legend-grid">
+          <div class="legend-item">
+            <div class="symbol yellow" style="font-size: 20px;">✦</div>
+            <div class="desc"><b>단발 마일스톤</b><br/><span class="muted">PoC 졸업·본 적용·정례 진입</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="symbol blue mono">━━▶</div>
+            <div class="desc"><b>PoC → 본 적용 sequence</b><br/><span class="muted">1년차 Q1~Q4 검측 분류</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="symbol">
+              <svg width="40" height="10"><rect width="40" height="10" rx="2" fill="#5aa9ff" opacity="0.6"/></svg>
+            </div>
+            <div class="desc"><b>연속 운영</b> <span class="muted">(RAG·암묵지·모니터링)</span><br/><span class="muted">2~5년차 운영</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="symbol yellow" style="font-size: 20px;">◆</div>
+            <div class="desc"><b>5년차 비전 도착점</b><br/><span class="muted">Proactive ITC</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="symbol">
+              <svg width="40" height="10"><defs><pattern id="hatch2" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><rect width="6" height="6" fill="#5aa9ff" opacity="0.2"/><line x1="0" y1="0" x2="0" y2="6" stroke="#5aa9ff" stroke-width="2" opacity="0.65"/></pattern></defs><rect width="40" height="10" rx="2" fill="url(#hatch2)"/></svg>
+            </div>
+            <div class="desc"><b>baseline 측정 단계</b><br/><span class="muted">2년차 H1 Stream 3 lead time</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="symbol">
+              <svg width="40" height="14"><line x1="20" y1="0" x2="20" y2="14" stroke="#ef5a6b" stroke-width="2" stroke-dasharray="3 2"/></svg>
+            </div>
+            <div class="desc"><b>전환선</b><br/><span class="muted">Active → Proactive (2~3년차)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — Critical transitions -->
+      <div class="panel">
+        <h4>결정적 전환점 5개</h4>
+        <div class="transitions">
+          <div class="transition">
+            <div class="num">1</div>
+            <div>
+              <div class="when">1년차 Q2</div>
+              <h5>Quick Win #1·#2·#3 PoC 졸업 ✦</h5>
+              <p>분류·RAG·초안 능력이 production 후보로 격상</p>
+            </div>
+          </div>
+          <div class="transition">
+            <div class="num">2</div>
+            <div>
+              <div class="when">1년차 Q4</div>
+              <h5>본 적용 ✦ + 암묵지 순환고리 1회전 완주 ✦</h5>
+              <p>Quick Win 본 적용 시작 + 암묵지 캡처 사이클 1회전</p>
+            </div>
+          </div>
+          <div class="transition">
+            <div class="num">3</div>
+            <div>
+              <div class="when">2년차 H2</div>
+              <h5>Active 5 stream 본 적용 정착</h5>
+              <p>Hero KPI 3개 <em>측정 가능</em> 도달</p>
+            </div>
+          </div>
+          <div class="transition featured">
+            <div class="num">4</div>
+            <div>
+              <div class="when">2~3년차 사이</div>
+              <h5>Active → Proactive 전환선</h5>
+              <p><strong>예지보전·추천·시뮬레이션 본격 도입</strong></p>
+            </div>
+          </div>
+          <div class="transition">
+            <div class="num">5</div>
+            <div>
+              <div class="when">5년차</div>
+              <h5>◆ Proactive ITC ◆ 도달</h5>
+              <p><em>요청 오기 전 제안</em>이 기본 동작</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <blockquote class="box">
+      <div class="lead">"5년 horizon, 그러나 1년차에 모든 것이 결정된다 —"</div>
+      PoC 졸업·본 적용 sequence·암묵지 1회전 + Enabler 5축 시동. 1년차가 <strong>기반</strong>이고 2~5년차는 <strong>증식</strong>. 1년차 <a href="../quick-win-cards.md" style="color: var(--accent);">Quick Win 5선</a>이 이 간트의 <em>시드 (seed)</em>.
+    </blockquote>
+
+    <div class="panel" style="margin-top:18px;">
+      <h4>CEO 예상 질문 &amp; 답변 (Speaker notes backup)</h4>
+      <div class="qa">
+        <div class="qa-row">
+          <div class="q">"왜 1년차만 분기로 확대했나?"</div>
+          <div class="a">1년차가 모든 후속의 시드. PoC 졸업·본 적용 sequence가 분기 단위로 가시화되어야 <em>진척 측정</em>이 가능.</div>
+        </div>
+        <div class="qa-row">
+          <div class="q">"전환선이 왜 2~3년차?"</div>
+          <div class="a">Active 본 적용 안정화 후 Proactive 능력 추가. Hero KPI baseline이 측정 가능해진 시점이 전환점.</div>
+        </div>
+        <div class="qa-row">
+          <div class="q">"5년차에 정말 Proactive가 가능한가?"</div>
+          <div class="a">전 stream 동시 Proactive 아님 — 5 stream 중 <em>기본 동작</em> 수준. 완전 자율은 5년 후.</div>
+        </div>
+        <div class="qa-row">
+          <div class="q">"간트의 ████ (연속 운영)이 끝나지 않는데 어떻게 종료?"</div>
+          <div class="a">종료 = 정례 마일스톤 ✦의 반복. RAG·암묵지는 <em>프로젝트가 아니라 운영</em>이라 정례 ✦으로 진척 표현.</div>
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"간트를 읽는 방식은 두 차원입니다. 시간축은 좌→우, 능력 축은 위→아래. 우측의 <em>결정적 전환점 5개</em>가 보고 후 임원이 기억해야 할 시점입니다. 가장 중요한 게 전환점 #4 — <em>2~3년차 사이의 Active→Proactive 전환선</em>. 이 시점 이후 우리는 <em>AI가 보조하는 조직</em>에서 <em>AI가 먼저 제안하는 조직</em>으로 변합니다."</p>
+    </details>
+  </section>
+
+  <!-- Bridge -->
+  <section class="bridge">
+    <div class="seq">
+      <b>Ch.6 (간트)</b> &nbsp;<span class="muted">"전체 시간축" — 5년 horizon</span><br/>
+      <b>Ch.7 (Quick Win 5선)</b> &nbsp;<span class="muted">"1년차 5개 PoC를 확대해서 본다" — Q1~Q4 zoom-in</span>
+    </div>
+    <p>Ch.6의 <em>1년차 zoom-in 영역</em>을 Ch.7이 <em>카드 5장으로 정밀 묘사</em>. 두 챕터가 <strong>같은 1년차를 두 배율로 보여주는</strong> 구성.</p>
+  </section>
+
+  <!-- Followups -->
+  <section class="followups">
+    <h3>Round 4 후속 검토 포인트</h3>
+    <ol>
+      <li><strong>간트 sub-row 압축 옵션</strong> — 18개 sub-row가 시각적으로 부담 → 능력 5개로 통합 row 검토</li>
+      <li><strong>전환선 위치</strong> — 2년차 H2 vs 3년차 H1, baseline 달성 sequence와 align</li>
+      <li><strong>5년차 비전 박스</strong> — 텍스트 vs 작은 다이어그램 (5 stream 5개 ◆)</li>
+      <li><strong>연속 운영 막대의 <em>끝나지 않음</em></strong> — 임원 시각 정합성 검증 필요</li>
+      <li><strong>간트 차트 도구</strong> — 사내 표준 도구 (MS Project / 슬라이드 자체 도형)</li>
+    </ol>
+  </section>
+
+  <!-- Refs -->
+  <section class="refs">
+    <strong>관련 문서</strong>
+    <ul>
+      <li><a href="../itc-aix-roadmap-outline.md">itc-aix-roadmap-outline.md</a> — Ch.6 (high-level 구조)</li>
+      <li><a href="ch4-tracks-draft.html">Ch.4 추진 트랙</a> — 5 능력 × 3 트랙이 간트 sub-row의 의미</li>
+      <li><a href="../quick-win-cards.md">quick-win-cards.md</a> — 1년차 zoom-in 영역의 정밀 묘사</li>
+      <li><a href="ch3-tobe-draft.html">Ch.3 To-Be</a> — Active→Proactive 전환선의 narrative backing</li>
+      <li><a href="../CONTEXT.md">CONTEXT.md</a> — 간트 차트 문화 / 마일스톤 표기 정책</li>
+    </ul>
+  </section>
+
+</main>
+</body>
+</html>

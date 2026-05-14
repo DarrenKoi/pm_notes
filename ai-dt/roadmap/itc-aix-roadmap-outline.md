@@ -10,7 +10,7 @@ version: 0.3
 > 기반기술센터(ITC) AI/DT 로드맵 CEO 보고용 outline.
 > 컨텍스트: [CONTEXT.md](./CONTEXT.md) / 진행 기록: [grilling-session-2026-05-14.md](./grilling-session-2026-05-14.md)
 
-> **v0.3 변경 요지** (2026-05-15 Round 3, Q15·Q16·Q17 해결)
+> **v0.3 변경 요지** (2026-05-15 Round 3, Q15·Q16·Q17·Q18·Q19 해결 — Round 3 완결)
 > - Chapter 구조 **9 → 7로 압축**.
 >   - 구 Ch.1(배경) + Ch.3(As-Is) → 신 **Ch.1 배경 & As-Is 진단**으로 통합.
 >   - 구 Ch.6(Enabler) + Ch.8(거버넌스) → 신 **Ch.5 Enabler & 거버넌스**로 통합. 거버넌스는 Enabler 5축의 한 축이라 별도 챕터 불요.
@@ -18,7 +18,8 @@ version: 0.3
 > - 총 슬라이드 19~22장 (이전 21~25장).
 > - **"본 적용" 정의** 3-gate (범위·행동 변화·운영 안정성) Quick Win 챕터에 추가. QW #4·#5는 "PoC 졸업" 기준만 분리.
 > - **As-Is Anchor 수치** 3개 슬롯 (의뢰량 A1·계측 데이터량 A2·FDC 사후분석률 A3) + 출처 tier(T1/T2/T3) 정의. 실제 값은 사내 비공개 문서에 보관.
-> - **거버넌스 3-tier 확정**: 전사 AIX TF(DT 주도) → ITC AX Part → ITC AI 실행 TF. P1 Platform/Consumer 모델. CONTEXT.md에 3개 용어 신규 등록. Appendix F에 역할 경계표.
+> - **거버넌스 3-tier 확정**: 전사 AIX TF(DT 주도) → ITC AX Part → ITC AI 실행 TF. P1 Platform/Consumer 모델. CONTEXT.md에 3개 용어 신규 등록. Appendix F에 역할 경계표. [ADR-0001](./docs/adr/0001-aix-tf-ax-part-boundary.md) 작성.
+> - **KPI 2-layer 구조**: Layer 1 (5 stream × 1 L1 + Hero 3개 ★1·3·5) / Layer 2 (Enabler E1·E2) / Layer 3 (technical → Appendix B). Stream 3 lead time baseline 측정 난이도 ↑ → fallback (E1 hero 승격) 보존.
 
 > **v0.2 변경 요지** (2026-05-14 Round 2)
 > - CEO 보고용 → **완전 추상화** 채택. 본문에서 팀명·도메인 라벨 제거, Appendix에만 매핑 노출.
@@ -93,6 +94,7 @@ version: 0.3
 ### Chapter 1. 배경 & As-Is 진단 — 우리는 왜 변해야 하고, 지금 어디 있나 (3p)
 
 > v0.3에서 구 Ch.1(배경) + Ch.3(As-Is)을 통합. *"세상은 이렇게 바뀌었는데 우리는 아직 Passive다"*를 한 흐름으로.
+> **드래프트:** [ch1-context-asis-draft.md](./ch1-context-asis-draft.md) — Slide 1(외부 변화)·Slide 2(★ 5 stream + anchor)·Slide 3(준비도 레이더).
 
 **1.1 시장·기술 환경 변화** — 반도체 미세화·소재 다양화·검사 데이터 폭증 + 생성 AI/VLM 실용화.
 
@@ -124,6 +126,8 @@ version: 0.3
 
 ### Chapter 2. ITC AIX Vision & Positioning (2p)
 
+> **드래프트:** [ch2-vision-draft.md](./ch2-vision-draft.md) — Slide A(Vision)·Slide B(왜 ITC인가) 본문, speaker notes, CEO 예상 반박 4개.
+
 **2.1 Vision 한 문장**
 "공정·장비·소재 기반기술을 AI로 가속하고, 요청 대응을 예측 대응으로 진화시키는 ITC"
 
@@ -138,19 +142,44 @@ version: 0.3
 
 ### Chapter 3. To-Be — Active를 거쳐 Proactive로 (2p)
 
+> **드래프트:** [ch3-tobe-draft.md](./ch3-tobe-draft.md) — Slide 1(3단계 전환 척추)·Slide 2(★ KPI Scorecard).
+
 **3.1 3단계 전환 정의표** — Passive/Active/Proactive 표 (Ch.1과 호응)
 
 **3.2 단계별 ITC 모습**
 - **Active ITC (1~2년):** 엔지니어 옆에 AI 보조자. 분류·선별·RAG·초안 능력이 5 stream 전반에 작동.
 - **Proactive ITC (3~5년):** 이상·예측·추천 능력이 추가되어, 요청 오기 전 제안.
 
-**3.3 성공 시그널 (KPI 후보, Q19 미해결)**
-의뢰 평균 처리시간 / 사례 재활용률 / 사전 제안 건수 / 인당 AI 활용 빈도 / 암묵지 캡처 사이클 횟수.
+**3.3 성공 KPI — 2-layer 구조 (Q19 해결, 2026-05-15)**
+
+**Layer 1 — 5 Stream × CEO outcome KPI (전부 노출, Hero 3개 강조)**
+
+| Stream | L1 KPI | 1년 | 3년 | Hero | Baseline 출처 |
+|--------|--------|-----|-----|------|---------------|
+| 1. 의뢰 대응 | **의뢰 평균 처리시간 (TAT)** | ↓30% | ↓50% | ★ | A1 (T1) |
+| 2. 분석 | 분석 보고서 평균 작성시간 | ↓40% | ↓60% | | PoC 측정 |
+| 3. 계측 데이터 생산 | **검측 → 공정 의사결정 lead time** | ↓30% | ↓50% | ★ | PoC 측정 (난이도 ↑) |
+| 4. 장비 운영 | 신규 인력 ramp-up 시간 / 운영 검색 정확도 | ramp ↓30% | ramp ↓50% | | PoC 측정 |
+| 5. 안정성 모니터링 | **예지보전 hit rate / 알람 평균 대응시간** | hit ≥40%, 대응 ↓25% | hit ≥70%, 대응 ↓50% | ★ | A3 (T2) |
+
+★ Hero 선정 기준: (1) baseline 측정 가능, (2) CEO 의미 있는 outcome(수율·downtime·인력 효율), (3) 정량화 명확.
+
+**Layer 2 — Cross-cutting Enabler KPI (Ch.5 Enabler 노출)**
+
+| # | KPI | 1년 | 3년 |
+|---|-----|-----|-----|
+| **E1** | 인당 AI 활용 빈도 (월간 호출 수) | 핵심 인력 ≥10회/월 | 전 직원 ≥10회/월 |
+| **E2** | 암묵지 캡처 사이클 횟수 (분기당 완주) | 1개 영역 1회전 | 다수 영역 정례 (분기 ≥3) |
+
+**Layer 3 — Technical metrics** → Appendix B(트랙별 과제 상세 카드)에 격리. 본문 ✕.
+
+> **Baseline 측정 정책:** Hero KPI 3개 모두 **6개월 PoC 단계에서 baseline 측정 필수**. Stream 3 lead time은 baseline 측정 자체가 PoC 과제 수준 — 1년차 못 끝나면 hero에서 임시 강등하고 E1을 hero로 승격하는 **fallback 옵션** 보존.
 
 ---
 
 ### Chapter 4. 추진 트랙 — 5 능력 × 3 트랙 매트릭스 (6~7p)
 
+> **드래프트:** [ch4-tracks-draft.md](./ch4-tracks-draft.md) — Slide 1(Overview Matrix)·2(Track 1)·3-4(Track 2 ★)·5-6(Track 3 ★)·7(능력 횡전개).
 > **본문 작성 원칙:** 팀명·도메인 라벨 ✕. 트랙은 "ITC가 이 영역에서 5 능력을 어떻게 단계적으로 확보하는가"로 기술.
 
 #### 4.1 Track 1 — Biz 의뢰 능동 대응 (1.5p)
@@ -235,9 +264,15 @@ ITC AI 실행 TF (산하 6팀 선출 인력 = "AI 챔피언")
 - 3년: 트랙별 KPI 대시보드 정착, 분기별 사례 공유, AX Part ↔ 실행 TF 협업 모델 성숙
 - **리스크 관리:** 보안·정보 유출 / 모델 성능 한계 / 인력 확보 / 전사 TF 의존도 ↔ ITC 자력 균형
 
+**5.5 Enabler KPI (Ch.3.3 Layer 2 재게시)**
+- **E1 인당 AI 활용 빈도:** 1년 핵심 인력 ≥10회/월 → 3년 전 직원 ≥10회/월
+- **E2 암묵지 캡처 사이클 횟수:** 1년 1개 영역 1회전 → 3년 분기 ≥3회 정례화
+
 ---
 
 ### Chapter 6. 추진 로드맵 간트 (2p)
+
+> **드래프트:** [ch6-gantt-draft.md](./ch6-gantt-draft.md) — Slide 1(5년 간트 본체, 분기 zoom-in)·Slide 2(마일스톤 범례 + 결정적 전환점 5개).
 
 **표현 정책:**
 - **시간축:** 5년 horizon, **반기 10칸** + **1년차만 분기 4칸 zoom-in**
@@ -259,6 +294,8 @@ ITC AI 실행 TF (산하 6팀 선출 인력 = "AI 챔피언")
 ### Chapter 7. 1년차 Quick Win 5선 (1~2p)
 
 CEO가 가장 좋아하는 슬라이드. 6개월 PoC, 12개월 본 적용. **4 stream + 1 Enabler 혼합.**
+
+> **드래프트 카드 상세:** [quick-win-cards.md](./quick-win-cards.md) — 각 PoC의 6개월/12개월 졸업 기준, 데이터 의존성, 3-tier 책임, 리스크, 열린 질문 정리.
 
 #### "본 적용(Production Rollout)" 정의 — 3-gate (Q16 해결, 2026-05-15)
 
@@ -286,7 +323,7 @@ QW #1·#2·#3은 아래 G1+G2+G3 모두 충족해야 "본 적용" 선언.
 
 ### Appendix
 - A. **트랙 × 5 능력 × 도메인 × 팀 매핑 매트릭스** (본문에서 숨긴 매핑을 한 페이지로)
-- B. 트랙별 과제 상세 카드
+- B. 트랙별 과제 상세 카드 (+ **Layer 3 technical metrics** — 분류 정확도·RAG hit rate·precision-recall 등)
 - C. 사내 AI 스택(Kimi/Qwen/BGE-M3) 활용 지침
 - D. 타사 벤치마크 (TSMC·Intel·삼성 공정 AI 사례)
 - E. 용어집 (RAG, VLM, OPC, FDC, 5 stream, 암묵지 순환고리 등)
@@ -299,9 +336,9 @@ QW #1·#2·#3은 아래 G1+G2+G3 모두 충족해야 "본 적용" 선언.
 1. ~~**Q15. Chapter 구조 압축**~~ — **해결됨 (v0.3, 옵션 B):** 9 → 7챕터. Ch.1+3 통합, Ch.6+8 통합.
 2. ~~**Q16. "본 적용"의 정의**~~ — **해결됨 (v0.3, 3-gate):** G1 범위(2개 이상 stream/팀) + G2 행동 변화(수용 ≥70%) + G3 운영 안정성. QW #4·#5는 "PoC 졸업" 기준 분리.
 3. ~~**Q17. As-Is 수치 근거**~~ — **해결됨 (v0.3, 3-수치 전략):** A1 의뢰량 / A2 계측 데이터량 / A3 FDC 사후분석률. 출처 tier T1/T2/T3. 실제 값은 사내 비공개 문서.
-4. **Q18. AIX TF ↔ AX Part 책임 경계** — Ch.5.4 거버넌스의 핵심 (Q5 이월).
-5. **Q19. KPI 합의** — 5 stream × CEO에게 의미 있는 metric 매핑 (Q8 이월).
-6. **드래프팅 진입 순서** — 통상 Ch.2 (Vision/Positioning) + Ch.7 (Quick Win) 먼저.
+4. ~~**Q18. AIX TF ↔ AX Part 책임 경계**~~ — **해결됨 (v0.3, P1 3-tier):** 전사 AIX TF(DT 주도) → ITC AX Part → ITC AI 실행 TF. 본문 한 줄, Appendix F 상세 표. → [ADR-0001](./docs/adr/0001-aix-tf-ax-part-boundary.md) 작성 완료.
+5. ~~**Q19. KPI 합의**~~ — **해결됨 (v0.3, 2-layer):** Layer 1 (5 stream × 1 L1 + Hero ★1·3·5) / Layer 2 (Enabler E1·E2) / Layer 3 → Appendix B. Stream 3 fallback 옵션 보존.
+6. **드래프팅 진입 순서** (Round 4 진입점) — 통상 Ch.2 (Vision/Positioning) + Ch.7 (Quick Win) 먼저.
 
 ---
 
@@ -312,6 +349,13 @@ QW #1·#2·#3은 아래 G1+G2+G3 모두 충족해야 "본 적용" 선언.
 - **Q7.** CEO 보고 산출물 포맷 (1-page narrative + appendix / 슬라이드) — 슬라이드 20~25장으로 잠정 결정, 1-page 보조 추후 결정
 
 ## 관련 문서
-- [CONTEXT.md](./CONTEXT.md) — 용어·관계·thesis (v0.2 갱신)
+- [CONTEXT.md](./CONTEXT.md) — 용어·관계·thesis (v0.3 거버넌스 3-tier 반영)
 - [grilling-session-2026-05-14.md](./grilling-session-2026-05-14.md) — Round 1 (Q1~Q2) + Round 2 (Q9~Q14)
+- [docs/adr/0001-aix-tf-ax-part-boundary.md](./docs/adr/0001-aix-tf-ax-part-boundary.md) — 거버넌스 3-tier 경계 결정 (Q18)
+- [quick-win-cards.md](./quick-win-cards.md) — Ch.7 Quick Win 5선 상세 카드 드래프트 (v0.1)
+- [ch2-vision-draft.md](./ch2-vision-draft.md) — Ch.2 Vision & Positioning 슬라이드 드래프트 (v0.1)
+- [ch1-context-asis-draft.md](./ch1-context-asis-draft.md) — Ch.1 배경 & As-Is 슬라이드 드래프트 (v0.1)
+- [ch3-tobe-draft.md](./ch3-tobe-draft.md) — Ch.3 To-Be 슬라이드 드래프트 (v0.1)
+- [ch4-tracks-draft.md](./ch4-tracks-draft.md) — Ch.4 추진 트랙 슬라이드 드래프트 (v0.1, 7슬라이드)
+- [ch6-gantt-draft.md](./ch6-gantt-draft.md) — Ch.6 간트 슬라이드 드래프트 (v0.1)
 - [bgk.txt](./bgk.txt) — 원본 배경

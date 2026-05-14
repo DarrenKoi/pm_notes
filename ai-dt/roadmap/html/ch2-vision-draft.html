@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ch.2 Vision & Positioning — 슬라이드 드래프트 (v0.1)</title>
+<link rel="stylesheet" href="roadmap.css" />
+<style>
+  /* ── Ch.2-specific ─────────────────── */
+  .arrow-flow {
+    display: grid;
+    grid-template-columns: 1fr 28px 1fr 28px 1fr;
+    gap: 10px;
+    align-items: stretch;
+    margin: 8px 0 4px;
+  }
+  .arrow-flow .stage-card {
+    border-radius: 12px;
+    padding: 14px 14px 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    min-height: 178px;
+    display: flex; flex-direction: column;
+  }
+  .arrow-flow .stage-card .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  .arrow-flow .stage-card h5 {
+    margin: 4px 0 8px;
+    font-size: 18px;
+  }
+  .arrow-flow .stage-card.passive   { border-color: rgba(110,118,132,0.4); }
+  .arrow-flow .stage-card.active    { border-color: rgba(90,169,255,0.45); background: linear-gradient(180deg, rgba(90,169,255,0.06), var(--surface-2)); }
+  .arrow-flow .stage-card.proactive { border-color: rgba(176,139,255,0.5); background: linear-gradient(180deg, rgba(176,139,255,0.08), var(--surface-2)); }
+  .arrow-flow .stage-card.passive   h5 { color: var(--text-dim); }
+  .arrow-flow .stage-card.active    h5 { color: var(--active); }
+  .arrow-flow .stage-card.proactive h5 { color: var(--proactive); }
+  .arrow-flow .stage-card ul { padding-left: 18px; margin: 0; font-size: 13px; color: var(--text-dim); }
+  .arrow-flow .arrow-cell {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-mute);
+    font-size: 22px;
+  }
+  @media (max-width: 880px) {
+    .arrow-flow { grid-template-columns: 1fr; }
+    .arrow-flow .arrow-cell { transform: rotate(90deg); padding: 4px 0; }
+  }
+
+  /* future-scenes */
+  .scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+  .scene {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    background: var(--surface-2);
+  }
+  .scene .scene-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--anchor);
+    letter-spacing: 0.08em;
+  }
+  .scene .scene-title { font-weight: 600; margin: 6px 0 4px; }
+  .scene p { margin: 0; font-size: 13px; color: var(--text-dim); }
+  @media (max-width: 880px) { .scenes { grid-template-columns: 1fr; } }
+
+  /* 3-tier diagram (Slide B) */
+  .tier-stack { display: grid; gap: 10px; margin-top: 8px; }
+  .tier {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    position: relative;
+  }
+  .tier.t1 { border-color: rgba(90,169,255,0.4);  background: linear-gradient(180deg, rgba(90,169,255,0.07),  var(--surface)); }
+  .tier.t2 { border-color: rgba(176,139,255,0.5); background: linear-gradient(180deg, rgba(176,139,255,0.08), var(--surface)); }
+  .tier.t3 { border-color: var(--border); }
+  .tier .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  .tier h5 { margin: 4px 0 6px; font-size: 15px; color: var(--text); }
+  .tier ul { margin: 4px 0 0; padding-left: 18px; color: var(--text-dim); font-size: 13px; }
+  .tier .down {
+    text-align: center; color: var(--text-mute);
+    font-size: 18px; margin: -6px 0 -10px;
+  }
+  .tier-split {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--quote);
+    border-radius: 10px;
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.9;
+    font-family: var(--mono);
+  }
+  .tier-split b { color: var(--text); }
+
+  /* CEO Q&A */
+  .qa { margin-top: 14px; }
+  .qa .qa-row {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .qa .qa-row:last-child { border-bottom: none; }
+  .qa .q {
+    color: var(--bad);
+    font-style: italic;
+    font-size: 14px;
+  }
+  .qa .a {
+    color: var(--text);
+    font-size: 14px;
+  }
+  .qa .a .ref {
+    display: inline-block;
+    margin-left: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- ────────── Top nav ────────── -->
+  <nav class="topnav">
+    <span class="brand">ITC AIX Roadmap · Draft v0.1</span>
+    <div class="links">
+      <a href="index.html">Index</a>
+      <a href="ch1-context-asis-draft.html">Ch.1 As-Is</a>
+      <a href="ch2-vision-draft.html" class="current">Ch.2 Vision</a>
+      <a href="ch3-tobe-draft.html">Ch.3 To-Be</a>
+      <a href="ch4-tracks-draft.html">Ch.4 Tracks</a>
+      <a href="ch6-gantt-draft.html">Ch.6 Gantt</a>
+    </div>
+  </nav>
+
+  <!-- ────────── Header ────────── -->
+  <header class="doc-header">
+    <span class="eyebrow"><span class="dot"></span> ITC AIX Roadmap · Chapter 2 Draft v0.1</span>
+    <h1 class="doc-title">Vision &amp; Positioning — 우리는 어디로 가는가</h1>
+    <div class="doc-meta">
+      <span class="chip">tags: itc · aix · roadmap · ch2</span>
+      <span class="chip">level: drafting</span>
+      <span class="chip">last_updated: 2026-05-15</span>
+      <span class="chip">2 slides</span>
+    </div>
+    <p class="lede">
+      <strong>작성 원칙:</strong> 본문 팀명·도메인 라벨 ✕ (완전 추상화). 5 stream만 노출.
+    </p>
+  </header>
+
+  <!-- ────────── Flow strip ────────── -->
+  <section class="flow cols-2" aria-label="슬라이드 흐름">
+    <div class="flow-card">
+      <div class="step">SLIDE A</div>
+      <h3>Vision — 무엇을</h3>
+      <p>요청 대응 → 예측 대응. Passive·Active·Proactive 진화선.</p>
+    </div>
+    <div class="flow-card featured">
+      <div class="step">SLIDE B</div>
+      <span class="badge">왜 우리</span>
+      <h3>왜 ITC인가</h3>
+      <p>5 Stream × 현장 결합. 전사 TF / AX Part / 실행 TF 분업.</p>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE A ────────── -->
+  <section class="slide" id="slide-a">
+    <div class="slide-tag"><span class="pill">SLIDE A</span> Vision (2.1)</div>
+    <h2>ITC AIX Vision — 요청 대응에서 예측 대응으로</h2>
+    <div class="headline">
+      <strong>“공정·장비·소재 기반기술을 AI로 가속하고, 요청 대응을 예측 대응으로 진화시키는 ITC”</strong>
+    </div>
+
+    <!-- Narrative spine — Passive → Active → Proactive -->
+    <div class="panel">
+      <h4>Narrative Spine</h4>
+      <div class="arrow-flow">
+        <div class="stage-card passive">
+          <div class="label">PASSIVE · As-Is</div>
+          <h5>요청 오면 처리</h5>
+          <ul>
+            <li>사람이 전부</li>
+            <li>의뢰 수기 분류</li>
+            <li>보고서 수작업</li>
+          </ul>
+        </div>
+        <div class="arrow-cell">→</div>
+        <div class="stage-card active">
+          <div class="label">ACTIVE · 1~2년</div>
+          <h5>빠르고 정확한 응답</h5>
+          <ul>
+            <li>AI가 보조</li>
+            <li>자동 분류·RAG·초안</li>
+            <li>이상 탐지 (한정 범위)</li>
+          </ul>
+        </div>
+        <div class="arrow-cell">→</div>
+        <div class="stage-card proactive">
+          <div class="label">PROACTIVE · 3~5년</div>
+          <h5>요청 오기 전 제안</h5>
+          <ul>
+            <li>사람은 검증·승인</li>
+            <li>예지보전·후보 추천</li>
+            <li>시뮬레이션·자동 제안</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3년 후 모습 -->
+    <div class="panel" style="margin-top:16px;">
+      <h4>3년 후 ITC — CEO가 머릿속에 그릴 장면</h4>
+      <div class="scenes">
+        <div class="scene">
+          <div class="scene-num">SCENE 01</div>
+          <div class="scene-title">엔지니어 옆에 AI 보조자</div>
+          <p>분류·선별·RAG·초안 능력이 5 stream 전반에서 일상 작동</p>
+        </div>
+        <div class="scene">
+          <div class="scene-num">SCENE 02</div>
+          <div class="scene-title">요청 오기 전 제안</div>
+          <p><em class="yellow">"이 장비 2주 내 이상 가능성 87%"</em>, <em class="yellow">"이 소재 후보가 우선순위 1위"</em> 같은 사전 알림이 표준</p>
+        </div>
+        <div class="scene">
+          <div class="scene-num">SCENE 03</div>
+          <div class="scene-title">암묵지가 흐른다</div>
+          <p>엔지니어의 노하우가 <em>일하는 부산물</em>로 캡처되어 다음 결정에 재활용</p>
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"이 한 문장이 5년 후 ITC의 자기 정의입니다. 핵심은 두 가지 — <em>기반기술을 AI로 가속</em>하고, <em>요청 대응</em>을 <em>예측 대응</em>으로 바꾼다. Passive에서 Active까지 1~2년, Active에서 Proactive까지 추가 2~3년. 이건 단순한 도구 도입이 아니라 <strong>일하는 방식의 단계적 전환</strong>입니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li>슬라이드에 <em>"3년 후 모습"</em>의 구체 장면을 picture-in-picture으로 넣을지 — 사내 사용 사례 mockup 1개 추가 검토</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE B ────────── -->
+  <section class="slide featured" id="slide-b">
+    <div class="slide-tag"><span class="pill hero">SLIDE B</span> 왜 ITC인가 (2.2 + 2.3)</div>
+    <h2>왜 ITC가 AIX의 중심인가 — 5 Stream × 현장 결합</h2>
+    <div class="headline">
+      <strong>“전사 AIX TF가 만드는 공통 능력을, ITC가 5가지 흐름과 결합해 공정·장비 성과로 전환한다.”</strong>
+    </div>
+
+    <div class="grid-2-3">
+      <!-- LEFT — 5 stream differentiator -->
+      <div class="panel">
+        <h4>5 Stream Differentiator — ITC만이 모두 갖는다</h4>
+        <table>
+          <thead><tr><th>#</th><th>Stream</th><th>ITC가 가진 자산</th></tr></thead>
+          <tbody>
+            <tr><td><span class="stream-num">1</span></td><td class="stream">의뢰 대응</td><td>의뢰 채널·과거 사례 <span class="muted">(Biz 지원 채널의 집중점)</span></td></tr>
+            <tr><td><span class="stream-num">2</span></td><td class="stream">분석</td><td>분석 보고서·해석 로그</td></tr>
+            <tr style="background: rgba(255,209,102,0.06);">
+              <td><span class="stream-num">3</span></td><td class="stream">계측 데이터 생산</td><td><strong>공정 개선 의사결정의 원천 데이터</strong></td>
+            </tr>
+            <tr><td><span class="stream-num">4</span></td><td class="stream">장비 운영 관리</td><td>셋업·운영 매뉴얼·교대 로그</td></tr>
+            <tr style="background: rgba(255,209,102,0.06);">
+              <td><span class="stream-num">5</span></td><td class="stream">장비 안정성 모니터링</td><td><strong>FDC 시계열</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout warn" style="margin-top:14px;">
+          <strong>Stream 3·5는 ITC 외부에 존재하지 않는 자원.</strong> 이걸 가지지 않은 단위는 <em>"공통 AI 능력"</em>을 받아도 공정 개선·장비 안정성으로 <strong>전환할 도구가 없다</strong>.
+        </div>
+      </div>
+
+      <!-- RIGHT — 3-tier diagram -->
+      <div class="panel">
+        <h4>분업 구조 (Platform / Consumer)</h4>
+        <div class="tier-stack">
+          <div class="tier t1">
+            <div class="label">TIER 1 · Platform</div>
+            <h5>전사 AIX TF <span class="muted mono">(DT 주도)</span></h5>
+            <ul>
+              <li>공통 능력 제공</li>
+              <li>GPU · 플랫폼 · LLM</li>
+              <li>과제 우선순위 · 표준</li>
+            </ul>
+          </div>
+          <div class="tier"><div class="down">▼</div></div>
+          <div class="tier t2">
+            <div class="label">TIER 2 · Broker</div>
+            <h5>ITC AX Part</h5>
+            <ul>
+              <li>5 stream 도메인 결합</li>
+              <li>암묵지 순환고리</li>
+              <li>ITC 로드맵 owning</li>
+            </ul>
+          </div>
+          <div class="tier"><div class="down">▼</div></div>
+          <div class="tier t3">
+            <div class="label">TIER 3 · Consumer</div>
+            <h5>ITC AI 실행 TF</h5>
+            <ul>
+              <li>각 팀 현업 확산 채널</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tier-split">
+          <b>전사 TF</b> = 무엇을 만들 것인가<br/>
+          <b>ITC</b> = 어디에 결합할 것인가
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.3 message -->
+    <blockquote class="box">
+      <div class="lead">“RAG 품질의 상한은 암묵지 채굴이 결정한다.”</div>
+      단순 문서 RAG로는 한계가 있다. ITC는 <em>일하는 흐름의 부산물로 암묵지가 명시화되는</em> <strong>순환고리</strong>를 갖춘다 — 이게 사내 AI 인프라를 <em>현장 성과</em>로 전환하는 결정적 차이.
+    </blockquote>
+
+    <!-- CEO Q&A -->
+    <div class="panel" style="margin-top:18px;">
+      <h4>CEO 예상 반박 &amp; 답변 (Speaker notes backup)</h4>
+      <div class="qa">
+        <div class="qa-row">
+          <div class="q">“이거 결국 전사 TF 일 아닌가?”</div>
+          <div class="a">공통 능력은 TF, 현장 결합은 ITC. 둘은 함께 작동해야 성과가 나온다. <a class="ref" href="../docs/adr/0001-aix-tf-ax-part-boundary.md">ADR-0001</a></div>
+        </div>
+        <div class="qa-row">
+          <div class="q">“5 stream 모두에 1년 안에 적용 가능한가?”</div>
+          <div class="a">1년차는 4 stream + Enabler PoC. 5 stream 전부는 3~5년 horizon. <a class="ref" href="ch4-tracks-draft.html">→ Ch.4</a></div>
+        </div>
+        <div class="qa-row">
+          <div class="q">“DT 사업부가 개발 인력 파견해주는데 왜 ITC가 자체 보유?”</div>
+          <div class="a">ITC는 자체 broker(AX Part) + 실행 TF로 자력 확산 단위. DT 파견은 옵션으로 보존하되 default 아님. <a class="ref" href="../docs/adr/0001-aix-tf-ax-part-boundary.md">ADR-0001</a></div>
+        </div>
+        <div class="qa-row">
+          <div class="q">“암묵지 순환고리는 추상적이지 않은가?”</div>
+          <div class="a">1년차 PoC #5 — 1개 영역에서 캡처→RAG→정제 사이클 1회전 검증. 3년차 정례화. <a class="ref" href="../quick-win-cards.md">→ Ch.7 #5</a></div>
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"CEO께서 가장 먼저 묻고 싶으실 질문이 <em>'이거 결국 전사 TF 일 아닌가'</em>일 것입니다. 답은 <em>공통 능력 ≠ 현장 결합</em>입니다. 전사 TF가 GPU·플랫폼·LLM을 만들면, 그건 <em>공통 도구</em>입니다. 그 도구가 <em>공정 수율</em>이나 <em>장비 downtime 감소</em>로 전환되려면 5가지 흐름 모두에 손이 닿아 있는 단위가 필요합니다. ITC가 그 유일한 단위입니다.</p>
+      <p>두 번째로, 사내 AI의 진짜 상한은 <em>모델 성능</em>이 아니라 <em>암묵지를 얼마나 흘리느냐</em>입니다. 엔지니어의 머릿속 노하우가 RAG로 들어오지 않으면, 아무리 좋은 LLM이 와도 답이 얕습니다. ITC는 이 <em>암묵지 순환고리</em>를 일하는 흐름 안에 박는 1년차 PoC를 시작합니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li>5 stream 아이콘 디자인 — Appendix E 용어집 아이콘과 통일 필요</li>
+        <li>3-tier 다이어그램이 너무 조직도처럼 보이면 정치적 부담 — 추상화 수준 검토</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── Bridge ────────── -->
+  <section class="bridge">
+    <div class="seq">
+      <b>Slide A — Vision</b> &nbsp;<span class="muted">"우리는 이렇게 진화한다"</span><br/>
+      <b>Slide B — 왜 ITC인가</b> &nbsp;<span class="muted">"그래서 왜 우리여야 하는가"</span>
+    </div>
+    <p>A가 <em>"무엇을"</em>, B가 <em>"왜 우리가"</em>. 청자는 A에서 <em>"이건 듣고 싶다"</em>, B에서 <em>"이건 들어야 한다"</em>를 느낌. → <a href="ch3-tobe-draft.html" class="blue">Ch.3 To-Be</a>에서 <em>"이렇게 측정 가능"</em>으로 이어진다.</p>
+  </section>
+
+  <!-- ────────── Followups ────────── -->
+  <section class="followups">
+    <h3>Round 4 후속 검토 포인트</h3>
+    <ol>
+      <li><strong>5 stream 아이콘 디자인 통일</strong> — Vision 슬라이드부터 Quick Win 슬라이드까지 일관 사용</li>
+      <li><strong>3-tier 다이어그램의 추상화 수준</strong> — <em>"AX Part 권한 과대"</em> 정치적 우려 ↔ <em>"명확한 분업"</em> 메시지 강도 trade-off</li>
+      <li><strong>CEO 예상 반박 4개</strong> — 보고 리허설 시 검증할 핵심 질문</li>
+      <li><strong>Slide A의 "3년 후 모습"</strong> — picture-in-picture mockup 추가 여부</li>
+    </ol>
+  </section>
+
+  <!-- ────────── Refs ────────── -->
+  <section class="refs">
+    <strong>관련 문서</strong>
+    <ul>
+      <li><a href="../itc-aix-roadmap-outline.md">itc-aix-roadmap-outline.md</a> — Ch.2 (high-level 구조)</li>
+      <li><a href="../CONTEXT.md">CONTEXT.md</a> — 5 stream / 거버넌스 3-tier / 암묵지 순환고리 용어</li>
+      <li><a href="../docs/adr/0001-aix-tf-ax-part-boundary.md">ADR-0001</a> — Platform/Consumer 분업의 정식 결정 문서</li>
+      <li><a href="../quick-win-cards.md">quick-win-cards.md</a> — Ch.7 카드 (Slide B 예상 반박 #4와 연결)</li>
+    </ul>
+  </section>
+
+</main>
+</body>
+</html>

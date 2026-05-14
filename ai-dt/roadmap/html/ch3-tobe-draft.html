@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ch.3 To-Be — 슬라이드 드래프트 (v0.1)</title>
+<link rel="stylesheet" href="roadmap.css" />
+<style>
+  /* ── Ch.3-specific ─────────────────── */
+
+  /* Stage definition table */
+  .stage-table th { font-size: 11px; }
+  .stage-table td.stage-cell {
+    font-weight: 700;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .stage-table tr.passive td.stage-cell   { color: var(--text-mute); }
+  .stage-table tr.active td.stage-cell    { color: var(--active); }
+  .stage-table tr.proactive td.stage-cell { color: var(--proactive); }
+  .stage-table tr.passive   { background: rgba(110,118,132,0.05); }
+  .stage-table tr.active    { background: rgba(90,169,255,0.06); }
+  .stage-table tr.proactive { background: rgba(176,139,255,0.07); }
+
+  /* 단계별 ITC 모습 카드 */
+  .itc-shape {
+    border-radius: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .itc-shape.active    { border-color: rgba(90,169,255,0.45); }
+  .itc-shape.proactive { border-color: rgba(176,139,255,0.5); }
+  .itc-shape .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .itc-shape .head h5 {
+    margin: 0; font-size: 16px;
+  }
+  .itc-shape.active    .head h5 { color: var(--active); }
+  .itc-shape.proactive .head h5 { color: var(--proactive); }
+  .itc-shape .head .yr {
+    font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+  }
+  .itc-shape .pull {
+    font-style: italic; color: var(--text-dim);
+    font-size: 13px; margin-bottom: 8px;
+  }
+  .itc-shape ul { margin: 4px 0 0; padding-left: 18px; color: var(--text-dim); font-size: 13px; }
+  .itc-shape ul li { margin: 4px 0; }
+  .itc-shape ul li::marker { color: currentColor; }
+
+  /* Spine ladder */
+  .spine-ladder {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .spine-col {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    background: var(--surface-2);
+    position: relative;
+  }
+  .spine-col.passive   { border-color: rgba(110,118,132,0.4); }
+  .spine-col.active    { border-color: rgba(90,169,255,0.45);  background: linear-gradient(180deg, rgba(90,169,255,0.06), var(--surface-2)); }
+  .spine-col.proactive { border-color: rgba(176,139,255,0.5);  background: linear-gradient(180deg, rgba(176,139,255,0.08), var(--surface-2)); }
+  .spine-col .col-head {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  .spine-col .col-title { font-size: 16px; font-weight: 600; margin: 4px 0 8px; }
+  .spine-col.passive   .col-title { color: var(--text-dim); }
+  .spine-col.active    .col-title { color: var(--active); }
+  .spine-col.proactive .col-title { color: var(--proactive); }
+  .spine-col .flow-line {
+    font-family: var(--mono); font-size: 13px;
+    color: var(--text); margin-bottom: 10px;
+  }
+  .ability-add {
+    margin: 0; padding: 0; list-style: none;
+    font-family: var(--mono); font-size: 12.5px;
+    color: var(--text-dim);
+  }
+  .ability-add li {
+    padding: 4px 0;
+    border-top: 1px dashed var(--border);
+  }
+  .ability-add li:first-child { border-top: none; }
+  .ability-add li::before { content: "+ "; color: var(--ok); }
+  @media (max-width: 880px) { .spine-ladder { grid-template-columns: 1fr; } }
+
+  .transition-line {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(90,169,255,0.10), rgba(176,139,255,0.10));
+    border: 1px dashed rgba(176,139,255,0.45);
+    font-size: 13px; color: var(--text);
+    text-align: center;
+    font-family: var(--mono);
+  }
+
+  /* Enabler cards (E1, E2) */
+  .enabler-cards { display: grid; gap: 12px; }
+  .enabler-card {
+    border: 1px solid rgba(176,139,255,0.4);
+    background: linear-gradient(180deg, rgba(176,139,255,0.07), var(--surface-2));
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .enabler-card .head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 6px;
+  }
+  .enabler-card .code {
+    font-family: var(--mono); font-size: 12px; color: var(--proactive);
+    letter-spacing: 0.06em;
+  }
+  .enabler-card .title { font-weight: 600; }
+  .enabler-card .targets {
+    margin: 6px 0 4px; padding: 8px 10px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 8px;
+    font-family: var(--mono); font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .enabler-card .targets b { color: var(--text); }
+  .enabler-card .meaning {
+    font-size: 13px; color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* KPI delta */
+  .delta {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .delta.down { background: rgba(70,201,122,0.15); color: var(--ok); }
+  .delta.up   { background: rgba(255,209,102,0.15); color: var(--anchor); }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- Top nav -->
+  <nav class="topnav">
+    <span class="brand">ITC AIX Roadmap · Draft v0.1</span>
+    <div class="links">
+      <a href="index.html">Index</a>
+      <a href="ch1-context-asis-draft.html">Ch.1 As-Is</a>
+      <a href="ch2-vision-draft.html">Ch.2 Vision</a>
+      <a href="ch3-tobe-draft.html" class="current">Ch.3 To-Be</a>
+      <a href="ch4-tracks-draft.html">Ch.4 Tracks</a>
+      <a href="ch6-gantt-draft.html">Ch.6 Gantt</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="doc-header">
+    <span class="eyebrow"><span class="dot"></span> ITC AIX Roadmap · Chapter 3 Draft v0.1</span>
+    <h1 class="doc-title">To-Be — Active를 거쳐 Proactive로</h1>
+    <div class="doc-meta">
+      <span class="chip">tags: itc · aix · roadmap · ch3</span>
+      <span class="chip">level: drafting</span>
+      <span class="chip">last_updated: 2026-05-15</span>
+      <span class="chip">2 slides</span>
+    </div>
+    <p class="lede">
+      <strong>작성 원칙:</strong> Ch.2 Vision의 <em>정성적 그림</em>을 <em>시간축 + 능력 + KPI</em>의 정량 좌표로 옮긴다.
+    </p>
+  </header>
+
+  <!-- Flow -->
+  <section class="flow cols-2">
+    <div class="flow-card">
+      <div class="step">SLIDE 1</div>
+      <h3>3단계 전환 척추</h3>
+      <p>Passive → Active → Proactive. 사람의 일과 AI의 일의 분업.</p>
+    </div>
+    <div class="flow-card featured">
+      <div class="step">SLIDE 2 · Scorecard</div>
+      <span class="badge">★ HERO 3</span>
+      <h3>KPI Scorecard</h3>
+      <p>5 stream × L1 KPI + Enabler E1·E2.</p>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 1 ────────── -->
+  <section class="slide" id="slide-1">
+    <div class="slide-tag"><span class="pill">SLIDE 1</span> 3단계 전환 척추 (3.1 + 3.2)</div>
+    <h2>3단계 전환 — 사람의 일과 AI의 일이 어떻게 나뉘는가</h2>
+    <div class="headline">
+      <strong>“Active = 사람 옆에 AI 보조자. Proactive = AI가 먼저 제안하고 사람이 검증한다.”</strong>
+    </div>
+
+    <div class="grid-2">
+      <!-- LEFT — 3단계 정의표 -->
+      <div class="panel">
+        <h4>3단계 정의</h4>
+        <table class="stage-table">
+          <thead>
+            <tr>
+              <th>단계</th><th>시점</th><th>사람의 일</th><th>AI의 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="passive">
+              <td class="stage-cell">PASSIVE</td>
+              <td><span class="mono muted">As-Is</span></td>
+              <td>전부 사람</td>
+              <td><span class="muted">없음 / 보조</span></td>
+            </tr>
+            <tr class="active">
+              <td class="stage-cell">ACTIVE</td>
+              <td><strong>1~2년</strong></td>
+              <td>판단·결정</td>
+              <td>분류·선별·RAG·초안·이상탐지</td>
+            </tr>
+            <tr class="proactive">
+              <td class="stage-cell">PROACTIVE</td>
+              <td><strong>3~5년</strong></td>
+              <td>검증·승인</td>
+              <td>예측·시뮬레이션·자동 제안</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:14px;">
+          <strong>차이의 본질:</strong> Active = AI가 <em>요청에 응답</em>. Proactive = AI가 <em>요청 전에 제안</em>. <strong>능동성</strong>이 두 단계를 가른다.
+        </div>
+      </div>
+
+      <!-- RIGHT — 단계별 ITC 모습 -->
+      <div class="panel">
+        <h4>단계별 ITC 모습</h4>
+        <div style="display:grid; gap:12px;">
+          <div class="itc-shape active">
+            <div class="head">
+              <h5>Active ITC <span class="stage active">1~2년</span></h5>
+              <span class="yr">5 stream 전반</span>
+            </div>
+            <div class="pull">"엔지니어 옆에 AI 보조자가 있다."</div>
+            <ul>
+              <li>의뢰 자동 분류·라우팅 → 분석가 워크 큐로 직접 흐름</li>
+              <li>분석 보고서를 AI가 초안 작성, 사람은 편집·검증</li>
+              <li>검측 이미지가 자동 분류되어 <em>우선순위 큐</em>에 정렬</li>
+              <li>사내 RAG에서 <em>과거 사례·운영 매뉴얼</em>이 자동 회수</li>
+              <li>한정 범위 FDC 이상 시그널이 사람 검증과 함께 측정</li>
+            </ul>
+          </div>
+          <div class="itc-shape proactive">
+            <div class="head">
+              <h5>Proactive ITC <span class="stage proactive">3~5년</span></h5>
+              <span class="yr">5 stream 전반 + 능동 제안</span>
+            </div>
+            <div class="pull">"AI가 먼저 제안하고, 사람은 검증·승인한다."</div>
+            <ul>
+              <li><span class="yellow">"이 장비 2주 내 이상 가능성 87%"</span> — 알람 전 예지보전 알림</li>
+              <li><span class="yellow">"이 소재 후보가 우선순위 1위"</span> — 실험 전에 후보 추천</li>
+              <li><span class="yellow">"이 의뢰는 X 패턴 — 사전 대응 가이드 자동 생성"</span></li>
+              <li>OPC 보조·검사 우선순위가 시뮬레이션 기반으로 자동 산출</li>
+              <li>암묵지가 5 stream 전반에 흐르는 <em>기본 동작</em></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spine ladder -->
+    <div class="panel" style="margin-top:18px;">
+      <h4>척추 다이어그램 — 능력의 점진적 추가</h4>
+      <div class="spine-ladder">
+        <div class="spine-col passive">
+          <div class="col-head">PASSIVE · As-Is</div>
+          <div class="col-title">요청 → 처리</div>
+          <div class="flow-line">능력: <span class="muted">없음</span></div>
+          <ul class="ability-add">
+            <li style="color: var(--text-mute);">사람이 전부</li>
+          </ul>
+        </div>
+        <div class="spine-col active">
+          <div class="col-head">ACTIVE · 1~2년</div>
+          <div class="col-title">요청 → AI 보조 → 결정</div>
+          <ul class="ability-add">
+            <li>분류·선별</li>
+            <li>회수·요약 (RAG)</li>
+            <li>초안 생성</li>
+            <li>이상 시그널 (시드)</li>
+          </ul>
+        </div>
+        <div class="spine-col proactive">
+          <div class="col-head">PROACTIVE · 3~5년</div>
+          <div class="col-title">예측 → AI 제안 → 검증</div>
+          <ul class="ability-add">
+            <li>이상·예측 (본 적용)</li>
+            <li>추천·시뮬레이션</li>
+            <li>자동 제안</li>
+          </ul>
+        </div>
+      </div>
+      <div class="transition-line">◀ Active → Proactive 전환선 (2~3년차 사이) ▶</div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"Active와 Proactive를 가르는 결정적 차이는 <em>능동성</em>입니다. Active에서는 사람이 <em>요청하면</em> AI가 응답합니다. Proactive에서는 AI가 <em>요청 전에</em> 제안합니다. 1~2년차에 우리는 <em>분류·RAG·초안</em>이라는 4개 능력을 5 stream 전반에 배치하고, 3년차부터 <em>예측·추천</em>을 더해 능동 영역으로 진화합니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li><span class="yellow mono">"87%"</span>, <span class="yellow mono">"우선순위 1위"</span> 같은 구체 수치 표현 — Ch.2 Slide A <em>"3년 후 모습"</em>과 동일 표현 사용해 보고서 내부 visual repetition 의도</li>
+        <li>Active 5개 / Proactive 5개 장면을 각각 5 stream과 1:1 매핑하면 narrative가 더 단단해짐. 검토 필요</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 2 ────────── -->
+  <section class="slide featured" id="slide-2">
+    <div class="slide-tag"><span class="pill hero">SLIDE 2 ★</span> KPI Scorecard (3.3)</div>
+    <h2>성공 측정 — 2-Layer KPI Scorecard</h2>
+    <div class="headline">
+      <strong>“5가지 흐름마다 1개 outcome KPI. 그중 3개를 Hero로 강조한다. 횡단 Enabler KPI 2개를 추가한다.”</strong>
+    </div>
+
+    <div class="grid-2-3">
+      <!-- LEFT 2/3 — Layer 1 KPI table -->
+      <div class="panel">
+        <h4>Layer 1 — 5 Stream × CEO Outcome KPI</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Stream</th>
+              <th>L1 KPI</th>
+              <th>1년 목표</th>
+              <th>3년 목표</th>
+              <th>Hero</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hero-row">
+              <td class="stream"><span class="stream-num">1</span>의뢰 대응</td>
+              <td><strong>의뢰 평균 TAT</strong></td>
+              <td><span class="delta down">↓30%</span></td>
+              <td><span class="delta down">↓50%</span></td>
+              <td class="yellow center">★</td>
+            </tr>
+            <tr>
+              <td class="stream"><span class="stream-num">2</span>분석</td>
+              <td>분석 보고서 평균 작성시간</td>
+              <td><span class="delta down">↓40%</span></td>
+              <td><span class="delta down">↓60%</span></td>
+              <td class="center muted">—</td>
+            </tr>
+            <tr class="hero-row">
+              <td class="stream"><span class="stream-num">3</span>계측 데이터 생산</td>
+              <td><strong>검측→공정 의사결정 lead time</strong></td>
+              <td><span class="delta down">↓30%</span></td>
+              <td><span class="delta down">↓50%</span></td>
+              <td class="yellow center">★</td>
+            </tr>
+            <tr>
+              <td class="stream"><span class="stream-num">4</span>장비 운영</td>
+              <td>신규 인력 ramp-up 시간</td>
+              <td><span class="delta down">↓30%</span></td>
+              <td><span class="delta down">↓50%</span></td>
+              <td class="center muted">—</td>
+            </tr>
+            <tr class="hero-row">
+              <td class="stream"><span class="stream-num">5</span>안정성 모니터링</td>
+              <td><strong>예지보전 hit rate / 대응시간</strong></td>
+              <td><span class="delta up">hit ≥40%</span> · <span class="delta down">대응 ↓25%</span></td>
+              <td><span class="delta up">hit ≥70%</span> · <span class="delta down">대응 ↓50%</span></td>
+              <td class="yellow center">★</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="muted" style="margin-top:12px; font-size:13px;">
+          <strong style="color: var(--anchor);">Hero 3개 (★1·3·5)</strong> = CEO 보고에서 가장 자주 인용되는 수치. 나머지 2개는 <em>동행 KPI</em>.
+        </p>
+      </div>
+
+      <!-- RIGHT 1/3 — Layer 2 enablers -->
+      <div class="panel">
+        <h4>Layer 2 — Enabler 횡단 KPI</h4>
+        <div class="enabler-cards">
+          <div class="enabler-card">
+            <div class="head">
+              <span class="code">E1</span>
+              <span class="title">인당 AI 활용 빈도</span>
+            </div>
+            <div class="targets">
+              <b>1년:</b> 핵심 인력 ≥ 10회/월<br/>
+              <b>3년:</b> 전 직원 ≥ 10회/월
+            </div>
+            <div class="meaning">의미: AI가 일에 침투했는가</div>
+          </div>
+          <div class="enabler-card">
+            <div class="head">
+              <span class="code">E2</span>
+              <span class="title">암묵지 캡처 사이클 횟수</span>
+            </div>
+            <div class="targets">
+              <b>1년:</b> 1개 영역 1회전<br/>
+              <b>3년:</b> 분기 ≥ 3회 정례화
+            </div>
+            <div class="meaning">의미: 순환고리가 살아 있는가</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operating principle -->
+    <div class="panel" style="margin-top:18px;">
+      <h4>운영 원칙</h4>
+      <div style="display:grid; gap:10px;">
+        <div class="callout">
+          <strong>Baseline 우선 —</strong> Hero KPI 3개 모두 6개월 PoC 단계에서 baseline 측정 필수. <em>측정 가능성이 ↓30% 표현의 전제조건.</em>
+        </div>
+        <div class="callout warn">
+          <strong>Layer 3 (technical metrics) —</strong> 분류 정확도·RAG hit rate·precision-recall 등은 <a href="../itc-aix-roadmap-outline.md#appendix" style="color: var(--accent);">Appendix B</a>에 격리.
+        </div>
+        <div class="callout bad">
+          <strong>Fallback 보존 —</strong> Stream 3 lead time baseline 측정 자체가 PoC 과제 수준 — 1년차 미달성 시 Hero에서 E1 승격 옵션.
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"KPI는 <em>너무 많으면 흐려지고, 너무 적으면 약해진다</em>의 trade-off가 있습니다. 우리 답은 <em>5 stream 전부 노출, 그중 3개를 Hero로 강조</em>입니다. Hero 3개는 의뢰 TAT, 검측 lead time, 예지보전 hit rate — 모두 <em>CEO에게 직접 의미 있는 outcome</em>이고, baseline 측정도 가능합니다. 우측 Enabler 2개는 <em>흐름이 살아 있는가</em>의 proxy입니다. 모델 정확도 같은 기술 지표는 Appendix로 격리해서 본문이 흐려지지 않도록 했습니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li>Hero 표시 방식 — ★ vs 음영 vs 색상 강조. 디자이너와 협의</li>
+        <li>Layer 1 표의 <em>근거(Baseline 출처)</em> 컬럼을 추가할지 — A1/A2/A3 anchor와 호응. Ch.1 Slide 2와 visual 연결 강화 가능</li>
+        <li>Fallback 표현 위치 — 본문 박스 vs speaker notes only. <em>"E1 승격 옵션"</em>을 공개적으로 노출하면 CEO에게 <em>"왜 미리 못 정하느냐"</em> 반박 위험 — speaker notes only가 안전할 가능성</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Bridge -->
+  <section class="bridge">
+    <div class="seq">
+      <b>Slide 1 — 전환 척추</b> &nbsp;<span class="muted">"이렇게 진화한다" (정성)</span><br/>
+      <b>Slide 2 — KPI Scorecard</b> &nbsp;<span class="muted">"이렇게 측정한다" (정량)</span>
+    </div>
+    <p>Ch.3 전체가 <strong>정성(Vision)에서 정량(추진 트랙·Quick Win)으로 가는 다리</strong>. Slide 1이 <em>그림</em>, Slide 2가 <em>눈금</em>. → <a href="ch4-tracks-draft.html" class="blue">Ch.4 추진 트랙</a>에서 실행 디테일로 이어진다.</p>
+  </section>
+
+  <!-- Followups -->
+  <section class="followups">
+    <h3>Round 4 후속 검토 포인트</h3>
+    <ol>
+      <li><strong>Active 5개 / Proactive 5개 장면의 5 stream 매핑</strong> — Slide 1 우측을 stream과 1:1로 묶을지</li>
+      <li><strong>Hero KPI 시각 강조 방식</strong> — ★ vs 음영 vs 색상</li>
+      <li><strong>Fallback (Stream 3 → E1 승격)의 공개 수준</strong> — 본문 박스 / speaker notes / 비공개</li>
+      <li><strong>Slide 2에 baseline 출처 컬럼</strong> — Ch.1 Slide 2 anchor 카드와 visual 연결 강화 여부</li>
+      <li><strong>Active·Proactive 단계의 시간 정의</strong> — <em>1~2년·3~5년</em>이 정확한지, <em>2년·5년</em>으로 단순화할지</li>
+    </ol>
+  </section>
+
+  <!-- Refs -->
+  <section class="refs">
+    <strong>관련 문서</strong>
+    <ul>
+      <li><a href="../itc-aix-roadmap-outline.md">itc-aix-roadmap-outline.md</a> — Ch.3 (high-level 구조)</li>
+      <li><a href="ch1-context-asis-draft.html">Ch.1 As-Is</a> — A1·A2·A3 anchor와 Ch.3 KPI baseline 호응</li>
+      <li><a href="ch2-vision-draft.html">Ch.2 Vision</a> — Passive→Active→Proactive narrative spine 공유</li>
+      <li><a href="../quick-win-cards.md">quick-win-cards.md</a> — Ch.7 (PoC별 KPI가 Ch.3 Layer 1·2의 sub-set)</li>
+      <li><a href="../CONTEXT.md">CONTEXT.md</a> — Passive/Active/Proactive 정의</li>
+    </ul>
+  </section>
+
+</main>
+</body>
+</html>

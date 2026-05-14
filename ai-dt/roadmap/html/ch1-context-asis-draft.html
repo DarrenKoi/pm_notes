@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ch.1 배경 & As-Is 진단 — 슬라이드 드래프트 (v0.1)</title>
+<link rel="stylesheet" href="roadmap.css" />
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #161a22;
+    --surface-2: #1d222c;
+    --border: #2a2f3a;
+    --text: #e6e9ef;
+    --text-dim: #a4abb8;
+    --text-mute: #6e7684;
+    --accent: #5aa9ff;
+    --accent-2: #8b7dff;
+    --ok: #46c97a;
+    --warn: #f5b340;
+    --bad: #ef5a6b;
+    --anchor: #ffd166;
+    --chip-bg: #232a37;
+    --quote: #1b2230;
+    --radius: 14px;
+    --shadow: 0 6px 28px rgba(0,0,0,0.35);
+    --mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 20% -10%, #1b2336 0%, var(--bg) 60%) fixed;
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+  }
+
+  /* ── Header ─────────────────────────── */
+  .doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  h1.doc-title {
+    font-size: clamp(28px, 3.4vw, 40px);
+    margin: 10px 0 14px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    background: var(--chip-bg);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  .lede {
+    color: var(--text-dim);
+    border-left: 3px solid var(--accent);
+    padding: 6px 16px;
+    margin: 22px 0 0;
+    background: linear-gradient(90deg, rgba(90,169,255,0.08), transparent 60%);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* ── Flow strip ─────────────────────── */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 14px;
+    margin: 28px 0 40px;
+  }
+  .flow-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 18px 16px;
+    position: relative;
+  }
+  .flow-card.featured {
+    border-color: rgba(255,209,102,0.5);
+    box-shadow: 0 0 0 1px rgba(255,209,102,0.15), 0 6px 24px rgba(0,0,0,0.3);
+  }
+  .flow-card .step {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-mute);
+    letter-spacing: 0.1em;
+  }
+  .flow-card h3 {
+    margin: 6px 0 8px;
+    font-size: 16px;
+  }
+  .flow-card p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .flow-card .badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--anchor);
+  }
+
+  /* ── Slide section ──────────────────── */
+  .slide {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 32px 28px;
+    margin: 28px 0;
+    box-shadow: var(--shadow);
+  }
+  .slide-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-mute);
+    letter-spacing: 0.08em;
+  }
+  .slide-tag .pill {
+    background: var(--chip-bg);
+    color: var(--text);
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .slide h2 {
+    margin: 10px 0 8px;
+    font-size: clamp(22px, 2.4vw, 28px);
+    letter-spacing: -0.01em;
+  }
+  .headline {
+    margin: 14px 0 24px;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, rgba(90,169,255,0.10), rgba(139,125,255,0.06));
+    border: 1px solid rgba(90,169,255,0.25);
+    border-radius: 12px;
+    font-size: 17px;
+    color: var(--text);
+  }
+  .headline strong { color: #fff; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .grid-2-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 22px; }
+  @media (max-width: 880px) {
+    .grid-2, .grid-2-3, .flow { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .panel h4 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-mute);
+    font-weight: 600;
+  }
+
+  /* ── Tables ─────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--text-mute);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  td.stream { white-space: nowrap; font-weight: 600; }
+  .stream-num {
+    display: inline-block;
+    width: 22px; height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--chip-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-right: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  /* ── Pressure diagram ───────────────── */
+  .pressures {
+    display: grid;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .pressure {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--bad);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .pressure.ok { border-left-color: var(--ok); }
+  .pressure .label {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-mute);
+  }
+  .pressure .body { font-size: 14px; }
+  .pressure .body .vs { color: var(--text-mute); font-size: 12px; margin: 0 6px; }
+  .pressure .arrow {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--bad);
+  }
+  .pressure.ok .arrow { color: var(--ok); }
+  .callout {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(70,201,122,0.08);
+    border: 1px dashed rgba(70,201,122,0.4);
+    color: var(--text);
+    font-size: 14px;
+  }
+  .callout strong { color: #d9ffe9; }
+
+  /* ── Anchor cards (Slide 2) ─────────── */
+  .anchors { display: grid; gap: 12px; }
+  .anchor-card {
+    background: linear-gradient(180deg, rgba(255,209,102,0.06), rgba(255,209,102,0.02));
+    border: 1px solid rgba(255,209,102,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .anchor-card .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .anchor-card .code {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--anchor);
+    letter-spacing: 0.06em;
+  }
+  .anchor-card .title { font-weight: 600; font-size: 15px; }
+  .anchor-card .slot {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed var(--border);
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin: 6px 0;
+  }
+  .anchor-card .src {
+    font-size: 12px;
+    color: var(--text-mute);
+  }
+  .tier-legend {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    line-height: 1.7;
+  }
+
+  /* ── Quotes & boxes ─────────────────── */
+  blockquote.box {
+    margin: 18px 0 0;
+    padding: 18px 20px;
+    background: var(--quote);
+    border-left: 4px solid var(--accent-2);
+    border-radius: 0 12px 12px 0;
+    color: var(--text);
+  }
+  blockquote.box strong { color: #fff; }
+  blockquote.box .lead {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  details.notes {
+    margin-top: 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  details.notes summary {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  details.notes[open] summary { color: var(--accent); }
+  details.notes p {
+    margin: 10px 0 4px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  .slot-list {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(245,179,64,0.06);
+    border: 1px dashed rgba(245,179,64,0.4);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .slot-list h5 {
+    margin: 0 0 6px;
+    color: var(--warn);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+  .slot-list ul { margin: 0; padding-left: 18px; }
+
+  /* ── Radar (Slide 3) ────────────────── */
+  .radar-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+  }
+  .radar { width: 100%; max-width: 380px; height: auto; }
+  .radar .grid { fill: none; stroke: var(--border); stroke-width: 1; }
+  .radar .axis { stroke: var(--border); stroke-width: 1; }
+  .radar .area {
+    fill: rgba(90,169,255,0.18);
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  .radar .point { fill: var(--accent); }
+  .radar .label {
+    fill: var(--text);
+    font-size: 12px;
+    font-family: var(--sans);
+  }
+  .radar .score {
+    fill: var(--anchor);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .score-table .bar {
+    display: inline-block;
+    width: 80px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--chip-bg);
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-table .bar > i {
+    display: block; height: 100%;
+    border-radius: 4px;
+  }
+  .score-table .score { font-family: var(--mono); font-size: 13px; }
+  .score-table .axis-name { font-weight: 600; }
+
+  .priority-row { display: grid; grid-template-columns: 36px 90px 1fr; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .priority-row:last-child { border-bottom: none; }
+  .priority-row .rank {
+    font-family: var(--mono);
+    font-size: 18px;
+    text-align: center;
+    color: var(--text-mute);
+    background: var(--chip-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 0;
+  }
+  .priority-row.p-top .rank { color: var(--bad); border-color: rgba(239,90,107,0.4); }
+  .priority-row.p-mid .rank { color: var(--warn); }
+  .priority-row.p-low .rank { color: var(--text-mute); opacity: 0.7; }
+  .priority-row .axis { font-weight: 600; }
+  .priority-row .action { font-size: 14px; color: var(--text-dim); }
+
+  /* ── Bridge & followups ─────────────── */
+  .bridge {
+    margin: 36px 0;
+    padding: 22px 26px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(139,125,255,0.10), rgba(90,169,255,0.06));
+    border: 1px solid rgba(139,125,255,0.35);
+  }
+  .bridge .seq {
+    font-family: var(--mono);
+    color: var(--text-dim);
+    line-height: 2;
+  }
+  .bridge .seq b { color: var(--text); }
+  .bridge p { margin: 12px 0 0; color: var(--text-dim); font-size: 14px; }
+
+  .followups {
+    margin-top: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .followups h3 {
+    margin: 0 0 14px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-mute);
+  }
+  .followups ol { padding-left: 20px; margin: 0; }
+  .followups li { margin-bottom: 8px; color: var(--text-dim); }
+  .followups li strong { color: var(--text); }
+
+  .refs {
+    margin-top: 28px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .refs a { color: var(--accent); text-decoration: none; }
+  .refs a:hover { text-decoration: underline; }
+
+  /* small utilities */
+  .red { color: var(--bad); }
+  .green { color: var(--ok); }
+  .yellow { color: var(--warn); }
+  .muted { color: var(--text-mute); }
+  .mono { font-family: var(--mono); }
+
+  /* Print */
+  @media print {
+    body { background: #fff; color: #111; }
+    .slide, .panel, .followups, .bridge { background: #fff; box-shadow: none; }
+    .chip, .pill { color: #333; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- ────────── Top nav ────────── -->
+  <nav class="topnav">
+    <span class="brand">ITC AIX Roadmap · Draft v0.1</span>
+    <div class="links">
+      <a href="index.html">Index</a>
+      <a href="ch1-context-asis-draft.html" class="current">Ch.1 As-Is</a>
+      <a href="ch2-vision-draft.html">Ch.2 Vision</a>
+      <a href="ch3-tobe-draft.html">Ch.3 To-Be</a>
+      <a href="ch4-tracks-draft.html">Ch.4 Tracks</a>
+      <a href="ch6-gantt-draft.html">Ch.6 Gantt</a>
+    </div>
+  </nav>
+
+  <!-- ────────── Header ────────── -->
+  <header class="doc-header">
+    <span class="eyebrow"><span class="dot"></span> ITC AIX Roadmap · Chapter 1 Draft v0.1</span>
+    <h1 class="doc-title">배경 &amp; As-Is 진단 — 우리는 왜 변해야 하고, 지금 어디 있나</h1>
+    <div class="doc-meta">
+      <span class="chip">tags: itc · aix · roadmap · ch1</span>
+      <span class="chip">level: drafting</span>
+      <span class="chip">last_updated: 2026-05-15</span>
+      <span class="chip">3 slides</span>
+    </div>
+    <p class="lede">
+      <strong>작성 원칙:</strong> 본문에 팀명·도메인 라벨 ✕. As-Is anchor 수치는 <span class="mono">SLOT</span>으로 유지 — 사내 비공개 문서에서 실값 주입.
+    </p>
+  </header>
+
+  <!-- ────────── Flow strip ────────── -->
+  <section class="flow" aria-label="슬라이드 흐름">
+    <div class="flow-card">
+      <div class="step">SLIDE 1</div>
+      <h3>외부 변화</h3>
+      <p>세상이 어떻게 바뀌었나 — 시장·기술 환경 변화, 3가지 압력.</p>
+    </div>
+    <div class="flow-card featured">
+      <div class="step">SLIDE 2 · 핵심</div>
+      <span class="badge">★★ ANCHOR</span>
+      <h3>내부 진단</h3>
+      <p>우리는 지금 Passive다. 5 stream 한계 + Anchor 수치 3개.</p>
+    </div>
+    <div class="flow-card">
+      <div class="step">SLIDE 3</div>
+      <h3>준비도</h3>
+      <p>우리는 어디서 출발하나 — 5점 척도 레이더 차트.</p>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 1 ────────── -->
+  <section class="slide" id="slide-1">
+    <div class="slide-tag"><span class="pill">SLIDE 1</span> 외부 변화 (1.1 + 1.2)</div>
+    <h2>세상은 이렇게 바뀌었다 — 왜 지금 변해야 하는가</h2>
+    <div class="headline">
+      <strong>“반도체 미세화·소재 다양화·데이터 폭증과 생성 AI 실용화가 동시에 일어났다 — ITC가 마주한 3가지 압력.”</strong>
+    </div>
+
+    <div class="grid-2">
+      <!-- LEFT — 외부 변화 4개 -->
+      <div class="panel">
+        <h4>외부 변화 4개 영역</h4>
+        <table>
+          <thead>
+            <tr><th style="width:30%">영역</th><th>변화</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>공정</strong></td><td>반도체 미세화 — 검사·계측의 정밀도·빈도 요구 ↑</td></tr>
+            <tr><td><strong>소재</strong></td><td>소재 다양화 — 실험·검증 cycle 폭증</td></tr>
+            <tr><td><strong>데이터</strong></td><td>검사·계측·FDC 데이터 폭증 (TB → PB 시대)</td></tr>
+            <tr><td><strong>AI</strong></td><td>생성 AI·VLM의 실용화 — 추상적 기술에서 <em>바로 쓸 수 있는 도구</em>로</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT — 3가지 압력 -->
+      <div class="panel">
+        <h4>ITC가 마주한 3가지 압력</h4>
+        <div class="pressures">
+          <div class="pressure">
+            <div class="label">(a)</div>
+            <div class="body"><strong>Biz 의뢰량 증가</strong> <span class="vs">vs</span> 인력 한계</div>
+            <div class="arrow">↑↑↑ / →</div>
+          </div>
+          <div class="pressure">
+            <div class="label">(b)</div>
+            <div class="body"><strong>계측·FDC 데이터 폭증</strong> <span class="vs">vs</span> 활용도 (대부분 archive)</div>
+            <div class="arrow">↑↑↑ / →</div>
+          </div>
+          <div class="pressure ok">
+            <div class="label">(c)</div>
+            <div class="body"><strong>사내 AI 인프라 구축 완료</strong> <span class="vs">→</span> 활용은 이제 시작</div>
+            <div class="arrow">✓</div>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>(c)가 가장 결정적:</strong> GPU·LLM·플랫폼이 <em>이미</em> 준비되어 있다 — 우리는 <em>도구가 없어서 못 한</em> 게 아니라 <em>어떻게 쓸지를 결정하지 못한</em> 단계.
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"세 가지 압력 중 (a)와 (b)는 <em>위협</em>입니다 — 의뢰량은 늘어나는데 인력은 한정되고, 데이터는 쌓이는데 못 씁니다. (c)는 <em>기회</em>입니다 — 전사 AIX TF가 만든 인프라가 이미 가동 중. 이 압력의 합이 <em>지금 바로 움직여야 하는 이유</em> 입니다. 이 슬라이드의 메시지는 <em>‘세상이 바뀌었으니 우리도 바뀌어야 한다’</em>가 아니라 <em>‘바뀔 도구가 이미 준비됐는데 우리가 이걸 어떻게 쓸지가 다음 1년의 문제’</em>입니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li>외부 변화 <em>“데이터 폭증”</em> 항목을 정량 anchor와 연결 (A2 데이터 월 생산량) — Slide 2의 anchor와 호응시킬지 결정</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 2 ────────── -->
+  <section class="slide" id="slide-2" style="border-color: rgba(255,209,102,0.35);">
+    <div class="slide-tag"><span class="pill" style="background:rgba(255,209,102,0.12); color:var(--anchor); border-color: rgba(255,209,102,0.4);">SLIDE 2 ★★</span> 내부 진단 (1.3 + 1.3a)</div>
+    <h2>우리는 지금 Passive다 — 5 Stream별 현재 한계 &amp; Anchor 수치</h2>
+    <div class="headline">
+      <strong>“양은 충분히 가지고 있으나, 활용 체계가 없다 — 5가지 흐름 모두에서 사람이 모든 일을 한다.”</strong>
+    </div>
+
+    <div class="grid-2-3">
+      <!-- LEFT 2/3 — 5 stream table -->
+      <div class="panel">
+        <h4>5 Stream별 현재 한계 (Passive 상태)</h4>
+        <table>
+          <thead><tr><th style="width:32%">Stream</th><th>현재 한계</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="stream"><span class="stream-num">1</span>의뢰 대응</td>
+              <td>의뢰 수기 분류·라우팅. 과거 사례는 사람 기억에 의존. <span class="red">TAT 편차 큼.</span></td>
+            </tr>
+            <tr>
+              <td class="stream"><span class="stream-num">2</span>분석</td>
+              <td>보고서 처음부터 사람 작성. 과거 보고서 회수 비효율.</td>
+            </tr>
+            <tr>
+              <td class="stream"><span class="stream-num">3</span>계측 데이터 생산</td>
+              <td>이미지·메트롤로지 데이터 대부분 <em>생성 후 archive</em> — 검색·재활용 체계 부재.</td>
+            </tr>
+            <tr>
+              <td class="stream"><span class="stream-num">4</span>장비 운영 관리</td>
+              <td>운영 노하우가 <em>암묵지</em>로만 존재. 신규 인력 ramp-up 시간 길고 사고 위험.</td>
+            </tr>
+            <tr>
+              <td class="stream"><span class="stream-num">5</span>장비 안정성 모니터링</td>
+              <td>알람 <em>사후 대응</em> — 분석되지 않고 종료되는 알람 다수.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT 1/3 — anchors -->
+      <div class="panel">
+        <h4>As-Is Anchor 3개 <span class="muted mono" style="font-weight:400">(수치 SLOT)</span></h4>
+        <div class="anchors">
+          <div class="anchor-card">
+            <div class="head">
+              <span class="code">A1</span>
+              <span class="src">출처: T1 · 사내 ticketing</span>
+            </div>
+            <div class="title">의뢰량 — Stream 1</div>
+            <div class="slot">[SLOT] 연간 X건 → Y건</div>
+            <div class="slot">[SLOT] 인당 Z건</div>
+          </div>
+          <div class="anchor-card">
+            <div class="head">
+              <span class="code">A2</span>
+              <span class="src">출처: T1 · 계측 시스템</span>
+            </div>
+            <div class="title">계측 데이터량 — Stream 3</div>
+            <div class="slot">[SLOT] 월 X TB → Y TB</div>
+            <div class="src">최근 3년 추이 그래프</div>
+          </div>
+          <div class="anchor-card">
+            <div class="head">
+              <span class="code">A3</span>
+              <span class="src">출처: T2 · 장비 운영 로그</span>
+            </div>
+            <div class="title">FDC 사후분석률 — Stream 5</div>
+            <div class="slot">[SLOT] X% 알람이 분석 미수행</div>
+          </div>
+        </div>
+        <div class="tier-legend">
+          <strong style="color:var(--text)">출처 tier</strong><br/>
+          T1 = 사내 시스템 raw<br/>
+          T2 = 자체 집계·과거 보고서<br/>
+          T3 = 추정·인터뷰<br/>
+          <span class="yellow">CEO 보고 = T1·T2 anchor, T3는 정성 보조.</span>
+        </div>
+      </div>
+    </div>
+
+    <blockquote class="box">
+      <div class="lead">“암묵지 미문서화가 본질적 병목이다.”</div>
+      데이터·인프라는 있다. 부족한 것은 <em>엔지니어 머릿속의 노하우</em>를 RAG로 흐르게 하는 메커니즘. 1년차 <strong>Quick Win #5 — 암묵지 순환고리 PoC</strong>가 이 병목의 첫 검증이다.
+    </blockquote>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"이 슬라이드가 보고서 전체에서 가장 중요한 <em>진단</em> 슬라이드입니다. 좌측에서 5가지 흐름 모두가 <em>Passive</em>임을 보여드리고, 우측에서 그 진단을 <em>3개 수치로 정량화</em>합니다. 의뢰량은 [X]에서 [Y]로 늘었고, 계측 데이터는 [X]TB에서 [Y]TB로 늘었고, FDC 알람의 [X]%가 분석되지 않고 종료됩니다. <em>데이터가 없다</em>가 아니라 <em>데이터는 있는데 안 흐른다</em>가 본질입니다. 그리고 그 흐름의 가장 깊은 병목이 <em>암묵지</em>입니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li><strong>A1·A2·A3 실값</strong> — 사내 비공개 문서에서 주입. 드래프팅 단계에서는 SLOT 유지.</li>
+        <li><strong>A1·A2·A3 그래프 형태</strong> — 3년 추이 라인이 가장 강력. 막대보다 선호.</li>
+        <li><strong>출처 표기 방식</strong> — 슬라이드 footnote vs Appendix 단일 reference. 추천: footnote 짧게 + Appendix 상세.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── SLIDE 3 ────────── -->
+  <section class="slide" id="slide-3">
+    <div class="slide-tag"><span class="pill">SLIDE 3</span> 준비도 (1.4)</div>
+    <h2>ITC의 AI 도입 준비도 — 5점 척도 진단</h2>
+    <div class="headline">
+      <strong>“인프라·데이터는 강하다. 사람·문화·거버넌스가 다음 1년의 과제다.”</strong>
+    </div>
+
+    <div class="grid-2">
+      <!-- LEFT — Radar -->
+      <div class="panel">
+        <h4>5점 척도 레이더</h4>
+        <div class="radar-wrap">
+          <!--
+            5 axes (top, then clockwise):
+              인프라 4.5, 데이터 4.0, 인력 3.0, 거버넌스 2.5, 문화 2.0
+            cx=200 cy=210, max radius=140 (=5점)
+            angle_i = -90 + i*72 degrees   (i=0..4)
+          -->
+          <svg class="radar" viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg">
+            <!-- concentric grid (rings 1..5) -->
+            <g class="grid">
+              <!-- ring radius = level * 28 -->
+              <!-- pre-compute pentagon for each level: use vertex offsets -->
+              <!-- vertex angles (deg, -90 start, +72 step): -90, -18, 54, 126, 198 -->
+              <!-- vertex unit: (cos a, sin a) -->
+              <!-- v0 (top):     ( 0.0000, -1.0000) -->
+              <!-- v1 (upperR):  ( 0.9511, -0.3090) -->
+              <!-- v2 (lowerR):  ( 0.5878,  0.8090) -->
+              <!-- v3 (lowerL):  (-0.5878,  0.8090) -->
+              <!-- v4 (upperL):  (-0.9511, -0.3090) -->
+              <polygon points="200,182 226.6,201.3 216.5,232.7 183.5,232.7 173.4,201.3"/>
+              <polygon points="200,154 253.2,192.5 233.0,255.5 167.0,255.5 146.8,192.5"/>
+              <polygon points="200,126 279.7,183.8 249.4,278.2 150.6,278.2 120.3,183.8"/>
+              <polygon points="200,98 306.3,175.0 265.9,301.0 134.1,301.0 93.7,175.0"/>
+              <polygon points="200,70 333.0,166.3 282.3,323.7 117.7,323.7 67.0,166.3"/>
+            </g>
+            <!-- axes -->
+            <g class="axis">
+              <line x1="200" y1="210" x2="200" y2="70"/>
+              <line x1="200" y1="210" x2="333" y2="166.3"/>
+              <line x1="200" y1="210" x2="282.3" y2="323.7"/>
+              <line x1="200" y1="210" x2="117.7" y2="323.7"/>
+              <line x1="200" y1="210" x2="67" y2="166.3"/>
+            </g>
+            <!-- data polygon
+              score r = level * 28
+              인프라 4.5 -> r=126   : (200, 84)
+              데이터 4.0 -> r=112   : (200+0.9511*112, 210-0.3090*112*(-1)) … compute properly
+                 dx=0.9511*112=106.5, dy=-0.3090*112=-34.6  -> (306.5, 175.4)
+              인력 3.0 -> r=84
+                 dx=0.5878*84=49.4,  dy=0.8090*84=67.9  -> (249.4, 277.9)
+              거버넌스 2.5 -> r=70
+                 dx=-0.5878*70=-41.1, dy=0.8090*70=56.6 -> (158.9, 266.6)
+              문화 2.0 -> r=56
+                 dx=-0.9511*56=-53.3, dy=-0.3090*56=-17.3 -> (146.7, 192.7)
+            -->
+            <polygon class="area" points="200,84 306.5,175.4 249.4,277.9 158.9,266.6 146.7,192.7"/>
+            <circle class="point" cx="200" cy="84" r="3.5"/>
+            <circle class="point" cx="306.5" cy="175.4" r="3.5"/>
+            <circle class="point" cx="249.4" cy="277.9" r="3.5"/>
+            <circle class="point" cx="158.9" cy="266.6" r="3.5"/>
+            <circle class="point" cx="146.7" cy="192.7" r="3.5"/>
+
+            <!-- axis labels -->
+            <text class="label" x="200" y="55"  text-anchor="middle">인프라</text>
+            <text class="score" x="200" y="40"  text-anchor="middle">4.5</text>
+
+            <text class="label" x="350" y="166" text-anchor="start">데이터</text>
+            <text class="score" x="350" y="180" text-anchor="start">4.0</text>
+
+            <text class="label" x="296" y="346" text-anchor="middle">인력</text>
+            <text class="score" x="296" y="362" text-anchor="middle">3.0</text>
+
+            <text class="label" x="104" y="346" text-anchor="middle">거버넌스</text>
+            <text class="score" x="104" y="362" text-anchor="middle">2.5</text>
+
+            <text class="label" x="50"  y="166" text-anchor="end">문화</text>
+            <text class="score" x="50"  y="180" text-anchor="end">2.0</text>
+          </svg>
+        </div>
+
+        <table class="score-table" style="margin-top:8px">
+          <thead><tr><th>축</th><th>점수</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="axis-name">인프라</td>
+              <td><span class="bar"><i style="width:90%; background:var(--ok)"></i></span><span class="score green">4.0~4.5</span></td>
+              <td>사내 LLM(Kimi/Qwen/BGE-M3)·GPU·플랫폼 구축 완료</td>
+            </tr>
+            <tr>
+              <td class="axis-name">데이터</td>
+              <td><span class="bar"><i style="width:80%; background:var(--ok)"></i></span><span class="score green">3.5~4.0</span></td>
+              <td>5 stream 모두 데이터 풍부. 단, 인벤토리·접근 표준 미흡</td>
+            </tr>
+            <tr>
+              <td class="axis-name">인력</td>
+              <td><span class="bar"><i style="width:60%; background:var(--warn)"></i></span><span class="score yellow">2.5~3.0</span></td>
+              <td>AI 챔피언 분산 보유. 단, AI PM/PO 부재</td>
+            </tr>
+            <tr>
+              <td class="axis-name">문화</td>
+              <td><span class="bar"><i style="width:45%; background:var(--bad)"></i></span><span class="score red">2.0~2.5</span></td>
+              <td>일부 팀 적극 / 일부 팀 관망. AIX·DX 격차 큼</td>
+            </tr>
+            <tr>
+              <td class="axis-name">거버넌스</td>
+              <td><span class="bar"><i style="width:50%; background:var(--bad)"></i></span><span class="score red">2.0~3.0</span></td>
+              <td>전사 AIX TF 가동. ITC 내 AIX 위원회 미구성</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT — Priorities -->
+      <div class="panel">
+        <h4>다음 1년의 과제 — 우선순위</h4>
+        <p class="muted" style="margin-top:-6px; font-size:13px;">이 진단표가 그대로 <strong style="color:var(--text)">Enabler 5축</strong>의 우선순위가 된다.</p>
+
+        <div class="priority-row p-top">
+          <div class="rank">1</div>
+          <div class="axis">문화</div>
+          <div class="action">전 직원 AI 리터러시 교육 + AI 실행 TF 정례화 (산하 6팀 10~20명)</div>
+        </div>
+        <div class="priority-row p-top">
+          <div class="rank">2</div>
+          <div class="axis">거버넌스</div>
+          <div class="action">AIX 추진 위원회(센터장 직속) 구성 + AI 사용 가이드라인</div>
+        </div>
+        <div class="priority-row p-mid">
+          <div class="rank">3</div>
+          <div class="axis">인력</div>
+          <div class="action">AI PM/PO 양성 시작 (AX Part 내)</div>
+        </div>
+        <div class="priority-row p-mid">
+          <div class="rank">4</div>
+          <div class="axis">데이터</div>
+          <div class="action">5 stream별 지식자산 인벤토리 + DRM 문서 VLM 추출</div>
+        </div>
+        <div class="priority-row p-low">
+          <div class="rank">5</div>
+          <div class="axis">인프라</div>
+          <div class="action">전사 TF 영역 활용. ITC 단독 행동 적음</div>
+        </div>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>Speaker notes</summary>
+      <p>"마지막 슬라이드는 <em>희망적 진단</em>입니다. 인프라와 데이터는 이미 4점대 — 출발선이 좋습니다. 약점은 사람·문화·거버넌스. 다행히 이 셋은 <em>돈으로 못 사지만 1년 안에 만들 수 있는 것</em>들입니다. 다음 챕터에서 보여드릴 로드맵은 이 진단표를 그대로 <em>Enabler 5축</em>으로 옮겨 옵니다."</p>
+    </details>
+
+    <div class="slot-list">
+      <h5>[SLOT]</h5>
+      <ul>
+        <li><strong>5축 점수 실값</strong> — 자체 진단 또는 외부 컨설팅 결과로 결정. 드래프팅 단계에서는 범위만 표시.</li>
+        <li><strong>레이더 vs 막대</strong> — 레이더가 <em>“균형/불균형”</em> 시각적으로 강함. 권장.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ────────── Bridge ────────── -->
+  <section class="bridge">
+    <div class="seq">
+      <b>세상은 바뀌었다</b> &nbsp;(Slide 1)<br/>
+      <b>우리는 아직 Passive다</b> &nbsp;(Slide 2)<br/>
+      <b>그러나 출발선은 좋다</b> &nbsp;(Slide 3)<br/>
+      → 다음 Ch.2에서 <em>어디로 갈 것인가</em>를 답한다.
+    </div>
+    <p>이 흐름이 청자에게 <strong>“문제 인식 → 자기 진단 → 해결 의지”</strong>라는 emotional arc를 만들어줌. Ch.2(Vision)와 자연스럽게 연결.</p>
+  </section>
+
+  <!-- ────────── Followups ────────── -->
+  <section class="followups">
+    <h3>Round 4 후속 검토 포인트</h3>
+    <ol>
+      <li><strong>As-Is anchor 수치 3개 실값 수집</strong> — 사내 ticketing(A1), 계측 시스템(A2), 장비 운영 로그(A3) cross-system task. <em>사내 비공개 문서로 분리.</em></li>
+      <li><strong>5점 척도 진단의 정직성</strong> — 자체 진단 시 <em>“문화 2.0”</em> 같이 낮은 점수를 박을 수 있는가? 외부 컨설팅 vs 내부 합의 vs 임의 결정</li>
+      <li><strong>Ch.1 ↔ Ch.2 bridge</strong> — Slide 3 끝맺음 텍스트가 Ch.2 Slide A 시작과 매끄럽게 연결되는지 리허설</li>
+      <li><strong>외부 변화 4개 (Slide 1) 출처</strong> — 시장 통계나 reference 출처 명시 필요</li>
+    </ol>
+  </section>
+
+  <!-- ────────── Refs ────────── -->
+  <section class="refs">
+    <strong>관련 문서</strong>
+    <ul>
+      <li><a href="../itc-aix-roadmap-outline.md">itc-aix-roadmap-outline.md</a> — Ch.1 (high-level 구조)</li>
+      <li><a href="../CONTEXT.md">CONTEXT.md</a> — 5 stream / 암묵지 / 도입 준비도 5축</li>
+      <li><a href="../ch2-vision-draft.md">ch2-vision-draft.md</a> — Ch.2 드래프트 (Ch.1과 narrative 연결)</li>
+      <li><a href="../quick-win-cards.md">quick-win-cards.md</a> — Ch.7 (Slide 2 <em>“암묵지 본질적 병목”</em> 메시지의 backing #5)</li>
+    </ul>
+  </section>
+
+</main>
+</body>
+</html>
