@@ -5,7 +5,7 @@
 
 ## 진행 상황 요약
 
-bgk.txt 기반으로 grilling 시작. 1차 라운드에서 **로드맵의 진짜 동기**, 2차 라운드에서 **스코프 경계**를 다루는 중.
+bgk.txt 기반으로 grilling 시작. Q1(동기) → Q2(스코프 경계) → Vision & Narrative 척추까지 정리 완료. 통합 outline은 [itc-aix-roadmap-outline.md](./itc-aix-roadmap-outline.md). 다음은 **Quick Win 5선 정련** 또는 **Chapter 2/9 드래프팅** 진입.
 
 ## 해결된 것 (CONTEXT.md에 반영 완료)
 
@@ -16,26 +16,25 @@ bgk.txt 기반으로 grilling 시작. 1차 라운드에서 **로드맵의 진짜
 - **팀별 우선순위 AI Agent 로드맵은 이미 존재** (개별 로드맵 형태). ITC 로드맵은 그 위에 얹는 통합 레이어가 되어야 함.
 - 용어 정리: DT(사업부) vs DX(활동), AIX vs AI/DT 구분, "의뢰/요청"을 자동화 대상의 unit of work로 명명.
 
-## 진행 중인 질문 — Q2: 스코프 경계
+## 해결됨 — Q2: 스코프 경계 → **β 채택**
 
-bgk.txt 상 ITC의 일은 셋:
-1. Biz 목표 지원 ← AX Part thesis가 정확히 겨냥
-2. 공정 기술 개발 (proactive R&D)
-3. 장비 운영/관리 (operational)
+bgk.txt 상 ITC의 일은 셋(Biz 지원 / 공정 R&D / 장비 운영)이고 팀 성격이 다르므로 **β (멀티 트랙)** 채택.
 
-팀 성격이 다름:
-- DMI, AT → (1) 요청 처리 중심, thesis와 딱 맞음
-- ME, 환경제어 → (3) 장비 운영, **다른 패러다임** (예지보전·이상탐지)
-- MASK, 소재 → (2) R&D 사이클
+**팀 규모 정정 (2026-05-14):** ME·환경제어보다 **DMI·마스크·소재**가 훨씬 큰 핵심 팀. 트랙별 무게 중심이 이 세 팀에 가도록 narrative 조정.
 
-세 가지 옵션을 제시했음:
-- **α**: 단일 thesis로 좁힘 ("Biz 요청 자동 대응")
-- **β** (Claude 추천): 멀티 트랙 — Track 1 요청 대응 / Track 2 장비·공정 AI / Track 3 R&D 가속
-- **γ**: capability(역량) 중심 가로축 구조
+**β 골격:**
+- Track 1: Biz 요청 능동 대응 (전 팀 공통)
+- Track 2: 장비·공정 AI 운영 (DMI·마스크 메인 / ME·환경제어·AT 보조)
+- Track 3: R&D 가속 (소재·마스크·DMI 메인)
+- Enabler: 조직 역량 강화 (사람·도구·데이터·거버넌스, 전 트랙 공통)
 
-**Daeyoung의 답변 대기 중**:
-1. α / β / γ 중 어디로 갈지
-2. β를 선택한다면, ME·환경제어 팀에 실제로 추진 중인 AI 과제가 있는지 (Track 2가 빈 박스가 되지 않으려면 필요)
+## 추가 합의 — Vision & Narrative 척추
+
+- **Vision (B안 채택):** "공정·장비·소재 기반기술을 AI로 가속하고, 요청 대응을 예측 대응으로 진화시키는 ITC"
+- **Narrative 척추:** Passive → Active → Proactive — AI가 ITC의 일하는 방식을 어떻게 바꾸는지 시간축으로 표현. 보고서 전체에서 일관 사용.
+- **역량 강화 트랙은 가로축 Enabler로**: 트랙 4로 두지 않고 전 트랙 공통 축으로 표현.
+
+→ 전체 outline은 [itc-aix-roadmap-outline.md](./itc-aix-roadmap-outline.md) 참고.
 
 ## 큐에 쌓인 다음 질문들 (Q2 해결 후 다룰 것)
 
