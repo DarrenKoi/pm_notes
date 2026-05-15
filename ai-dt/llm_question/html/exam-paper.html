@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>참가자 답안지 (시험지) — ITC AIX 경진대회</title>
+<link rel="stylesheet" href="contest.css" />
+</head>
+<body>
+<nav class="top-nav"><span class="brand">ITC AIX 경진대회</span><a href="index.html">📋 Index</a><a href="contest-spec.html">Spec</a><a href="exam-paper.html" class="active">문제지</a><a href="sample-model-answer.html">모범 답안</a><a href="sample-llm-only-answer.html">LLM-only</a></nav>
+<main class="page">
+<header class="doc-header">
+  <div class="kicker">PARTICIPANT</div>
+</header>
+<h1>ITC AIX 리포트 경진대회 — 답안지</h1>
+<blockquote>
+<p>본 파일을 <strong>그대로 본인 PC에 저장</strong>한 뒤, 각 슬롯을 채우고 .md 형식으로 사내 블로그에 업로드해 주십시오.
+채점은 본 양식에 따라 진행됩니다.
+<em>출제 설계 문서: <a href="contest-spec.html"><code>contest-spec.md</code></a> (참고용)</em></p>
+</blockquote>
+<hr />
+<h2>◆ 표지 (작성 전 필수 기입)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>기입</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>참가자 이름</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>소속팀</strong> (택1)</td>
+<td>☐ MASK기술개발 ☐ 소재개발 ☐ DMI ☐ AT ☐ ME ☐ 환경제어</td>
+</tr>
+<tr>
+<td><strong>사번 / 직급</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>작성 일시</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>사용한 LLM</strong> (복수 선택 가능)</td>
+<td>☐ Kimi-K2.5 ☐ Qwen3-VL-8B ☐ Qwen3-VL-30B ☐ 사내 RAG ☐ 기타: ____</td>
+</tr>
+<tr>
+<td><strong>공유 동의</strong></td>
+<td>☐ 본 답안이 우수 답안으로 선정될 경우 센터 내 공유에 동의합니다</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>◆ 시험 안내</h2>
+<h3>1. 시험 규칙</h3>
+<ul>
+<li><strong>시간</strong>: 90분</li>
+<li><strong>개인전</strong>: 1인 1답안. 타 참가자와 협의 ✕</li>
+<li><strong>사용 가능 도구</strong>:</li>
+<li>✅ 사내 RAG-LLM (Kimi-K2.5, Qwen3-VL 등 모델 선택 자유)</li>
+<li>✅ 일반 인터넷 검색</li>
+<li>✅ 본인 PC의 개인 메모·자료</li>
+<li>❌ 외부 LLM API (방화벽 차단)</li>
+<li>❌ 타 참가자와의 협의·자료 공유</li>
+<li><strong>제출</strong>: 본 양식을 .md 파일로 사내 블로그에 업로드</li>
+</ul>
+<h3>2. 채점 기준 — <em>5축 각 20점 (총 100점)</em></h3>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>평가 대상</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Domain grounding</strong></td>
+<td>본인 팀의 <em>구체적·검증 가능한</em> 사례·수치가 박혀있는가</td>
+</tr>
+<tr>
+<td><strong>2. Framework application</strong></td>
+<td>5 stream / 암묵지 순환고리 / 3-tier 거버넌스 등 ITC 공통 프레임을 <em>본인 맥락에 적용</em>했는가</td>
+</tr>
+<tr>
+<td><strong>3. Critical refinement</strong></td>
+<td>LLM의 generic 답을 본인 도메인 지식으로 <em>교정·확장한 흔적</em>이 본문에 직접 드러나는가</td>
+</tr>
+<tr>
+<td><strong>4. Meta-cognition</strong></td>
+<td>핵심 프롬프트 3개의 선택과 이유가 <em>의식적 협업</em>을 증명하는가</td>
+</tr>
+<tr>
+<td><strong>5. Narrative coherence</strong></td>
+<td>3개 영역이 하나의 thesis로 묶이는가 (단순 답변 나열 ✕)</td>
+</tr>
+</tbody>
+</table>
+<h3>3. ⚠ 본 시험의 핵심 강제사항</h3>
+<blockquote>
+<p><strong>LLM이 제안한 generic 답을 그대로 옮기지 마십시오.</strong></p>
+<p>본인 도메인 지식으로 <em>교정·확장·반박</em>한 흔적이 본문에 <strong>명시적으로</strong> 드러나야 합니다.</p>
+<p>권장 표현 예시:
+- "LLM은 X라고 제안했지만, 우리 팀 실제 경험상 Y에 더 가깝다 — 그 이유는…"
+- "처음에 ~로 물었을 때 답은 ~였으나, 우리 팀 맥락을 추가하니 ~로 바뀌었다"</p>
+<p>이 흔적은 채점 축 3의 직접 평가 대상입니다. 본문에 0회면 축 3은 5점 이내로 한정됩니다.</p>
+</blockquote>
+<h3>4. ITC 공통 도메인 프레임 (채점 축 2의 기준)</h3>
+<p>다음 3개 프레임이 답안 전반에 <em>정확히</em> 적용되었는지를 평가합니다:</p>
+<ul>
+<li><strong>5 stream</strong>: ① 의뢰 대응 ② 분석 ③ 데이터 생산 ④ 장비 운영 관리 ⑤ 장비 안정성 모니터링</li>
+<li><strong>암묵지 순환고리 4단계</strong>: in-flow capture → 구조화·인덱싱 → RAG 활용 → 피드백</li>
+<li><strong>AI 확산 3-tier 거버넌스</strong>: 전사 AIX TF (DT 주도) / ITC AX Part / ITC AI 실행 TF</li>
+</ul>
+<p>용어를 <em>나열</em>하는 것이 아니라, <em>본인 팀 사례에 적용</em>하는 것이 평가 대상입니다.</p>
+<h3>5. 시간 배분 (권장)</h3>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문제 읽기·접근 설계</td>
+<td>10분</td>
+</tr>
+<tr>
+<td>영역 1 작성</td>
+<td>20분</td>
+</tr>
+<tr>
+<td>영역 2 작성</td>
+<td>20분</td>
+</tr>
+<tr>
+<td>영역 3 작성</td>
+<td>10분</td>
+</tr>
+<tr>
+<td>정리·교정</td>
+<td>15분</td>
+</tr>
+<tr>
+<td>핵심 프롬프트 3개 정리</td>
+<td>5분</td>
+</tr>
+<tr>
+<td>여유</td>
+<td>10분</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>◆ Thesis (선택 — 본문 작성 후 1줄 작성)</h2>
+<blockquote>
+<p>본 답안 전체를 관통하는 1줄 thesis. 영역 1~3을 다 쓴 뒤 마지막에 채우는 것을 권장. (채점 축 5에 직결)</p>
+</blockquote>
+<p><strong>나의 thesis</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<hr />
+<h2>◆ [영역 1] As-Is 진단 — <em>본인 팀 기준</em> (20분)</h2>
+<h3>1-1. 본인 팀의 5 stream 비중과 <em>가치 vs 시간</em> 분석</h3>
+<ul>
+<li>5개 stream 중 본인 팀에서 시간상 비중이 큰 stream은? 그 비중 추정치는?</li>
+<li>시간 비중과 <em>후속 의사결정에 미치는 가치</em> 비중이 다르다면, 어디서 차이가 나는가?</li>
+</ul>
+<p><strong>답</strong>:</p>
+<blockquote>
+<hr />
+<hr />
+</blockquote>
+<h3>1-2. 사내 RAG/LLM 인프라의 현재 활용도 — 본인 팀 관점</h3>
+<ul>
+<li>현재 활용 가능한 도구(Kimi / Qwen-VL / BGE-M3 / 사내 RAG)별로, 본인 팀에서 <em>실제로 막혀있는 지점</em>은 무엇인가?</li>
+<li>"활용 가능하다"가 아니라 "어디서 안 되는가"를 구체적으로.</li>
+</ul>
+<p><strong>답</strong>:</p>
+<blockquote>
+<hr />
+<hr />
+</blockquote>
+<h3>1-3. 🎯 [필수] 본인 팀이 최근 처리한 <em>비정형</em> 의뢰 1건 — 단건 detail</h3>
+<p>다음 4가지를 1건의 실제 사례로 작성하시오:</p>
+<ol>
+<li>의뢰 내용 (1~2줄, 구체화 — 카테고리만 적지 말 것)</li>
+<li>처리 과정의 <em>단계</em>와 각 단계 <em>소요 시간</em></li>
+<li>각 단계에서 <em>기록된 산출물</em>과 <em>기록되지 않은 판단 근거</em></li>
+<li>이 사례가 5 stream 중 어디에 해당하며, 왜 AIX 대상이 되는가</li>
+</ol>
+<p><strong>본인 사례</strong> (D 슬롯 — 필수):</p>
+<blockquote>
+<hr />
+<hr />
+<hr />
+</blockquote>
+<hr />
+<h2>◆ [영역 2] To-Be 로드맵 — <em>ITC 전체</em> (20분)</h2>
+<h3>2-1. 1년 / 3년 / 5년 마일스톤</h3>
+<p>각 시기별로 <strong>마일스톤 + 검증 지표</strong>를 함께 적으시오. <em>도구 도입</em>이 아닌 <em>측정 가능한 결과</em> 단위로 작성을 권장.</p>
+<table>
+<thead>
+<tr>
+<th>시기</th>
+<th>마일스톤</th>
+<th>검증 지표</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1년차</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3년차</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5년차</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>2-2. 암묵지 순환고리 1년차 1회전 — <em>어느 팀, 어느 업무부터?</em></h3>
+<p>ITC 6팀 중 <em>1년차 1회전의 첫 대상</em>으로 어느 팀의 어느 업무를 추천하는가?</p>
+<p>다음 3축으로 근거를 적으시오:
+- <strong>데이터 가용성</strong>
+- <strong>암묵지 양</strong>
+- <strong>확산 가능성</strong></p>
+<p><strong>답</strong>:</p>
+<blockquote>
+<hr />
+<hr />
+</blockquote>
+<h3>2-3. 🎯 [필수] 본인이 가장 자신 있는 업무 1개 — 채굴→구조화→RAG 시나리오</h3>
+<p>본인이 직접 수행하는 업무 1개를 골라, 다음 4단계 시나리오를 <em>구체적으로</em> 작성하시오:</p>
+<ol>
+<li><strong>In-flow capture</strong>: 어떤 슬롯·필드를 어디서 캡처? (캡처 시간은 작업 시간의 5% 미만이어야 함)</li>
+<li><strong>구조화·인덱싱</strong>: 어떤 entity·key로 인덱싱?</li>
+<li><strong>RAG 활용</strong>: 신규 케이스에서 무엇을 회수해 어떻게 사용?</li>
+<li><strong>피드백</strong>: 어떤 ground truth로 weight 갱신?</li>
+</ol>
+<p><strong>본인 사례</strong> (D 슬롯 — 필수):</p>
+<blockquote>
+<hr />
+<hr />
+<hr />
+</blockquote>
+<hr />
+<h2>◆ [영역 3] Governance — <em>본인 팀 기준</em> (10분)</h2>
+<h3>3-1. 성과 관리 지표 3개</h3>
+<p>지표 3개를 적되, <strong>그 중 1개는 본인 팀에서만 측정 가능한 것</strong>이어야 합니다 (다른 팀에는 의미 없거나 측정 불가).</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>지표</th>
+<th>측정 범위</th>
+<th>본인 팀 특화?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td></td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td></td>
+<td></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h3>3-2. 🎯 [필수] AIX 도입 시 본인 팀에서 예상되는 저항 1가지 + 본인 경험 사례 + 대응</h3>
+<ul>
+<li>저항의 <strong>본질</strong> (단순 "변화 거부감" ✕ — 정체성·경제적·관계적·기술적 등 어디서 오는지 구체화)</li>
+<li><strong>본인이 직접 보거나 경험한 사례</strong> 1건 (시기·맥락 포함)</li>
+<li>그 본질에 <em>맞춰진</em> 대응안 (보일러플레이트 ✕)</li>
+</ul>
+<p><strong>본인 사례</strong> (D 슬롯 — 필수):</p>
+<blockquote>
+<hr />
+<hr />
+<hr />
+</blockquote>
+<hr />
+<h2>◆ [메타] 핵심 프롬프트 3개 (5분)</h2>
+<p>본 답안 작성 중 <em>가장 결정적이었던</em> 프롬프트 3개를 발췌하시오.
+<em>결정적</em>이란 — 답안의 방향을 바꿨거나, generic 답을 본질로 끌어내린 프롬프트.</p>
+<h3>#1</h3>
+<p><strong>프롬프트 원문</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<p><strong>이게 결정적이었던 이유 (1줄)</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<h3>#2</h3>
+<p><strong>프롬프트 원문</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<p><strong>이게 결정적이었던 이유 (1줄)</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<h3>#3</h3>
+<p><strong>프롬프트 원문</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<p><strong>이게 결정적이었던 이유 (1줄)</strong>:</p>
+<blockquote>
+<hr />
+</blockquote>
+<hr />
+<h2>◆ 제출 안내</h2>
+<ol>
+<li>본 .md 파일을 본인 PC에 저장</li>
+<li>모든 슬롯 작성 완료 확인</li>
+<li>표지의 <strong>공유 동의</strong> 체크박스 확인</li>
+<li>사내 블로그에 업로드 (파일명 예시: <code>aix-contest-{소속팀}-{이름}.md</code>)</li>
+<li>제한 시간 종료 시점까지 업로드 완료해야 함 (이후 업로드는 무효)</li>
+</ol>
+<h3>마지막 점검 체크리스트 (제출 전 1분)</h3>
+<ul>
+<li>[ ] 표지의 모든 항목 기입했는가</li>
+<li>[ ] 영역 1·2·3의 <strong>🎯 [필수] 본인 사례 슬롯</strong>을 모두 채웠는가</li>
+<li>[ ] 본문에 <strong>"LLM은 X였으나 본인은 Y"</strong> 류 교정 흔적이 최소 1회 이상 있는가</li>
+<li>[ ] 5 stream / 암묵지 순환고리 / 3-tier 거버넌스 중 최소 2개를 본인 사례에 <em>적용</em>했는가 (단순 용어 나열 ✕)</li>
+<li>[ ] 핵심 프롬프트 3개와 각 이유 1줄을 모두 작성했는가</li>
+<li>[ ] Thesis 1줄을 작성했는가 (선택이지만 권장)</li>
+</ul>
+<hr />
+<p><em>시험 진행을 응원합니다. 본 시험은 LLM을 </em>대신 일하게 하는 능력<em>이 아니라, LLM과 </em>함께 더 깊이 생각하는 능력<em>을 평가합니다.</em></p>
+<footer class="doc-footer">
+  ITC AIX 리포트 경진대회 · 2026-05-15 작성 · 별개 프로젝트: <code>ai-dt/llm_question/</code>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LLM-only 답안 캘리브레이션 (하한) — ITC AIX 경진대회</title>
+<link rel="stylesheet" href="contest.css" />
+</head>
+<body>
+<nav class="top-nav"><span class="brand">ITC AIX 경진대회</span><a href="index.html">📋 Index</a><a href="contest-spec.html">Spec</a><a href="exam-paper.html">문제지</a><a href="sample-model-answer.html">모범 답안</a><a href="sample-llm-only-answer.html" class="active">LLM-only</a></nav>
+<main class="page">
+<header class="doc-header">
+  <div class="kicker">CALIBRATION · LOWER</div>
+</header>
+<h1>[캘리브레이션 샘플] LLM-only 답안</h1>
+<blockquote>
+<p>⚠️ <strong>이 답안은 채점자 캘리브레이션용입니다.</strong>
+참가자가 사내 RAG-LLM에 본 spec을 그대로 던졌을 때 나올 법한 답안을 재구성한 것. <strong>의도적으로 모든 5축의 실패 패턴을 노출</strong>합니다. 실전 우수 답안의 모범이 아닙니다.</p>
+<p>사용법: 채점자 풀이 본 답안을 먼저 채점해 <strong>"이 답안은 몇 점이어야 하는가"</strong>를 합의 → 실제 채점의 lower-bound 기준선으로 활용.</p>
+</blockquote>
+<hr />
+<p><strong>참가자</strong>: 홍길동
+<strong>소속팀</strong>: DMI (Defect Metrology Inspection)
+<strong>작성 일시</strong>: 2026-XX-XX</p>
+<hr />
+<h2>[영역 1] As-Is 진단 — DMI 팀 기준</h2>
+<h3>1-1. 우리 팀 5 stream 중 가장 큰 비중을 차지하는 stream과 이유</h3>
+<p>DMI 팀은 <strong>stream 3 (데이터 생산)</strong> 의 비중이 가장 크다. 결함 계측·검측 데이터는 공정 개선의 핵심 기초 자료이기 때문에, 양산총괄·제조기술 등 여러 Biz에서 의뢰가 지속적으로 들어오고, 이 데이터를 안정적으로 생산하는 것이 DMI의 핵심 역할이다. stream 2 (분석)도 일정 부분 담당하며, stream 1 (의뢰 대응)을 통해 외부와 연결된다.</p>
+<h3>1-2. 사내 RAG/LLM 인프라가 현재 우리 팀에 어떻게 활용 가능한가</h3>
+<p>사내에는 Kimi-K2.5, Qwen3-VL 같은 LLM과 BGE-M3 임베딩 모델이 OpenAI 호환 API로 제공되고 있다. DMI 팀은 이를 다음과 같이 활용할 수 있다:</p>
+<ul>
+<li><strong>문서 검색</strong>: 과거 의뢰 처리 이력, 기술 보고서를 RAG로 검색해 신규 의뢰에 대한 초기 답변 자동화</li>
+<li><strong>이미지 분석</strong>: Qwen3-VL을 활용해 결함 이미지를 LLM이 해석하도록 함</li>
+<li><strong>요약·보고서 자동화</strong>: 분석 결과를 LLM이 자동으로 정리해 보고서 초안 생성</li>
+</ul>
+<p>이러한 인프라를 적극 활용하면 업무 생산성을 크게 높일 수 있다.</p>
+<h3>1-3. 우리 팀이 최근 처리한 비정형 의뢰 1건을 예로 들어 — AIX 대상이 되는 이유</h3>
+<p>DMI 팀은 다양한 비정형 의뢰를 받는다. 예를 들어 신규 결함 패턴이 발견되었을 때, 이를 분류하고 원인을 추정하는 의뢰가 들어온다. 이 경우 엔지니어가 과거 유사 사례를 찾아보고, 패턴을 비교하여 답변하는 과정이 필요하다. 이는 <strong>stream 1 (의뢰 대응) + stream 2 (분석)</strong>에 해당하며, RAG 기반 사례 검색과 VLM 기반 이미지 비교로 AI 자동화가 가능하다.</p>
+<hr />
+<h2>[영역 2] To-Be 로드맵 — ITC 전체</h2>
+<h3>2-1. 1년 / 3년 / 5년 마일스톤</h3>
+<table>
+<thead>
+<tr>
+<th>시기</th>
+<th>마일스톤</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1년차</td>
+<td>RAG 기반 의뢰 응대 자동화 PoC 1건 / 암묵지 채굴 파이프라인 1개 영역 시범 / AI 챔피언 양성 6명 (팀별 1명)</td>
+</tr>
+<tr>
+<td>3년차</td>
+<td>5 stream 전반에 AI 적용 확대 / 암묵지 순환고리 다수 영역 정례화 / 정량 KPI 도입</td>
+</tr>
+<tr>
+<td>5년차</td>
+<td>전 stream 기본 동작 / 자율 운영 수준 도달 / 외부 Biz로 확산</td>
+</tr>
+</tbody>
+</table>
+<h3>2-2. 암묵지 순환고리를 ITC에 어떻게 도입할지 — 1년차 1회전</h3>
+<p>암묵지는 stock이 아니라 flow이므로, 일하는 흐름의 부산물로 자동 캡처되어야 한다. 1년차에는:</p>
+<ol>
+<li><strong>In-flow capture</strong>: 엔지니어의 의사결정·근거를 업무 과정에서 자동으로 기록 (예: 분석 노트 자동 저장)</li>
+<li><strong>구조화·인덱싱</strong>: 캡처된 데이터를 정리해 검색 가능한 형태로 저장</li>
+<li><strong>RAG 활용</strong>: 다음 업무에서 LLM이 참조</li>
+<li><strong>피드백 루프</strong>: 활용 결과·교정 사항이 캡처에 다시 반영</li>
+</ol>
+<p>이 1회전을 1년 내에 1개 영역에서 검증한다.</p>
+<h3>2-3. 본인이 가장 자신 있는 1개 업무에 대한 채굴→구조화→RAG 적용 시나리오</h3>
+<p>DMI 팀의 결함 분류 업무를 예로 들면:</p>
+<ul>
+<li><strong>채굴</strong>: 엔지니어의 분류 판단 근거를 분석 노트에 명시화하도록 표준 템플릿 도입</li>
+<li><strong>구조화</strong>: 결함 유형·원인·대응 방안을 메타데이터로 정리</li>
+<li><strong>RAG 적용</strong>: 신규 결함 발견 시 RAG가 유사 사례를 검색해 1차 분류 제안</li>
+</ul>
+<p>이 시나리오는 in-flow capture 원칙을 따르며, 별도의 인터뷰 시간을 만들지 않는다.</p>
+<hr />
+<h2>[영역 3] Governance — DMI 팀 기준</h2>
+<h3>3-1. 성과 관리 지표 3개</h3>
+<ol>
+<li><strong>AI 대응 자동화율</strong>: 의뢰 중 AI가 1차 응답한 비율</li>
+<li><strong>TAT 단축률</strong>: 의뢰 처리 시간의 단축 정도</li>
+<li><strong>암묵지 채굴 건수</strong>: 분기별 캡처된 의사결정 사례 수</li>
+</ol>
+<p>이 중 DMI 팀에서만 측정 가능한 것은 <strong>3번 (암묵지 채굴 건수)</strong> — 우리 팀의 분석 노트 표준화 진행도와 직결되기 때문이다.</p>
+<h3>3-2. AIX 도입 시 본인 팀에서 예상되는 저항 1가지 + 대응</h3>
+<p>가장 큰 저항은 <strong>변화에 대한 거부감</strong>이다. 엔지니어들은 기존 방식에 익숙해져 있고, AI 도구 학습에 시간을 투자하는 것을 부담스러워할 수 있다.</p>
+<p>대응:</p>
+<ul>
+<li>충분한 <strong>교육·온보딩 프로그램</strong> 제공</li>
+<li><strong>AI 챔피언</strong>을 통한 점진적 확산</li>
+<li>초기에는 <strong>빠른 성공 사례(Quick Win)</strong>를 만들어 동기 부여</li>
+<li><strong>변화관리(Change Management)</strong> 원칙을 적용해 단계적 도입</li>
+</ul>
+<hr />
+<h2>[메타] 핵심 프롬프트 3개</h2>
+<p><strong>#1.</strong> <code>우리 회사 기반기술센터의 역할과 AIX 로드맵을 정리해줘.</code>
+이유: 전체 구조를 빠르게 잡기 위해.</p>
+<p><strong>#2.</strong> <code>암묵지 순환고리를 1년차에 어떻게 도입할지 단계별로 설명해줘.</code>
+이유: 영역 2-2 답변 구조를 잡기 위해.</p>
+<p><strong>#3.</strong> <code>AIX 도입 시 발생할 수 있는 저항과 대응 방안을 알려줘.</code>
+이유: 영역 3-2를 빠르게 채우기 위해.</p>
+<hr />
+<h2>[채점자 메모 — 캘리브레이션 가이드]</h2>
+<p>이 답안의 <strong>예상 점수</strong>와 그 근거 (각 축 20점 만점):</p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>점수</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Domain grounding</td>
+<td><strong>4 ~ 7</strong></td>
+<td>팀명(DMI)·5 stream 번호만 박혀있을 뿐, 실제 수치(TAT, 의뢰 건수, 장비명) 전무. "결함 분류 업무" 같은 카테고리만 언급, 실 사례 0건.</td>
+</tr>
+<tr>
+<td>2. Framework application</td>
+<td><strong>12 ~ 15</strong></td>
+<td>5 stream·암묵지 순환고리·in-flow capture 등 용어는 정확히 사용. RAG가 알고 있는 공통 지식 그대로 인용. 하지만 <em>프레임을 본인 사례에 적용한 사고</em>는 없음.</td>
+</tr>
+<tr>
+<td>3. Critical refinement</td>
+<td><strong>2 ~ 4</strong></td>
+<td>"LLM 제안은 X였으나 우리 팀은 Y" 류 교정 흔적 0건. 본문 전체가 LLM 1차 출력을 그대로 받아쓴 톤.</td>
+</tr>
+<tr>
+<td>4. Meta-cognition</td>
+<td><strong>3 ~ 5</strong></td>
+<td>프롬프트 3개 모두 "전체 정리해줘", "단계별로 설명해줘" 류 1회성 단발 질문. reframing·iteration 흔적 없음.</td>
+</tr>
+<tr>
+<td>5. Narrative coherence</td>
+<td><strong>10 ~ 13</strong></td>
+<td>3개 영역이 형식적으로는 연결되나, "DMI의 stream 3 강점이 To-Be 로드맵 우선순위에 어떻게 반영되는가" 류 cross-reference 없음. 일반론 나열.</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td><strong>31 ~ 44 / 100</strong></td>
+<td>"통과 못함" 영역의 기준선.</td>
+</tr>
+</tbody>
+</table>
+<h3>채점자 합의가 필요한 회색지대</h3>
+<ul>
+<li><strong>축 2 점수</strong>: RAG가 가르쳐준 용어를 정확히 인용한 것이 "프레임 적용 능력"인가, 단순 "복사"인가? → 합의 필요. spec 권고는 <strong>"용어 사용은 OK지만, 본인 사례에 <em>적용</em>한 흔적이 없으면 70% cap"</strong>.</li>
+<li><strong>"결함 분류 업무 예시"의 평가</strong>: 카테고리는 맞지만 구체 사례 없음. 0점인가, 부분 점수인가?</li>
+<li><strong>영역 2-1의 마일스톤 표</strong>: ITC 전체 대상이라 본인 사례 D 요구가 약함. 그런데도 LLM이 흔히 내놓는 generic 마일스톤이라면 어느 축에서 감점?</li>
+</ul>
+<h3>이 답안의 <em>실패 신호</em> 체크리스트 (실전 채점 시 활용)</h3>
+<ul>
+<li>[ ] 수치가 모두 정성적("크다", "지속적으로", "다양한")</li>
+<li>[ ] 팀명·장비명·인물 역할 외 고유명사 0개</li>
+<li>[ ] "예를 들어"는 있으나 그 뒤가 카테고리뿐 (개별 사례 ✕)</li>
+<li>[ ] "LLM이 ~라고 했지만"이 본문에 0회</li>
+<li>[ ] 핵심 프롬프트가 명령형 단답 ("X 정리해줘")</li>
+<li>[ ] Quick Win, 변화관리, 거버넌스 등 컨설팅 보일러플레이트 단어 다수</li>
+</ul>
+<p>위 신호 중 4개 이상 충족 시 <strong>LLM-카피 의심 답안</strong>으로 분류.</p>
+<hr />
+<p><em>캘리브레이션 샘플 v0.1 — 2026-05-15.</em></p>
+<footer class="doc-footer">
+  ITC AIX 리포트 경진대회 · 2026-05-15 작성 · 별개 프로젝트: <code>ai-dt/llm_question/</code>
+</footer>
+</main>
+</body>
+</html>
