@@ -156,7 +156,7 @@
       <tr><td class="em">채점 가이드</td><td><span class="aud grade">채점자</span></td><td>rubric 25/25/20/15/15 + 축1·3 체크리스트 + 공동 채점 원칙 + 동점 tiebreaker + 형평성.</td></tr>
       <tr><td class="em">모범 샘플</td><td><span class="aud grade">채점자</span></td><td>상위 기준선(83~93점). 캘리브레이션 회의 점수 합의용. <b>참가자 노출 금지.</b></td></tr>
       <tr><td class="em">LLM-only 샘플</td><td><span class="aud grade">채점자</span></td><td>하위 기준선(22~35점). 영역2 회피 등 실패 신호. <b>참가자 노출 금지.</b></td></tr>
-      <tr><td class="em">설계 요약</td><td><span class="aud team">내부</span></td><td>bgk 변경점 → Q1~Q8 결정 타임라인 → codex 병렬설계 대조 → bgk 5항목 처리.</td></tr>
+      <tr><td class="em">설계 요약</td><td><span class="aud team">내부</span></td><td>bgk 변경점 → Q1~Q8 결정 타임라인 → bgk 5항목 처리.</td></tr>
     </table>
     <footer>ITC AIX 리포트 경진대회 v0.2 · 2026-05-20 · 기반기술전략팀 AX Part<br>
       원본 MD: contest-spec.md / exam-paper.md / sample-model-answer.md / sample-llm-only-answer.md</footer>
@@ -635,24 +635,6 @@
       </div>
     </div>
 
-    <h2 class="plain">codex 병렬 설계와의 대조</h2>
-    <div class="card">
-      <p>같은 <code>bgk.txt</code>로 Codex가 만든 또 다른 50분 설계(<code>codex/</code> 폴더)를 대조해 좋은 점을 흡수했습니다.</p>
-      <table>
-        <tr><th>항목</th><th>codex 제안</th><th>결정</th></tr>
-        <tr><td>Scope</td><td>반복업무 1개</td><td><span class="badge adopt">채택</span> 영역1을 반복업무 1개로 더 좁힘</td></tr>
-        <tr><td>AI 적용 표현</td><td>LLM / RAG / 사람 판단 3구분</td><td><span class="badge adopt">채택</span> 영역1-2에 흡수 (생산적 활용 보강)</td></tr>
-        <tr><td>메타 프롬프트</td><td>4필드</td><td><span class="badge adopt">절충</span> 2필드(반영 / 수정·반박)</td></tr>
-        <tr><td>본문 구조</td><td>3파트(고과찬반 포함)</td><td><span class="badge keep">유지</span> 2영역 (45분 depth 우선)</td></tr>
-        <tr><td>답변 보완·교정</td><td>없음</td><td><span class="badge keep">유지</span> 변별 핵심이라 보존</td></tr>
-        <tr><td>Rubric</td><td>미확정</td><td><span class="badge keep">유지</span> 25/25/20/15/15</td></tr>
-      </table>
-      <div class="two" style="margin-top:14px;">
-        <div class="card"><h3>codex 철학</h3><p class="muted">LLM으로 <b>좋은 리포트를 완성</b>하는 능력(생산성).</p></div>
-        <div class="card"><h3>본 설계 철학</h3><p class="muted">LLM을 <b>의심·보완·교정</b>하는 능력(비판). 3구분 흡수로 두 축이 균형.</p></div>
-      </div>
-    </div>
-
     <h2 class="plain">bgk 5개 항목의 최종 처리</h2>
     <div class="card">
       <table>
@@ -663,10 +645,10 @@
         <tr><td>③ 조직 변화·대응</td><td><span class="badge drop">제외</span> (50분 scope 축소)</td></tr>
         <tr><td>④ AI 활용 능력 고과 반영 찬반</td><td><span class="badge drop">제외</span> (더 변별력 높은 답변 보완·교정으로 대체)</td></tr>
       </table>
-      <p class="muted">③④는 의도적 제외이며, 향후 시간 여유가 생기면 영역3으로 부활 가능 (codex의 3파트 안 참고).</p>
+      <p class="muted">③④는 의도적 제외이며, 향후 시간 여유가 생기면 영역3으로 부활 가능.</p>
     </div>
     <footer>출제 설계 논의 요약 · 2026-05-20 · 기반기술전략팀 AX Part<br>
-      근거 문서: contest-spec.md (v0.2) · codex/ (병렬 참고안)</footer>
+      근거 문서: contest-spec.md (v0.2)</footer>
   </div>
 </section>
 
