@@ -153,7 +153,7 @@
       <tr><th>탭</th><th>대상</th><th>내용</th></tr>
       <tr><td class="em">출제 안내</td><td><span class="aud part">참가자·팀</span></td><td>배경·운영조건·출제문제(영역1/2/메타)·채점기준 요약. 대회 공지용.</td></tr>
       <tr><td class="em">답안지</td><td><span class="aud part">참가자</span></td><td>참가자가 채워 제출하는 양식. 규칙·영역1·영역2·메타 칸·제출 체크리스트.</td></tr>
-      <tr><td class="em">채점 가이드</td><td><span class="aud grade">채점자</span></td><td>rubric 25/25/20/15/15 + 축1·3 체크리스트 + 공동 채점 원칙 + 동점 tiebreaker + 형평성.</td></tr>
+      <tr><td class="em">채점 가이드</td><td><span class="aud grade">채점자</span></td><td>채점 기준 25/25/20/15/15 + 축1·3 체크리스트 + 공동 채점 원칙 + 동점 처리 + 형평성.</td></tr>
       <tr><td class="em">모범 샘플</td><td><span class="aud grade">채점자</span></td><td>상위 기준선(83~93점). 캘리브레이션 회의 점수 합의용. <b>참가자 노출 금지.</b></td></tr>
       <tr><td class="em">LLM-only 샘플</td><td><span class="aud grade">채점자</span></td><td>하위 기준선(22~35점). 영역2 회피 등 실패 신호. <b>참가자 노출 금지.</b></td></tr>
       <tr><td class="em">설계 요약</td><td><span class="aud team">내부</span></td><td>bgk 변경점 → Q1~Q8 결정 타임라인 → bgk 5항목 처리.</td></tr>
@@ -194,7 +194,7 @@
       <div class="stat"><div class="k">총 시간</div><div class="v">50분</div></div>
       <div class="stat"><div class="k">실질 작성</div><div class="v">45분</div></div>
       <div class="stat"><div class="k">형태</div><div class="v">개인전</div></div>
-      <div class="stat"><div class="k">제출 형식</div><div class="v">Markdown</div></div>
+      <div class="stat"><div class="k">제출 형식</div><div class="v">자유 형식</div></div>
       <div class="stat"><div class="k">수상</div><div class="v">1·2·3등</div></div>
     </div>
     <div class="card">
@@ -202,7 +202,7 @@
         <tr><th>구분</th><th>내용</th></tr>
         <tr><td class="em">사용 가능</td><td>✅ 기내식 / 사내 LLM 모델(GLM5.0 / Qwen3 등 모델 자유) · ✅ 일반 인터넷 검색 · ✅ 본인 PC 개인 메모</td></tr>
         <tr><td class="em">사용 불가</td><td>❌ 외부 LLM API(ChatGPT-5.5 등, 방화벽 차단) · ❌ 타 참가자와 협의·자료 공유</td></tr>
-        <tr><td class="em">제출처</td><td>사내 블로그 (.md 업로드, 50분 종료 시점까지)</td></tr>
+        <tr><td class="em">제출처</td><td>사내 블로그 업로드 (HTML / Markdown / 일반 텍스트 중 자유, 50분 종료 시점까지)</td></tr>
         <tr><td class="em">사후 활용</td><td>우수 답안은 센터 내 공유 (별도 동의 절차 없음)</td></tr>
       </table>
     </div>
@@ -248,13 +248,13 @@
     <div class="card">
       <table>
         <tr><th>채점 축</th><th>배점</th><th>무엇을 보나</th></tr>
-        <tr><td class="em">1. 도메인 근거<br><span class="muted" style="font-weight:400;">Domain grounding</span></td><td><b>25</b></td><td>본인 업무의 <b>구체적인 사례·수치</b>가 실제로 담겨 있는가. 일반론·남의 얘기면 감점됩니다.</td></tr>
-        <tr><td class="em">3. 비판적 보완·교정<br><span class="muted" style="font-weight:400;">Critical refinement</span></td><td><b>25</b></td><td>기내식의 답을 본인 도메인 지식으로 검토해 <b>더 낫게 다듬었는가</b> (영역2의 핵심).</td></tr>
-        <tr><td class="em">4. 메타인지<br><span class="muted" style="font-weight:400;">Meta-cognition</span></td><td><b>20</b></td><td>핵심 프롬프트 3개를 <b>왜 골랐고, 무엇을 반영·수정했는지</b> 스스로 설명했는가.</td></tr>
-        <tr><td class="em">2. 프레임워크 적용<br><span class="muted" style="font-weight:400;">Framework application</span></td><td><b>15</b></td><td>ITC 공통 개념(아래 용어 풀이 참고)을 본인 업무에 <b>실제로 적용</b>했는가. 용어만 나열하면 점수 ✕.</td></tr>
-        <tr><td class="em">5. 서술 일관성<br><span class="muted" style="font-weight:400;">Narrative coherence</span></td><td><b>15</b></td><td>영역1과 2가 따로 놀지 않고 <b>하나의 이야기로 이어지는가</b>.</td></tr>
+        <tr><td class="em">1. 도메인 근거</td><td><b>25</b></td><td>본인 업무의 <b>구체적인 사례·수치</b>가 실제로 담겨 있는가. 일반론·남의 얘기면 감점됩니다.</td></tr>
+        <tr><td class="em">3. 비판적 보완·교정</td><td><b>25</b></td><td>기내식의 답을 본인 도메인 지식으로 검토해 <b>더 낫게 다듬었는가</b> (영역2의 핵심).</td></tr>
+        <tr><td class="em">4. 메타인지</td><td><b>20</b></td><td>핵심 프롬프트 3개를 <b>왜 골랐고, 무엇을 반영·수정했는지</b> 스스로 설명했는가.</td></tr>
+        <tr><td class="em">2. AIX 실행 설계</td><td><b>15</b></td><td>업무 단계를 나누고, LLM/RAG/사람의 역할과 단기 실행·검증 방법을 <b>구체적으로 설계</b>했는가.</td></tr>
+        <tr><td class="em">5. 서술 일관성</td><td><b>15</b></td><td>영역1과 2가 따로 놀지 않고 <b>하나의 이야기로 이어지는가</b>.</td></tr>
       </table>
-      <div class="callout accent"><b>용어 풀이</b> (축2에 나오는 ITC 공통 개념)
+      <div class="callout accent"><b>참고 용어</b>
         <ul style="margin:8px 0 0;">
           <li><b>5 stream</b> — ITC 업무를 5가지 흐름으로 본 분류입니다: ① 의뢰 대응 · ② 분석 · ③ 데이터 생산 · ④ 장비 운영 관리 · ⑤ 장비 안정성 모니터링.</li>
           <li><b>암묵지 순환고리</b> — 일하면서 판단 근거를 자동으로 남기고(capture) → 정리·인덱싱 → 다음 업무에서 RAG로 활용 → 그 결과가 다시 쌓이는 <b>순환</b> 구조입니다.</li>
@@ -273,7 +273,7 @@
   <div class="banner part"><div class="inner">
     <span class="tag">참가자용 · 답안지</span>
     <h1>ITC AIX 리포트 경진대회 — 답안지</h1>
-    <p>실제 제출은 동봉된 exam-paper.md 양식을 채워 .md로 업로드합니다. 본 페이지는 읽기용 미리보기입니다.</p>
+    <p>실제 제출은 HTML, Markdown, 일반 텍스트 등 자유 형식으로 사내 블로그에 업로드합니다. 본 페이지는 읽기용 미리보기입니다.</p>
   </div></div>
   <div class="wrap">
     <h2><span class="num">1</span>시험 안내</h2>
@@ -282,7 +282,7 @@
       <ul>
         <li><b>시간 50분</b> (실질 작성 45분 권장) · 개인전</li>
         <li>✅ 기내식 · ✅ 인터넷 검색 · ✅ 개인 메모 &nbsp; / &nbsp; ❌ 외부 LLM API · ❌ 타 참가자 협의</li>
-        <li>제출: .md 파일을 사내 블로그에 업로드 (50분 종료 시점까지)</li>
+        <li>제출: HTML / Markdown / 일반 텍스트 중 자유 형식으로 사내 블로그에 업로드 (50분 종료 시점까지)</li>
       </ul>
       <div class="callout accent"><b>이 시험이 측정하는 것:</b> "기내식이 만든 결과를, 본인 도메인 지식으로 <b>검증·교정·확장</b>할 수 있는가." 화려한 AIX 기회가 아니라, LLM의 답을 의심하고 보완·교정할 줄 아는 능력을 봅니다.</div>
       <div class="callout warn">🟢 <b>시작 전 꼭:</b> 기내식을 <b>의심하면서</b> 작성하세요. 도메인적으로 어색하거나 부족하거나 보완이 필요한 답이 나오면 <b>그 자리에서 메모</b> — 영역2 재료입니다.</div>
@@ -376,35 +376,35 @@
         <li>☐ 본문에 "기내식은 X였으나 본인은 Y" 류 교정 흔적</li>
       </ul>
     </div>
-    <footer>참가자용 답안지 미리보기 v0.2 · 실제 제출은 exam-paper.md 양식 사용</footer>
+    <footer>참가자용 답안지 미리보기 v0.2 · 실제 제출은 자유 형식 사내 블로그 업로드</footer>
   </div>
 </section>
 
 <!-- ════════════════ 채점 가이드 ════════════════ -->
 <section class="panel" id="grading">
   <div class="banner grade"><div class="inner">
-    <span class="tag">채점자 전용 · Grading Guide</span>
+    <span class="tag">채점자 전용 · 채점 가이드</span>
     <h1>채점 가이드</h1>
-    <p>rubric 25/25/20/15/15 · 축1·3 체크리스트 · 공동 채점 원칙 · 동점 처리 · 형평성</p>
+    <p>채점 기준 25/25/20/15/15 · 축1·3 체크리스트 · 공동 채점 원칙 · 동점 처리 · 형평성</p>
   </div></div>
   <div class="wrap">
     <div class="callout drop" style="margin-top:24px;"><b>참가자에게 노출 금지.</b> 본 가이드와 두 샘플은 채점자 캘리브레이션 전용입니다.</div>
 
-    <h2><span class="num">1</span>채점 rubric (총 100점)</h2>
+    <h2><span class="num">1</span>채점 기준표 (총 100점)</h2>
     <div class="card">
       <table>
         <tr><th>축</th><th>배점</th><th>평가 대상</th><th>채점 단서</th></tr>
-        <tr><td class="em">1. 도메인 근거<br><span class="muted" style="font-weight:400;">Domain grounding</span></td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치</td><td>장비명·시스템명 + 빈도/규모. 수치는 <b>대략·범위값</b>("월 ~10건대", "TAT 절반")도 동일 인정</td></tr>
-        <tr><td class="em">3. 비판적 보완·교정<br><span class="muted" style="font-weight:400;">Critical refinement</span></td><td><b>25</b></td><td>LLM 답을 도메인 지식으로 검토·보완·교정 (영역2 중심)</td><td>"기내식은 X였으나 본인은 Y" 또는 "기내식이 빠뜨린 Z를 보강"</td></tr>
-        <tr><td class="em">4. 메타인지<br><span class="muted" style="font-weight:400;">Meta-cognition</span></td><td><b>20</b></td><td>핵심 프롬프트 3개의 반영·수정 설명</td><td>단발 명령 vs 결정적 reframing</td></tr>
-        <tr><td class="em">2. 프레임워크 적용<br><span class="muted" style="font-weight:400;">Framework application</span></td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier를 본인 맥락에 적용</td><td>용어 나열은 가산점 ✕</td></tr>
-        <tr><td class="em">5. 서술 일관성<br><span class="muted" style="font-weight:400;">Narrative coherence</span></td><td><b>15</b></td><td>영역1↔2가 한 흐름으로 묶임</td><td>cross-reference</td></tr>
+        <tr><td class="em">1. 도메인 근거</td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치</td><td>장비명·시스템명 + 빈도/규모. 수치는 <b>대략·범위값</b>("월 ~10건대", "TAT 절반")도 동일 인정</td></tr>
+        <tr><td class="em">3. 비판적 보완·교정</td><td><b>25</b></td><td>LLM 답을 도메인 지식으로 검토·보완·교정 (영역2 중심)</td><td>"기내식은 X였으나 본인은 Y" 또는 "기내식이 빠뜨린 Z를 보강"</td></tr>
+        <tr><td class="em">4. 메타인지</td><td><b>20</b></td><td>핵심 프롬프트 3개의 반영·수정 설명</td><td>단발 명령 vs 결정적 관점 재구성</td></tr>
+        <tr><td class="em">2. AIX 실행 설계</td><td><b>15</b></td><td>업무 단계 분해 + LLM/RAG/사람 역할 구분 + 단기 실행·검증 계획</td><td>용어 나열보다 실제 적용 순서와 확인 방법</td></tr>
+        <tr><td class="em">5. 서술 일관성</td><td><b>15</b></td><td>영역1↔2가 한 흐름으로 묶임</td><td>상호 참조</td></tr>
       </table>
     </div>
 
     <h2><span class="num">2</span>변별력 — 축1·3 체크리스트</h2>
     <div class="card">
-      <h3>축 1 (Domain grounding 25점) — 각 5점 × 5항목</h3>
+      <h3>축 1 (도메인 근거 25점) — 각 5점 × 5항목</h3>
       <ul>
         <li>☐ 본인 업무의 구체적 단계/작업 3건 이상 적시</li>
         <li>☐ 규모/빈도 감각 명시 — <b>정확한 수치가 아니어도 됨</b>. 대략·범위·상대값("월 ~10건대", "TAT 절반", "인력 한 자릿수") + <b>산출 근거 1줄</b>이면 충족 (근거 없는 정밀 수치보다 우대)</li>
@@ -412,13 +412,13 @@
         <li>☐ 장비명·도구명·시스템명 명시</li>
         <li>☐ 본인 직접 경험 사례 1건 이상 (전언 ✕)</li>
       </ul>
-      <h3>축 3 (Critical refinement 25점) — 영역2 중심</h3>
+      <h3>축 3 (비판적 보완·교정 25점) — 영역2 중심</h3>
       <ul>
         <li>☐ 기내식 답변 원문을 그대로 인용 (인용 없으면 위조 의심) — 5점</li>
         <li>☐ 무엇이 부족/불완전/업데이트 필요한지 <b>도메인 근거</b>로 설명 — 10점</li>
         <li>☐ 본인이 어떻게 보완·교정했는지 구체적 보강 — 10점</li>
       </ul>
-      <p class="muted">채점자 전원이 체크 개수로 합의 → 체크 차이 = 점수 격차 → top 3 변별.</p>
+      <p class="muted">채점자 전원이 체크 개수로 합의 → 체크 차이 = 점수 격차 → 상위 3명 변별.</p>
     </div>
 
     <h2><span class="num">3</span>채점 운영</h2>
@@ -429,7 +429,7 @@
         <li><b>사전 캘리브레이션:</b> 모범(83~93점)·LLM-only(22~35점) 샘플을 전원이 먼저 각자 채점 → 갈리는 축 합의.</li>
       </ul>
       <div class="callout accent"><b>공동 채점 편차 방지 핵심 원칙:</b> 채점은 <b>"도메인 사실의 진위"가 아니라 "구체적·검증 가능한 형식인가"</b>를 본다. 환경제어팀 수치가 진짜 맞는지 확인할 필요 없음 — "월 X건·장비명·LLM 교정 흔적"이 <b>있는지</b>만 평가하면 도메인 비전문가도 일관 채점된다.</div>
-      <div class="callout ok"><b>동점 tiebreaker</b> (1·2·3등 동점 시): <b>축3 (Critical refinement) &gt; 축1 (Domain grounding) &gt; 축4 (Meta-cognition)</b> — 시험 1차 축(LLM 검토·보완·교정) 순서.</div>
+      <div class="callout ok"><b>동점 처리 기준</b> (1·2·3등 동점 시): <b>축3 (비판적 보완·교정) &gt; 축1 (도메인 근거) &gt; 축4 (메타인지)</b> — 시험 1차 축(LLM 검토·보완·교정) 순서.</div>
     </div>
 
     <h2><span class="num">4</span>형평성 원칙</h2>
@@ -510,11 +510,11 @@
     <div class="card">
       <table>
         <tr><th>축</th><th>배점</th><th>점수</th><th>근거</th></tr>
-        <tr><td>1. Domain grounding</td><td>25</td><td class="em">21~23</td><td>표에 빈도 수치 4행, 저빈도·고가치 판단, stream 매핑</td></tr>
-        <tr><td>3. Critical refinement</td><td>25</td><td class="em">22~24</td><td>영역2가 실제 답변 인용 + 도메인 2점 보완·반박 + 구조 재정의</td></tr>
-        <tr><td>4. Meta-cognition</td><td>20</td><td class="em">16~18</td><td>"불완전 가정 유도→공백 되묻기→제약 박기" 의도적</td></tr>
-        <tr><td>2. Framework application</td><td>15</td><td class="em">12~14</td><td>stream 매핑, 암묵지 순환고리 적용</td></tr>
-        <tr><td>5. Narrative coherence</td><td>15</td><td class="em">12~14</td><td>영역1 capture가 영역2 검증의 토대로 연결</td></tr>
+        <tr><td>1. 도메인 근거</td><td>25</td><td class="em">21~23</td><td>표에 빈도 수치 4행, 저빈도·고가치 판단, stream 매핑</td></tr>
+        <tr><td>3. 비판적 보완·교정</td><td>25</td><td class="em">22~24</td><td>영역2가 실제 답변 인용 + 도메인 2점 보완·반박 + 구조 재정의</td></tr>
+        <tr><td>4. 메타인지</td><td>20</td><td class="em">16~18</td><td>"불완전 가정 유도→공백 되묻기→제약 박기" 의도적</td></tr>
+        <tr><td>2. AIX 실행 설계</td><td>15</td><td class="em">12~14</td><td>단계별 역할 분담, capture 설계, 검증 기준이 구체적</td></tr>
+        <tr><td>5. 서술 일관성</td><td>15</td><td class="em">12~14</td><td>영역1 capture가 영역2 검증의 토대로 연결</td></tr>
         <tr><td class="em">합계</td><td>100</td><td><span class="score hi">83~93</span></td><td>"1등 후보" 영역</td></tr>
       </table>
     </div>
@@ -570,11 +570,11 @@
     <div class="card">
       <table>
         <tr><th>축</th><th>배점</th><th>점수</th><th>근거</th></tr>
-        <tr><td>1. Domain grounding</td><td>25</td><td class="em">3~6</td><td>빈도 모두 정성("다수"). 장비명·수치·실사례 0건</td></tr>
-        <tr><td>3. Critical refinement</td><td>25</td><td class="em">2~5</td><td>영역2 사실상 백지. "보완할 게 없었다"로 회피</td></tr>
-        <tr><td>4. Meta-cognition</td><td>20</td><td class="em">3~5</td><td>단발 명령 3개, "수정·반박: 없음" 3회</td></tr>
-        <tr><td>2. Framework application</td><td>15</td><td class="em">8~10</td><td>stream 용어 인용. 본인 맥락 적용 없음</td></tr>
-        <tr><td>5. Narrative coherence</td><td>15</td><td class="em">6~9</td><td>형식상 연결되나 cross-reference 없음</td></tr>
+        <tr><td>1. 도메인 근거</td><td>25</td><td class="em">3~6</td><td>빈도 모두 정성("다수"). 장비명·수치·실사례 0건</td></tr>
+        <tr><td>3. 비판적 보완·교정</td><td>25</td><td class="em">2~5</td><td>영역2 사실상 백지. "보완할 게 없었다"로 회피</td></tr>
+        <tr><td>4. 메타인지</td><td>20</td><td class="em">3~5</td><td>단발 명령 3개, "수정·반박: 없음" 3회</td></tr>
+        <tr><td>2. AIX 실행 설계</td><td>15</td><td class="em">8~10</td><td>AI 가능성만 상/중으로 표시. 실행 순서와 검증 방법 없음</td></tr>
+        <tr><td>5. 서술 일관성</td><td>15</td><td class="em">6~9</td><td>형식상 연결되나 상호 참조 없음</td></tr>
         <tr><td class="em">합계</td><td>100</td><td><span class="score lo">22~35</span></td><td>"통과 못함" 기준선</td></tr>
       </table>
       <div class="callout drop"><b>영역2 회피는 단독으로 LLM-카피 판정 사유</b> (축3 ≤ 5점 cap). 본 시험의 1차 축을 정면 측정하는 지점이기 때문.</div>
@@ -620,7 +620,7 @@
         <div class="step">
           <h3>Q3. 변별력 — 점수가 몰리면 1·2·3등을 못 가른다</h3>
           <div class="ask">실질 45분이면 답안이 짧아져 점수가 60~80에 몰릴 위험.</div>
-          <div class="res"><b>결정:</b> rubric weight 비대칭 <b>25/25/20/15/15</b> + 축 1·3 <b>체크리스트형 sub-criteria</b>.</div>
+          <div class="res"><b>결정:</b> 채점 가중치 비대칭 <b>25/25/20/15/15</b> + 축 1·3 <b>체크리스트형 세부 기준</b>.</div>
         </div>
         <div class="step">
           <h3>Q4. 시간 배분 &amp; 메타회고</h3>
