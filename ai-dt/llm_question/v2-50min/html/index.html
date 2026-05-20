@@ -3,83 +3,687 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ITC AIX 리포트 경진대회 — 문서 모음</title>
-<link rel="stylesheet" href="style.css">
+<title>ITC AIX 리포트 경진대회 — 통합 문서 (50분 v0.2)</title>
+<style>
+  :root{
+    --ink:#1a2330; --muted:#5b6b80; --line:#e2e8f0; --bg:#f6f8fb;
+    --accent:#2563eb; --accent-soft:#eef3ff;
+    --warn:#b45309; --warn-soft:#fff7ed;
+    --ok:#047857; --ok-soft:#ecfdf5;
+    --drop:#b91c1c; --drop-soft:#fef2f2;
+    --purple:#7c3aed; --purple-soft:#f3eeff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px;}
+
+  /* ── headers (audience-colored banners reused per tab) ── */
+  .banner{color:#fff;padding:40px 20px 34px;margin-bottom:0;}
+  .banner .inner{max-width:880px;margin:0 auto;}
+  .banner.part {background:linear-gradient(135deg,#1e3a8a,#2563eb);}
+  .banner.grade{background:linear-gradient(135deg,#065f46,#0d9488);}
+  .banner.model{background:linear-gradient(135deg,#065f46,#16a34a);}
+  .banner.llm  {background:linear-gradient(135deg,#7f1d1d,#dc2626);}
+  .banner.team {background:linear-gradient(135deg,#4c1d95,#7c3aed);}
+  .banner.idx  {background:linear-gradient(135deg,#0f172a,#334155);}
+  .banner .tag{display:inline-block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    background:rgba(255,255,255,.18);padding:4px 12px;border-radius:999px;margin-bottom:14px;}
+  .banner h1{margin:0 0 8px;font-size:28px;font-weight:800;letter-spacing:-.01em;}
+  .banner p{margin:0;font-size:15px;opacity:.92;}
+
+  /* ── tab bar ── */
+  .tabbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(16,24,40,.05);}
+  .tabbar .inner{max-width:880px;margin:0 auto;display:flex;flex-wrap:wrap;gap:2px;padding:6px 14px;}
+  .tabbtn{appearance:none;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:13.5px;font-weight:600;color:var(--muted);
+    padding:9px 13px;border-radius:9px;display:inline-flex;align-items:center;gap:7px;
+    transition:.12s;white-space:nowrap;}
+  .tabbtn:hover{background:#f1f5f9;color:var(--ink);}
+  .tabbtn.active{background:var(--accent-soft);color:#1e3a8a;}
+  .tabbtn .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none;}
+  .dot.part{background:#2563eb;} .dot.grade{background:#0d9488;}
+  .dot.model{background:#16a34a;} .dot.llm{background:#dc2626;}
+  .dot.team{background:#7c3aed;}
+  .tabsep{flex-basis:100%;height:0;}
+
+  /* ── tab panels ── */
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  h2{font-size:20px;margin:38px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line);
+    display:flex;align-items:center;gap:10px;}
+  h2 .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+    border-radius:7px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;}
+  h2.plain{display:block;}
+  h3{font-size:16px;margin:22px 0 8px;}
+  p{margin:10px 0;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+    margin:14px 0;box-shadow:0 1px 2px rgba(16,24,40,.04);}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{background:var(--accent-soft);color:#1e3a8a;font-weight:700;font-size:13px;}
+  td .em,.em{font-weight:700;}
+  .callout{border-radius:12px;padding:16px 18px;margin:16px 0;font-size:14.5px;}
+  .callout.accent{background:var(--accent-soft);border:1px solid #c7d7fe;}
+  .callout.warn{background:var(--warn-soft);border:1px solid #fed7aa;color:#7c2d12;}
+  .callout.ok{background:var(--ok-soft);border:1px solid #a7f3d0;color:#065f46;}
+  .callout.drop{background:var(--drop-soft);border:1px solid #fecaca;color:#991b1b;}
+  .callout b{color:inherit;}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;
+    background:var(--accent-soft);color:#1e3a8a;margin-right:6px;}
+  .q{background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:10px;padding:18px 20px;margin:14px 0;}
+  .q .qhead{font-weight:800;font-size:16px;margin-bottom:6px;}
+  .q .time{font-size:12px;color:var(--muted);font-weight:600;}
+  ul,ol{margin:8px 0;padding-left:20px;}
+  li{margin:5px 0;}
+  .muted{color:var(--muted);font-size:13.5px;}
+  code{background:#eef2f7;padding:1px 6px;border-radius:5px;font-size:13px;}
+  blockquote{margin:10px 0;padding:10px 16px;border-left:3px solid var(--line);
+    background:#fafbfc;color:#374151;border-radius:0 8px 8px 0;font-size:14.5px;}
+  .slot{display:block;border-bottom:1px dashed #cbd5e1;height:18px;margin:6px 0;}
+  .score{font-size:20px;font-weight:800;}
+  .score.hi{color:var(--ok);} .score.lo{color:var(--drop);}
+  .aud{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;}
+  .aud.part{background:var(--accent-soft);color:#1e3a8a;}
+  .aud.grade{background:var(--ok-soft);color:#065f46;}
+  .aud.team{background:var(--purple-soft);color:#5b21b6;}
+  .badge{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;}
+  .badge.keep{background:var(--ok-soft);color:#065f46;}
+  .badge.drop{background:var(--drop-soft);color:#991b1b;}
+  .badge.adopt{background:var(--purple-soft);color:#5b21b6;}
+
+  /* contest-brief extras */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .stat .k{font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .stat .v{font-size:18px;font-weight:700;}
+
+  /* design-summary extras */
+  .timeline{position:relative;margin:18px 0;padding-left:26px;}
+  .timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line);}
+  .step{position:relative;margin:0 0 18px;}
+  .step::before{content:"";position:absolute;left:-22px;top:5px;width:12px;height:12px;
+    border-radius:50%;background:var(--purple);border:2px solid #fff;box-shadow:0 0 0 2px var(--purple);}
+  .step h3{margin:0 0 4px;font-size:15.5px;}
+  .step .ask{color:var(--muted);font-size:14px;margin:2px 0 6px;}
+  .step .res{background:var(--purple-soft);border-radius:8px;padding:8px 12px;font-size:14px;}
+  .step .res b{color:#5b21b6;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .two .card{margin:0;} .two h3{margin-top:0;font-size:15px;}
+
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:13px;text-align:center;}
+  @media(max-width:640px){.banner h1{font-size:23px;} .two{grid-template-columns:1fr;}}
+</style>
 </head>
 <body>
-<header class="idx">
+
+<nav class="tabbar">
   <div class="inner">
+    <button class="tabbtn active" data-tab="overview">개요</button>
+    <button class="tabbtn" data-tab="brief"><span class="dot part"></span>출제 안내</button>
+    <button class="tabbtn" data-tab="exam"><span class="dot part"></span>답안지</button>
+    <button class="tabbtn" data-tab="grading"><span class="dot grade"></span>채점 가이드</button>
+    <button class="tabbtn" data-tab="model"><span class="dot model"></span>모범 샘플</button>
+    <button class="tabbtn" data-tab="llm"><span class="dot llm"></span>LLM-only 샘플</button>
+    <button class="tabbtn" data-tab="design"><span class="dot team"></span>설계 요약</button>
+  </div>
+</nav>
+
+<!-- ════════════════ 개요 ════════════════ -->
+<section class="panel active" id="overview">
+  <div class="banner idx"><div class="inner">
     <span class="tag">기반기술센터 · AI/DT · 50분 개정판 v0.2</span>
+    <h1>ITC AIX 리포트 경진대회 — 통합 문서</h1>
+    <p>기내식(사내 RAG-LLM)을 활용한 본인 업무 AIX 리포트 작성 대회 · 모든 문서를 탭으로 모았습니다.</p>
+  </div></div>
+  <div class="wrap">
+    <div class="callout drop" style="margin-top:24px;">
+      <b>이 파일은 운영자/출제자용 통합본입니다.</b> 배포 시에는 <span class="aud part">참가자</span> 탭(출제 안내·답안지)과
+      <span class="aud grade">채점자 전용</span> 탭(채점 가이드·모범 샘플·LLM-only 샘플)을 <b>분리</b>해 공유하십시오 —
+      모범답안이 사전 노출되면 변별력이 무너집니다.
+    </div>
+
+    <h2 class="plain">탭 구성</h2>
+    <table>
+      <tr><th>탭</th><th>대상</th><th>내용</th></tr>
+      <tr><td class="em">출제 안내</td><td><span class="aud part">참가자·팀</span></td><td>배경·운영조건·출제문제(영역1/2/메타)·채점기준 요약. 대회 공지용.</td></tr>
+      <tr><td class="em">답안지</td><td><span class="aud part">참가자</span></td><td>참가자가 채워 제출하는 양식. 규칙·영역1·영역2·메타 칸·제출 체크리스트.</td></tr>
+      <tr><td class="em">채점 가이드</td><td><span class="aud grade">채점자</span></td><td>rubric 25/25/20/15/15 + 축1·3 체크리스트 + 공동 채점 원칙 + 동점 tiebreaker + 형평성.</td></tr>
+      <tr><td class="em">모범 샘플</td><td><span class="aud grade">채점자</span></td><td>상위 기준선(83~93점). 캘리브레이션 회의 점수 합의용. <b>참가자 노출 금지.</b></td></tr>
+      <tr><td class="em">LLM-only 샘플</td><td><span class="aud grade">채점자</span></td><td>하위 기준선(22~35점). 영역2 회피 등 실패 신호. <b>참가자 노출 금지.</b></td></tr>
+      <tr><td class="em">설계 요약</td><td><span class="aud team">내부</span></td><td>bgk 변경점 → Q1~Q8 결정 타임라인 → codex 병렬설계 대조 → bgk 5항목 처리.</td></tr>
+    </table>
+    <footer>ITC AIX 리포트 경진대회 v0.2 · 2026-05-20 · 기반기술전략팀 AX Part<br>
+      원본 MD: contest-spec.md / exam-paper.md / sample-model-answer.md / sample-llm-only-answer.md</footer>
+  </div>
+</section>
+
+<!-- ════════════════ 출제 안내 ════════════════ -->
+<section class="panel" id="brief">
+  <div class="banner part"><div class="inner">
+    <span class="tag">참가자·팀 공유용 · 출제 안내</span>
     <h1>ITC AIX 리포트 경진대회</h1>
-    <p>기내식(사내 RAG-LLM)을 활용한 본인 업무 AIX 리포트 작성 대회 — 전체 문서 모음</p>
+    <p>기내식(사내 RAG-LLM)을 활용한 본인 업무 AIX 리포트 작성 대회 — 출제 안내</p>
+  </div></div>
+  <div class="wrap">
+    <h2><span class="num">1</span>배경 &middot; 왜 이 대회를 여는가</h2>
+    <div class="card">
+      <p>우리는 반도체 회사라 일반 LLM만으로는 구체적인 업무 내용을 검색할 수 없습니다.
+      사내에 자체 구축한 LLM Chat 서비스 <b>「기내식」</b>은 RAG가 연결되어 조직의 업무 특성을 일부 알고 있습니다.</p>
+      <p>이 대회가 측정하려는 것은 <b>화려한 리포트</b>도, <b>LLM 없이 혼자 쓰는 도메인 지식</b>도 아닙니다.</p>
+      <div class="callout accent">
+        <b>핵심 질문 한 줄:</b><br>
+        &ldquo;기내식(LLM)이 만든 결과를, 본인의 도메인 지식으로 <b>검증&middot;교정&middot;확장</b>할 수 있는가?&rdquo;
+      </div>
+      <p class="muted">즉 LLM이 만든 generic한 답을 그대로 옮기는 게 아니라, <b>참가자 본인의 생각과 경험이 곳곳에 드러나는</b> 리포트를 평가합니다.</p>
+      <div class="callout warn">🟢 <b>시작 전 꼭:</b> 기내식을 <b>의심하면서</b> 작성하세요. 도메인적으로 어색하거나 부족하거나 보완이 필요한 답이 나오면 <b>그 자리에서 메모</b>해 두십시오 — 그게 영역2의 재료입니다. (끝나고 떠올리려 하면 늦습니다.)</div>
+    </div>
+
+    <h2><span class="num">2</span>운영 조건</h2>
+    <div class="grid">
+      <div class="stat"><div class="k">총 시간</div><div class="v">50분</div></div>
+      <div class="stat"><div class="k">실질 작성</div><div class="v">45분</div></div>
+      <div class="stat"><div class="k">형태</div><div class="v">개인전</div></div>
+      <div class="stat"><div class="k">제출 형식</div><div class="v">Markdown</div></div>
+      <div class="stat"><div class="k">수상</div><div class="v">1·2·3등</div></div>
+    </div>
+    <div class="card">
+      <table>
+        <tr><th>구분</th><th>내용</th></tr>
+        <tr><td class="em">사용 가능</td><td>✅ 기내식 / 사내 LLM 모델(GLM5.0 / Qwen3 등 모델 자유) · ✅ 일반 인터넷 검색 · ✅ 본인 PC 개인 메모</td></tr>
+        <tr><td class="em">사용 불가</td><td>❌ 외부 LLM API(ChatGPT-5.5 등, 방화벽 차단) · ❌ 타 참가자와 협의·자료 공유</td></tr>
+        <tr><td class="em">제출처</td><td>사내 블로그 (.md 업로드, 50분 종료 시점까지)</td></tr>
+        <tr><td class="em">사후 활용</td><td>우수 답안은 센터 내 공유 (별도 동의 절차 없음)</td></tr>
+      </table>
+    </div>
+
+    <h2><span class="num">3</span>출제 문제</h2>
+    <p class="muted">본문 2영역 + 메타 1섹션. 본인 직무 전체가 아니라 <b>반복적으로 수행하는 업무 1개</b>를 골라 중심 사례로 삼습니다.</p>
+
+    <div class="q">
+      <div class="qhead">영역 1 &middot; 반복업무 Workflow + AIX 로드맵 <span class="time">(약 18분)</span></div>
+      <ul>
+        <li><b>1-1.</b> 선택한 반복업무를 <b>단계별 Workflow 표</b>로 분해 (3행 이상). 빈도는 <b>대략값이어도 OK</b>이나 적었다면 <b>산출 근거 1줄</b>을 덧붙입니다. 각 단계를 5 stream(① 의뢰 대응 · ② 분석 · ③ 데이터 생산 · ④ 장비 운영 관리 · ⑤ 장비 안정성 모니터링)에 매핑.</li>
+        <li><b>1-2.</b> 각 단계를 <span class="pill">LLM이 할 일</span><span class="pill">RAG가 필요한 일</span><span class="pill">사람이 판단할 일</span> 로 구분하고, AIX 적용 <b>1순위 단계 + 이유</b>.</li>
+        <li><b>1-3.</b> 로드맵 — <b>단기</b>(구체적으로: 무엇을·어떻게·어떤 데이터로·진척 확인) / <b>장기</b>(방향만 1~2줄).</li>
+        <li><b>1-4.</b> AI 적용 후 본인 업무는 어디로 가야 하고, 무엇에 더 집중해야 하는가.</li>
+      </ul>
+    </div>
+
+    <div class="q">
+      <div class="qhead">영역 2 &middot; 기내식 답변 보완·교정 <span class="time">(약 12분) — 본 시험의 핵심</span></div>
+      <p>이번 세션에서 기내식이 준 답 중 <b>부족하거나·업데이트가 필요하거나·본인 맥락에 안 맞는</b> 답변 1개를 골라, 본인 도메인 지식으로 보완·교정:</p>
+      <ul>
+        <li><b>2-1.</b> 기내식 답변 원문을 <b>그대로 인용</b></li>
+        <li><b>2-2.</b> 무엇이 <b>부족/불완전/업데이트가 필요</b>한가 — <b>도메인 근거로</b></li>
+        <li><b>2-3.</b> 본인은 어떻게 <b>보완·교정</b>했는가 — <b>구체적 보강 내용</b></li>
+      </ul>
+      <div class="callout warn">⚠ 명백한 <b>오답일 필요는 없습니다</b> — 부족·불완전·업데이트 필요·맥락 부적합이면 충분합니다. 다만 &ldquo;보완할 게 없었다&rdquo;며 기내식 답을 그대로 옮기는 것은 검토 능력 미달로 간주됩니다.</div>
+    </div>
+
+    <div class="q">
+      <div class="qhead">메타 &middot; 핵심 프롬프트 기록 <span class="time">(작성 중 실시간 기록)</span></div>
+      <p>가장 결정적이었던 프롬프트 <b>3개</b>를 발췌하고, 각각:</p>
+      <ul>
+        <li>프롬프트 원문</li>
+        <li>LLM 답변 중 <b>최종 리포트에 반영한 내용</b> (협업 생산성)</li>
+        <li>본인이 <b>수정·보완·반박한 내용</b> (비판적 검증)</li>
+      </ul>
+      <div class="callout warn">⚠ 이 칸은 <b>작성 중 실시간으로</b> 채우세요. 빈칸이면 채점 축 4(20점)는 0점 처리됩니다.</div>
+    </div>
+
+    <h2><span class="num">4</span>채점 기준 <span class="muted" style="font-size:14px;font-weight:400;">(총 100점)</span></h2>
+    <div class="card">
+      <table>
+        <tr><th>축</th><th>배점</th><th>평가 대상</th></tr>
+        <tr><td class="em">1. Domain grounding</td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치가 박혀있는가</td></tr>
+        <tr><td class="em">3. Critical refinement</td><td><b>25</b></td><td>LLM의 답을 도메인 지식으로 검토·보완·교정한 흔적 (영역2 중심)</td></tr>
+        <tr><td class="em">4. Meta-cognition</td><td><b>20</b></td><td>핵심 프롬프트 3개의 선택과 반영·수정 설명</td></tr>
+        <tr><td class="em">2. Framework application</td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier 거버넌스를 본인 맥락에 적용 (용어 나열 ✕)</td></tr>
+        <tr><td class="em">5. Narrative coherence</td><td><b>15</b></td><td>영역1·2가 하나의 흐름으로 묶이는가</td></tr>
+      </table>
+      <div class="callout ok"><b>형평성 원칙:</b> AI 적용이 어려운 업무라면, <b>왜 어려운지를 도메인 근거로 정확히 분석</b>하는 것 자체가 만점 답안입니다. 무리하게 AI를 갖다붙인 generic 로드맵은 오히려 감점됩니다.</div>
+      <div class="callout accent"><b>수치 부담 갖지 마세요:</b> 축1의 "구체성"은 <b>정확한 숫자</b>가 아니라 <b>규모 감각</b>입니다. "월 ~10건대", "TAT 절반", "인력 한 자릿수"처럼 <b>대략·범위·상대값</b>으로 써도 점수는 동일합니다. (민감 수치는 오히려 범위로 쓰는 걸 권장) 단, 수치를 적을 땐 <b>어떻게 산출했는지(근거)</b>를 한 줄 덧붙이세요 — 근거 있는 대략값이 근거 없는 정밀 수치보다 높게 평가됩니다.</div>
+    </div>
+    <footer>ITC AIX 리포트 경진대회 출제 안내 v0.2 · 2026-05-20 · 기반기술전략팀 AX Part</footer>
   </div>
-</header>
+</section>
 
-<div class="wrap">
+<!-- ════════════════ 답안지 ════════════════ -->
+<section class="panel" id="exam">
+  <div class="banner part"><div class="inner">
+    <span class="tag">참가자용 · 답안지</span>
+    <h1>ITC AIX 리포트 경진대회 — 답안지</h1>
+    <p>실제 제출은 동봉된 exam-paper.md 양식을 채워 .md로 업로드합니다. 본 페이지는 읽기용 미리보기입니다.</p>
+  </div></div>
+  <div class="wrap">
+    <h2><span class="num">1</span>시험 안내</h2>
+    <div class="card">
+      <h3>규칙</h3>
+      <ul>
+        <li><b>시간 50분</b> (실질 작성 45분 권장) · 개인전</li>
+        <li>✅ 기내식 · ✅ 인터넷 검색 · ✅ 개인 메모 &nbsp; / &nbsp; ❌ 외부 LLM API · ❌ 타 참가자 협의</li>
+        <li>제출: .md 파일을 사내 블로그에 업로드 (50분 종료 시점까지)</li>
+      </ul>
+      <div class="callout accent"><b>이 시험이 측정하는 것:</b> "기내식이 만든 결과를, 본인 도메인 지식으로 <b>검증·교정·확장</b>할 수 있는가." 화려한 AIX 기회가 아니라, LLM의 답을 의심하고 보완·교정할 줄 아는 능력을 봅니다.</div>
+      <div class="callout warn">🟢 <b>시작 전 꼭:</b> 기내식을 <b>의심하면서</b> 작성하세요. 도메인적으로 어색하거나 부족하거나 보완이 필요한 답이 나오면 <b>그 자리에서 메모</b> — 영역2 재료입니다.</div>
+      <div class="callout ok">🟢 <b>기밀 표현:</b> 우수 답안은 센터 내 공유될 수 있습니다. 민감 수치는 <b>범위·상대값</b>("월 ~10건대", "TAT 절반")으로 표현해도 구체성 점수 동일 인정.</div>
+      <h3>시간 배분 (권장)</h3>
+      <table>
+        <tr><th>단계</th><th>시간</th></tr>
+        <tr><td>문제 읽기·접근 설계</td><td>5분</td></tr>
+        <tr><td>영역1 (Workflow + 로드맵)</td><td>~18분</td></tr>
+        <tr><td>영역2 (기내식 답변 보완·교정)</td><td>~12분</td></tr>
+        <tr><td>정리·교정</td><td>~10분</td></tr>
+        <tr><td>핵심 프롬프트 기록</td><td>작성 중 실시간</td></tr>
+      </table>
+    </div>
 
-  <div class="callout accent">
-    문서마다 <b>공유 대상</b>이 다릅니다. <span class="aud part">참가자</span> 자료와 <span class="aud grade">채점자 전용</span> 자료(모범답안 등)를 섞어 배포하지 마십시오 — 모범답안이 사전 노출되면 변별력이 무너집니다.
+    <h2><span class="num">2</span>[영역 1] 반복업무 1개 — Workflow + AIX 로드맵 <span class="time" style="font-size:13px;color:var(--muted);font-weight:400;">(18분)</span></h2>
+    <div class="q">
+      <div class="callout warn" style="margin-top:0;">⚠ 본인 직무 <b>전체가 아니라</b> 반복적으로 수행하는 <b>업무 1개</b>를 골라 중심 사례로 삼으십시오. 좁혀야 단계·병목·AI 적용 지점·사람 판단 지점을 구체적으로 쓸 수 있습니다.</div>
+      <p><b>선택한 반복업무:</b> <span class="slot"></span></p>
+
+      <h3>1-1. Workflow 표 (산문 ✕ — 표로, 3행 이상)</h3>
+      <div class="callout accent" style="margin-top:0;"><b>5 stream</b> (ITC 공통 분류): ① 의뢰 대응 · ② 분석 · ③ 데이터 생산 · ④ 장비 운영 관리 · ⑤ 장비 안정성 모니터링 — 각 단계가 어느 흐름인지 번호로 적습니다.</div>
+      <p class="muted" style="margin-bottom:4px;">▼ <b>작성 예시</b> (이해를 돕기 위한 일반 예시입니다. 본인 업무로 바꿔 아래 빈 표에 작성하세요)</p>
+      <table style="opacity:.78;">
+        <tr><th>단계</th><th>빈도 (대략값 + 산출 근거)</th><th>AI 적용 가능성 (상/중/하)</th><th>5 stream</th></tr>
+        <tr><td>의뢰 접수·요건 확인</td><td>주 ~10건 (주간 의뢰 큐 기준)</td><td>중</td><td>① 의뢰 대응</td></tr>
+        <tr><td>계측 데이터 수집·정리</td><td>주 ~10건 (의뢰 1건당 1회)</td><td>하</td><td>③ 데이터 생산</td></tr>
+        <tr><td>결과 분석·트렌드 해석</td><td>주 ~10건</td><td>상</td><td>② 분석</td></tr>
+        <tr><td>결과 보고서 작성</td><td>주 ~10건</td><td>상</td><td>① 의뢰 대응</td></tr>
+      </table>
+      <p class="muted" style="margin:16px 0 4px;">▼ <b>본인 작성</b></p>
+      <table>
+        <tr><th>단계</th><th>빈도 (대략값 + 산출 근거)</th><th>AI 적용 가능성 (상/중/하)</th><th>5 stream</th></tr>
+        <tr><td><span class="slot"></span></td><td></td><td></td><td></td></tr>
+        <tr><td><span class="slot"></span></td><td></td><td></td><td></td></tr>
+        <tr><td><span class="slot"></span></td><td></td><td></td><td></td></tr>
+      </table>
+      <p class="muted">※ 수치는 정확할 필요 없이 <b>대략·범위값</b>이면 됩니다. 단, 수치를 적었다면 <b>어떻게 산출했는지(근거)</b>를 괄호로 한 줄 덧붙이세요. (예: "주 ~10건 — 주간 회의 안건 수 기준")</p>
+
+      <h3>1-2. LLM이 할 일 / RAG 필요 / 사람 판단 구분 + 1순위</h3>
+      <table>
+        <tr><th>구분</th><th>해당 단계</th></tr>
+        <tr><td class="em">LLM(기내식)이 도울 일</td><td><span class="slot"></span></td></tr>
+        <tr><td class="em">RAG가 필요한 일</td><td><span class="slot"></span></td></tr>
+        <tr><td class="em">사람이 반드시 판단할 일</td><td><span class="slot"></span></td></tr>
+      </table>
+      <p><b>AIX 적용 1순위 단계 + 이유:</b></p><span class="slot"></span><span class="slot"></span>
+
+      <h3>1-3. 로드맵 — 단기 / 장기</h3>
+      <table>
+        <tr><th>구분</th><th>내용</th></tr>
+        <tr><td class="em">단기 (구체적으로)</td><td><span class="slot"></span></td></tr>
+        <tr><td class="em">장기 (방향만)</td><td><span class="slot"></span></td></tr>
+      </table>
+
+      <h3>1-4. AI 적용 후 본인 업무의 방향</h3>
+      <span class="slot"></span><span class="slot"></span>
+    </div>
+
+    <h2><span class="num">3</span>[영역 2] 기내식 답변 보완·교정 <span class="time" style="font-size:13px;color:var(--muted);font-weight:400;">(12분 · 핵심)</span></h2>
+    <div class="q">
+      <div class="callout warn" style="margin-top:0;">기내식이 준 답 중 <b>부족하거나·업데이트가 필요하거나·맥락에 안 맞는</b> 답변 1개를 골라 보완·교정. 명백한 오답일 필요는 없습니다. 다만 "보완할 게 없었다"며 그대로 옮기면 검토 능력 미달로 간주됩니다.</div>
+      <h3>2-1. 기내식 답변 원문 (그대로 인용)</h3>
+      <blockquote><span class="slot"></span><span class="slot"></span></blockquote>
+      <h3>2-2. 무엇이 부족/불완전/업데이트가 필요한가 — 도메인 근거로</h3>
+      <span class="slot"></span><span class="slot"></span>
+      <h3>2-3. 본인은 어떻게 보완·교정했는가 — 구체적 보강 내용</h3>
+      <span class="slot"></span><span class="slot"></span>
+    </div>
+
+    <h2><span class="num">4</span>[메타] 핵심 프롬프트 기록 <span class="time" style="font-size:13px;color:var(--muted);font-weight:400;">(작성 중 실시간)</span></h2>
+    <div class="q">
+      <div class="callout warn" style="margin-top:0;">⚠ 작성 중 실시간으로 채우세요. 빈칸이면 채점 축 4(20점)는 <b>0점</b>입니다. 결정적이었던 프롬프트 3개를 발췌.</div>
+      <h3>#1 · #2 · #3 (각 항목 동일 양식)</h3>
+      <p class="muted">각 프롬프트마다:</p>
+      <ol>
+        <li><b>프롬프트 원문</b> <span class="slot"></span></li>
+        <li><b>LLM 답변 중 최종 리포트에 반영한 내용</b> (협업 생산성) <span class="slot"></span></li>
+        <li><b>본인이 수정·보완·반박한 내용</b> (비판적 검증) <span class="slot"></span></li>
+      </ol>
+    </div>
+
+    <h2><span class="num">5</span>제출 전 점검</h2>
+    <div class="card">
+      <ul>
+        <li>☐ 영역1 Workflow를 <b>표</b>로, 빈도를 대략 수치로(범위·상대값 OK)</li>
+        <li>☐ 로드맵을 <b>단기(구체)/장기(방향)</b>로 분리</li>
+        <li>☐ 영역2에 기내식 답변 <b>원문 인용</b> + 무엇이 부족/보완 필요한지 + 보완·교정안</li>
+        <li>☐ 핵심 프롬프트 3개 + 반영/수정 칸 모두 작성</li>
+        <li>☐ 본문에 "기내식은 X였으나 본인은 Y" 류 교정 흔적</li>
+      </ul>
+    </div>
+    <footer>참가자용 답안지 미리보기 v0.2 · 실제 제출은 exam-paper.md 양식 사용</footer>
   </div>
+</section>
 
-  <h2><span class="num">1</span>참가자 / 팀 공유용</h2>
+<!-- ════════════════ 채점 가이드 ════════════════ -->
+<section class="panel" id="grading">
+  <div class="banner grade"><div class="inner">
+    <span class="tag">채점자 전용 · Grading Guide</span>
+    <h1>채점 가이드</h1>
+    <p>rubric 25/25/20/15/15 · 축1·3 체크리스트 · 공동 채점 원칙 · 동점 처리 · 형평성</p>
+  </div></div>
+  <div class="wrap">
+    <div class="callout drop" style="margin-top:24px;"><b>참가자에게 노출 금지.</b> 본 가이드와 두 샘플은 채점자 캘리브레이션 전용입니다.</div>
 
-  <a class="cardlink" href="contest-brief.html">
+    <h2><span class="num">1</span>채점 rubric (총 100점)</h2>
     <div class="card">
-      <span class="aud part">참가자</span> <span class="aud team">팀 공유</span>
-      <h3 style="margin:8px 0 4px;">출제 안내 (contest-brief)</h3>
-      <p class="muted">제목·배경·운영조건·출제문제(영역1/2/메타)·채점기준 요약. 대회 공지용.</p>
+      <table>
+        <tr><th>축</th><th>배점</th><th>평가 대상</th><th>채점 단서</th></tr>
+        <tr><td class="em">1. Domain grounding</td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치</td><td>장비명·시스템명 + 빈도/규모. 수치는 <b>대략·범위값</b>("월 ~10건대", "TAT 절반")도 동일 인정</td></tr>
+        <tr><td class="em">3. Critical refinement</td><td><b>25</b></td><td>LLM 답을 도메인 지식으로 검토·보완·교정 (영역2 중심)</td><td>"기내식은 X였으나 본인은 Y" 또는 "기내식이 빠뜨린 Z를 보강"</td></tr>
+        <tr><td class="em">4. Meta-cognition</td><td><b>20</b></td><td>핵심 프롬프트 3개의 반영·수정 설명</td><td>단발 명령 vs 결정적 reframing</td></tr>
+        <tr><td class="em">2. Framework application</td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier를 본인 맥락에 적용</td><td>용어 나열은 가산점 ✕</td></tr>
+        <tr><td class="em">5. Narrative coherence</td><td><b>15</b></td><td>영역1↔2가 한 흐름으로 묶임</td><td>cross-reference</td></tr>
+      </table>
     </div>
-  </a>
 
-  <a class="cardlink" href="exam-paper.html">
+    <h2><span class="num">2</span>변별력 — 축1·3 체크리스트</h2>
     <div class="card">
-      <span class="aud part">참가자</span>
-      <h3 style="margin:8px 0 4px;">답안지 (exam-paper)</h3>
-      <p class="muted">참가자가 채워 제출하는 양식. 표지·규칙·영역1·영역2·메타 프롬프트 칸·제출 체크리스트.</p>
+      <h3>축 1 (Domain grounding 25점) — 각 5점 × 5항목</h3>
+      <ul>
+        <li>☐ 본인 업무의 구체적 단계/작업 3건 이상 적시</li>
+        <li>☐ 규모/빈도 감각 명시 — <b>정확한 수치가 아니어도 됨</b>. 대략·범위·상대값("월 ~10건대", "TAT 절반", "인력 한 자릿수") + <b>산출 근거 1줄</b>이면 충족 (근거 없는 정밀 수치보다 우대)</li>
+        <li>☐ 5 stream 매핑</li>
+        <li>☐ 장비명·도구명·시스템명 명시</li>
+        <li>☐ 본인 직접 경험 사례 1건 이상 (전언 ✕)</li>
+      </ul>
+      <h3>축 3 (Critical refinement 25점) — 영역2 중심</h3>
+      <ul>
+        <li>☐ 기내식 답변 원문을 그대로 인용 (인용 없으면 위조 의심) — 5점</li>
+        <li>☐ 무엇이 부족/불완전/업데이트 필요한지 <b>도메인 근거</b>로 설명 — 10점</li>
+        <li>☐ 본인이 어떻게 보완·교정했는지 구체적 보강 — 10점</li>
+      </ul>
+      <p class="muted">채점자 전원이 체크 개수로 합의 → 체크 차이 = 점수 격차 → top 3 변별.</p>
     </div>
-  </a>
 
-  <h2><span class="num">2</span>채점자 전용</h2>
-
-  <a class="cardlink" href="grading-guide.html">
+    <h2><span class="num">3</span>채점 운영</h2>
     <div class="card">
-      <span class="aud grade">채점자</span>
-      <h3 style="margin:8px 0 4px;">채점 가이드 (grading-guide)</h3>
-      <p class="muted">rubric 25/25/20/15/15 + 축1·3 체크리스트 + 공동 채점 원칙 + 동점 tiebreaker + 형평성.</p>
+      <ul>
+        <li><b>채점 주체:</b> AX Part 전원 <b>공동 채점</b>. → 6팀 도메인 이질성은 배정 문제 ✕.</li>
+        <li><b>채점 시간:</b> 1답안당 약 <b>8~12분</b> (50분·2영역이라 단축). 참가자 수 × 12분으로 총 부하 산정.</li>
+        <li><b>사전 캘리브레이션:</b> 모범(83~93점)·LLM-only(22~35점) 샘플을 전원이 먼저 각자 채점 → 갈리는 축 합의.</li>
+      </ul>
+      <div class="callout accent"><b>공동 채점 편차 방지 핵심 원칙:</b> 채점은 <b>"도메인 사실의 진위"가 아니라 "구체적·검증 가능한 형식인가"</b>를 본다. 환경제어팀 수치가 진짜 맞는지 확인할 필요 없음 — "월 X건·장비명·LLM 교정 흔적"이 <b>있는지</b>만 평가하면 도메인 비전문가도 일관 채점된다.</div>
+      <div class="callout ok"><b>동점 tiebreaker</b> (1·2·3등 동점 시): <b>축3 (Critical refinement) &gt; 축1 (Domain grounding) &gt; 축4 (Meta-cognition)</b> — 시험 1차 축(LLM 검토·보완·교정) 순서.</div>
     </div>
-  </a>
 
-  <a class="cardlink" href="sample-model.html">
+    <h2><span class="num">4</span>형평성 원칙</h2>
     <div class="card">
-      <span class="aud grade">채점자</span>
-      <h3 style="margin:8px 0 4px;">모범 답안 샘플 (예상 83~93점)</h3>
-      <p class="muted">상위 기준선. 캘리브레이션 회의에서 점수 합의용. <b>참가자에게 노출 금지.</b></p>
+      <div class="callout ok"><b>AI 적용이 어려운 업무라면, 왜 어려운지를 도메인 근거로 정확히 분석하는 것 자체가 축1·3 만점 답안이다.</b> 무리하게 AI를 갖다붙인 generic 로드맵은 오히려 감점.</div>
+      <p class="muted">scope가 본인 업무 micro로 좁혀져, 형평성 위험을 "사례 빌리기"가 아니라 채점 철학으로 흡수함. 단순·정형 업무 담당자도 불리하지 않음.</p>
     </div>
-  </a>
 
-  <a class="cardlink" href="sample-llm-only.html">
+    <h2><span class="num">5</span>LLM-카피 의심 신호</h2>
     <div class="card">
-      <span class="aud grade">채점자</span>
-      <h3 style="margin:8px 0 4px;">LLM-only 답안 샘플 (예상 22~35점)</h3>
-      <p class="muted">하위 기준선. 영역2 회피 등 실패 신호 노출. <b>참가자에게 노출 금지.</b></p>
+      <ul>
+        <li>☐ 빈도/수치가 모두 정성적 ("다수", "지속적", "다양함")</li>
+        <li>☐ 장비명·시스템명 등 고유명사 0개</li>
+        <li>☐ <b>영역2에서 LLM 답을 인용 안 하거나 "보완할 게 없었다"로 회피</b> ← 가장 강한 신호 (단독으로 축3 ≤ 5점 cap)</li>
+        <li>☐ 메타 "수정·반박" 칸이 전부 "없음"</li>
+        <li>☐ 핵심 프롬프트가 명령형 단답 ("X 정리해줘")</li>
+        <li>☐ Quick Win·자율 운영·전략적 사고 등 보일러플레이트 다수</li>
+      </ul>
+      <p class="muted">4개 이상 충족 시 LLM-카피 의심 답안으로 분류.</p>
     </div>
-  </a>
+    <footer>채점 가이드 v0.2 · 2026-05-20 · 기반기술전략팀 AX Part · 근거: contest-spec.md §6·§7</footer>
+  </div>
+</section>
 
-  <h2><span class="num">3</span>내부 기록</h2>
+<!-- ════════════════ 모범 샘플 ════════════════ -->
+<section class="panel" id="model">
+  <div class="banner model"><div class="inner">
+    <span class="tag">채점자 전용 · 상위 기준선</span>
+    <h1>모범 답안 샘플 <span style="opacity:.85;font-size:20px;">(예상 83~93점)</span></h1>
+    <p>5축 모두 높은 점수를 받아야 하는 답안의 모습. 수치·사례는 illustrative(예시).</p>
+  </div></div>
+  <div class="wrap">
+    <div class="callout drop" style="margin-top:24px;"><b>참가자 노출 금지.</b> 미리 보여주면 그대로 베껴서 변별력이 무너집니다. 채점자는 <b>수치의 정확성</b>이 아니라 <b>수치를 가져오는 구체성·검증 가능성</b>을 평가하세요.</div>
 
-  <a class="cardlink" href="design-summary.html">
+    <p class="muted">참가자(예시): 김도영 / 소속팀: DMI (Defect Metrology Inspection)</p>
+
+    <h2><span class="num">1</span>[영역 1] 반복업무 — Workflow + 로드맵</h2>
     <div class="card">
-      <span class="aud team">내부</span>
-      <h3 style="margin:8px 0 4px;">설계 논의 요약 (design-summary)</h3>
-      <p class="muted">bgk 변경점 → Q1~Q8 결정 타임라인 → codex 병렬설계 대조 → bgk 5항목 처리.</p>
+      <p><b>선택한 반복업무:</b> 신규 결함 패턴 근본원인 추정</p>
+      <table>
+        <tr><th>단계</th><th>빈도 (대략값 + 산출 근거)</th><th>AI 가능성</th><th>적용 방식</th><th>stream</th></tr>
+        <tr><td>신규 결함 근본원인 추정</td><td>월 ~12건 (월간 신규패턴 리뷰 안건 수)</td><td>상</td><td>과거 판단 근거 RAG 회수 → 시니어 검증</td><td>② 분석</td></tr>
+        <tr><td>정형 결함 분류</td><td>월 ~300건 (분류 큐 일평균 ×20일)</td><td>중</td><td>사내 VLM 분류 + 사람 확인</td><td>②/③</td></tr>
+        <tr><td>계측 데이터 생산</td><td>주 ~5회 (장비 스케줄 기준)</td><td>하</td><td>장비 종속, 자동화 여지 적음</td><td>③ 데이터 생산</td></tr>
+        <tr><td>추가 계측 요청서</td><td>월 ~20건 (요청 대장 기준)</td><td>중</td><td>템플릿 + LLM 초안</td><td>① 의뢰 대응</td></tr>
+      </table>
+      <p><b>AIX 1순위:</b> 신규 결함 근본원인 추정. 빈도는 낮지만 한 건의 오판이 후속 의사결정 며칠을 흔들어 <b>가치 비중 압도적</b>. 정형 분류(월 300건)는 도구화 진척이 있어 한계효용 낮음.</p>
+      <div class="callout accent">기내식은 "월 300건 정형 분류가 빈도 높으니 1순위"라 답했으나, <b>빈도 ≠ 가치</b>. 본인 판단으로 저빈도·고가치 업무로 교정. (축3 흔적)</div>
+      <p><b>로드맵 — 단기:</b> 근본원인 추정의 판단 근거를 슬롯 4개(참조 패턴ID / 유사 근거 / 상이 근거 / 가설)로 in-flow capture(분석 시간 5% 미만). BGE-M3 인덱싱 → 신규 케이스 top-3 회수. <b>진척 = 캡처 ≥ 100건 & 회수율 ≥ 40%.</b><br>
+      <b>장기:</b> 회수된 판단 근거를 onboarding에 연결, 시니어→주니어 전수 시간 단축.</p>
+      <p><b>AI 적용 후 방향:</b> 반복 분류·1차 검색은 AI로, 본인은 <b>AI가 회수한 과거 판단을 의심·교정하는 검증자 + 새 가설 수립자</b>로 이동. capture 슬롯 설계·품질 관리가 새 핵심 역량.</p>
     </div>
-  </a>
 
-  <footer>
-    ITC AIX 리포트 경진대회 v0.2 · 2026-05-20 · 기반기술전략팀 AX Part<br>
-    원본 MD: contest-spec.md / exam-paper.md / sample-model-answer.md / sample-llm-only-answer.md
-  </footer>
+    <h2><span class="num">2</span>[영역 2] 기내식 답변 보완·교정 <span style="font-size:13px;color:var(--muted);font-weight:400;">(핵심)</span></h2>
+    <div class="card">
+      <h3>2-1. 기내식 답변 원문</h3>
+      <blockquote>"DMI의 결함 분석 업무는 RAG에 과거 보고서를 색인하면 자동화됩니다. 과거 분석 결론을 검색해 유사 사례의 결론을 그대로 적용하면 TAT를 크게 줄일 수 있습니다."</blockquote>
+      <h3>2-2. 무엇이 부족/불완전/보완 필요한가</h3>
+      <ol>
+        <li><b>"결론을 그대로 적용"이 위험.</b> 신규 결함은 기존 카테고리에 안 맞아서 신규다. 과거 결론 적용은 오분류 → 양산총괄 의사결정 오염. 회수해야 할 건 결론이 아니라 <b>판단 근거</b>다.</li>
+        <li><b>"과거 보고서 색인이면 충분"이 틀림.</b> 현재 RAG엔 완성 보고서(명시지)만 있고 슬롯형 판단 근거(암묵지)는 0. LLM은 corpus에 무엇이 <b>없는지</b>를 모른다.</li>
+      </ol>
+      <h3>2-3. 본인은 어떻게 교정했는가</h3>
+      <p>RAG 출력 단위를 결론 → <b>과거 시니어의 판단 근거 카드 3장</b>으로 재정의(human-in-the-loop 유지). 색인 대상도 보고서 → in-flow capture 슬롯으로 바꿔, "색인하면 끝"을 "<b>캡처 파이프라인을 먼저 만들어야</b> RAG가 의미 있다"로 순서를 뒤집음.</p>
+    </div>
 
-</div>
+    <h2><span class="num">3</span>[메타] 핵심 프롬프트</h2>
+    <div class="card">
+      <p><b>#1</b> <code>DMI 결함 분석을 RAG로 자동화하는 가장 빠른 방법은?</code><br>
+      <span class="muted">영향: 일부러 generic하게 물어 LLM의 불완전한 기본 가정(보고서 색인→결론 재사용)을 노출 → 영역2 재료.</span></p>
+      <p><b>#2</b> <code>corpus에 '판단 근거'가 아니라 '결론'만 있다면 RAG 회수가 신규 결함에 왜 위험한가?</code><br>
+      <span class="muted">영향: 내가 아는 corpus 공백으로 되물어 LLM이 위험을 스스로 인정 → 2-2 논리.</span></p>
+      <p><b>#3</b> <code>capture를 분석 시간 5% 미만으로 묶으며 4단계 판단을 담는 슬롯 설계 3개.</code><br>
+      <span class="muted">영향: 제약을 박자 자유 서술 대신 슬롯형 4개 도출. 명칭은 DMI 맥락으로 교정.</span></p>
+    </div>
+
+    <h2><span class="num">4</span>채점자 메모 — 예상 점수</h2>
+    <div class="card">
+      <table>
+        <tr><th>축</th><th>배점</th><th>점수</th><th>근거</th></tr>
+        <tr><td>1. Domain grounding</td><td>25</td><td class="em">21~23</td><td>표에 빈도 수치 4행, 저빈도·고가치 판단, stream 매핑</td></tr>
+        <tr><td>3. Critical refinement</td><td>25</td><td class="em">22~24</td><td>영역2가 실제 답변 인용 + 도메인 2점 보완·반박 + 구조 재정의</td></tr>
+        <tr><td>4. Meta-cognition</td><td>20</td><td class="em">16~18</td><td>"불완전 가정 유도→공백 되묻기→제약 박기" 의도적</td></tr>
+        <tr><td>2. Framework application</td><td>15</td><td class="em">12~14</td><td>stream 매핑, 암묵지 순환고리 적용</td></tr>
+        <tr><td>5. Narrative coherence</td><td>15</td><td class="em">12~14</td><td>영역1 capture가 영역2 검증의 토대로 연결</td></tr>
+        <tr><td class="em">합계</td><td>100</td><td><span class="score hi">83~93</span></td><td>"1등 후보" 영역</td></tr>
+      </table>
+    </div>
+    <footer>모범 답안 캘리브레이션 샘플 v0.2 · 채점자 전용</footer>
+  </div>
+</section>
+
+<!-- ════════════════ LLM-only 샘플 ════════════════ -->
+<section class="panel" id="llm">
+  <div class="banner llm"><div class="inner">
+    <span class="tag">채점자 전용 · 하위 기준선</span>
+    <h1>LLM-only 답안 샘플 <span style="opacity:.85;font-size:20px;">(예상 22~35점)</span></h1>
+    <p>기내식에 문제를 그대로 던져 받아 쓴 답안. 의도적으로 5축 실패 패턴을 노출.</p>
+  </div></div>
+  <div class="wrap">
+    <div class="callout drop" style="margin-top:24px;"><b>참가자 노출 금지.</b> 우수 답안의 모범이 아니라 <b>하위 기준선</b>입니다. 모범 샘플과 짝지어 점수 격차(약 50~70점)를 합의하는 데 씁니다.</div>
+
+    <p class="muted">참가자(예시): 홍길동 / 소속팀: DMI</p>
+
+    <h2><span class="num">1</span>[영역 1] 반복업무 — Workflow + 로드맵</h2>
+    <div class="card">
+      <p><b>선택한 반복업무:</b> 결함 분류 업무</p>
+      <table>
+        <tr><th>단계</th><th>빈도</th><th>AI 가능성</th><th>stream</th></tr>
+        <tr><td>결함 이미지 확인</td><td>다수</td><td>상</td><td>2</td></tr>
+        <tr><td>분류 및 원인 추정</td><td>지속적</td><td>상</td><td>2</td></tr>
+        <tr><td>보고서 작성</td><td>다양함</td><td>중</td><td>1</td></tr>
+      </table>
+      <p>AIX 1순위는 분류 및 원인 추정. AI를 적용하면 업무 효율이 크게 향상될 것이다.</p>
+      <p><b>로드맵 — 단기:</b> RAG 기반 결함 분류 자동화 PoC 도입. <b>장기:</b> 전사적으로 AI 적용 확대 및 자율 운영 수준 도달.</p>
+      <p><b>AI 적용 후 방향:</b> 단순 반복 업무에서 벗어나 더 창의적이고 고부가가치·전략적 사고에 집중해야 한다.</p>
+    </div>
+
+    <h2><span class="num">2</span>[영역 2] 기내식 답변 보완·교정</h2>
+    <div class="card">
+      <h3>2-1. 기내식 답변 원문</h3>
+      <blockquote>기내식은 결함 분류 업무에 RAG와 VLM을 적용하면 효율을 높일 수 있다고 정확하게 답변해 주었다. 특별히 보완하거나 교정할 부분은 없었다.</blockquote>
+      <h3>2-2. 무엇이 부족/불완전/보완 필요한가</h3>
+      <p>기내식의 답변은 대체로 정확했으나, 좀 더 구체적인 설명이 있었으면 좋았을 것이다. 전반적으로 도움이 되는 답변이었다.</p>
+      <h3>2-3. 본인은 어떻게 교정했는가</h3>
+      <p>특별히 교정할 부분은 없었고, 기내식의 답변을 참고하여 보고서를 작성하였다.</p>
+      <div class="callout drop"><b>← 영역2 회피.</b> LLM 답 인용·도메인 보완·교정이 모두 없음. 본 시험의 핵심을 통과 못함 (축3 ≤ 5점 cap).</div>
+    </div>
+
+    <h2><span class="num">3</span>[메타] 핵심 프롬프트</h2>
+    <div class="card">
+      <p><b>#1</b> <code>결함 분류 업무에 AI를 어떻게 적용할 수 있는지 정리해줘.</code> · 반영: 영역1 구조 · 수정·반박: <b>없음</b></p>
+      <p><b>#2</b> <code>AIX 로드맵을 단기와 장기로 나눠서 작성해줘.</code> · 반영: 로드맵 표 · 수정·반박: <b>없음</b></p>
+      <p><b>#3</b> <code>AI 적용 후 엔지니어가 집중해야 할 방향을 알려줘.</code> · 반영: 영역1-4 · 수정·반박: <b>없음</b></p>
+    </div>
+
+    <h2><span class="num">4</span>채점자 메모 — 예상 점수</h2>
+    <div class="card">
+      <table>
+        <tr><th>축</th><th>배점</th><th>점수</th><th>근거</th></tr>
+        <tr><td>1. Domain grounding</td><td>25</td><td class="em">3~6</td><td>빈도 모두 정성("다수"). 장비명·수치·실사례 0건</td></tr>
+        <tr><td>3. Critical refinement</td><td>25</td><td class="em">2~5</td><td>영역2 사실상 백지. "보완할 게 없었다"로 회피</td></tr>
+        <tr><td>4. Meta-cognition</td><td>20</td><td class="em">3~5</td><td>단발 명령 3개, "수정·반박: 없음" 3회</td></tr>
+        <tr><td>2. Framework application</td><td>15</td><td class="em">8~10</td><td>stream 용어 인용. 본인 맥락 적용 없음</td></tr>
+        <tr><td>5. Narrative coherence</td><td>15</td><td class="em">6~9</td><td>형식상 연결되나 cross-reference 없음</td></tr>
+        <tr><td class="em">합계</td><td>100</td><td><span class="score lo">22~35</span></td><td>"통과 못함" 기준선</td></tr>
+      </table>
+      <div class="callout drop"><b>영역2 회피는 단독으로 LLM-카피 판정 사유</b> (축3 ≤ 5점 cap). 본 시험의 1차 축을 정면 측정하는 지점이기 때문.</div>
+    </div>
+    <footer>LLM-only 캘리브레이션 샘플 v0.2 · 채점자 전용</footer>
+  </div>
+</section>
+
+<!-- ════════════════ 설계 요약 ════════════════ -->
+<section class="panel" id="design">
+  <div class="banner team"><div class="inner">
+    <span class="tag">설계 논의 요약 · Grilling Session</span>
+    <h1>출제 설계는 어떻게 결정됐나</h1>
+    <p>bgk.txt 개정(90분→50분) 이후 진행한 설계 논의의 결정 과정 정리 · 2026-05-20</p>
+  </div></div>
+  <div class="wrap">
+    <h2 class="plain" style="margin-top:38px;">출발점 — 무엇이 바뀌었나</h2>
+    <div class="card">
+      <p>입력 메모 <code>bgk.txt</code>가 개정되면서 기존 설계(v0.1)의 전제가 무너졌습니다.</p>
+      <table>
+        <tr><th>항목</th><th>기존 v0.1</th><th>개정 bgk</th></tr>
+        <tr><td>시간</td><td>90분</td><td><b>50분</b></td></tr>
+        <tr><td>범위</td><td>ITC 통합 narrative</td><td><b>본인 업무 중심</b></td></tr>
+        <tr><td>LLM 이름</td><td>미지정</td><td><b>「기내식」</b></td></tr>
+        <tr><td>문제 항목</td><td>3영역</td><td>5개 관심사(직무 workflow / 로드맵 / 방향성 / 조직변화 / 고과찬반)</td></tr>
+      </table>
+      <p class="muted">→ 단순 압축이 아니라 설계 전제가 바뀐 것이라, 의존 관계 순서대로 다시 결정했습니다.</p>
+    </div>
+
+    <h2 class="plain">결정 과정 (Q1 → Q8)</h2>
+    <div class="card">
+      <div class="timeline">
+        <div class="step">
+          <h3>Q1. 시간 — 50분은 고정인가</h3>
+          <div class="ask">90분 spec을 50분으로 줄이면 영역당 시간이 LLM-카피 임계점 아래로 떨어짐.</div>
+          <div class="res"><b>결정:</b> 50분 hard 고정. 시간이 준 만큼 범위를 <b>본인 업무 micro</b>로 좁히는 게 적절한 scope 조정.</div>
+        </div>
+        <div class="step">
+          <h3>Q2. 본문 영역 수</h3>
+          <div class="ask">50분에 5개는 불가. 2영역 vs 3영역.</div>
+          <div class="res"><b>결정:</b> 본문 <b>2영역</b>. breadth보다 depth.</div>
+        </div>
+        <div class="step">
+          <h3>Q3. 변별력 — 점수가 몰리면 1·2·3등을 못 가른다</h3>
+          <div class="ask">실질 45분이면 답안이 짧아져 점수가 60~80에 몰릴 위험.</div>
+          <div class="res"><b>결정:</b> rubric weight 비대칭 <b>25/25/20/15/15</b> + 축 1·3 <b>체크리스트형 sub-criteria</b>.</div>
+        </div>
+        <div class="step">
+          <h3>Q4. 시간 배분 &amp; 메타회고</h3>
+          <div class="ask">메타회고(20점)를 45분 안에 어떻게 살리나.</div>
+          <div class="res"><b>결정:</b> 별도 단계 ✕ → 답안 하단 칸에 <b>작성 중 실시간 기록</b>. 핵심 프롬프트 <b>3개 + 사유</b>.</div>
+        </div>
+        <div class="step">
+          <h3>Q5. 함정(LLM-trap) 질문</h3>
+          <div class="ask">micro scope에선 "본인 수치 쓰라"가 이미 trap.</div>
+          <div class="res"><b>결정:</b> 명시적 함정 ✕. 묵시적 trap + 영역2 자체가 trap (A+B).</div>
+        </div>
+        <div class="step">
+          <h3>Q6. 영역2를 무엇으로 — 변별력 높은 새 문제</h3>
+          <div class="ask">고과 찬반은 LLM이 일반론으로 채우기 쉬움. 더 직격하는 형식?</div>
+          <div class="res"><b>결정:</b> <b>「기내식 답변 보완·교정」</b> — LLM이 준 답의 부족·불완전한 부분을 인용하고 도메인 지식으로 보완·교정(오답에 한정 ✕). 시험의 1차 축을 정면 측정. (고과 찬반·조직변화는 제외)</div>
+        </div>
+        <div class="step">
+          <h3>Q7. 영역1 분량 통제</h3>
+          <div class="ask">요구가 많아 18분에 다 못 씀.</div>
+          <div class="res"><b>결정:</b> 로드맵 <b>단기/장기 2단계</b>(1·3·5년 ✕) + workflow <b>표 강제</b>.</div>
+        </div>
+        <div class="step">
+          <h3>Q8. 팀 비대칭(형평성)</h3>
+          <div class="ask">큰 팀이 사례 많아 유리한가.</div>
+          <div class="res"><b>결정:</b> 별도 보정 ✕. <b>"AI 적용 한계도 정확히 분석하면 만점"</b> 채점 철학으로 흡수.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="plain">codex 병렬 설계와의 대조</h2>
+    <div class="card">
+      <p>같은 <code>bgk.txt</code>로 Codex가 만든 또 다른 50분 설계(<code>codex/</code> 폴더)를 대조해 좋은 점을 흡수했습니다.</p>
+      <table>
+        <tr><th>항목</th><th>codex 제안</th><th>결정</th></tr>
+        <tr><td>Scope</td><td>반복업무 1개</td><td><span class="badge adopt">채택</span> 영역1을 반복업무 1개로 더 좁힘</td></tr>
+        <tr><td>AI 적용 표현</td><td>LLM / RAG / 사람 판단 3구분</td><td><span class="badge adopt">채택</span> 영역1-2에 흡수 (생산적 활용 보강)</td></tr>
+        <tr><td>메타 프롬프트</td><td>4필드</td><td><span class="badge adopt">절충</span> 2필드(반영 / 수정·반박)</td></tr>
+        <tr><td>본문 구조</td><td>3파트(고과찬반 포함)</td><td><span class="badge keep">유지</span> 2영역 (45분 depth 우선)</td></tr>
+        <tr><td>답변 보완·교정</td><td>없음</td><td><span class="badge keep">유지</span> 변별 핵심이라 보존</td></tr>
+        <tr><td>Rubric</td><td>미확정</td><td><span class="badge keep">유지</span> 25/25/20/15/15</td></tr>
+      </table>
+      <div class="two" style="margin-top:14px;">
+        <div class="card"><h3>codex 철학</h3><p class="muted">LLM으로 <b>좋은 리포트를 완성</b>하는 능력(생산성).</p></div>
+        <div class="card"><h3>본 설계 철학</h3><p class="muted">LLM을 <b>의심·보완·교정</b>하는 능력(비판). 3구분 흡수로 두 축이 균형.</p></div>
+      </div>
+    </div>
+
+    <h2 class="plain">bgk 5개 항목의 최종 처리</h2>
+    <div class="card">
+      <table>
+        <tr><th>bgk 항목</th><th>처리</th></tr>
+        <tr><td>① 직무 세분화 + Workflow + AIX 로드맵</td><td><span class="badge keep">영역1</span></td></tr>
+        <tr><td>② AI 적용 후 업무 방향·집중점</td><td><span class="badge keep">영역1-4</span></td></tr>
+        <tr><td>⑤ 성과·진척 관리</td><td><span class="badge keep">영역1 로드맵에 흡수</span></td></tr>
+        <tr><td>③ 조직 변화·대응</td><td><span class="badge drop">제외</span> (50분 scope 축소)</td></tr>
+        <tr><td>④ AI 활용 능력 고과 반영 찬반</td><td><span class="badge drop">제외</span> (더 변별력 높은 답변 보완·교정으로 대체)</td></tr>
+      </table>
+      <p class="muted">③④는 의도적 제외이며, 향후 시간 여유가 생기면 영역3으로 부활 가능 (codex의 3파트 안 참고).</p>
+    </div>
+    <footer>출제 설계 논의 요약 · 2026-05-20 · 기반기술전략팀 AX Part<br>
+      근거 문서: contest-spec.md (v0.2) · codex/ (병렬 참고안)</footer>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var btns = document.querySelectorAll('.tabbtn');
+    var panels = document.querySelectorAll('.panel');
+    function show(id){
+      btns.forEach(function(b){ b.classList.toggle('active', b.dataset.tab===id); });
+      panels.forEach(function(p){ p.classList.toggle('active', p.id===id); });
+      if(location.hash !== '#'+id) history.replaceState(null,'','#'+id);
+      window.scrollTo(0,0);
+    }
+    btns.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.tab); }); });
+    var initial = (location.hash||'').replace('#','');
+    if(initial && document.getElementById(initial)) show(initial);
+  })();
+</script>
 </body>
 </html>
