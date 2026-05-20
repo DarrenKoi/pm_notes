@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITC AIX 리포트 경진대회 — 출제 안내</title>
+<style>
+  :root{
+    --ink:#1a2330; --muted:#5b6b80; --line:#e2e8f0; --bg:#f6f8fb;
+    --accent:#2563eb; --accent-soft:#eef3ff; --warn:#b45309; --warn-soft:#fff7ed;
+    --ok:#047857; --ok-soft:#ecfdf5;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px;}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;
+    padding:48px 20px 40px;margin-bottom:32px;}
+  header .inner{max-width:880px;margin:0 auto;}
+  header .tag{display:inline-block;font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;background:rgba(255,255,255,.18);
+    padding:4px 12px;border-radius:999px;margin-bottom:14px;}
+  header h1{margin:0 0 8px;font-size:30px;font-weight:800;letter-spacing:-.01em;}
+  header p{margin:0;font-size:15px;opacity:.92;}
+  h2{font-size:20px;margin:38px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--line);display:flex;align-items:center;gap:10px;}
+  h2 .num{display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:7px;background:var(--accent);color:#fff;
+    font-size:14px;font-weight:700;}
+  h3{font-size:16px;margin:22px 0 8px;color:var(--ink);}
+  p{margin:10px 0;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin:14px 0;box-shadow:0 1px 2px rgba(16,24,40,.04);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .stat .k{font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .stat .v{font-size:18px;font-weight:700;}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{background:var(--accent-soft);color:#1e3a8a;font-weight:700;font-size:13px;}
+  td .em{font-weight:700;}
+  .callout{border-radius:12px;padding:16px 18px;margin:16px 0;font-size:14.5px;}
+  .callout.accent{background:var(--accent-soft);border:1px solid #c7d7fe;}
+  .callout.warn{background:var(--warn-soft);border:1px solid #fed7aa;color:#7c2d12;}
+  .callout.ok{background:var(--ok-soft);border:1px solid #a7f3d0;color:#065f46;}
+  .callout b{color:inherit;}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;
+    border-radius:999px;background:var(--accent-soft);color:#1e3a8a;margin-right:6px;}
+  .q{background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:10px;padding:18px 20px;margin:14px 0;}
+  .q .qhead{font-weight:800;font-size:16px;margin-bottom:6px;}
+  .q .time{font-size:12px;color:var(--muted);font-weight:600;}
+  ul{margin:8px 0;padding-left:20px;}
+  li{margin:5px 0;}
+  .muted{color:var(--muted);font-size:13.5px;}
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:13px;text-align:center;}
+  code{background:#eef2f7;padding:1px 6px;border-radius:5px;font-size:13px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <span class="tag">기반기술센터 · AI/DT</span>
+    <h1>ITC AIX 리포트 경진대회</h1>
+    <p>기내식(사내 RAG-LLM)을 활용한 본인 업무 AIX 리포트 작성 대회 — 출제 안내</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <h2><span class="num">1</span>배경 &middot; 왜 이 대회를 여는가</h2>
+  <div class="card">
+    <p>우리는 반도체 회사라 일반 LLM만으로는 구체적인 업무 내용을 검색할 수 없습니다.
+    사내에 자체 구축한 LLM Chat 서비스 <b>「기내식」</b>은 RAG가 연결되어 조직의 업무 특성을 일부 알고 있습니다.</p>
+    <p>이 대회가 측정하려는 것은 <b>화려한 리포트</b>도, <b>LLM 없이 혼자 쓰는 도메인 지식</b>도 아닙니다.</p>
+    <div class="callout accent">
+      <b>핵심 질문 한 줄:</b><br>
+      &ldquo;기내식(LLM)이 만든 결과를, 본인의 도메인 지식으로 <b>검증&middot;교정&middot;확장</b>할 수 있는가?&rdquo;
+    </div>
+    <p class="muted">즉 LLM이 만든 generic한 답을 그대로 옮기는 게 아니라, <b>참가자 본인의 생각과 경험이 곳곳에 드러나는</b> 리포트를 평가합니다.</p>
+    <div class="callout warn">🟢 <b>시작 전 꼭:</b> 기내식을 <b>의심하면서</b> 작성하세요. 도메인적으로 어색하거나 틀린 답이 나오면 <b>그 자리에서 메모</b>해 두십시오 — 그게 영역2의 재료입니다. (끝나고 떠올리려 하면 늦습니다.)</div>
+  </div>
+
+  <h2><span class="num">2</span>운영 조건</h2>
+  <div class="grid">
+    <div class="stat"><div class="k">총 시간</div><div class="v">50분</div></div>
+    <div class="stat"><div class="k">실질 작성</div><div class="v">45분</div></div>
+    <div class="stat"><div class="k">형태</div><div class="v">개인전</div></div>
+    <div class="stat"><div class="k">제출 형식</div><div class="v">Markdown</div></div>
+    <div class="stat"><div class="k">수상</div><div class="v">1·2·3등</div></div>
+  </div>
+  <div class="card">
+    <table>
+      <tr><th>구분</th><th>내용</th></tr>
+      <tr><td class="em">사용 가능</td><td>✅ 기내식(Kimi-K2.5 / Qwen3-VL 등 모델 자유) · ✅ 일반 인터넷 검색 · ✅ 본인 PC 개인 메모</td></tr>
+      <tr><td class="em">사용 불가</td><td>❌ 외부 LLM API(방화벽 차단) · ❌ 타 참가자와 협의·자료 공유</td></tr>
+      <tr><td class="em">제출처</td><td>사내 블로그 (.md 업로드, 50분 종료 시점까지)</td></tr>
+      <tr><td class="em">사후 활용</td><td>우수 답안은 센터 내 공유 (참가자 사전 동의 체크박스)</td></tr>
+    </table>
+  </div>
+
+  <h2><span class="num">3</span>출제 문제</h2>
+  <p class="muted">본문 2영역 + 메타 1섹션. 본인 직무 전체가 아니라 <b>반복적으로 수행하는 업무 1개</b>를 골라 중심 사례로 삼습니다.</p>
+
+  <div class="q">
+    <div class="qhead">영역 1 &middot; 반복업무 Workflow + AIX 로드맵 <span class="time">(약 18분)</span></div>
+    <ul>
+      <li><b>1-1.</b> 선택한 반복업무를 <b>단계별 Workflow 표</b>로 분해 (3행 이상, 빈도는 구체 수치로). 각 단계의 5 stream 매핑.</li>
+      <li><b>1-2.</b> 각 단계를 <span class="pill">LLM이 할 일</span><span class="pill">RAG가 필요한 일</span><span class="pill">사람이 판단할 일</span> 로 구분하고, AIX 적용 <b>1순위 단계 + 이유</b>.</li>
+      <li><b>1-3.</b> 로드맵 — <b>단기</b>(구체적으로: 무엇을·어떻게·어떤 데이터로·진척 확인) / <b>장기</b>(방향만 1~2줄).</li>
+      <li><b>1-4.</b> AI 적용 후 본인 업무는 어디로 가야 하고, 무엇에 더 집중해야 하는가.</li>
+    </ul>
+  </div>
+
+  <div class="q">
+    <div class="qhead">영역 2 &middot; 기내식 오답 검증 <span class="time">(약 12분) — 본 시험의 핵심</span></div>
+    <p>이번 세션에서 기내식이 준 답 중 <b>도메인적으로 틀렸거나·불완전하거나·본인 맥락에 안 맞는</b> 답변 1개를 검증:</p>
+    <ul>
+      <li><b>2-1.</b> 기내식 답변 원문을 <b>그대로 인용</b></li>
+      <li><b>2-2.</b> 무엇이 왜 잘못/불완전한가 — <b>도메인 근거로</b></li>
+      <li><b>2-3.</b> 본인은 어떻게 교정했는가 — <b>구체적 대안</b></li>
+    </ul>
+    <div class="callout warn">⚠ &ldquo;기내식이 틀린 답을 안 줬다&rdquo;는 인정되지 않습니다. 불완전·맥락 부적합도 포함하며, 못 찾은 것은 검증 능력 미달로 간주됩니다.</div>
+  </div>
+
+  <div class="q">
+    <div class="qhead">메타 &middot; 핵심 프롬프트 기록 <span class="time">(작성 중 실시간 기록)</span></div>
+    <p>가장 결정적이었던 프롬프트 <b>3개</b>를 발췌하고, 각각:</p>
+    <ul>
+      <li>프롬프트 원문</li>
+      <li>LLM 답변 중 <b>최종 리포트에 반영한 내용</b> (협업 생산성)</li>
+      <li>본인이 <b>수정·보완·반박한 내용</b> (비판적 검증)</li>
+    </ul>
+    <div class="callout warn">⚠ 이 칸은 <b>작성 중 실시간으로</b> 채우세요. 빈칸이면 채점 축 4(20점)는 0점 처리됩니다.</div>
+  </div>
+
+  <h2><span class="num">4</span>채점 기준 <span class="muted" style="font-size:14px;font-weight:400;">(총 100점)</span></h2>
+  <div class="card">
+    <table>
+      <tr><th>축</th><th>배점</th><th>평가 대상</th></tr>
+      <tr><td class="em">1. Domain grounding</td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치가 박혀있는가</td></tr>
+      <tr><td class="em">3. Critical refinement</td><td><b>25</b></td><td>LLM의 답을 도메인 지식으로 검증·교정한 흔적 (영역2 중심)</td></tr>
+      <tr><td class="em">4. Meta-cognition</td><td><b>20</b></td><td>핵심 프롬프트 3개의 선택과 반영·수정 설명</td></tr>
+      <tr><td class="em">2. Framework application</td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier 거버넌스를 본인 맥락에 적용 (용어 나열 ✕)</td></tr>
+      <tr><td class="em">5. Narrative coherence</td><td><b>15</b></td><td>영역1·2가 하나의 흐름으로 묶이는가</td></tr>
+    </table>
+    <div class="callout ok"><b>형평성 원칙:</b> AI 적용이 어려운 업무라면, <b>왜 어려운지를 도메인 근거로 정확히 분석</b>하는 것 자체가 만점 답안입니다. 무리하게 AI를 갖다붙인 generic 로드맵은 오히려 감점됩니다.</div>
+  </div>
+
+  <footer>
+    ITC AIX 리포트 경진대회 출제 안내 v0.2 · 2026-05-20 · 기반기술전략팀 AX Part<br>
+    상세 설계: contest-spec.md / 답안지: exam-paper.md
+  </footer>
+
+</div>
+</body>
+</html>

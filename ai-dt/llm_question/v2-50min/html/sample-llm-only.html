@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM-only 답안 샘플 — ITC AIX 리포트 경진대회</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="llm">
+  <div class="inner">
+    <span class="tag">채점자 전용 · 하위 기준선</span>
+    <h1>LLM-only 답안 샘플 <span style="opacity:.85;font-size:20px;">(예상 22~35점)</span></h1>
+    <p>기내식에 문제를 그대로 던져 받아 쓴 답안. 의도적으로 5축 실패 패턴을 노출.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="nav"><a href="index.html">← 문서 모음</a><a href="grading-guide.html">채점 가이드</a><a href="sample-model.html">모범 샘플</a></div>
+
+  <div class="callout drop"><b>참가자 노출 금지.</b> 우수 답안의 모범이 아니라 <b>하위 기준선</b>입니다. 모범 샘플과 짝지어 점수 격차(약 50~70점)를 합의하는 데 씁니다.</div>
+
+  <p class="muted">참가자(예시): 홍길동 / 소속팀: DMI &nbsp;|&nbsp; ☐ 공유 동의 (미체크)</p>
+
+  <h2><span class="num">1</span>[영역 1] 반복업무 — Workflow + 로드맵</h2>
+  <div class="card">
+    <p><b>선택한 반복업무:</b> 결함 분류 업무</p>
+    <table>
+      <tr><th>단계</th><th>빈도</th><th>AI 가능성</th><th>stream</th></tr>
+      <tr><td>결함 이미지 확인</td><td>다수</td><td>상</td><td>2</td></tr>
+      <tr><td>분류 및 원인 추정</td><td>지속적</td><td>상</td><td>2</td></tr>
+      <tr><td>보고서 작성</td><td>다양함</td><td>중</td><td>1</td></tr>
+    </table>
+    <p>AIX 1순위는 분류 및 원인 추정. AI를 적용하면 업무 효율이 크게 향상될 것이다.</p>
+    <p><b>로드맵 — 단기:</b> RAG 기반 결함 분류 자동화 PoC 도입. <b>장기:</b> 전사적으로 AI 적용 확대 및 자율 운영 수준 도달.</p>
+    <p><b>AI 적용 후 방향:</b> 단순 반복 업무에서 벗어나 더 창의적이고 고부가가치·전략적 사고에 집중해야 한다.</p>
+  </div>
+
+  <h2><span class="num">2</span>[영역 2] 기내식 오답 검증</h2>
+  <div class="card">
+    <h3>2-1. 기내식 답변 원문</h3>
+    <blockquote>기내식은 결함 분류 업무에 RAG와 VLM을 적용하면 효율을 높일 수 있다고 정확하게 답변해 주었다. 특별히 틀린 부분은 없었다.</blockquote>
+    <h3>2-2. 무엇이 왜 잘못/불완전한가</h3>
+    <p>기내식의 답변은 대체로 정확했으나, 좀 더 구체적인 설명이 있었으면 좋았을 것이다. 전반적으로 도움이 되는 답변이었다.</p>
+    <h3>2-3. 본인은 어떻게 교정했는가</h3>
+    <p>특별히 교정할 부분은 없었고, 기내식의 답변을 참고하여 보고서를 작성하였다.</p>
+    <div class="callout drop"><b>← 영역2 회피.</b> LLM 오답 인용·도메인 반박·교정이 모두 없음. 본 시험의 핵심을 통과 못함 (축3 ≤ 5점 cap).</div>
+  </div>
+
+  <h2><span class="num">3</span>[메타] 핵심 프롬프트</h2>
+  <div class="card">
+    <p><b>#1</b> <code>결함 분류 업무에 AI를 어떻게 적용할 수 있는지 정리해줘.</code> · 반영: 영역1 구조 · 수정·반박: <b>없음</b></p>
+    <p><b>#2</b> <code>AIX 로드맵을 단기와 장기로 나눠서 작성해줘.</code> · 반영: 로드맵 표 · 수정·반박: <b>없음</b></p>
+    <p><b>#3</b> <code>AI 적용 후 엔지니어가 집중해야 할 방향을 알려줘.</code> · 반영: 영역1-4 · 수정·반박: <b>없음</b></p>
+  </div>
+
+  <h2><span class="num">4</span>채점자 메모 — 예상 점수</h2>
+  <div class="card">
+    <table>
+      <tr><th>축</th><th>배점</th><th>점수</th><th>근거</th></tr>
+      <tr><td>1. Domain grounding</td><td>25</td><td class="em">3~6</td><td>빈도 모두 정성("다수"). 장비명·수치·실사례 0건</td></tr>
+      <tr><td>3. Critical refinement</td><td>25</td><td class="em">2~5</td><td>영역2 사실상 백지. "틀린 게 없었다"로 회피</td></tr>
+      <tr><td>4. Meta-cognition</td><td>20</td><td class="em">3~5</td><td>단발 명령 3개, "수정·반박: 없음" 3회</td></tr>
+      <tr><td>2. Framework application</td><td>15</td><td class="em">8~10</td><td>stream 용어 인용. 본인 맥락 적용 없음</td></tr>
+      <tr><td>5. Narrative coherence</td><td>15</td><td class="em">6~9</td><td>형식상 연결되나 cross-reference 없음</td></tr>
+      <tr><td class="em">합계</td><td>100</td><td><span class="score lo">22~35</span></td><td>"통과 못함" 기준선</td></tr>
+    </table>
+    <div class="callout drop"><b>영역2 회피는 단독으로 LLM-카피 판정 사유</b> (축3 ≤ 5점 cap). 본 시험의 1차 축을 정면 측정하는 지점이기 때문.</div>
+  </div>
+
+  <footer>LLM-only 캘리브레이션 샘플 v0.2 · 채점자 전용</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모범 답안 샘플 — ITC AIX 리포트 경진대회</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="model">
+  <div class="inner">
+    <span class="tag">채점자 전용 · 상위 기준선</span>
+    <h1>모범 답안 샘플 <span style="opacity:.85;font-size:20px;">(예상 83~93점)</span></h1>
+    <p>5축 모두 높은 점수를 받아야 하는 답안의 모습. 수치·사례는 illustrative(예시).</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="nav"><a href="index.html">← 문서 모음</a><a href="grading-guide.html">채점 가이드</a><a href="sample-llm-only.html">LLM-only 샘플</a></div>
+
+  <div class="callout drop"><b>참가자 노출 금지.</b> 미리 보여주면 그대로 베껴서 변별력이 무너집니다. 채점자는 <b>수치의 정확성</b>이 아니라 <b>수치를 가져오는 구체성·검증 가능성</b>을 평가하세요.</div>
+
+  <p class="muted">참가자(예시): 김도영 / 소속팀: DMI (Defect Metrology Inspection)</p>
+
+  <h2><span class="num">1</span>[영역 1] 반복업무 — Workflow + 로드맵</h2>
+  <div class="card">
+    <p><b>선택한 반복업무:</b> 신규 결함 패턴 근본원인 추정</p>
+    <table>
+      <tr><th>단계</th><th>빈도</th><th>AI 가능성</th><th>적용 방식</th><th>stream</th></tr>
+      <tr><td>신규 결함 근본원인 추정</td><td>월 ~12건</td><td>상</td><td>과거 판단 근거 RAG 회수 → 시니어 검증</td><td>2</td></tr>
+      <tr><td>정형 결함 분류</td><td>월 ~300건</td><td>중</td><td>Qwen3-VL 분류 + 사람 확인</td><td>2/3</td></tr>
+      <tr><td>계측 데이터 생산</td><td>주 ~5회</td><td>하</td><td>장비 종속, 자동화 여지 적음</td><td>3</td></tr>
+      <tr><td>추가 계측 요청서</td><td>월 ~20건</td><td>중</td><td>템플릿 + LLM 초안</td><td>1</td></tr>
+    </table>
+    <p><b>AIX 1순위:</b> 신규 결함 근본원인 추정. 빈도는 낮지만 한 건의 오판이 후속 의사결정 며칠을 흔들어 <b>가치 비중 압도적</b>. 정형 분류(월 300건)는 도구화 진척이 있어 한계효용 낮음.</p>
+    <div class="callout accent">기내식은 "월 300건 정형 분류가 빈도 높으니 1순위"라 답했으나, <b>빈도 ≠ 가치</b>. 본인 판단으로 저빈도·고가치 업무로 교정. (축3 흔적)</div>
+    <p><b>로드맵 — 단기:</b> 근본원인 추정의 판단 근거를 슬롯 4개(참조 패턴ID / 유사 근거 / 상이 근거 / 가설)로 in-flow capture(분석 시간 5% 미만). BGE-M3 인덱싱 → 신규 케이스 top-3 회수. <b>진척 = 캡처 ≥ 100건 & 회수율 ≥ 40%.</b><br>
+    <b>장기:</b> 회수된 판단 근거를 onboarding에 연결, 시니어→주니어 전수 시간 단축.</p>
+    <p><b>AI 적용 후 방향:</b> 반복 분류·1차 검색은 AI로, 본인은 <b>AI가 회수한 과거 판단을 의심·교정하는 검증자 + 새 가설 수립자</b>로 이동. capture 슬롯 설계·품질 관리가 새 핵심 역량.</p>
+  </div>
+
+  <h2><span class="num">2</span>[영역 2] 기내식 오답 검증 <span style="font-size:13px;color:var(--muted);font-weight:400;">(핵심)</span></h2>
+  <div class="card">
+    <h3>2-1. 기내식 답변 원문</h3>
+    <blockquote>"DMI의 결함 분석 업무는 RAG에 과거 보고서를 색인하면 자동화됩니다. 과거 분석 결론을 검색해 유사 사례의 결론을 그대로 적용하면 TAT를 크게 줄일 수 있습니다."</blockquote>
+    <h3>2-2. 무엇이 왜 잘못/불완전한가</h3>
+    <ol>
+      <li><b>"결론을 그대로 적용"이 위험.</b> 신규 결함은 기존 카테고리에 안 맞아서 신규다. 과거 결론 적용은 오분류 → 양산총괄 의사결정 오염. 회수해야 할 건 결론이 아니라 <b>판단 근거</b>다.</li>
+      <li><b>"과거 보고서 색인이면 충분"이 틀림.</b> 현재 RAG엔 완성 보고서(명시지)만 있고 슬롯형 판단 근거(암묵지)는 0. LLM은 corpus에 무엇이 <b>없는지</b>를 모른다.</li>
+    </ol>
+    <h3>2-3. 본인은 어떻게 교정했는가</h3>
+    <p>RAG 출력 단위를 결론 → <b>과거 시니어의 판단 근거 카드 3장</b>으로 재정의(human-in-the-loop 유지). 색인 대상도 보고서 → in-flow capture 슬롯으로 바꿔, "색인하면 끝"을 "<b>캡처 파이프라인을 먼저 만들어야</b> RAG가 의미 있다"로 순서를 뒤집음.</p>
+  </div>
+
+  <h2><span class="num">3</span>[메타] 핵심 프롬프트</h2>
+  <div class="card">
+    <p><b>#1</b> <code>DMI 결함 분석을 RAG로 자동화하는 가장 빠른 방법은?</code><br>
+    <span class="muted">영향: 일부러 generic하게 물어 LLM의 틀린 기본 가정(보고서 색인→결론 재사용)을 노출 → 영역2 재료.</span></p>
+    <p><b>#2</b> <code>corpus에 '판단 근거'가 아니라 '결론'만 있다면 RAG 회수가 신규 결함에 왜 위험한가?</code><br>
+    <span class="muted">영향: 내가 아는 corpus 공백으로 되물어 LLM이 위험을 스스로 인정 → 2-2 논리.</span></p>
+    <p><b>#3</b> <code>capture를 분석 시간 5% 미만으로 묶으며 4단계 판단을 담는 슬롯 설계 3개.</code><br>
+    <span class="muted">영향: 제약을 박자 자유 서술 대신 슬롯형 4개 도출. 명칭은 DMI 맥락으로 교정.</span></p>
+  </div>
+
+  <h2><span class="num">4</span>채점자 메모 — 예상 점수</h2>
+  <div class="card">
+    <table>
+      <tr><th>축</th><th>배점</th><th>점수</th><th>근거</th></tr>
+      <tr><td>1. Domain grounding</td><td>25</td><td class="em">21~23</td><td>표에 빈도 수치 4행, 저빈도·고가치 판단, stream 매핑</td></tr>
+      <tr><td>3. Critical refinement</td><td>25</td><td class="em">22~24</td><td>영역2가 실제 오답 인용 + 도메인 2점 반박 + 구조 재정의</td></tr>
+      <tr><td>4. Meta-cognition</td><td>20</td><td class="em">16~18</td><td>"오답 유도→공백 되묻기→제약 박기" 의도적</td></tr>
+      <tr><td>2. Framework application</td><td>15</td><td class="em">12~14</td><td>stream 매핑, 암묵지 순환고리 적용</td></tr>
+      <tr><td>5. Narrative coherence</td><td>15</td><td class="em">12~14</td><td>영역1 capture가 영역2 검증의 토대로 연결</td></tr>
+      <tr><td class="em">합계</td><td>100</td><td><span class="score hi">83~93</span></td><td>"1등 후보" 영역</td></tr>
+    </table>
+  </div>
+
+  <footer>모범 답안 캘리브레이션 샘플 v0.2 · 채점자 전용</footer>
+</div>
+</body>
+</html>

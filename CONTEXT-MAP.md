@@ -9,6 +9,7 @@ Skills like `/grill-with-docs`, `/diagnose`, `/tdd`, and `/improve-codebase-arch
 | Subproject | CONTEXT.md | Scope |
 | --- | --- | --- |
 | ITC AI/DT Roadmap | [ai-dt/roadmap/CONTEXT.md](ai-dt/roadmap/CONTEXT.md) | 기반기술센터(ITC) 3~4년향 AI/DT 로드맵 수립 — Biz·5 stream·암묵지 순환고리 등 도메인 언어 |
+| LLM Report Contest | [ai-dt/llm_question/codex/CONTEXT_CODEX.md](ai-dt/llm_question/codex/CONTEXT_CODEX.md) | 기내식 RAG-LLM을 활용한 45분 리포트 작성 경진대회 출제·평가 언어 |
 
 ## Adding a new context
 

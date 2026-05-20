@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>45분 LLM 리포트 경진대회 출제 노트</title>
+    <link rel="stylesheet" href="./contest-codex.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="eyebrow">LLM Question Codex</div>
+      <h1>45분 LLM 리포트 경진대회 출제 노트</h1>
+      <p>
+        기존 90분안 문서와 분리해, <strong>기내식 RAG-LLM을 활용한 45분 작성형 대회</strong>로
+        새로 정리한 출제 방향입니다.
+      </p>
+      <nav class="doc-links" aria-label="원문 문서 링크">
+        <a href="./README.md">README</a>
+        <a href="./CONTEXT_CODEX.md">CONTEXT_CODEX</a>
+        <a href="./contest-design-notes.md">설계 노트</a>
+        <a href="./open-questions.md">열린 질문</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="summary-grid" aria-label="핵심 요약">
+        <article class="summary-card">
+          <span class="label">운영 시간</span>
+          <strong>50분</strong>
+          <p>45분 작성 + 5분 제출</p>
+        </article>
+        <article class="summary-card">
+          <span class="label">주요 도구</span>
+          <strong>기내식</strong>
+          <p>사내 RAG 연결 LLM Chat</p>
+        </article>
+        <article class="summary-card">
+          <span class="label">평가 중심</span>
+          <strong>LLM 활용 능력</strong>
+          <p>LLM 답을 본인 업무 맥락으로 완성</p>
+        </article>
+        <article class="summary-card">
+          <span class="label">증거 제출</span>
+          <strong>핵심 프롬프트 2~3개</strong>
+          <p>사용 이유, 반영, 수정 내용을 함께 제출</p>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <span class="section-kicker">Core Thesis</span>
+          <h2>대회가 실제로 평가해야 하는 것</h2>
+        </div>
+        <div class="thesis-box">
+          <p>
+            이 대회는 LLM 없이 혼자 도메인 지식을 쓰는 시험이 아닙니다.
+            참가자가 <strong>LLM을 활용해 구조를 만들고, 본인 업무 경험으로 구체화·수정·보완해
+            제출 가능한 리포트로 완성하는 능력</strong>을 평가합니다.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <span class="section-kicker">Answer Structure</span>
+          <h2>45분 답안은 3개 파트로 압축</h2>
+        </div>
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="step-number">1</div>
+            <div>
+              <h3>내 업무 Workflow 분해</h3>
+              <p>
+                본인 전체 직무 중 반복적으로 수행하는 업무 1개를 선택해 단계별로 쪼개고,
+                각 단계의 입력·판단·산출물을 드러냅니다.
+              </p>
+            </div>
+          </article>
+          <article class="timeline-item">
+            <div class="step-number">2</div>
+            <div>
+              <h3>AI 적용 지점과 적용 방식</h3>
+              <p>
+                Workflow 중 AIX 적용 가능 지점을 고르고, LLM이 도울 일, RAG가 필요한 일,
+                사람이 반드시 판단할 일을 구분합니다.
+              </p>
+            </div>
+          </article>
+          <article class="timeline-item">
+            <div class="step-number">3</div>
+            <div>
+              <h3>역할 변화와 조직 관리</h3>
+              <p>
+                AI 적용 이후 본인이 더 집중해야 할 일, 예상되는 조직 변화,
+                성과 관리 방안과 AI 활용 능력 고과 반영에 대한 짧은 입장을 정리합니다.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section split">
+        <article>
+          <div class="section-heading">
+            <span class="section-kicker">Prompt Evidence</span>
+            <h2>LLM 활용 흔적 제출 형식</h2>
+          </div>
+          <p>
+            전체 채팅 로그는 받지 않습니다. 대신 최종 리포트에 중요하게 작용한 핵심 프롬프트 2~3개만
+            선별해, 리포트와의 연결을 쓰게 합니다.
+          </p>
+          <ol class="clean-list">
+            <li>프롬프트 원문</li>
+            <li>이 프롬프트를 사용한 이유</li>
+            <li>LLM 답변 중 최종 리포트에 반영한 내용</li>
+            <li>본인이 수정·보완·반박한 내용</li>
+          </ol>
+        </article>
+
+        <article class="quote-panel">
+          <h2>추천 문항 초안</h2>
+          <p>
+            본인 전체 직무 중 반복적으로 수행하는 업무 1개를 선택하시오.
+            그 업무를 단계별 Workflow로 분해하고, 각 단계에서 AI가 도울 수 있는 지점과
+            사람이 반드시 판단해야 하는 지점을 구분하시오.
+          </p>
+          <p>
+            이후 AIX 적용 로드맵과 도입 이후 본인의 역할 변화, 조직 관리 방안을 작성하시오.
+            마지막으로 최종 리포트 작성에 중요하게 작용한 핵심 프롬프트 2~3개를 제출하고,
+            각 프롬프트가 최종 답안에 어떤 영향을 주었는지 설명하시오.
+          </p>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <span class="section-kicker">Open Questions</span>
+          <h2>다음에 결정할 것</h2>
+        </div>
+        <div class="question-grid">
+          <article>
+            <h3>Q4. 업무 범위</h3>
+            <p>본인 전체 직무 중 반복적으로 수행하는 업무 1개를 선택한다.</p>
+            <strong>해결: 반복업무 1개</strong>
+          </article>
+          <article>
+            <h3>Q5. 채점 축</h3>
+            <p>Workflow 구체성, AI 적용 타당성, LLM 활용 흔적, 본인 보완, 리포트 완성도.</p>
+          </article>
+          <article>
+            <h3>Q6. 허용 도구</h3>
+            <p>기내식만 허용할지, 개인 메모·인터넷·사내 자료 검색까지 허용할지 결정 필요.</p>
+          </article>
+          <article>
+            <h3>Q7. 제출 형식</h3>
+            <p>Markdown 고정 추천. 구조화된 답안과 핵심 프롬프트 섹션을 강제하기 쉽다.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
