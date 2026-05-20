@@ -246,13 +246,20 @@
     <h2><span class="num">4</span>채점 기준 <span class="muted" style="font-size:14px;font-weight:400;">(총 100점)</span></h2>
     <div class="card">
       <table>
-        <tr><th>축</th><th>배점</th><th>평가 대상</th></tr>
-        <tr><td class="em">1. Domain grounding</td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치가 박혀있는가</td></tr>
-        <tr><td class="em">3. Critical refinement</td><td><b>25</b></td><td>LLM의 답을 도메인 지식으로 검토·보완·교정한 흔적 (영역2 중심)</td></tr>
-        <tr><td class="em">4. Meta-cognition</td><td><b>20</b></td><td>핵심 프롬프트 3개의 선택과 반영·수정 설명</td></tr>
-        <tr><td class="em">2. Framework application</td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier 거버넌스를 본인 맥락에 적용 (용어 나열 ✕)</td></tr>
-        <tr><td class="em">5. Narrative coherence</td><td><b>15</b></td><td>영역1·2가 하나의 흐름으로 묶이는가</td></tr>
+        <tr><th>채점 축</th><th>배점</th><th>무엇을 보나</th></tr>
+        <tr><td class="em">1. 도메인 근거<br><span class="muted" style="font-weight:400;">Domain grounding</span></td><td><b>25</b></td><td>본인 업무의 <b>구체적인 사례·수치</b>가 실제로 담겨 있는가. 일반론·남의 얘기면 감점됩니다.</td></tr>
+        <tr><td class="em">3. 비판적 보완·교정<br><span class="muted" style="font-weight:400;">Critical refinement</span></td><td><b>25</b></td><td>기내식의 답을 본인 도메인 지식으로 검토해 <b>더 낫게 다듬었는가</b> (영역2의 핵심).</td></tr>
+        <tr><td class="em">4. 메타인지<br><span class="muted" style="font-weight:400;">Meta-cognition</span></td><td><b>20</b></td><td>핵심 프롬프트 3개를 <b>왜 골랐고, 무엇을 반영·수정했는지</b> 스스로 설명했는가.</td></tr>
+        <tr><td class="em">2. 프레임워크 적용<br><span class="muted" style="font-weight:400;">Framework application</span></td><td><b>15</b></td><td>ITC 공통 개념(아래 용어 풀이 참고)을 본인 업무에 <b>실제로 적용</b>했는가. 용어만 나열하면 점수 ✕.</td></tr>
+        <tr><td class="em">5. 서술 일관성<br><span class="muted" style="font-weight:400;">Narrative coherence</span></td><td><b>15</b></td><td>영역1과 2가 따로 놀지 않고 <b>하나의 이야기로 이어지는가</b>.</td></tr>
       </table>
+      <div class="callout accent"><b>용어 풀이</b> (축2에 나오는 ITC 공통 개념)
+        <ul style="margin:8px 0 0;">
+          <li><b>5 stream</b> — ITC 업무를 5가지 흐름으로 본 분류입니다: ① 의뢰 대응 · ② 분석 · ③ 데이터 생산 · ④ 장비 운영 관리 · ⑤ 장비 안정성 모니터링.</li>
+          <li><b>암묵지 순환고리</b> — 일하면서 판단 근거를 자동으로 남기고(capture) → 정리·인덱싱 → 다음 업무에서 RAG로 활용 → 그 결과가 다시 쌓이는 <b>순환</b> 구조입니다.</li>
+          <li><b>3-tier 거버넌스</b> — AIX 추진을 3계층으로 나눈 것입니다: ① 전사 AIX TF(공통 인프라·LLM 제공) · ② ITC AX Part(기획·중개) · ③ 각 팀 AI 실행 TF.</li>
+        </ul>
+      </div>
       <div class="callout ok"><b>형평성 원칙:</b> AI 적용이 어려운 업무라면, <b>왜 어려운지를 도메인 근거로 정확히 분석</b>하는 것 자체가 만점 답안입니다. 무리하게 AI를 갖다붙인 generic 로드맵은 오히려 감점됩니다.</div>
       <div class="callout accent"><b>수치 부담 갖지 마세요:</b> 축1의 "구체성"은 <b>정확한 숫자</b>가 아니라 <b>규모 감각</b>입니다. "월 ~10건대", "TAT 절반", "인력 한 자릿수"처럼 <b>대략·범위·상대값</b>으로 써도 점수는 동일합니다. (민감 수치는 오히려 범위로 쓰는 걸 권장) 단, 수치를 적을 땐 <b>어떻게 산출했는지(근거)</b>를 한 줄 덧붙이세요 — 근거 있는 대략값이 근거 없는 정밀 수치보다 높게 평가됩니다.</div>
     </div>
@@ -385,11 +392,11 @@
     <div class="card">
       <table>
         <tr><th>축</th><th>배점</th><th>평가 대상</th><th>채점 단서</th></tr>
-        <tr><td class="em">1. Domain grounding</td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치</td><td>장비명·시스템명 + 빈도/규모. 수치는 <b>대략·범위값</b>("월 ~10건대", "TAT 절반")도 동일 인정</td></tr>
-        <tr><td class="em">3. Critical refinement</td><td><b>25</b></td><td>LLM 답을 도메인 지식으로 검토·보완·교정 (영역2 중심)</td><td>"기내식은 X였으나 본인은 Y" 또는 "기내식이 빠뜨린 Z를 보강"</td></tr>
-        <tr><td class="em">4. Meta-cognition</td><td><b>20</b></td><td>핵심 프롬프트 3개의 반영·수정 설명</td><td>단발 명령 vs 결정적 reframing</td></tr>
-        <tr><td class="em">2. Framework application</td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier를 본인 맥락에 적용</td><td>용어 나열은 가산점 ✕</td></tr>
-        <tr><td class="em">5. Narrative coherence</td><td><b>15</b></td><td>영역1↔2가 한 흐름으로 묶임</td><td>cross-reference</td></tr>
+        <tr><td class="em">1. 도메인 근거<br><span class="muted" style="font-weight:400;">Domain grounding</span></td><td><b>25</b></td><td>본인 업무의 구체적·검증 가능한 사례·수치</td><td>장비명·시스템명 + 빈도/규모. 수치는 <b>대략·범위값</b>("월 ~10건대", "TAT 절반")도 동일 인정</td></tr>
+        <tr><td class="em">3. 비판적 보완·교정<br><span class="muted" style="font-weight:400;">Critical refinement</span></td><td><b>25</b></td><td>LLM 답을 도메인 지식으로 검토·보완·교정 (영역2 중심)</td><td>"기내식은 X였으나 본인은 Y" 또는 "기내식이 빠뜨린 Z를 보강"</td></tr>
+        <tr><td class="em">4. 메타인지<br><span class="muted" style="font-weight:400;">Meta-cognition</span></td><td><b>20</b></td><td>핵심 프롬프트 3개의 반영·수정 설명</td><td>단발 명령 vs 결정적 reframing</td></tr>
+        <tr><td class="em">2. 프레임워크 적용<br><span class="muted" style="font-weight:400;">Framework application</span></td><td><b>15</b></td><td>5 stream / 암묵지 순환고리 / 3-tier를 본인 맥락에 적용</td><td>용어 나열은 가산점 ✕</td></tr>
+        <tr><td class="em">5. 서술 일관성<br><span class="muted" style="font-weight:400;">Narrative coherence</span></td><td><b>15</b></td><td>영역1↔2가 한 흐름으로 묶임</td><td>cross-reference</td></tr>
       </table>
     </div>
 
