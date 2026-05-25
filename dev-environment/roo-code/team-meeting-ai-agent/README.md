@@ -16,6 +16,8 @@
 ## 파일 구성
 
 - [slides.md](./slides.md): 본편 10장 슬라이드별 원고
+- [ppt-agent-brief.md](./ppt-agent-brief.md): PPT Agent에 그대로 복사할 제작 요청서
+- [ppt-agent-appendix-brief.md](./ppt-agent-appendix-brief.md): 부록 PPT를 별도로 만들기 위한 제작 요청서
 - [appendix.md](./appendix.md): 발표 후 공유용 부록
 - [work-note-template.md](./work-note-template.md): Roo Code에 넣기 전 텍스트 작업 메모 템플릿
 
