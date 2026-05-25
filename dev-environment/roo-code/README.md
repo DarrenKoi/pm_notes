@@ -45,6 +45,8 @@
   - 4주 학습/실습 플랜
 - `06_skills_commands_and_sharing.md`
   - Skills, Commands, Rules 상세 포맷 및 팀 공유 전략
+- `team-meeting-ai-agent/`
+  - 기획/운영/관리자 대상 10분 발표용 AI Agent + Roo Code 소개 자료
 
 ## 먼저 이렇게 시작
 
