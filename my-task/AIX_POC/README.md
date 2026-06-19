@@ -6,8 +6,10 @@
 
 | 문서 | 설명 |
 |------|------|
-| [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md) | Why/What/How — 3대 원칙, 4 Step, 12-Step, 과제 선정·연계 절차 |
-| [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review |
+| [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md) | **[틀]** Why/What/How — 3대 원칙, 4 Step, 12-Step, 과제 선정·연계 절차 |
+| [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | **[틀]** AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review |
+| [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md) | **[적용]** CD-SEM Recipe Creation 자동화 — Track A Discovery (VLM GUI-제어) |
+| `04-적용_CDSEM기술.md` | **[적용]** _(예정)_ CD-SEM To-Be 설계·구현 — Track B |
 | [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription) |
 | [`screenshots/`](./screenshots/) | 원본 이미지 (`.jpg`는 git 미추적) |
 
