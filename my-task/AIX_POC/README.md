@@ -10,6 +10,7 @@
 | [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | **[틀]** AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review |
 | [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md) | **[적용]** CD-SEM Recipe Creation 자동화 — Track A Discovery (VLM GUI-제어) |
 | [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) | **[적용]** CD-SEM To-Be 설계·구현 — Track B (과제 정의서·Swimlane·KSF·제약) |
+| [05-적용_CDSEM_PoC실험설계.md](./05-적용_CDSEM_PoC실험설계.md) | **[적용]** KSF#1 좌표 재정합 정확도 PoC 실험 설계 (04 Phase 0 검증) |
 | [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription) |
 | [`screenshots/`](./screenshots/) | 원본 이미지 (`.jpg`는 git 미추적) |
 
