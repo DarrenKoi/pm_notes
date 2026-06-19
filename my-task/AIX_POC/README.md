@@ -8,9 +8,11 @@
 |------|------|
 | [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md) | **[틀]** Why/What/How — 3대 원칙, 4 Step, 12-Step, 과제 선정·연계 절차 |
 | [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | **[틀]** AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review |
-| [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md) | **[적용]** CD-SEM Recipe Creation 자동화 — Track A Discovery (VLM GUI-제어) |
+| [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md) | **[적용]** CD-SEM Recipe Creation 자동화 — Track A Discovery: End-to-End SOP·망라 Pain·정량 우선순위 선정 (VLM GUI-제어) |
 | [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) | **[적용]** CD-SEM To-Be 설계·구현 — Track B (과제 정의서·Swimlane·KSF·제약) |
 | [05-적용_CDSEM_PoC실험설계.md](./05-적용_CDSEM_PoC실험설계.md) | **[적용]** KSF#1 좌표 재정합 정확도 PoC 실험 설계 (04 Phase 0 검증) |
+| [06-적용_CDSEM_DesignCamp장표.md](./06-적용_CDSEM_DesignCamp장표.md) | **[발표]** 03~05를 캠프 12-Step 템플릿 장표로 채운 발표 슬라이드 세트(장표 0~14: SOP→Pain→정량선정→Track B + 발표 스크립트) |
+| `06-적용_CDSEM_DesignCamp장표.pptx` | **[발표]** 위 장표를 변환한 편집 가능한 PPTX(네이티브 표·발표자 노트). 생성: `python tools/md2pptx.py <md> <pptx>` |
 | [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription) |
 | [`screenshots/`](./screenshots/) | 원본 이미지 (`.jpg`는 git 미추적) |
 
