@@ -8,6 +8,8 @@ type: 적용사례-기술
 # AIX 적용 사례 — CD-SEM Recipe Creation 자동화 (기술/To-Be 설계)
 
 > [기술 방법론 틀(02)](./02-기술문서_AI과제정의구현.md)을 ITC AIX 실제 과제에 적용한 **두 번째 사례**. [03 기획(Discovery)](./03-적용_CDSEM기획.md)에서 발굴·구조화한 **CD-SEM Recipe Creation 자동화** 과제를, New AI Design Camp Track B(실행 구체화, 8~12단계) — AI 과제 정의서 · To-Be Swimlane · KSF/제약 — 로 구체화한다.
+>
+> 📂 **단계별 상세 산출물**: 과제 정의·As-Is·To-Be·KSF·개발일정을 각각 독립 산출물로 분리·구체화한 실행기획 세트는 [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) 참조.
 
 ## 왜 필요한가? (Why)
 

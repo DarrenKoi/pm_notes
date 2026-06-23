@@ -8,6 +8,8 @@ type: 적용사례-기획
 # AIX 적용 사례 — CD-SEM Recipe Creation 자동화 (기획/Discovery)
 
 > [기획 방법론 틀(01)](./01-기획문서_AX서비스기획.md)을 ITC AIX 실제 과제에 적용한 **첫 번째 사례**. New AI Design Camp Track A(Discovery, 1~7단계)를 따라 **CD-SEM Recipe Creation 자동화** 과제를 발굴·구조화한다. 실행/To-Be 설계(Track B)는 후속 문서 `04-적용_CDSEM기술.md`에서 다룬다.
+>
+> 📂 **단계별 상세 산출물**: 본 문서를 단계별로 분리·구체화하고 Validation·Execution까지 채운 실행기획 세트는 [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) 참조.
 
 ## 과제 한 줄 정의
 
