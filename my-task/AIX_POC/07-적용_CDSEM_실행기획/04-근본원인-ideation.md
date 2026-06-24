@@ -105,5 +105,5 @@ type: 적용사례-실행기획
 ### 참고
 - 방법론 양식: [원문 08 — 최종 산출물 예시(Pain Point → 근본 원인 → 해결 아이디어)](../source/08-final-output-example.md)
 - 상위 내러티브: [03-적용_CDSEM기획.md](../03-적용_CDSEM기획.md) Phase 3 (근본원인 3-Why) · Phase 4 (정량 우선순위·남는 리스크)
-- 작성 기준: [SPEC.md](./SPEC.md) §0·§2·§3(04-근본원인-ideation.md)
+- 작성 기준: [SPEC.md](./_internal/SPEC.md) §0·§2·§3(04-근본원인-ideation.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24). 회사 기밀(구체 장비 수치·시스템 상세) 제외, 미확정 수치는 placeholder(τ/r).
