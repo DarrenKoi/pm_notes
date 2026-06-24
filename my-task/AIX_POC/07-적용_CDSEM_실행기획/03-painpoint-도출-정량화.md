@@ -5,7 +5,7 @@ last_updated: 2026-06-24
 type: 적용사례-실행기획
 ---
 
-# Step4 — Pain Point 도출 및 정량화 (Discovery)
+# 03 · Pain Point 도출 및 정량화 (Step4 / Discovery)
 
 > 대상 L3(Recipe Creation)을 As-Is 셋업 스텝(L4 ①~⑦)으로 분해하고, 각 L4 활동의 Pain Point를 빠짐없이 깐 뒤, **빈도·심각성·주요성 3축으로 정량화**해 우선순위를 매긴다. 정량 컬럼은 뒤이은 과제 적정성 검토(#05)와 기대효과 산정(#10)의 백데이터가 된다.
 
