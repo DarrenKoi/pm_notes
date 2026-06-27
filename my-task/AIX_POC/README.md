@@ -14,6 +14,8 @@
 | [06-적용_CDSEM_DesignCamp장표.md](./06-적용_CDSEM_DesignCamp장표.md) | **[발표]** 03~05를 캠프 12-Step 템플릿 장표로 채운 발표 슬라이드 세트(장표 0~14: SOP→Pain→정량선정→Track B + 발표 스크립트) |
 | `06-적용_CDSEM_DesignCamp장표.pptx` | **[발표]** 위 장표를 변환한 편집 가능한 PPTX(네이티브 표·발표자 노트). 생성: `python tools/md2pptx.py <md> <pptx>` |
 | [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) | **[적용·상세]** 03/04를 **단계별 산출물 11개로 분리·구체화**한 실행기획 세트 (전략일관성→…→KSF→개발일정→Review). Validation·Execution 포함, 내년 실행 가능 깊이 |
+| `07-적용_CDSEM_실행기획_세트.pptx` | **[발표·상세]** 위 07 세트 11단계를 단계별 슬라이드(STEP 디바이더 + Why/What/How + 네이티브 표)로 변환한 편집 가능 PPTX(76장). 생성: `python tools/md2pptx_doc.py <out.pptx>` (입력 생략 시 07 폴더 자동 수집) |
+| [07-적용_CDSEM_실행기획_발표요약.md](./07-적용_CDSEM_실행기획_발표요약.md) / `.pptx` | **[발표·요약]** 11단계를 **단계당 1장**으로 압축한 발표용 세트(14장, 대표 산출물 + 발표 노트). 생성: `python tools/md2pptx.py 07-적용_CDSEM_실행기획_발표요약.md <out.pptx>` |
 | [`00-템플릿_AI과제발굴/`](./00-템플릿_AI과제발굴/00-README.md) | **[템플릿]** 위 11단계를 **도메인 중립 빈 양식 + 퍼실리테이션 가이드**로 만든 컨설턴트 키트. 다른 조직 AI 과제 발굴 워크숍에 그대로 적용 |
 | [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription) |
 
