@@ -1,24 +1,25 @@
-# AIX POC — AX 서비스 기획 방법론
+# AIX POC — AX 서비스 기획 방법론 + 부문 프로젝트
 
-> SK Hynix "New AI Design Camp" 교육자료(2026-06-11) 캡처 10장을 전사·정리하고, 우리 부문 AIX POC 추진을 위한 기획/기술 문서로 재구성한 저장소.
+> SK Hynix "New AI Design Camp" 방법론을 **표준**으로 고정하고, 그 위에 부문 AIX 과제를 **프로젝트 폴더 단위**로 쌓는 저장소.
 
-## 📂 구성
+## 📂 구성 (3축)
 
-| 문서 | 설명 |
-|------|------|
-| [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md) | **[틀]** Why/What/How — 3대 원칙, 4 Step, 12-Step, 후보 선정 6기준, Pain/근본원인 6유형, **적정성 7항목 스코어카드**, **Validation(ROI/NPV)·Execution(PoC→전사확산·변화관리)** |
-| [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | **[틀]** AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review · **Process Decomposition/Map/SOP↔LLM 매핑** · Modeling Rule(IOCM) · 적용 AI 기술 분류 · 일정 LLM/ML-DL 트랙 |
-| [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md) | **[적용]** CD-SEM Auto Recipe Creation — Track A Discovery: End-to-End SOP·망라 Pain·정량 우선순위 선정 (VLM GUI-제어, 1차 PoC = Align fail 대응 자동화 = Smart Align Agent) |
-| [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) | **[적용]** CD-SEM To-Be 설계·구현 — Track B (과제 정의서·Swimlane·KSF·제약) |
-| [05-적용_CDSEM_PoC실험설계.md](./05-적용_CDSEM_PoC실험설계.md) | **[적용]** KSF#1 좌표 재정합 정확도 PoC 실험 설계 (04 Phase 0 검증) |
-| [06-적용_CDSEM_DesignCamp장표.md](./06-적용_CDSEM_DesignCamp장표.md) | **[발표]** 03~05를 캠프 12-Step 템플릿 장표로 채운 발표 슬라이드 세트(장표 0~14: SOP→Pain→정량선정→Track B + 발표 스크립트) |
-| `06-적용_CDSEM_DesignCamp장표.pptx` | **[발표]** 위 장표를 변환한 편집 가능한 PPTX(네이티브 표·발표자 노트). 생성: `python tools/md2pptx.py <md> <pptx>` |
-| [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) | **[적용·상세]** 03/04를 **단계별 산출물 11개로 분리·구체화**한 실행기획 세트 (전략일관성→…→KSF→개발일정→Review). Validation·Execution 포함, 내년 실행 가능 깊이 |
-| `07-적용_CDSEM_실행기획_세트.pptx` | **[발표·상세]** 위 07 세트 11단계를 단계별 슬라이드(STEP 디바이더 + Why/What/How + 네이티브 표)로 변환한 편집 가능 PPTX(76장). 생성: `python tools/md2pptx_doc.py <out.pptx>` (입력 생략 시 07 폴더 자동 수집) |
-| [07-적용_CDSEM_실행기획_발표요약.md](./07-적용_CDSEM_실행기획_발표요약.md) / `.pptx` | **[발표·요약]** 11단계를 **단계당 1장**으로 압축한 발표용 세트(14장, 대표 산출물 + 발표 노트). 생성: `python tools/md2pptx.py 07-적용_CDSEM_실행기획_발표요약.md <out.pptx>` |
-| [`00-템플릿_AI과제발굴/`](./00-템플릿_AI과제발굴/00-README.md) | **[템플릿]** 위 11단계를 **도메인 중립 빈 양식 + 퍼실리테이션 가이드**로 만든 컨설턴트 키트. 다른 조직 AI 과제 발굴 워크숍에 그대로 적용 |
-| [`lectures/`](./lectures/README.md) | **[출처·완본]** New AI Design Camp **V2.7 배포 강의 덱**(PDF 136p) + 편집 Template(PPTX 25장). 틀 문서의 Validation·Execution·적정성·기술 분류 보강의 1차 근거 |
-| [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription, 초기본) |
+| 폴더 | 축 | 설명 |
+|------|----|------|
+| [`lectures/`](./lectures/README.md) | **표준** | New AI Design Camp **V2.7 완본 강의 덱**(`design-camp-deck-v2.7.md`) + 편집 Template(`design-camp-template-v2.7.md`) + [`captures/`](./lectures/captures/)(초기 캡처 10장 전사). **팀을 가이드하는 기준점** — 모든 틀·적용 문서의 1차 근거. |
+| [`_가이드/`](./_가이드/) | **가이드** | 재사용 방법론 틀: [`01-기획문서_AX서비스기획.md`](./_가이드/01-기획문서_AX서비스기획.md)(Why/What/How · 4 Step · 12-Step Track A · 적정성 스코어카드 · Validation/Execution) · [`02-기술문서_AI과제정의구현.md`](./_가이드/02-기술문서_AI과제정의구현.md)(과제 정의서 · To-Be Swimlane · KSF/제약 · Modeling Rule · 일정 트랙) · [`00-템플릿_AI과제발굴/`](./_가이드/00-템플릿_AI과제발굴/00-README.md)(도메인 중립 빈 양식 + 퍼실리테이션 키트). |
+| [`프로젝트_smart_align_agent/`](./프로젝트_smart_align_agent/README.md) | **프로젝트** | **Smart Align Agent** — CD-SEM Auto Recipe Creation 중 1차 PoC(**Align Fail 대응 자동화**). Discovery(03)·기술 To-Be(04)·PoC 실험설계(05)·실행기획 11단계 세트(07)·발표물. |
+| `tools/` | — | 마크다운 → PPTX 변환기(`md2pptx.py`, `md2pptx_doc.py`). |
+
+## 🧩 프로젝트 폴더 컨벤션
+
+앞으로 신규 AIX 과제는 **`프로젝트_<이름>/` 폴더**로 추가한다.
+
+1. `lectures/`(표준)와 `_가이드/01·02`(틀)를 먼저 읽고,
+2. 틀의 섹션 구조(Why→What→How, 산출물 체크리스트)를 **거울처럼 미러링**해 실제 값으로 채운다.
+3. 폴더 안에 `README.md`(프로젝트 인덱스)를 두어 문서 목록·읽는 순서를 안내한다.
+
+> 표준(`lectures`)·틀(`_가이드`)은 모든 프로젝트가 공유하고, 과제별 내용은 각 `프로젝트_*/` 안에만 둔다 — 경계를 섞지 않는다.
 
 ## 🧭 핵심 흐름 한눈에
 
@@ -34,20 +35,22 @@ Baseline 3원칙 (가치·데이터·인간 중심)
 산출물: 과제 정의서 · To-Be Swimlane(AI/Human) · Pain→근본원인→해결아이디어
 ```
 
-## 📑 원문 인덱스 (source/)
+## 📑 원문 인덱스 (lectures/captures/)
 
 | # | 파일 | 내용 |
 |---|------|------|
-| 01 | [kakao-3step-pain-point](./source/01-kakao-3step-pain-point.md) | SOP→Pain Point→과제 선정 3-STEP |
-| 02 | [ax-consulting-methodology](./source/02-ax-consulting-methodology.md) | Baseline 3원칙 + 4 Step |
-| 03 | [design-camp-12steps](./source/03-design-camp-12steps.md) | Design Camp 12단계 |
-| 04 | [org-goal-task-linkage](./source/04-org-goal-task-linkage.md) | 조직목표↔과제 연계 예시 |
-| 05 | [process-level-definition](./source/05-process-level-definition.md) | L1~L5 프로세스 레벨 정의(영업) |
-| 06 | [sales-ai-opportunity](./source/06-sales-ai-opportunity.md) | 영업 AI 적용 기회(Agent#1~4) |
-| 07 | [ai-agent-scope-template](./source/07-ai-agent-scope-template.md) | AI Agent 대상영역 분석 Template |
-| 08 | [final-output-example](./source/08-final-output-example.md) | Pain Point→근본원인→해결아이디어 |
-| 09 | [ai-task-definition-template](./source/09-ai-task-definition-template.md) | AI 과제 정의서 양식 |
-| 10 | [check-and-review](./source/10-check-and-review.md) | To-Be 용어 정의 & 점검 포인트 |
+| 01 | [kakao-3step-pain-point](./lectures/captures/01-kakao-3step-pain-point.md) | SOP→Pain Point→과제 선정 3-STEP |
+| 02 | [ax-consulting-methodology](./lectures/captures/02-ax-consulting-methodology.md) | Baseline 3원칙 + 4 Step |
+| 03 | [design-camp-12steps](./lectures/captures/03-design-camp-12steps.md) | Design Camp 12단계 |
+| 04 | [org-goal-task-linkage](./lectures/captures/04-org-goal-task-linkage.md) | 조직목표↔과제 연계 예시 |
+| 05 | [process-level-definition](./lectures/captures/05-process-level-definition.md) | L1~L5 프로세스 레벨 정의(영업) |
+| 06 | [sales-ai-opportunity](./lectures/captures/06-sales-ai-opportunity.md) | 영업 AI 적용 기회(Agent#1~4) |
+| 07 | [ai-agent-scope-template](./lectures/captures/07-ai-agent-scope-template.md) | AI Agent 대상영역 분석 Template |
+| 08 | [final-output-example](./lectures/captures/08-final-output-example.md) | Pain Point→근본원인→해결아이디어 |
+| 09 | [ai-task-definition-template](./lectures/captures/09-ai-task-definition-template.md) | AI 과제 정의서 양식 |
+| 10 | [check-and-review](./lectures/captures/10-check-and-review.md) | To-Be 용어 정의 & 점검 포인트 |
+
+> 완본 강의 덱은 [`lectures/`](./lectures/README.md) 참조. `captures/`는 초기 캡처본이며 `lectures/`가 상위·완본 출처다.
 
 ---
 *출처: SK Hynix New AI Design Camp 내부 교육자료. 회사 기밀에 해당하는 구체 수치·시스템 상세는 제외하고 방법론 골격만 정리함.*
