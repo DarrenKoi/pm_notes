@@ -1,7 +1,7 @@
 ---
 tags: [aix, cd-sem, auto-recipe-creation, vlm, design-camp, presentation, 발표요약, itc]
 level: intermediate
-last_updated: 2026-06-29
+last_updated: 2026-06-30
 type: 적용사례-발표요약
 ---
 
@@ -61,7 +61,7 @@ Discovery (기회 발굴)            Design (실행 구체화)         Execution
 |---|---|---|---|
 | **R&D 디바이스 개발 지연 최소화** | ① 검/계측 효율화<br>② 장비 운영/관리 최적화<br>③ 장비 개발·도입 | ① MI Recipe Solution 제공<br>② 측정 장비 간 Skew Zero<br>③ MI 장비 가동률 극대화<br>④ 장비 개발·도입 및 양산 이관 | **Auto Recipe Creation**<br>(1차 PoC = Align fail 대응 자동화) |
 
-> **판정**: L3 과제(Auto Recipe Creation)가 핵심업무 ①~③→L1→L0로 끊김 없이 거슬러 올라감 → **전략적으로 정합**. 후보 과제는 하나이며, **하나의 VLM Agent**(②~⑥ 연속)가 수행하되 ⑥(Align fail 대응 자동화)을 1차 PoC로 둔다. (핵심업무 ④ 장비 개발·양산 이관은 업무 목표 ③ 추적용으로 ARC 범위 밖.)
+> **판정**: L3 과제(Auto Recipe Creation)가 핵심업무 ①~③→L1→L0로 끊김 없이 거슬러 올라감 → **전략적으로 정합**. 후보 과제는 하나이며, **하나의 VLM Agent**(②~⑥ 연속)가 수행하되 ⑥(Align fail 대응 자동화 = Smart Align Agent)을 1차 PoC로 둔다. (핵심업무 ④ 장비 개발·양산 이관은 업무 목표 ③ 추적용으로 ARC 범위 밖.)
 
 > 🎤 **발표 스크립트**
 > "첫 단계는 추적성입니다. 이 과제는 'R&D 디바이스 개발 지연 최소화'라는 조직 목표에서 연역됐고, 일관 기준(Skew Zero)과 24h 무중단(가동률↑)으로 장비 운영/관리·검계측을 최적화합니다."

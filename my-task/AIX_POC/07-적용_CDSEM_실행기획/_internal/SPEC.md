@@ -4,7 +4,7 @@
 
 ## 0. 잠근 결정 (변경 금지)
 
-- **대상 과제(고정)**: **CD-SEM Auto Recipe Creation** (VLM GUI-제어/computer-use 기반). VLM이 SEM 화면을 보며 GUI를 직접 클릭/입력해 Recipe를 생성하고, 실측 시작 시 **좌표 shift·align 실패·패턴 오인식을 실시간 재정합·수정**(1차 PoC = Align fail 대응 자동화 = ⑥). 엔지니어는 예외만 개입(Human-in-the-loop). 완전자동화 아님.
+- **대상 과제(고정)**: **CD-SEM Auto Recipe Creation** (VLM GUI-제어/computer-use 기반). VLM이 SEM 화면을 보며 GUI를 직접 클릭/입력해 Recipe를 생성하고, 실측 시작 시 **좌표 shift·align 실패·패턴 오인식을 실시간 재정합·수정**(1차 PoC = Align fail 대응 자동화 = ⑥, 이하 **Smart Align Agent**). 엔지니어는 예외만 개입(Human-in-the-loop). 완전자동화 아님.
 - **구조**: 폴더 방식. `07-적용_CDSEM_실행기획/` 안에 11개 산출물(01~11) + 00-README 인덱스 + SPEC.
 - **깊이**: 내년(2027) 실행 가능 기획. Validation은 **#05에 흡수**, Execution은 **#10에 흡수**.
 - **기존 03~06**: 손대지 않고 요약/내러티브층으로 유지. 새 폴더가 상세층. 중복 대신 03/04를 인용·링크.

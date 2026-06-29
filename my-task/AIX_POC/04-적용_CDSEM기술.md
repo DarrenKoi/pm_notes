@@ -1,7 +1,7 @@
 ---
 tags: [aix, cd-sem, auto-recipe-creation, vlm, computer-use, to-be-process, ksf, itc]
 level: intermediate
-last_updated: 2026-06-29
+last_updated: 2026-06-30
 type: 적용사례-기술
 ---
 
@@ -67,6 +67,8 @@ type: 적용사례-기술
 │                  · 24h 무중단 → MI 장비 가동률↑                      │
 └──────────────────────────────────────────────────────────────────────┘
 ```
+
+> **명칭** — 위 1차 PoC(Align fail 대응 자동화 = ⑥+③④)를 **Smart Align Agent**로 명명한다. 과제명 `Auto Recipe Creation`(②~⑥ 전체)의 1차 PoC 범위에 붙는 Agent 이름이며, 과제명 자체를 대체하지 않는다.
 
 ### Step 9~10. As-Is → To-Be 프로세스 (Swimlane)
 

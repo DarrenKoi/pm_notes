@@ -1,7 +1,7 @@
 ---
 tags: [aix, cd-sem, auto-recipe-creation, vlm, design-camp, presentation, 장표, itc]
 level: intermediate
-last_updated: 2026-06-29
+last_updated: 2026-06-30
 type: 적용사례-발표장표
 ---
 
@@ -43,7 +43,7 @@ type: 적용사례-발표장표
 
 # **CD-SEM Auto Recipe Creation** (VLM GUI-제어 기반)
 
-> 실측 좌표 재정합·오인식 수정(1차 PoC = Align fail 대응 자동화)을 AI가 수행하고, 엔지니어는 예외만 개입한다 (Human-in-the-loop)
+> 실측 좌표 재정합·오인식 수정(1차 PoC = Align fail 대응 자동화 = **Smart Align Agent**)을 AI가 수행하고, 엔지니어는 예외만 개입한다 (Human-in-the-loop)
 
 | | |
 |---|---|
