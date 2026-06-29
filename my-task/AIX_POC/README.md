@@ -6,8 +6,8 @@
 
 | 문서 | 설명 |
 |------|------|
-| [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md) | **[틀]** Why/What/How — 3대 원칙, 4 Step, 12-Step, 과제 선정·연계 절차 |
-| [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | **[틀]** AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review |
+| [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md) | **[틀]** Why/What/How — 3대 원칙, 4 Step, 12-Step, 후보 선정 6기준, Pain/근본원인 6유형, **적정성 7항목 스코어카드**, **Validation(ROI/NPV)·Execution(PoC→전사확산·변화관리)** |
+| [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md) | **[틀]** AI 과제 정의서 · To-Be Swimlane · KSF/제약 · Check & Review · **Process Decomposition/Map/SOP↔LLM 매핑** · Modeling Rule(IOCM) · 적용 AI 기술 분류 · 일정 LLM/ML-DL 트랙 |
 | [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md) | **[적용]** CD-SEM Auto Recipe Creation — Track A Discovery: End-to-End SOP·망라 Pain·정량 우선순위 선정 (VLM GUI-제어, 1차 PoC = Align fail 대응 자동화) |
 | [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) | **[적용]** CD-SEM To-Be 설계·구현 — Track B (과제 정의서·Swimlane·KSF·제약) |
 | [05-적용_CDSEM_PoC실험설계.md](./05-적용_CDSEM_PoC실험설계.md) | **[적용]** KSF#1 좌표 재정합 정확도 PoC 실험 설계 (04 Phase 0 검증) |
@@ -17,7 +17,8 @@
 | `07-적용_CDSEM_실행기획_세트.pptx` | **[발표·상세]** 위 07 세트 11단계를 단계별 슬라이드(STEP 디바이더 + Why/What/How + 네이티브 표)로 변환한 편집 가능 PPTX(76장). 생성: `python tools/md2pptx_doc.py <out.pptx>` (입력 생략 시 07 폴더 자동 수집) |
 | [07-적용_CDSEM_실행기획_발표요약.md](./07-적용_CDSEM_실행기획_발표요약.md) / `.pptx` | **[발표·요약]** 11단계를 **단계당 1장**으로 압축한 발표용 세트(14장, 대표 산출물 + 발표 노트). 생성: `python tools/md2pptx.py 07-적용_CDSEM_실행기획_발표요약.md <out.pptx>` |
 | [`00-템플릿_AI과제발굴/`](./00-템플릿_AI과제발굴/00-README.md) | **[템플릿]** 위 11단계를 **도메인 중립 빈 양식 + 퍼실리테이션 가이드**로 만든 컨설턴트 키트. 다른 조직 AI 과제 발굴 워크숍에 그대로 적용 |
-| [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription) |
+| [`lectures/`](./lectures/README.md) | **[출처·완본]** New AI Design Camp **V2.7 배포 강의 덱**(PDF 136p) + 편집 Template(PPTX 25장). 틀 문서의 Validation·Execution·적정성·기술 분류 보강의 1차 근거 |
+| [`source/`](./source/) | 캡처 10장 원문 전사 (faithful transcription, 초기본) |
 
 ## 🧭 핵심 흐름 한눈에
 
