@@ -5,16 +5,20 @@ last_updated: 2026-06-30
 type: source-reference
 ---
 
-# lectures/ — New AI Design Camp 원본 강의자료 (V2.7)
+# lectures/ — New AI Design Camp 강의자료 (V2.7)
 
 > SK Hynix "New AI Design Camp" 2026년 배포본 전체 강의 덱. `source/`(캡처 10장 전사)보다 **상위·완본** 출처이며, 방법론 틀 문서(`01`·`02`)의 근거로 사용한다.
 
-## 파일
+## 파일 (원본 → 추출 md)
 
-| 파일 | 성격 |
-|------|------|
-| `SKHY New AI Design Camp_V2.7 (배포)_A.pdf` | **강의 본 덱 (136p, Day1·Day2)**. 4 Step 방법론 상세, 12-Step Focusing Point, M1~M9 모듈별 수행방법·Check&Review·예시, Quiz·Facilitation 가이드 포함 |
-| `SKHY The New Design Camp_Template V2.7.pptx` | **편집 가능 빈 양식 25장**. M1~M9 모듈별 작성 Template (연계표·스코어카드·정의서·As-Is/To-Be·KSF·일정) |
+원본 PDF·PPTX는 용량이 커서 **전문(全文)을 md로 추출**해 보관한다. 아래 두 md가 원본을 대체하며, 원본 바이너리는 삭제 가능하다.
+
+| 추출 md | 원본 | 내용 |
+|---------|------|------|
+| [`design-camp-deck-v2.7.md`](./design-camp-deck-v2.7.md) | `SKHY New AI Design Camp_V2.7 (배포)_A.pdf` (136p, Day1·Day2) | **강의 본 덱 전문**. Agenda, Baseline 3원칙, 4 Step 방법론 상세, 12-Step Focusing Point, 7개 도메인 Process Level 예시, M1~M9 수행방법·Check&Review·산출물 예시, Quiz·Facilitation 가이드, Wrap up(Agentic AI 3관점·Long/Short List 포트폴리오) |
+| [`design-camp-template-v2.7.md`](./design-camp-template-v2.7.md) | `SKHY The New Design Camp_Template V2.7.pptx` (25장) | **편집용 빈 양식 전문**. M1~M9 모듈별 작성 Template 칸 구조(연계표·스코어카드·정의서·As-Is/To-Be·KSF·일정) |
+
+> 추출 방식: PDF는 `pypdf`(132/136p 텍스트, 이미지 전용 4p는 정보 없음으로 생략), PPTX는 `python-pptx`(텍스트·표 셀, 노트 없음). 회사 기밀(구체 장비 수치)은 원문에 없는 방법론 골격이다.
 
 ## `source/`(10캡처)와의 관계
 
