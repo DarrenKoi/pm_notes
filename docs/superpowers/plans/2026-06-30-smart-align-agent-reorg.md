@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - 작업 디렉터리 기준: `/Users/daeyoung/Codes/pm_notes/my-task/AIX_POC` (이하 `AIX_POC/`).
-- `handoff/*` 는 **절대 수정하지 않는다** (과거 세션 기록·히스토리). source/06 옛 경로 인용이 남아도 둔다.
+- `handoff/*` 과거 세션 기록은 **삭제한다** (사용자 지시 2026-06-30 — 과거 작업이라 보존 불필요). Task 1에서 `git rm` 후 폴더가 비므로, 이후 grep/링크체커에서 handoff 제외 로직은 불필요하다.
 - 모든 파일 이동은 `git mv` (복사+삭제 금지). 삭제는 `git rm`.
 - 커밋 메시지 말미에 항상:
   ```
@@ -52,6 +52,15 @@ cd /Users/daeyoung/Codes/pm_notes/my-task/AIX_POC
 git rm "lectures/SKHY New AI Design Camp_V2.7 (배포)_A.pdf" "lectures/SKHY The New Design Camp_Template V2.7.pptx"
 ```
 
+- [ ] **Step 3b: 과거 handoff 기록 삭제 (git rm — 사용자 지시 2026-06-30)**
+
+```bash
+cd /Users/daeyoung/Codes/pm_notes/my-task/AIX_POC
+git rm handoff/*.md
+test -d handoff && rmdir handoff 2>/dev/null; echo "handoff cleared"
+```
+Expected: `handoff/2026-06-19-…`·`2026-06-24-…` 삭제. 빈 폴더는 git이 추적 안 하므로 제거됨.
+
 - [ ] **Step 4: lectures/README.md 의 source 참조를 captures 로 갱신 + 바이너리 삭제 명시**
 
 `lectures/README.md` 에서 Edit 도구로:
@@ -72,10 +81,11 @@ Expected: `no source refs in lectures/README OK` (또는 frontmatter tag만 — 
 cd /Users/daeyoung/Codes/pm_notes/my-task/AIX_POC
 git add -A
 git commit -m "$(cat <<'EOF'
-docs(aix-poc): source/ → lectures/captures 흡수 + 원본 바이너리 삭제
+docs(aix-poc): source/ → lectures/captures 흡수 + 원본 바이너리·과거 handoff 삭제
 
 방법론 자료를 lectures 표준 아래로 통합. PDF/PPTX 원본은 md 추출본이
-대체하므로 삭제(7.4MB 회수). lectures/README를 captures 참조로 갱신.
+대체하므로 삭제(7.4MB 회수). 과거 handoff 기록도 삭제(사용자 지시).
+lectures/README를 captures 참조로 갱신.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_011hzFj4Vzvt4kkd3jLFSnxU
@@ -280,7 +290,7 @@ git rm "06-적용_CDSEM_DesignCamp장표.md" "06-적용_CDSEM_DesignCamp장표.p
   - `lectures/` — **[표준]** New AI Design Camp V2.7 완본 덱 + 편집 Template + `captures/`(캡처 10장 전사). **팀 가이드의 기준점**.
   - `_가이드/` — **[가이드]** 재사용 방법론 틀: `01-기획문서_AX서비스기획.md`, `02-기술문서_AI과제정의구현.md` + `00-템플릿_AI과제발굴/`(도메인 중립 키트).
   - `프로젝트_smart_align_agent/` — **[프로젝트]** CD-SEM Align Fail 대응 자동화 = **Smart Align Agent**. Discovery·기술·PoC설계·실행기획 세트·발표물.
-  - `tools/` — md→pptx 변환기. `handoff/` — 세션 인계 기록.
+  - `tools/` — md→pptx 변환기. (과거 `handoff/`는 Task 1에서 삭제되어 더 이상 없음 — README에 표기하지 않는다.)
 - **프로젝트 폴더 컨벤션** 안내: 앞으로 신규 과제는 `프로젝트_<이름>/` 폴더로 추가하고, `lectures`(표준)와 `_가이드`(틀)를 참조해 채운다.
 - 핵심 흐름(Baseline 3원칙 → 4 Step → 12-Step Track A/B) 다이어그램은 기존 내용 유지.
 - 기존 "원문 인덱스(source/)" 표는 경로를 `lectures/captures/` 로 갱신.
@@ -325,7 +335,7 @@ EOF
 - 콘텐츠 아키텍처 3계층 다이어그램에서 `source/01~10` → `lectures/captures/01~10`, "01·02 틀" → "`_가이드/01·02`", "03·04 사례" → "`프로젝트_smart_align_agent/03·04`".
 - **새 규칙 추가**: "신규 과제는 `프로젝트_<이름>/` 폴더로 분리한다. 표준은 `lectures/`, 재사용 틀은 `_가이드/`. 적용 문서 작성 시 `_가이드/01`(기획)·`_가이드/02`(기술)를 먼저 읽고 미러링한다."
 - `source/` 언급을 `lectures/captures/` 로 일괄 갱신. "캡처 1장=파일 1개, 불변 전사" 원칙은 유지.
-- handoff/ 절은 그대로.
+- handoff/ 관련 절(세션 인계 기록 안내)은 **삭제**한다 — 폴더가 Task 1에서 제거되었으므로.
 
 - [ ] **Step 2: 검증**
 
@@ -406,11 +416,12 @@ EOF
   - `python tools/md2pptx.py 07-적용_CDSEM_실행기획_발표요약.md 발표요약.pptx` → `python tools/md2pptx.py 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획_발표요약.md 발표요약.pptx`
   - `md2pptx_doc.py` "입력 생략 시 07 폴더 01~11 자동 수집" 설명은 도구 기본 경로에 의존하므로, 도구가 새 경로를 못 찾으면 인자를 명시하라는 주석 한 줄 추가(도구 코드는 이번 범위 밖).
 - "콘텐츠 아키텍처" 다이어그램의 `source/01~10`→`lectures/captures/01~10`, `01·02`→`_가이드/01·02`, `03·04…07`→`프로젝트_smart_align_agent/…`.
+- **"## 세션 인계" 절 삭제** — `AIX_POC/handoff/`가 삭제되었으므로 이 절(53행 "handoff에 인계 문서가 쌓인다…")을 제거한다.
 
 - [ ] **Step 2: 검증**
 
-Run: `grep -n "프로젝트_smart_align_agent\|lectures/captures\|_가이드" /Users/daeyoung/Codes/pm_notes/my-task/CLAUDE.md | head`
-Expected: 새 경로들이 등장
+Run: `grep -n "프로젝트_smart_align_agent\|lectures/captures\|_가이드" /Users/daeyoung/Codes/pm_notes/my-task/CLAUDE.md | head && grep -c "handoff" /Users/daeyoung/Codes/pm_notes/my-task/CLAUDE.md`
+Expected: 새 경로들이 등장 + `handoff` 카운트 `0` (세션 인계 절 제거됨)
 
 - [ ] **Step 3: 커밋**
 
@@ -443,7 +454,7 @@ EOF
 ```python
 import os, re, sys
 ROOT = "/Users/daeyoung/Codes/pm_notes/my-task/AIX_POC"
-SKIP = ("handoff/",)  # 과거 기록은 검사 제외
+SKIP = ()  # handoff/ 는 Task 1에서 삭제됨 — 전 문서 검사
 link_re = re.compile(r"\]\((?!https?://|#)([^)]+)\)")
 bad = []
 for dp, _, fs in os.walk(ROOT):
@@ -470,20 +481,20 @@ if bad:
 print("ALL LINKS OK")
 ```
 
-- [ ] **Step 2: 링크 체커 실행 (handoff 제외 전 문서)**
+- [ ] **Step 2: 링크 체커 실행 (전 문서)**
 
 Run: `python3 /private/tmp/claude-501/-Users-daeyoung-Codes-pm-notes-my-task/9b7717d0-53b1-4b61-b247-f432912968bb/scratchpad/linkcheck.py`
 Expected: `ALL LINKS OK`
 (BROKEN 출력 시 해당 파일을 Edit 로 고치고 재실행 — 깨끗해질 때까지 반복.)
 
-- [ ] **Step 3: source/06 잔존 참조 전수 검색 (handoff 제외)**
+- [ ] **Step 3: source/06 잔존 참조 전수 검색**
 
 Run:
 ```bash
 cd /Users/daeyoung/Codes/pm_notes/my-task/AIX_POC
-grep -rn "](\./source/\|](\.\./source/\|](\.\./\.\./source/\|06-적용_CDSEM\|DesignCamp장표" . --include="*.md" | grep -v "^./handoff/" || echo "no stale source/06 refs OK"
+grep -rn "](\./source/\|](\.\./source/\|](\.\./\.\./source/\|06-적용_CDSEM\|DesignCamp장표" . --include="*.md" || echo "no stale source/06 refs OK"
 ```
-Expected: `no stale source/06 refs OK`
+Expected: `no stale source/06 refs OK` (handoff/ 가 삭제되어 제외 필터 불필요)
 
 - [ ] **Step 4: git 히스토리(rename) 보존 확인**
 
@@ -493,7 +504,7 @@ Expected: 최근 커밋들 + `--follow` 가 이동 이전 03 히스토리를 추
 - [ ] **Step 5: 최종 구조 확인**
 
 Run: `cd /Users/daeyoung/Codes/pm_notes/my-task/AIX_POC && find . -maxdepth 2 -type d -not -path '*/.*' | sort`
-Expected: `lectures`, `lectures/captures`, `_가이드`, `_가이드/00-템플릿_AI과제발굴`, `프로젝트_smart_align_agent`, `프로젝트_smart_align_agent/07-적용_CDSEM_실행기획`, `tools`, `handoff` (구 `source` 없음)
+Expected: `lectures`, `lectures/captures`, `_가이드`, `_가이드/00-템플릿_AI과제발굴`, `프로젝트_smart_align_agent`, `프로젝트_smart_align_agent/07-적용_CDSEM_실행기획`, `tools` (구 `source`·`handoff` 없음)
 
 - [ ] **Step 6: (필요 시) 잔여 수정 커밋**
 
@@ -517,7 +528,7 @@ EOF
 ## Self-Review (작성자 체크)
 
 **Spec coverage:**
-- 이동(A) → Task 1·2·3. 삭제(B) → Task 1(바이너리)·4(06). 링크치환(C) → Task 1·2·3 + 검증 Task 8. 문서재작성(D) → Task 4(README)·5(CLAUDE)·6(프로젝트README)·7(my-task). 불변(E: handoff) → 모든 grep/링크체커에서 제외. ✅
+- 이동(A) → Task 1·2·3. 삭제(B) → Task 1(바이너리·과거 handoff)·4(06). 링크치환(C) → Task 1·2·3 + 검증 Task 8. 문서재작성(D) → Task 4(README)·5(CLAUDE)·6(프로젝트README)·7(my-task). handoff 과거 기록 → Task 1에서 삭제(사용자 지시 2026-06-30), 이후 검증 단순화. ✅
 - 검증 기준(spec) 5項 → Task 8 Step 2·3·4·5 가 각각 커버. ✅
 
 **Placeholder scan:** 모든 perl/grep/git 명령에 실제 경로·패턴 기입. 문서 재작성 태스크는 "반드시 포함" 항목을 구체 명시(빈 TODO 없음). ✅
