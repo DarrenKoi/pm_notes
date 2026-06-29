@@ -1,5 +1,5 @@
 ---
-tags: [aix, design-camp, source, lecture]
+tags: [aix, design-camp, captures, lecture]
 level: reference
 last_updated: 2026-06-30
 type: source-reference
@@ -7,39 +7,39 @@ type: source-reference
 
 # lectures/ — New AI Design Camp 강의자료 (V2.7)
 
-> SK Hynix "New AI Design Camp" 2026년 배포본 전체 강의 덱. `source/`(캡처 10장 전사)보다 **상위·완본** 출처이며, 방법론 틀 문서(`01`·`02`)의 근거로 사용한다.
+> SK Hynix "New AI Design Camp" 2026년 배포본 전체 강의 덱. `captures/`(구 source, 캡처 10장 전사)보다 **상위·완본** 출처이며, 방법론 틀 문서(`_가이드/01`·`_가이드/02`)의 근거로 사용한다.
 
 ## 파일 (원본 → 추출 md)
 
-원본 PDF·PPTX는 용량이 커서 **전문(全文)을 md로 추출**해 보관한다. 아래 두 md가 원본을 대체하며, 원본 바이너리는 삭제 가능하다.
+원본 PDF·PPTX는 용량이 커서 **전문(全文)을 md로 추출**해 보관하고 **원본 바이너리는 삭제했다**. 아래 두 md가 원본을 대체한다.
 
-| 추출 md | 원본 | 내용 |
+| 추출 md | 원본 (삭제됨) | 내용 |
 |---------|------|------|
 | [`design-camp-deck-v2.7.md`](./design-camp-deck-v2.7.md) | `SKHY New AI Design Camp_V2.7 (배포)_A.pdf` (136p, Day1·Day2) | **강의 본 덱 전문**. Agenda, Baseline 3원칙, 4 Step 방법론 상세, 12-Step Focusing Point, 7개 도메인 Process Level 예시, M1~M9 수행방법·Check&Review·산출물 예시, Quiz·Facilitation 가이드, Wrap up(Agentic AI 3관점·Long/Short List 포트폴리오) |
 | [`design-camp-template-v2.7.md`](./design-camp-template-v2.7.md) | `SKHY The New Design Camp_Template V2.7.pptx` (25장) | **편집용 빈 양식 전문**. M1~M9 모듈별 작성 Template 칸 구조(연계표·스코어카드·정의서·As-Is/To-Be·KSF·일정) |
 
 > 추출 방식: PDF는 `pypdf`(132/136p 텍스트, 이미지 전용 4p는 정보 없음으로 생략), PPTX는 `python-pptx`(텍스트·표 셀, 노트 없음). 회사 기밀(구체 장비 수치)은 원문에 없는 방법론 골격이다.
 
-## `source/`(10캡처)와의 관계
+## `captures/`(10캡처)와의 관계
 
-- `source/01~10` = 초기 캡처 10장의 **불변 전사**. 그대로 유지한다.
+- `captures/01~10` = 초기 캡처 10장의 **불변 전사**. 그대로 유지한다.
 - `lectures/` = 동일 방법론의 **완본 배포 덱**. 캡처본에 없던 다음 내용을 담고 있어 틀 문서 보강의 근거가 된다.
 
 ## 캡처본 대비 신규·심화 내용 (틀 문서에 반영함)
 
 | 영역 | 신규/심화 내용 | 반영 위치 |
 |------|----------------|-----------|
-| **Step3. Validation** | 비즈니스 임팩트(수익성·확장성·시급성) 정량화, CapEx/OpEx, **ROI 공식·NPV·투자회수기간**, 도입전략 3대 질문 | [01 §Validation](../01-기획문서_AX서비스기획.md) |
-| **Step4. Execution** | **PoC→MVP→전사확산 3-Phase**, 이해관계자(영향력×관심도) 분석, **변화관리 저항요인 3종 대응**, 전문조직 육성 | [01 §Execution](../01-기획문서_AX서비스기획.md) |
-| **M1 후보 선정** | 자동화 적합성 6기준(디지털화·병목·반복성·가치·오류허용·규칙기반) | [01 §후보 선정](../01-기획문서_AX서비스기획.md) |
-| **M3 Pain Point** | 정량화 6관점, 판단 오류 3유형, Criticality 4기준 | [01 §Pain Point](../01-기획문서_AX서비스기획.md) |
-| **M4 근본원인** | **근본원인 6유형**(프로세스·시스템·데이터·사람·정책·외부), 해결 아이디어 6유형 | [01 §근본 원인](../01-기획문서_AX서비스기획.md) |
-| **M5 적정성** | **7항목 스코어카드(3점 척도/21점)** + 항목별 채점 루브릭 | [01 §적정성](../01-기획문서_AX서비스기획.md) |
-| **Process 체계** | Decomposition vs Map vs SOP, **Agentic AI 3관점 매핑**(LLM 행동지침·Tool·Guardrail) | [02 §Process 체계](../02-기술문서_AI과제정의구현.md) |
-| **Modeling Rule** | Task = Input/Output/**Constraint**/Mechanism (IDEF0형), BPMN Notation | [02 §Modeling Rule](../02-기술문서_AI과제정의구현.md) |
-| **적용 AI 기술** | 생성형(LLM)·분석형(ML/DL)·데이터변환 **기술 분류 체계** | [02 §적용 AI 기술](../02-기술문서_AI과제정의구현.md) |
-| **M9 일정** | LLM/ML-DL **트랙별 개발 Task**, 4구분(프로세스·데이터·AI모델·Agentic Prototype) | [02 §개발 일정](../02-기술문서_AI과제정의구현.md) |
-| **포트폴리오** | Long List→Short List→Phased Plan 우선순위 기준(가치·실행가능성·시급도·리스크) | [01 §Execution](../01-기획문서_AX서비스기획.md) |
+| **Step3. Validation** | 비즈니스 임팩트(수익성·확장성·시급성) 정량화, CapEx/OpEx, **ROI 공식·NPV·투자회수기간**, 도입전략 3대 질문 | [01 §Validation](../_가이드/01-기획문서_AX서비스기획.md) |
+| **Step4. Execution** | **PoC→MVP→전사확산 3-Phase**, 이해관계자(영향력×관심도) 분석, **변화관리 저항요인 3종 대응**, 전문조직 육성 | [01 §Execution](../_가이드/01-기획문서_AX서비스기획.md) |
+| **M1 후보 선정** | 자동화 적합성 6기준(디지털화·병목·반복성·가치·오류허용·규칙기반) | [01 §후보 선정](../_가이드/01-기획문서_AX서비스기획.md) |
+| **M3 Pain Point** | 정량화 6관점, 판단 오류 3유형, Criticality 4기준 | [01 §Pain Point](../_가이드/01-기획문서_AX서비스기획.md) |
+| **M4 근본원인** | **근본원인 6유형**(프로세스·시스템·데이터·사람·정책·외부), 해결 아이디어 6유형 | [01 §근본 원인](../_가이드/01-기획문서_AX서비스기획.md) |
+| **M5 적정성** | **7항목 스코어카드(3점 척도/21점)** + 항목별 채점 루브릭 | [01 §적정성](../_가이드/01-기획문서_AX서비스기획.md) |
+| **Process 체계** | Decomposition vs Map vs SOP, **Agentic AI 3관점 매핑**(LLM 행동지침·Tool·Guardrail) | [02 §Process 체계](../_가이드/02-기술문서_AI과제정의구현.md) |
+| **Modeling Rule** | Task = Input/Output/**Constraint**/Mechanism (IDEF0형), BPMN Notation | [02 §Modeling Rule](../_가이드/02-기술문서_AI과제정의구현.md) |
+| **적용 AI 기술** | 생성형(LLM)·분석형(ML/DL)·데이터변환 **기술 분류 체계** | [02 §적용 AI 기술](../_가이드/02-기술문서_AI과제정의구현.md) |
+| **M9 일정** | LLM/ML-DL **트랙별 개발 Task**, 4구분(프로세스·데이터·AI모델·Agentic Prototype) | [02 §개발 일정](../_가이드/02-기술문서_AI과제정의구현.md) |
+| **포트폴리오** | Long List→Short List→Phased Plan 우선순위 기준(가치·실행가능성·시급도·리스크) | [01 §Execution](../_가이드/01-기획문서_AX서비스기획.md) |
 
 ---
 *출처: SK Hynix New AI Design Camp V2.7 배포본(2026). 회사 기밀(구체 장비 수치·내부 시스템 상세)은 방법론 골격만 추출하고 제외함. PDF 텍스트 추출은 `pip install pypdf` 후 `PdfReader.extract_text()` 사용.*
