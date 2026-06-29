@@ -1,11 +1,11 @@
 ---
-tags: [cd-sem, recipe-creation, ax-실행기획, design-camp, itc, index]
+tags: [cd-sem, auto-recipe-creation, ax-실행기획, design-camp, itc, index]
 level: intermediate
-last_updated: 2026-06-24
+last_updated: 2026-06-29
 type: 적용사례-실행기획
 ---
 
-# CD-SEM Recipe Creation 자동화 — 단계별 실행기획 세트
+# CD-SEM Auto Recipe Creation — 단계별 실행기획 세트
 
 > [03 기획(Discovery)](../03-적용_CDSEM기획.md)·[04 기술(Track B)](../04-적용_CDSEM기술.md)에 통합돼 있던 CD-SEM 사례를, **New AI Design Camp 단계별로 하나씩 분리·구체화**한 실행기획 산출물 묶음이다. 목표는 내년(2027) **실제 실행 가능한 기획** — Discovery·Design에 더해 Validation(가치 검증)·Execution(실행 로드맵)까지 채운다.
 

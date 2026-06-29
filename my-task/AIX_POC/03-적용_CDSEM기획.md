@@ -1,19 +1,19 @@
 ---
-tags: [aix, cd-sem, recipe-creation, vlm, computer-use, design-camp, itc]
+tags: [aix, cd-sem, auto-recipe-creation, vlm, computer-use, design-camp, itc]
 level: intermediate
-last_updated: 2026-06-19
+last_updated: 2026-06-29
 type: 적용사례-기획
 ---
 
-# AIX 적용 사례 — CD-SEM Recipe Creation 자동화 (기획/Discovery)
+# AIX 적용 사례 — CD-SEM Auto Recipe Creation (기획/Discovery)
 
-> [기획 방법론 틀(01)](./01-기획문서_AX서비스기획.md)을 ITC AIX 실제 과제에 적용한 **첫 번째 사례**. New AI Design Camp Track A(Discovery, 1~7단계)를 따라 **CD-SEM Recipe Creation 자동화** 과제를 발굴·구조화한다. 실행/To-Be 설계(Track B)는 후속 문서 `04-적용_CDSEM기술.md`에서 다룬다.
+> [기획 방법론 틀(01)](./01-기획문서_AX서비스기획.md)을 ITC AIX 실제 과제에 적용한 **첫 번째 사례**. New AI Design Camp Track A(Discovery, 1~7단계)를 따라 **CD-SEM Auto Recipe Creation** 과제를 발굴·구조화한다. 실행/To-Be 설계(Track B)는 후속 문서 `04-적용_CDSEM기술.md`에서 다룬다.
 >
 > 📂 **단계별 상세 산출물**: 본 문서를 단계별로 분리·구체화하고 Validation·Execution까지 채운 실행기획 세트는 [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) 참조.
 
 ## 과제 한 줄 정의
 
-**VLM 기반 GUI 제어(computer-use)로 CD-SEM Recipe Creation을 자동화한다.** VLM이 SEM 화면을 직접 보며 GUI를 클릭·입력해 Recipe를 생성하고, **실측 시작 시 발생하는 좌표 shift·align 실패·패턴 오인식을 실시간으로 재정합·수정**한다. 엔지니어는 모니터링하다 **예외만 개입(Human-in-the-loop)** 한다. 완전자동화는 목표가 아니다.
+**Auto Recipe Creation — VLM 기반 GUI 제어(computer-use)로 CD-SEM Recipe를 자동 생성·등록한다.** VLM이 SEM 화면을 직접 보며 GUI를 클릭·입력해 Recipe를 생성하고, **실측 시작 시 발생하는 좌표 shift·align 실패·패턴 오인식을 실시간으로 재정합·수정**한다(1차 PoC = Align 자동 보정). 엔지니어는 모니터링하다 **예외만 개입(Human-in-the-loop)** 한다. 완전자동화는 목표가 아니다.
 
 ## 왜 이 과제인가? (Why)
 
@@ -21,11 +21,11 @@ type: 적용사례-기획
 
 | 원칙 | 이 과제에서의 충족 |
 |------|--------------------|
-| **가치 중심** | 신규 공정 셋업 **리드타임 단축**이라는 조직 목표에 직결. 최대 병목(오인식 수정 반복)을 정조준. |
+| **가치 중심** | **R&D 디바이스 개발 지연 최소화**라는 조직 목표에 직결. 최대 병목(오인식 수정 반복)을 정조준. |
 | **데이터 중심** | SEM 화면 이미지·reference recipe 등 **이미 존재하는 가용 데이터**로 동작. 추측 설계가 아님. |
 | **인간 중심** | 엔지니어를 대체하지 않고 **확장** — 반복 셋업은 AI, 예외 판단·최종 검증은 사람. |
 
-특히 이 과제는 사람의 작업시간이라는 물리적 제약을 풀어 **24h 무중단 셋업**을 가능케 한다는 점에서, 단순 효율화를 넘어 처리량의 상한 자체를 끌어올린다.
+특히 이 과제는 일관 기준 등록으로 **측정 장비 간 Skew Zero**(숙련도·장비 편차 제거)를 확보하고, 사람의 작업시간 제약을 풀어 **24h 무중단 셋업 → MI 장비 가동률 극대화**(유휴시간 축소)를 가능케 한다는 점에서, 단순 효율화를 넘어 장비 운영/관리 최적화·검계측 효율화에 본원적으로 기여한다.
 
 ## 핵심 구조 (What)
 
@@ -34,11 +34,13 @@ type: 적용사례-기획
 과제는 개인 흥미가 아니라 조직 목표에서 연역한다([원문 04](./source/04-org-goal-task-linkage.md) 양식 적용).
 
 ```
-조직 목표            →  업무 목표                    →  핵심 업무            →  AI 대상 후보 과제
-신규 공정 셋업          MI Recipe Setup 처리량 확대       CD-SEM Recipe           VLM GUI-제어 기반
-리드타임 단축           + 숙련도 편차 제거               Creation                Recipe 자동 생성
-(핵심)                  + 24h 무중단 셋업                                        + 실측 좌표/align 자동 보정
+조직 목표            →  업무 목표              →  관련(핵심) 업무            →  AI 대상 후보 과제
+R&D 디바이스           ① 장비 운영/관리 최적화    ① MI Recipe Solution 제공     Auto Recipe Creation
+개발 지연 최소화        ② 검/계측 효율화          ② 측정 장비 간 Skew Zero       (1차 PoC = Align 자동 보정)
+(핵심)                                          ③ MI 장비 가동률 극대화
 ```
+
+> 핵심업무 3종에 **한 과제(Auto Recipe Creation)** 가 동시에 기여한다 — ① 솔루션 본체, ② 일관 기준으로 숙련도·장비 편차 제거(구 "숙련도 편차 제거" 흡수), ③ 24h 무중단으로 유휴시간 축소(구 "처리량 확대 / 24h 무중단" 흡수). 추적성은 위→아래 한 방향.
 
 ### 2. 업무 분해 — L1~L5 (AI 배치 지점)
 
