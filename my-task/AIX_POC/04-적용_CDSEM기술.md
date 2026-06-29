@@ -1,13 +1,13 @@
 ---
-tags: [aix, cd-sem, recipe-creation, vlm, computer-use, to-be-process, ksf, itc]
+tags: [aix, cd-sem, auto-recipe-creation, vlm, computer-use, to-be-process, ksf, itc]
 level: intermediate
-last_updated: 2026-06-19
+last_updated: 2026-06-29
 type: 적용사례-기술
 ---
 
-# AIX 적용 사례 — CD-SEM Recipe Creation 자동화 (기술/To-Be 설계)
+# AIX 적용 사례 — CD-SEM Auto Recipe Creation (기술/To-Be 설계)
 
-> [기술 방법론 틀(02)](./02-기술문서_AI과제정의구현.md)을 ITC AIX 실제 과제에 적용한 **두 번째 사례**. [03 기획(Discovery)](./03-적용_CDSEM기획.md)에서 발굴·구조화한 **CD-SEM Recipe Creation 자동화** 과제를, New AI Design Camp Track B(실행 구체화, 8~12단계) — AI 과제 정의서 · To-Be Swimlane · KSF/제약 — 로 구체화한다.
+> [기술 방법론 틀(02)](./02-기술문서_AI과제정의구현.md)을 ITC AIX 실제 과제에 적용한 **두 번째 사례**. [03 기획(Discovery)](./03-적용_CDSEM기획.md)에서 발굴·구조화한 **CD-SEM Auto Recipe Creation** 과제를, New AI Design Camp Track B(실행 구체화, 8~12단계) — AI 과제 정의서 · To-Be Swimlane · KSF/제약 — 로 구체화한다.
 >
 > 📂 **단계별 상세 산출물**: 과제 정의·As-Is·To-Be·KSF·개발일정을 각각 독립 산출물로 분리·구체화한 실행기획 세트는 [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) 참조.
 
@@ -38,13 +38,15 @@ type: 적용사례-기술
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ 과제명 : VLM GUI-제어 기반 CD-SEM Recipe Creation 자동화               │
+│ 과제명 : CD-SEM Auto Recipe Creation (VLM GUI-제어 기반)               │
 │ 구분   : ☐ Marketing  ☐ R&D  ■ Production  ☐ Support                   │
 │ Champion(담당 임원) : <담당 임원>   담당 조직 : ITC AIX / MI            │
 ├──────────────────────────────────────────────────────────────────────┤
 │ [상세내역]                                                             │
-│  • 업무 목표(부문/팀) : 신규 공정 셋업 리드타임 단축 · 24h 무중단 셋업  │
-│                         · 숙련도 편차 제거                              │
+│  • 업무 목표(부문/팀) : 장비 운영/관리 최적화 · 검/계측 효율화          │
+│  • 관련(핵심) 업무     : ① MI Recipe Solution 제공                      │
+│                         ② 측정 장비 간 Skew Zero                        │
+│                         ③ MI 장비 가동률 극대화                         │
 │  • 핵심 업무 구조화    : 계측(MI) 운영 > CD-SEM Recipe Management       │
 │                         > Recipe Creation (As-Is ①~⑦)                  │
 │  • 추진 배경(Pain Point): 시험측정 후 오인식/실패 지점 수정 반복(⑥)이   │
@@ -54,12 +56,13 @@ type: 적용사례-기술
 │                         → (a) 패턴 인식 실패, (b) 측정박스·좌표 오류    │
 │  • AI Agent                                                            │
 │     ─ 대상 업무 : As-Is ②~⑥ (Recipe 생성·로드 ~ 오인식 수정)           │
+│                  ※ 1차 PoC = Align 자동 보정 = ⑥(+③④)                  │
 │     ─ 요구 사항 : SEM 이미지 판독 + GUI 직접 제어(클릭·입력)            │
 │                  + 실측 좌표/align 실시간 재정합 + 오인식 자동 수정     │
 │     ─ 적용 범위 : 신규 Recipe 생성. reference recipe가 있는 layer 우선, │
 │                  점진 확장 (신규 공정은 엔지니어 협의 유지)             │
-│     ─ 기대 효과 : 최대 병목(⑥) 공수↓ · 24h 무중단 처리량 상한 돌파      │
-│                  · 숙련도 무관 일관 기준 수행                           │
+│     ─ 기대 효과 : 최대 병목(⑥) 공수↓ · Skew Zero(일관 기준)            │
+│                  · 24h 무중단 → MI 장비 가동률↑                         │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 

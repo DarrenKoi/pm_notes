@@ -1,7 +1,7 @@
 ---
 tags: [template, ai-과제발굴, design-camp, pain-point, 정량화]
 level: intermediate
-last_updated: 2026-06-24
+last_updated: 2026-06-29
 type: 템플릿
 ---
 
@@ -110,7 +110,7 @@ L3 〈대상 프로세스〉
 
 ## 작성 예시 (worked example)
 
-CD-SEM Recipe Creation 사례로 이 양식을 채운 결과: [../07-적용_CDSEM_실행기획/03-painpoint-도출-정량화.md](../07-적용_CDSEM_실행기획/03-painpoint-도출-정량화.md) — 대상 L3을 셋업 ①~⑦로 분해하고, 최대 병목 활동을 5/5/5 가설로 표기한 뒤 나머지를 τ로 남긴 예. (값은 도메인 특화이므로 복붙하지 말고 채우는 방식만 참고)
+CD-SEM Auto Recipe Creation 사례로 이 양식을 채운 결과: [../07-적용_CDSEM_실행기획/03-painpoint-도출-정량화.md](../07-적용_CDSEM_실행기획/03-painpoint-도출-정량화.md) — 대상 L3을 셋업 ①~⑦로 분해하고, 최대 병목 활동을 5/5/5 가설로 표기한 뒤 나머지를 τ로 남긴 예. (값은 도메인 특화이므로 복붙하지 말고 채우는 방식만 참고)
 
 ## 이전/다음 단계
 
