@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | 폴더 | 내용 | 깊은 가이드 |
 |------|------|------------|
-| `AIX_POC/` | SK Hynix "New AI Design Camp" 방법론 전사 + 우리 부문 AIX POC 기획/기술 문서. 무게중심이 여기 있다(66개 추적 파일 대부분). | **반드시 [`AIX_POC/CLAUDE.md`](AIX_POC/CLAUDE.md) 먼저 읽기** |
+| `AIX_POC/` | SK Hynix "New AI Design Camp" 방법론 표준 + 우리 부문 AIX POC 프로젝트. **3축 구조** — `lectures/`(표준 강의 덱·captures) · `_가이드/`(재사용 틀 01·02 + 00-템플릿) · `프로젝트_<이름>/`(과제별 폴더, 현재 `프로젝트_smart_align_agent`). 무게중심이 여기 있다. | **반드시 [`AIX_POC/CLAUDE.md`](AIX_POC/CLAUDE.md) 먼저 읽기** |
 | `2026_report/` | 상반기 리뷰 + 하반기 계획 등 분기 보고 문서 (Align Fail 자동화·SKEWNONO·OSS-Cube 추진 현황) | (단순 보고 문서, 별도 규칙 없음) |
 
 ## 명령어 (마크다운 → PPTX)
@@ -22,11 +22,13 @@ cd AIX_POC
 
 # 장표 전용: "## 장표 N — Title" 경계로 슬라이드 분할 (발표 슬라이드 md → pptx)
 python tools/md2pptx.py <in.md> <out.pptx>
-python tools/md2pptx.py 07-적용_CDSEM_실행기획_발표요약.md 발표요약.pptx
+python tools/md2pptx.py 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획_발표요약.md 발표요약.pptx
 
 # 문서 전용: 헤더 구조(#/##/###)로 슬라이드 분할 (Why→What→How 산출물 묶음 → pptx)
 python tools/md2pptx_doc.py <out.pptx> <in1.md> <in2.md> ...
-python tools/md2pptx_doc.py 세트.pptx          # 입력 생략 시 07 폴더 01~11 자동 수집
+# 입력 생략 시 도구 기본 경로를 쓰므로, 07 폴더가 프로젝트_smart_align_agent/ 로 이동한 뒤로는
+# 입력 파일들을 명시하는 편이 안전하다(도구 코드는 이 작업 범위 밖).
+python tools/md2pptx_doc.py 세트.pptx 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획/*.md
 ```
 
 두 변환기의 차이가 핵심이다: `md2pptx.py`는 **`## 장표 N`** 마커로, `md2pptx_doc.py`는 **문서 헤더 트리**로 슬라이드 경계를 잡는다. 일반 산출물 문서를 변환할 땐 후자를 쓴다.
@@ -36,18 +38,15 @@ python tools/md2pptx_doc.py 세트.pptx          # 입력 생략 시 07 폴더 0
 세 계층이 분리되어 있고 이 경계를 지키는 것이 가장 중요하다 (상세는 `AIX_POC/CLAUDE.md`):
 
 ```
-source/01~10   원문 전사 (불변, 캡처 1장 = 파일 1개, 가공 금지)
+lectures/captures/01~10  원문 전사 (불변, 캡처 1장 = 파일 1개, 가공 금지) + lectures 완본 덱 = 표준
       ▼
-01·02          방법론 "틀" (재사용 가능 프레임워크) — 01=기획, 02=기술
+_가이드/01·02            방법론 "틀" (재사용 가능 프레임워크) — 01=기획, 02=기술
+_가이드/00-템플릿_*      틀을 도메인 중립 빈 양식으로 만든 컨설턴트 키트
       ▼
-03·04…07       그 틀을 실제 ITC AIX 과제(CD-SEM)로 채운 "사례"
-00-템플릿_*     틀을 도메인 중립 빈 양식으로 만든 컨설턴트 키트
+프로젝트_<이름>/03·04…07  그 틀을 실제 ITC AIX 과제로 채운 "사례" (현재 프로젝트_smart_align_agent = CD-SEM)
 ```
 
 - **테스트 실행은 범위 밖**: 실제 PoC를 돌려 결과를 내지 않는다. 설계·계획까지만 쓰고 미확정 수치는 플레이스홀더(`<담당 임원>`, τ/s/r/N)로 둔다 — 실측값을 지어내지 않는다.
-- **새 적용 문서**: 대응하는 틀 문서(기획→01, 기술→02)를 먼저 읽고 섹션 구조를 미러링한다. 새 구조를 발명하지 않는다.
+- **새 적용 문서**: 대응하는 틀 문서(기획→`_가이드/01`, 기술→`_가이드/02`)를 먼저 읽고 섹션 구조를 미러링한다. 새 구조를 발명하지 않는다.
+- **신규 과제**: `프로젝트_<이름>/` 폴더로 분리하고 그 안에 `README.md`(프로젝트 인덱스)를 둔다. 표준·틀은 공유하고 과제별 내용은 폴더 안에만 둔다.
 - **회사 기밀 제외**: 구체 장비 수치·내부 시스템 상세는 넣지 않는다.
-
-## 세션 인계
-
-`AIX_POC/handoff/<날짜>-<주제>-handoff.md`에 세션 간 인계 문서가 쌓인다. 작업 이어받을 때 가장 최근 handoff를 먼저 읽는다.
