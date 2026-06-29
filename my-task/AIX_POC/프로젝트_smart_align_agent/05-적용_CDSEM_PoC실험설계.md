@@ -118,5 +118,5 @@ type: 적용사례-검증
 ## 참고 자료 (References)
 - 기술 설계(KSF 출처): [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md)
 - 기획(Discovery): [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md)
-- 점검 기준: [원문 10](./source/10-check-and-review.md) (시간 병목 개선·제약 다각도)
+- 점검 기준: [원문 10](../lectures/captures/10-check-and-review.md) (시간 병목 개선·제약 다각도)
 - 출처: ITC AIX 브레인스토밍 합의(2026-06-19) 기반. 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 실험 골격만 정리함.

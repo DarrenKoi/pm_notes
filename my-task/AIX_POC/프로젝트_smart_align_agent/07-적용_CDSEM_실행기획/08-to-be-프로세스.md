@@ -13,7 +13,7 @@ type: 적용사례-실행기획
 
 #07에서 그린 As-Is ①~⑦는 전 구간이 사람(🧑) 작업이고, 병목 ③④와 최대 병목 ⑥이 숙련도·작업시간에 묶여 있다 (#07 인용, 출처: [SPEC §2](./_internal/SPEC.md)). To-Be는 이 흐름을 "어느 칸을 AI가, 어느 칸을 사람이 하는가"로 **재정의**해, #06 과제 정의서가 약속한 "AI Agent 대상 업무 ②~⑥"를 실제 프로세스 그림으로 확정한다 (#06 인용).
 
-방법론 틀(02)이 강제하는 첫 번째 점검은 **"AI·사람 역할의 명확한 구분"** 이다 (출처: [원문 07](../source/07-ai-agent-scope-template.md), [원문 10](../source/10-check-and-review.md)). 본 문서는 🤖/🧑 레인을 가진 Swimlane으로 그 구분을 시각화해, 이후 #11 review가 ✅로 검산할 수 있는 근거를 남긴다.
+방법론 틀(02)이 강제하는 첫 번째 점검은 **"AI·사람 역할의 명확한 구분"** 이다 (출처: [원문 07](../../lectures/captures/07-ai-agent-scope-template.md), [원문 10](../../lectures/captures/10-check-and-review.md)). 본 문서는 🤖/🧑 레인을 가진 Swimlane으로 그 구분을 시각화해, 이후 #11 review가 ✅로 검산할 수 있는 근거를 남긴다.
 
 가장 중요한 설계 원칙은 **완전자동화가 아니라는 점**이다. ②~⑥의 연속 자동 수행은 신뢰도 임계(θ·τ)·재시도(r)·승인 게이트라는 **운영 기준** 안에서만 동작하고, 기준을 벗어나면 즉시 사람에게 넘긴다. 이 운영 기준의 변수(θ/τ/r)는 #09 KSF#1·#3 수용 기준 및 [05 PoC 실험설계](../05-적용_CDSEM_PoC실험설계.md)의 측정 변수와 **동일한 기호**여야 하며(설계 일관성), ②~⑥의 레인 전환 경계는 #06 적용범위와 **글자 그대로 일치**해야 한다 — 불일치는 설계 오류다 (출처: [SPEC §3 08 항목](./_internal/SPEC.md)).
 
@@ -27,7 +27,7 @@ type: 적용사례-실행기획
 
 ### (1) To-Be 플로우차트 (🤖/🧑 레인)
 
-As-Is(#07)와 동일한 ①~⑦ 가로축. As-Is가 전부 🧑였던 것과 대비해, ②~⑥이 🤖 레인으로 이동한 것이 핵심 변화다 (출처: [원문 07](../source/07-ai-agent-scope-template.md), 04 Step9~10 인용).
+As-Is(#07)와 동일한 ①~⑦ 가로축. As-Is가 전부 🧑였던 것과 대비해, ②~⑥이 🤖 레인으로 이동한 것이 핵심 변화다 (출처: [원문 07](../../lectures/captures/07-ai-agent-scope-template.md), 04 Step9~10 인용).
 
 ```
  ①          ②          ③          ④          ⑤          ⑥           ⑦
@@ -115,6 +115,6 @@ As-Is 수행·소요시간(s)·시스템은 #07에서 상속받고, To-Be 재정
 ## 참고 자료 (References)
 - 같은 폴더: [06 AI 과제 정의](./06-ai과제-정의.md)(적용범위 일치) · [09 KSF·제약 정의](./09-ksf-제약-정의.md)(변수 공유)
 - 사례 요약층: [04-적용_CDSEM기술.md](../04-적용_CDSEM기술.md) Step9~10 (본 문서의 seed) · [05 PoC 실험설계](../05-적용_CDSEM_PoC실험설계.md)(τ 측정)
-- 방법론 틀: [02-기술문서_AI과제정의구현.md](../02-기술문서_AI과제정의구현.md)
-- 원문 전사: [원문 07 — AI Agent 대상영역 분석 Template](../source/07-ai-agent-scope-template.md) · [원문 10 — Check & Review](../source/10-check-and-review.md)
+- 방법론 틀: [02-기술문서_AI과제정의구현.md](../../_가이드/02-기술문서_AI과제정의구현.md)
+- 원문 전사: [원문 07 — AI Agent 대상영역 분석 Template](../../lectures/captures/07-ai-agent-scope-template.md) · [원문 10 — Check & Review](../../lectures/captures/10-check-and-review.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.

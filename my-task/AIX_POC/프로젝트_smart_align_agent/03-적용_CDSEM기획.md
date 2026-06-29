@@ -7,7 +7,7 @@ type: 적용사례-기획
 
 # AIX 적용 사례 — CD-SEM Auto Recipe Creation (기획/Discovery)
 
-> [기획 방법론 틀(01)](./01-기획문서_AX서비스기획.md)을 ITC AIX 실제 과제에 적용한 **첫 번째 사례**. New AI Design Camp Track A(Discovery, 1~7단계)를 따라 **CD-SEM Auto Recipe Creation** 과제를 발굴·구조화한다. 실행/To-Be 설계(Track B)는 후속 문서 `04-적용_CDSEM기술.md`에서 다룬다.
+> [기획 방법론 틀(01)](../_가이드/01-기획문서_AX서비스기획.md)을 ITC AIX 실제 과제에 적용한 **첫 번째 사례**. New AI Design Camp Track A(Discovery, 1~7단계)를 따라 **CD-SEM Auto Recipe Creation** 과제를 발굴·구조화한다. 실행/To-Be 설계(Track B)는 후속 문서 `04-적용_CDSEM기술.md`에서 다룬다.
 >
 > 📂 **단계별 상세 산출물**: 본 문서를 단계별로 분리·구체화하고 Validation·Execution까지 채운 실행기획 세트는 [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) 참조.
 >
@@ -19,7 +19,7 @@ type: 적용사례-기획
 
 ## 왜 이 과제인가? (Why)
 
-상위 방법론의 3대 원칙([원문 02](./source/02-ax-consulting-methodology.md))에 비춰 이 과제가 적합한 이유:
+상위 방법론의 3대 원칙([원문 02](../lectures/captures/02-ax-consulting-methodology.md))에 비춰 이 과제가 적합한 이유:
 
 | 원칙 | 이 과제에서의 충족 |
 |------|--------------------|
@@ -33,7 +33,7 @@ type: 적용사례-기획
 
 ### 1. 조직 목표 ↔ 과제 연계 (Top-Down)
 
-과제는 개인 흥미가 아니라 조직 목표에서 연역한다([원문 04](./source/04-org-goal-task-linkage.md) 양식 적용).
+과제는 개인 흥미가 아니라 조직 목표에서 연역한다([원문 04](../lectures/captures/04-org-goal-task-linkage.md) 양식 적용).
 
 ```
 조직 목표            →  업무 목표              →  관련(핵심) 업무                →  AI 대상 후보 과제
@@ -47,7 +47,7 @@ R&D 디바이스           ① 검/계측 효율화          ① MI Recipe Solut
 
 ### 2. 업무 분해 — L1~L5 (AI 배치 지점)
 
-업무를 5단계로 분해해 AI 개입 최소 단위(L5 Task)까지 내려간다([원문 05](./source/05-process-level-definition.md) 체계 적용). **L4를 셋업만이 아니라 의뢰 접수~모니터링 End-to-End로 펼친 뒤** AI 배치 후보를 식별한다.
+업무를 5단계로 분해해 AI 개입 최소 단위(L5 Task)까지 내려간다([원문 05](../lectures/captures/05-process-level-definition.md) 체계 적용). **L4를 셋업만이 아니라 의뢰 접수~모니터링 End-to-End로 펼친 뒤** AI 배치 후보를 식별한다.
 
 ```
 L1 Mega Process : 계측(MI) 운영
@@ -112,7 +112,7 @@ Recipe Creation 셋업만이 아니라 **의뢰 접수부터 검증·등록·후
 
 ### Phase 3. 근본 원인(3-Why) — 집중 Pain
 
-상위 Pain을 근본 원인까지 파고들어 해결 아이디어로 연결한다([원문 08](./source/08-final-output-example.md) 양식 적용).
+상위 Pain을 근본 원인까지 파고들어 해결 아이디어로 연결한다([원문 08](../lectures/captures/08-final-output-example.md) 양식 적용).
 
 | Pain Point | 근본 원인 (3-Why) | 해결 아이디어 |
 |------------|-------------------|----------------|
@@ -125,7 +125,7 @@ Recipe Creation 셋업만이 아니라 **의뢰 접수부터 검증·등록·후
 
 ### Phase 4. 정량 우선순위화 & 과제 선정 (Impact Validation)
 
-망라한 Pain을 **자동화 후보로 묶어 동일 잣대로 스코어링**한다. 기준 = 과제 선정 3-STEP([원문 01](./source/01-kakao-3step-pain-point.md))의 교집합 — **고통(빈도·심각성·주요성) · 구현 난이도 · 비용 효율**.
+망라한 Pain을 **자동화 후보로 묶어 동일 잣대로 스코어링**한다. 기준 = 과제 선정 3-STEP([원문 01](../lectures/captures/01-kakao-3step-pain-point.md))의 교집합 — **고통(빈도·심각성·주요성) · 구현 난이도 · 비용 효율**.
 
 > **점수 정의(척도)** — 빈도(발생 잦음), 심각성(불량·재측정 파급), 주요성(셋업 리드타임 기여). 표의 高/中/低는 **브레인스토밍 예비 평가(가설)** 이며, **1~5 점수·가중치·종합점수는 캠프에서 엔지니어가 정량 확정**한다(절대 수치 아님 — placeholder).
 
@@ -170,7 +170,7 @@ Recipe Creation 셋업만이 아니라 **의뢰 접수부터 검증·등록·후
 - [x] KSF·제약 4측면(기술/조직/비용/정책·보안) → [Track B `04`](./04-적용_CDSEM기술.md) Step 11
 
 ## 참고 자료 (References)
-- 방법론 틀: [01-기획문서_AX서비스기획.md](./01-기획문서_AX서비스기획.md)
+- 방법론 틀: [01-기획문서_AX서비스기획.md](../_가이드/01-기획문서_AX서비스기획.md)
 - 후속 기술 설계: [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) (Track B)
-- 원문 전사: [`source/`](./source/) (특히 01·04·05·08)
+- 원문 전사: [`source/`](../lectures/captures/) (특히 01·04·05·08)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-19). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.

@@ -7,7 +7,7 @@ type: 적용사례-기술
 
 # AIX 적용 사례 — CD-SEM Auto Recipe Creation (기술/To-Be 설계)
 
-> [기술 방법론 틀(02)](./02-기술문서_AI과제정의구현.md)을 ITC AIX 실제 과제에 적용한 **두 번째 사례**. [03 기획(Discovery)](./03-적용_CDSEM기획.md)에서 발굴·구조화한 **CD-SEM Auto Recipe Creation** 과제를, New AI Design Camp Track B(실행 구체화, 8~12단계) — AI 과제 정의서 · To-Be Swimlane · KSF/제약 — 로 구체화한다.
+> [기술 방법론 틀(02)](../_가이드/02-기술문서_AI과제정의구현.md)을 ITC AIX 실제 과제에 적용한 **두 번째 사례**. [03 기획(Discovery)](./03-적용_CDSEM기획.md)에서 발굴·구조화한 **CD-SEM Auto Recipe Creation** 과제를, New AI Design Camp Track B(실행 구체화, 8~12단계) — AI 과제 정의서 · To-Be Swimlane · KSF/제약 — 로 구체화한다.
 >
 > 📂 **단계별 상세 산출물**: 과제 정의·As-Is·To-Be·KSF·개발일정을 각각 독립 산출물로 분리·구체화한 실행기획 세트는 [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) 참조.
 
@@ -20,7 +20,7 @@ type: 적용사례-기술
 
 ## 핵심 개념 (What) — To-Be 5대 용어의 CD-SEM 매핑
 
-02의 표준 용어([원문 10](./source/10-check-and-review.md))를 본 과제에 1:1로 대입하면:
+02의 표준 용어([원문 10](../lectures/captures/10-check-and-review.md))를 본 과제에 1:1로 대입하면:
 
 | 구분 | CD-SEM 과제에서의 의미 |
 |------|------------------------|
@@ -34,7 +34,7 @@ type: 적용사례-기술
 
 ### Step 8. AI 과제 정의서 (Agent Definition)
 
-02의 양식([원문 09](./source/09-ai-task-definition-template.md))을 실제 값으로 채운다.
+02의 양식([원문 09](../lectures/captures/09-ai-task-definition-template.md))을 실제 값으로 채운다.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -72,7 +72,7 @@ type: 적용사례-기술
 
 ### Step 9~10. As-Is → To-Be 프로세스 (Swimlane)
 
-각 단계(Task) 박스를 **🤖 AI Agent 수행 / 🧑 Human 수행** 으로 구분([원문 07](./source/07-ai-agent-scope-template.md)). 가로축 = As-Is ①~⑦ 흐름.
+각 단계(Task) 박스를 **🤖 AI Agent 수행 / 🧑 Human 수행** 으로 구분([원문 07](../lectures/captures/07-ai-agent-scope-template.md)). 가로축 = As-Is ①~⑦ 흐름.
 
 ```
  ①        ②         ③         ④         ⑤         ⑥          ⑦
@@ -131,7 +131,7 @@ Phase 3  layer 확장 · 운영 이관 · 의뢰서 표준화 연계(KSF#4)
 
 ## 설계 검증 — Check & Review (CD-SEM 적용)
 
-02의 3대 점검([원문 10](./source/10-check-and-review.md))을 본 과제에 적용:
+02의 3대 점검([원문 10](../lectures/captures/10-check-and-review.md))을 본 과제에 적용:
 
 ### ✅ 1. AI·사람 역할의 명확한 구분
 🤖 AI: ②~⑥ GUI 직접 조작 + SEM 이미지 판독 기반 좌표/align 재정합 + 오인식 수정.
@@ -158,7 +158,7 @@ As-Is 최대 병목 = ⑥ 오인식 수정 반복. To-Be에서 ⑥을 VLM 실시
 | L4 Activity | As-Is ①~⑦ |
 | **L5 Task (AI 배치)** | **③ 패턴 등록 · ④ 좌표·박스 설정 · ⑥ 오인식 수정** (핵심: ⑥) |
 
-> 영업 예시가 프로세스 그룹별 4개 Agent로 나뉜 것([원문 06](./source/06-sales-ai-opportunity.md))과 달리, 본 과제는 **단일 Recipe Creation 흐름 내 연속 Task(②~⑥)를 하나의 VLM Agent가 GUI 제어로 수행**하는 구조다.
+> 영업 예시가 프로세스 그룹별 4개 Agent로 나뉜 것([원문 06](../lectures/captures/06-sales-ai-opportunity.md))과 달리, 본 과제는 **단일 Recipe Creation 흐름 내 연속 Task(②~⑥)를 하나의 VLM Agent가 GUI 제어로 수행**하는 구조다.
 
 ## Track B 산출물 체크리스트
 
@@ -171,6 +171,6 @@ As-Is 최대 병목 = ⑥ 오인식 수정 반복. To-Be에서 ⑥을 VLM 실시
 
 ## 참고 자료 (References)
 - 기획(Discovery): [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md)
-- 방법론 틀: [02-기술문서_AI과제정의구현.md](./02-기술문서_AI과제정의구현.md)
-- 원문 전사: [`source/`](./source/) (특히 07·09·10)
+- 방법론 틀: [02-기술문서_AI과제정의구현.md](../_가이드/02-기술문서_AI과제정의구현.md)
+- 원문 전사: [`source/`](../lectures/captures/) (특히 07·09·10)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-19). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.
