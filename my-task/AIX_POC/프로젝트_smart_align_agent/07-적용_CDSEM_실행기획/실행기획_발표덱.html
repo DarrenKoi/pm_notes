@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CD-SEM Align Agent · 실행기획 발표 덱 (07~11)</title>
+<!-- 로컬 설치 폰트 사용 (네트워크 의존 없음): Pretendard · IBM Plex Mono · Fraunces -->
+<style>
+:root{
+  --paper:#f4f0e7; --paper-2:#ece6d8; --card:#fbf9f3;
+  --ink:#16202e; --ink-2:#3c4b5e; --ink-3:#6a7686;
+  --line:#d8cfbd; --line-2:#e7e0d0;
+  --ai:#0e7c75; --ai-soft:#dcefed;      /* 🤖 automation */
+  --human:#3a4a60; --human-soft:#e2e6ec; /* 🧑 human */
+  --alert:#b4452f; --alert-soft:#f3ddd5; /* bottleneck */
+  --ok:#2f7d4f; --warn:#bb7c12;
+  --s07:#b4452f; --s08:#0e7c75; --s09:#b6741a; --s10:#355e9c; --s11:#2f7d4f;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Fraunces',serif;
+  --sans:'Pretendard','Pretendard Variable',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#11161d;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{padding:3.2vh 0 8vh}
+
+/* deck + slide frame */
+.deck{width:min(1360px,95vw);margin:0 auto;display:flex;flex-direction:column;gap:3.4vh}
+.slide{
+  position:relative;width:100%;aspect-ratio:16/9;background:var(--paper);
+  container-type:inline-size;overflow:hidden;border-radius:6px;
+  box-shadow:0 18px 50px -18px rgba(0,0,0,.55), 0 2px 0 0 rgba(255,255,255,.04);
+  --stage:var(--ink);
+}
+.slide::before{ /* fine measurement grid texture */
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+  background-size:3.4cqw 3.4cqw;mask-image:linear-gradient(180deg,transparent,#000 40%,#000 90%,transparent);
+}
+.slide[data-stage="07"]{--stage:var(--s07)} .slide[data-stage="08"]{--stage:var(--s08)}
+.slide[data-stage="09"]{--stage:var(--s09)} .slide[data-stage="10"]{--stage:var(--s10)}
+.slide[data-stage="11"]{--stage:var(--s11)}
+
+.pad{position:relative;z-index:1;height:100%;padding:5.4cqw 5.6cqw 4cqw;display:flex;flex-direction:column}
+.slide{font-size:1.42cqw}
+
+/* header */
+.head{display:flex;align-items:flex-start;gap:1.1em;border-bottom:.16em solid var(--stage);padding-bottom:.7em;margin-bottom:1.05em}
+.tag{font-family:var(--mono);font-weight:600;font-size:.82em;letter-spacing:.04em;color:#fff;background:var(--stage);
+  padding:.28em .6em;border-radius:3px;flex:none;margin-top:.15em}
+.htxt h2{font-size:1.62em;font-weight:800;letter-spacing:-.015em;line-height:1.12;color:var(--ink)}
+.htxt .sub{font-size:.86em;color:var(--ink-3);margin-top:.18em;font-weight:500}
+.pgno{position:absolute;top:5.4cqw;right:5.6cqw;font-family:var(--mono);font-size:.78em;color:var(--ink-3);z-index:2}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:.85em}
+
+/* lede */
+.lede{font-size:.92em;line-height:1.5;color:var(--ink-2)}
+.lede b,.lede strong{color:var(--ink);font-weight:700}
+.hl{background:linear-gradient(180deg,transparent 58%,color-mix(in srgb,var(--stage) 26%,transparent) 0);padding:0 .1em}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:.8em;background:var(--card)}
+thead th{background:color-mix(in srgb,var(--stage) 13%,var(--card));color:var(--stage);font-weight:700;
+  text-align:left;padding:.5em .7em;border-bottom:1.5px solid var(--stage);font-size:.95em;letter-spacing:.01em}
+td{padding:.46em .7em;border-bottom:1px solid var(--line-2);color:var(--ink-2);line-height:1.34;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+td b,td strong{color:var(--ink);font-weight:700}
+.mono{font-family:var(--mono);font-size:.92em;color:var(--ink)}
+.c{text-align:center} .sum td{background:color-mix(in srgb,var(--stage) 8%,var(--card));font-weight:700;color:var(--ink)}
+.tnote{font-family:var(--mono);font-size:.78em;color:var(--alert);font-weight:600}
+
+/* chips & callouts */
+.chip{display:inline-flex;align-items:center;gap:.3em;font-size:.82em;font-weight:700;padding:.12em .5em;border-radius:100px;font-family:var(--mono)}
+.chip.ok{background:var(--ai-soft);color:var(--ok)} .chip.tri{background:#f6ebd2;color:var(--warn)}
+.bot{display:inline-block;font-family:var(--mono);font-size:.74em;font-weight:600;color:var(--alert);
+  background:var(--alert-soft);padding:.05em .4em;border-radius:3px;margin-left:.3em}
+.call{font-size:.8em;line-height:1.46;color:var(--ink-2);background:var(--card);border-left:.28em solid var(--stage);
+  padding:.62em .85em;border-radius:0 4px 4px 0}
+.call b{color:var(--ink)} .call.alert{border-color:var(--alert)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.7em}
+
+/* ===== As-Is flow ===== */
+.flow{display:flex;flex-direction:column;gap:.5em;align-items:center;flex:1;justify-content:center}
+.node{font-family:var(--mono);font-size:.78em;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--ink-2);border-radius:4px;padding:.34em .7em}
+.node.start,.node.end{background:var(--ink);color:#fff;border-color:var(--ink);border-radius:100px}
+.steprow{display:flex;align-items:stretch;gap:.4em;flex-wrap:wrap;justify-content:center}
+.step{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:5px;
+  padding:.5em .7em;min-width:7.3em;text-align:center;font-size:.8em}
+.step .n{font-family:var(--mono);font-weight:600;color:var(--human);font-size:1.05em}
+.step .l{display:block;color:var(--ink-2);font-size:.9em;margin-top:.12em}
+.step.b{border-color:var(--alert);box-shadow:inset 0 0 0 1px var(--alert-soft)}
+.arr{font-family:var(--mono);color:var(--ink-3);align-self:center;font-size:1em}
+.loop{display:flex;align-items:center;gap:.7em;background:var(--alert-soft);border:1.5px solid var(--alert);
+  border-radius:6px;padding:.55em .9em;font-size:.82em;max-width:46em}
+.loop .big{font-family:var(--mono);font-weight:700;color:var(--alert);white-space:nowrap}
+.loop .lp{font-family:var(--mono);font-size:.86em;color:var(--alert);font-weight:600;white-space:nowrap;flex:none}
+.loop>span:nth-child(2){flex:1}
+.varr{font-family:var(--mono);color:var(--ink-3);line-height:.7}
+
+/* ===== Swimlane ===== */
+.lane{display:grid;grid-template-columns:5.4em repeat(7,1fr);gap:.32em;font-size:.78em}
+.lane .ph{grid-row:1;background:var(--ink);color:#fff;font-family:var(--mono);font-weight:600;font-size:.82em;
+  text-align:center;padding:.34em .2em;border-radius:3px}
+.lane .lh{display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:3px;padding:.3em;text-align:center;line-height:1.1}
+.lane .lh.h{background:var(--human-soft);color:var(--human)} .lane .lh.a{background:var(--ai-soft);color:var(--ai)}
+.cell{border-radius:3px;padding:.4em .5em;font-size:.92em;line-height:1.22;border:1px dashed var(--line)}
+.cell.h{background:var(--human-soft);border:1px solid color-mix(in srgb,var(--human) 30%,transparent);color:var(--human);font-weight:600}
+.cell.a{background:var(--ai-soft);border:1px solid color-mix(in srgb,var(--ai) 35%,transparent);color:var(--ai);font-weight:600;
+  display:flex;align-items:center;justify-content:center;text-align:center}
+.cell.dim{background:transparent;border-color:var(--line-2)}
+.gate{font-family:var(--mono);font-size:.82em;color:var(--ink);font-weight:600}
+
+/* ===== priority cards ===== */
+.prio{display:flex;flex-direction:column;gap:.4em}
+.pcard{display:flex;align-items:center;gap:.8em;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:.5em .8em;font-size:.82em}
+.pcard .rk{font-family:var(--mono);font-weight:700;color:#fff;background:var(--stage);border-radius:4px;padding:.25em .55em;flex:none}
+.pcard.one{border-color:var(--stage);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--stage) 22%,transparent)}
+.pcard .pt{font-weight:700;color:var(--ink);flex:none;min-width:13.5em}
+.pcard .pd{color:var(--ink-3);font-size:.94em;line-height:1.3}
+
+/* ===== kanban ===== */
+.kan{display:grid;grid-template-columns:7.4em repeat(4,1fr);gap:.3em;font-size:.74em}
+.kan .kh{font-family:var(--mono);font-weight:600;font-size:.92em;padding:.36em .4em;border-radius:3px;line-height:1.16}
+.kan .kh.q{background:var(--ink);color:#fff} .kan .kh.q small{display:block;font-size:.82em;opacity:.75;font-weight:400}
+.kan .rl{display:flex;flex-direction:column;justify-content:center;font-weight:700;color:var(--ink);
+  background:color-mix(in srgb,var(--stage) 10%,var(--card));border-radius:3px;padding:.3em .45em}
+.kan .rl small{font-weight:500;color:var(--ink-3);font-size:.86em}
+.kan .kc{background:var(--card);border:1px solid var(--line-2);border-radius:3px;padding:.34em .46em;color:var(--ink-2);line-height:1.22}
+.kan .g{font-family:var(--mono);font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;
+  background:var(--card);border:1px solid var(--line);border-radius:3px;color:var(--ink-2)}
+.kan .g.g0{background:var(--stage);color:#fff;border-color:var(--stage)}
+.kan .cm{grid-column:2/6;background:var(--ai-soft);border:1px solid color-mix(in srgb,var(--ai) 30%,transparent);
+  color:var(--ai);font-weight:600;border-radius:3px;padding:.34em .6em;display:flex;align-items:center;gap:.6em}
+.kan .cm .ar{font-family:var(--mono);opacity:.7}
+
+/* cover */
+.cover{background:radial-gradient(120% 130% at 80% -10%,#1d2a3a,#11161d 60%);color:#f4f0e7;--stage:var(--s08)}
+.cover::before{opacity:.16;mask-image:none}
+.cover .pad{justify-content:space-between}
+.cover .ey{font-family:var(--mono);font-size:.82em;letter-spacing:.32em;color:#9db4c4;text-transform:uppercase}
+.cover h1{font-family:var(--serif);font-size:3.5em;font-weight:600;line-height:1.02;letter-spacing:-.01em;margin:.32em 0}
+.cover h1 em{font-style:italic;color:#39b3a8}
+.cover .tl{font-size:1.02em;color:#c3d2dd;max-width:34em;line-height:1.5;font-weight:500}
+.cover .ag{display:flex;gap:.5em;flex-wrap:wrap;margin-top:.4em}
+.cover .ag span{font-family:var(--mono);font-size:.74em;color:#cfe7e3;border:1px solid #2f4a52;background:#16252a;
+  padding:.32em .6em;border-radius:100px}
+.cover .meta{display:flex;gap:1.6em;font-family:var(--mono);font-size:.78em;color:#8ea6b6;border-top:1px solid #2a3848;padding-top:1em}
+.cover .meta b{color:#dfeaf0;font-weight:600}
+.beam{position:absolute;top:0;right:8%;width:1px;height:46%;background:linear-gradient(#39b3a8,transparent);z-index:1;opacity:.6}
+.beam::after{content:"";position:absolute;bottom:-6px;left:-5px;width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(#7fe5db,#0e7c75);box-shadow:0 0 14px 3px rgba(57,179,168,.6)}
+
+/* nav */
+.hint{position:fixed;bottom:1.6vh;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;
+  color:#5f7184;background:#161d26;border:1px solid #283341;padding:.4em .8em;border-radius:100px;z-index:50;opacity:.85}
+.hint b{color:#9db4c4}
+
+@media print{
+  body{background:#fff;padding:0} .deck{width:100%;gap:0} .hint{display:none}
+  .slide{box-shadow:none;border-radius:0;break-after:page;aspect-ratio:auto;height:100vh;width:100vw}
+  @page{size:landscape;margin:0}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ===== COVER ===== -->
+<section class="slide cover">
+  <div class="beam"></div>
+  <div class="pad">
+    <div>
+      <div class="ey">ITC AIX · New AI Design Camp · 실행기획</div>
+      <h1>CD-SEM <em>Align Agent</em><br>실행기획 발표</h1>
+      <p class="tl">VLM이 SEM 화면을 직접 보며 GUI를 제어해 Recipe를 만들고, 실측 시 발생하는 좌표 shift·패턴 오인식을 실시간 재정합하는 <b style="color:#dfeaf0">Human-in-the-loop</b> 자동화. 07 As-Is부터 11 Review까지 한 흐름.</p>
+    </div>
+    <div class="ag">
+      <span>07 · As-Is 프로세스</span><span>08 · To-Be Swimlane</span><span>09 · KSF·제약</span>
+      <span>10 · 개발 일정</span><span>11 · Review 검산</span>
+    </div>
+    <div class="meta"><div>구분 <b>Production</b></div><div>담당 <b>ITC AIX / MI</b></div><div>목표 <b>2027 실행</b></div><div>수치 <b>placeholder (캠프 확정)</b></div></div>
+  </div>
+</section>
+
+<!-- ===== 1 · [07] As-Is flow ===== -->
+<section class="slide" data-stage="07">
+  <div class="pgno">01 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">07</div><div class="htxt">
+      <h2>As-Is 프로세스 정의 · Activity Flow</h2>
+      <div class="sub">Recipe Creation 셋업 — 현재 ①~⑦ 전 단계 🧑 수동 수행 (Work / Event)</div></div></div>
+    <div class="body">
+      <p class="lede">측정 의뢰(Event)를 받아 신규 Recipe를 만들고, 시험측정에서 발생하는 패턴 오인식·좌표 오류를 통과 기준까지 수정·재측정하여 DB에 등록하는 업무. 병목 <b>③·④·⑥</b>, <b class="hl">최대 병목 ⑥</b>(시험측정↔수정 반복 루프).</p>
+      <div class="flow">
+        <div class="node start">◆ Start — 측정 의뢰서 접수 (MIDAS · PPT)</div>
+        <div class="varr">▼</div>
+        <div class="steprow">
+          <div class="step"><span class="n">🧑 ①</span><span class="l">대상 확인</span></div><span class="arr">→</span>
+          <div class="step"><span class="n">🧑 ②</span><span class="l">생성·로드</span></div><span class="arr">→</span>
+          <div class="step b"><span class="n">🧑 ③</span><span class="l">패턴 등록 <span class="bot">병목</span></span></div><span class="arr">→</span>
+          <div class="step b"><span class="n">🧑 ④</span><span class="l">좌표·박스 <span class="bot">병목</span></span></div><span class="arr">→</span>
+          <div class="step"><span class="n">🧑 ⑤</span><span class="l">이미징 조건</span></div>
+        </div>
+        <div class="varr">▼</div>
+        <div class="loop">
+          <span class="big">🧑 ⑥ 시험측정 Try <span class="bot">최대 병목</span></span>
+          <span>공정 variation 이미지 차이로 패턴 실패·좌표 오류 → 수정 → 재측정</span>
+          <span class="lp">↻ 반복 루프</span>
+        </div>
+        <div class="varr">▼ <span style="font-family:var(--mono);font-size:.7em;color:var(--ink-3)">통과</span></div>
+        <div class="steprow" style="align-items:center">
+          <div class="step"><span class="n">🧑 ⑦</span><span class="l">저장·검증</span></div>
+          <span class="arr">→</span><div class="node end">◆ End — Recipe DB 등록 완료</div>
+        </div>
+      </div>
+      <div class="call"><b>Work / Event</b> — 활동(Work, 🧑 박스)은 사람 수행 단위, 이벤트(◆)는 활동의 시작·분기(통과 판정)·종료를 일으키는 상태 변화. ⑥의 반복 루프가 As-Is 리드타임을 지배한다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2 · [07] As-Is detail ===== -->
+<section class="slide" data-stage="07">
+  <div class="pgno">02 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">07</div><div class="htxt">
+      <h2>As-Is 각 Activity 상세</h2>
+      <div class="sub">소요시간 · 사용 시스템 — To-Be·수익성·기대효과의 백데이터</div></div></div>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:20%">단계 (Activity)</th><th>설명</th><th class="c" style="width:11%">소요시간</th><th style="width:20%">사용 시스템</th></tr></thead>
+        <tbody>
+          <tr><td><b>🧑 ① 측정 대상 확인</b></td><td>도면·스펙 검토로 측정 레이어/패턴 파악</td><td class="c mono">s₁</td><td>MIDAS (의뢰서)</td></tr>
+          <tr><td><b>🧑 ② Recipe 생성·로드</b></td><td>신규 Recipe 생성, 웨이퍼/샘플 로드</td><td class="c mono">s₂</td><td>CD-SEM 장비 GUI</td></tr>
+          <tr><td><b>🧑 ③ 패턴 등록</b> <span class="bot">병목</span></td><td>Alignment/Addressing 포인트 수동 등록</td><td class="c mono">s₃</td><td>CD-SEM 장비 GUI</td></tr>
+          <tr><td><b>🧑 ④ 좌표·박스 설정</b> <span class="bot">병목</span></td><td>측정 포인트(EP) 좌표·박스·알고리즘 수동 설정</td><td class="c mono">s₄</td><td>CD-SEM 장비 GUI</td></tr>
+          <tr><td><b>🧑 ⑤ 이미징 조건 설정</b></td><td>배율·전압·FOV 등 설정 (ref 없으면 협의)</td><td class="c mono">s₅</td><td>장비 GUI / Recipe DB</td></tr>
+          <tr><td><b>🧑 ⑥ 시험측정·오인식 수정</b> <span class="bot">최대 병목</span></td><td>공정 variation 이미지 차이로 패턴 실패·좌표 오류 → 수정 → 재측정 <b>반복 루프</b></td><td class="c"><span class="tnote">s₆ 최대</span></td><td>CD-SEM 장비 GUI</td></tr>
+          <tr><td><b>🧑 ⑦ 저장·검증</b></td><td>Recipe 저장·등록 → 검증 (누락 시 후공정 전파 위험)</td><td class="c mono">s₇</td><td>장비 GUI / Recipe DB</td></tr>
+          <tr class="sum"><td>합계</td><td>As-Is 셋업 리드타임 (1건당)</td><td class="c mono">ΣS</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="cols">
+        <div class="call"><b>백데이터 연결</b> — 소요시간 → #08 <i>before</i> 값 · #05 ΔS=ΣS−ΣS′ As-Is 항 · #10 기대효과 근거 / 사용 시스템 → #09 제약(장비 SW 버전 의존) 출처.</div>
+        <div class="call"><b>#06 스코프 구분</b> — 06의 <i>주 400건·5분</i>은 ⑥ 중 Align fail 1차 PoC(측정 10%) 실측, 본 s₆/ΣS는 전체 셋업 1건 → 곱하지 않고 <b>1차 PoC ⊂ 전체 셋업</b> 포함관계로 별도 계산.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3 · [08] To-Be swimlane ===== -->
+<section class="slide" data-stage="08">
+  <div class="pgno">03 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">08</div><div class="htxt">
+      <h2>To-Be 프로세스 정의 · Swimlane</h2>
+      <div class="sub">🤖 AI (VLM · computer-use) / 🧑 Human + 운영 기준 θ·τ·r</div></div></div>
+    <div class="body">
+      <p class="lede">As-Is와 <b>같은 ①~⑦ 축</b>에서 <b>①·⑦은 사람(🧑)</b>, <b style="color:var(--ai)">②~⑥은 VLM(🤖)</b>이 SEM 화면을 판독하며 GUI를 직접 제어해 연속 수행. As-Is 최대 병목 ⑥(반복 수정)을 <b class="hl">VLM 실시간 재정합</b>으로 정조준.</p>
+      <div class="lane">
+        <div class="ph" style="grid-row:1;grid-column:2">① 의뢰</div><div class="ph" style="grid-row:1;grid-column:3">② 생성</div><div class="ph" style="grid-row:1;grid-column:4">③ 패턴</div><div class="ph" style="grid-row:1;grid-column:5">④ 좌표</div><div class="ph" style="grid-row:1;grid-column:6">⑤ 이미징</div><div class="ph" style="grid-row:1;grid-column:7">⑥ 재정합</div><div class="ph" style="grid-row:1;grid-column:8">⑦ 저장</div>
+        <div class="lh h" style="grid-row:2;grid-column:1">🧑 Human</div>
+        <div class="cell h" style="grid-row:2;grid-column:2">검토·플래깅</div>
+        <div class="cell dim" style="grid-row:2;grid-column:3/8"></div>
+        <div class="cell h" style="grid-row:2;grid-column:8">최종검증·승인 ◀게이트</div>
+        <div class="lh a" style="grid-row:3;grid-column:1">🤖 AI<br>(VLM)</div>
+        <div class="cell dim" style="grid-row:3;grid-column:2"></div>
+        <div class="cell a" style="grid-row:3;grid-column:3/8">② ▸ ③ ▸ ④ ▸ ⑤ ▸ ⑥ &nbsp;VLM이 GUI 직접 제어로 연속 자동 수행 · ⑥ 좌표 shift·오인식 실시간 재정합</div>
+      </div>
+      <div class="call alert"><b>예외 핸드오프</b> — θ·τ 미달 또는 재시도 r 초과 → 🧑 엔지니어 핸드오프 → 수동 보정 후 ⑦ 승인 게이트로 복귀. <b>완전자동화 아님 — Human-in-the-loop.</b></div>
+      <table>
+        <thead><tr><th style="width:12%">변수</th><th style="width:24%">의미</th><th style="width:26%">적용 위치</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><b>θ</b></td><td>화면매칭 신뢰도 임계</td><td>②~⑤ (GUI 인식·제어)</td><td>미달 시 재시도 또는 핸드오프</td></tr>
+          <tr><td class="mono"><b>τ</b></td><td>재정합 정확도 임계</td><td>⑥ (좌표 재정합·오인식 수정)</td><td>#09 KSF#1 수용 기준 = 05 PoC 변수</td></tr>
+          <tr><td class="mono"><b>r</b></td><td>재시도 횟수 임계</td><td>②~⑥ 공통</td><td>r 초과 = 예외 핸드오프 (#09 KSF#3)</td></tr>
+          <tr><td class="mono"><b>승인</b></td><td>사람 최종 승인 게이트</td><td>⑦</td><td>승인 없이는 Recipe 등록 불가</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4 · [08] As-Is→To-Be table ===== -->
+<section class="slide" data-stage="08">
+  <div class="pgno">04 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">08</div><div class="htxt">
+      <h2>As-Is → To-Be 확장 테이블</h2>
+      <div class="sub">재정의 · 적용 AI 기술(사내 LLM만) · 주체 · s′ — 운영 기준은 좌측 장표</div></div></div>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:18%">단계</th><th>To-Be 수행 (재정의)</th><th style="width:21%">적용 AI 기술</th><th class="c" style="width:8%">주체</th><th class="c" style="width:8%">s′</th></tr></thead>
+        <tbody>
+          <tr><td><b>① 의뢰서 검토</b></td><td>의뢰서 부족정보 자동 플래깅, 필요 시 사람 검토</td><td>Kimi-K2.5(파싱) + VLM(도면)</td><td class="c">🧑</td><td class="c mono">s′₁</td></tr>
+          <tr><td><b>② Recipe 생성·로드</b></td><td>VLM이 GUI 조작해 신규 Recipe 생성·로드</td><td>Qwen3-VL computer-use</td><td class="c">🤖</td><td class="c mono">s′₂</td></tr>
+          <tr><td><b>③ 패턴 등록</b> <span class="bot" style="color:var(--ai);background:var(--ai-soft)">구 병목</span></td><td>SEM 화면 판독해 Align/Addressing 패턴 등록</td><td>Qwen3-VL computer-use</td><td class="c">🤖</td><td class="c mono">s′₃</td></tr>
+          <tr><td><b>④ 좌표·박스</b> <span class="bot" style="color:var(--ai);background:var(--ai-soft)">구 병목</span></td><td>EP 좌표·측정박스·알고리즘 자동 설정</td><td>Qwen3-VL computer-use</td><td class="c">🤖</td><td class="c mono">s′₄</td></tr>
+          <tr><td><b>⑤ 이미징 조건</b></td><td>ref 동일 시 배율·전압·FOV 자동 적용</td><td>Qwen3-VL computer-use</td><td class="c">🤖</td><td class="c mono">s′₅</td></tr>
+          <tr><td><b>⑥ 실시간 재정합</b> <span class="bot">구 최대 병목</span></td><td>좌표 shift·패턴 오인식 실시간 재정합·자동 수정</td><td>Qwen3-VL-30B 정밀 비전</td><td class="c">🤖</td><td class="c mono">s′₆</td></tr>
+          <tr><td><b>⑦ 저장·검증·승인</b></td><td>엔지니어 최종 검증·승인·Recipe 등록</td><td>사람 (VLM 자가점검 보조)</td><td class="c">🧑</td><td class="c mono">s′₇</td></tr>
+        </tbody>
+      </table>
+      <div class="cols">
+        <div class="call alert"><b>예외 핸드오프</b> — θ·τ 미달 / r 초과 → 🧑 엔지니어 핸드오프 → 보정 후 ⑦ 복귀.</div>
+        <div class="call"><b>절감폭 ΔS</b> — ΣS′=Σs′, As-Is 대비 <b>ΔS = ΣS − ΣS′</b> → 수익성(ROI≈ΔS×N)·기대효과. ΔS 대부분은 ⑥(s′₆ ≪ s₆).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5 · [09] KSF matrix ===== -->
+<section class="slide" data-stage="09">
+  <div class="pgno">05 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">09</div><div class="htxt">
+      <h2>KSF 매트릭스 (4관점)</h2>
+      <div class="sub">핵심 성공요소 · 장애 요인 · 선결 조건 · 적용 기술 — 반드시 충족돼야 작동하는 must</div></div></div>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:13%">관점</th><th>핵심 성공요소 (KSF)</th><th>장애 요인</th><th>선결 조건</th><th style="width:17%">적용 기술</th></tr></thead>
+        <tbody>
+          <tr><td><b>업무<br>프로세스</b></td><td>②~⑥ 연속 수행 + 예외 시 기준대로 사람 핸드오프</td><td>⑥ 좌표 재정합 잔존 오류 · 예외 기준 모호</td><td>신뢰도 임계 τ·재시도 r 정의 + ⑦ 승인 게이트</td><td>신뢰도 룰엔진 · 핸드오프 오케스트레이션</td></tr>
+          <tr><td><b>데이터</b></td><td>SEM 이미지·ref recipe·라벨 충분 확보</td><td>배율·노이즈 편차 · 라벨 공수 · 사내문서 99% <b>DRM</b></td><td>숙련 엔지니어 라벨 + 스크린샷→VLM 추출 파이프라인</td><td>Qwen3-VL 추출 · BGE-M3 검색</td></tr>
+          <tr><td><b>시스템·<br>인프라</b></td><td>GUI 자동제어 안정 + VLM 추론 자원 확보</td><td>장비 SW 버전 의존 · GPU 한계 · <b>외부 LLM API 차단</b></td><td>사내 Qwen3-VL 엔드포인트 · GPU 서버 · 섀도우 환경 · 안전 인터록</td><td>Qwen3-VL-8B/30B · computer-use</td></tr>
+          <tr><td><b>조직 문화</b></td><td>엔지니어 신뢰 + 현장 수용</td><td>장비 직접 제어 거부감 · 검증 권한 귀속</td><td><b>⑦ 사람 최종승인 유지</b> · 운영팀 협업 · 단계적 도입</td><td>설명가능 리포트 · HITL 승인 UI</td></tr>
+        </tbody>
+      </table>
+      <div class="call"><b>정합성 박제</b> — 조직 문화 선결 「⑦ 사람 최종승인 유지」 = #08 To-Be 🧑 레인과 <b>동일</b>(불일치 = 설계 오류) / 장애 요인 열 = #10 리스크 게이트(🚦) 입력 / 적용 기술 LLM은 전부 <b>사내 OpenAI-호환 엔드포인트</b>(외부 API 없음).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6 · [09] priority + safety ===== -->
+<section class="slide" data-stage="09">
+  <div class="pgno">06 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">09</div><div class="htxt">
+      <h2>선결 우선순위 + 안전·보안·감사 보강</h2>
+      <div class="sub">#1은 다른 모든 선결의 전제 — 안 되면 ⑥ 자동화 자체가 성립하지 않음</div></div></div>
+    <div class="body">
+      <div class="prio">
+        <div class="pcard one"><span class="rk">#1</span><span class="pt">좌표 재정합 정확도 (τ)</span><span class="pd">최대 리스크 · ⑥ 자동화 성립 여부 자체 = <b>Phase0 PoC 검증</b>(실 장비 영향 0 섀도우), 미달 시 재설계 게이트</span></div>
+        <div class="pcard"><span class="rk">#2</span><span class="pt">GUI 자동제어 안정</span><span class="pd">②~⑤ 무중단 · 장비 SW 버전 의존성 관리 (computer-use)</span></div>
+        <div class="pcard"><span class="rk">#3</span><span class="pt">핸드오프 기준 (τ/r)</span><span class="pd">"어느 오인식부터 사람에게 넘기나" 예외 임계 정의</span></div>
+        <div class="pcard"><span class="rk">#4</span><span class="pt">신뢰·수용 (현장 도입)</span><span class="pd">엔지니어 신뢰 + 운영팀 협업 + 단계적 도입</span></div>
+      </div>
+      <table>
+        <thead><tr><th style="width:22%">⚠ 안전·보안·감사 (장비 직접 제어 필수)</th><th>선결 내용</th></tr></thead>
+        <tbody>
+          <tr><td><b>안전 인터록·롤백</b></td><td>실 웨이퍼·라인 영향 동작은 인터록 사전 차단 + 오제어 즉시 롤백 (섀도우/오프라인 우선 검증)</td></tr>
+          <tr><td><b>사고 책임소재</b></td><td>AI 오작동 시 책임자·대응 절차 사전 지정 (&lt;담당 임원&gt;·운영팀, #10 RACI 연결)</td></tr>
+          <tr><td><b>보안 승인·감사 추적</b></td><td>DRM→VLM 경로 유출 점검 + 사내 엔드포인트 격리·접근로그 <b>보안팀 승인</b>, AI 판정은 모델 버전과 함께 감사 로그로 재현 가능</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7 · [10] kanban ===== -->
+<section class="slide" data-stage="10">
+  <div class="pgno">07 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">10</div><div class="htxt">
+      <h2>분기 칸반 보드 (Q1~Q4 × 테마)</h2>
+      <div class="sub">목표 1년(2027) · Q1에 최대 리스크 PoC를 Stage-Gate(G0)로 먼저 친다 · 테마 = #09 KSF 4관점</div></div></div>
+    <div class="body">
+      <div class="kan">
+        <div class="kh" style="background:transparent"></div>
+        <div class="kh q">Q1<small>Phase0 PoC · 재정합</small></div><div class="kh q">Q2<small>Phase1 · 단일 layer</small></div>
+        <div class="kh q">Q3<small>Phase2 · ⑥+핸드오프</small></div><div class="kh q">Q4<small>Phase3 · 확장·이관</small></div>
+
+        <div class="rl">프로세스<small>↔ 업무</small></div>
+        <div class="kc">As-Is/To-Be 확정 · 임계 θ/τ/r 정의</div><div class="kc">②~⑤ 자동 수행 · ⑦ 승인 게이트</div><div class="kc">⑥ 재정합 + 예외 핸드오프 도입</div><div class="kc">운영 이관 · SOP · MIDAS 연계</div>
+
+        <div class="rl">데이터</div>
+        <div class="kc">SEM 이미지 수집 · 숙련자 라벨 · hard set</div><div class="kc">캡처+VLM 추출 파이프라인 · BGE-M3</div><div class="kc">데이터셋 확장 · 핸드오프 피드백</div><div class="kc">운영 데이터 축적 · 재학습셋</div>
+
+        <div class="rl">AI 모델<small>↔ 시스템</small></div>
+        <div class="kc">재정합 PoC (8B vs 30B 비교)</div><div class="kc">computer-use 통합(②~⑤) · GUI 연동</div><div class="kc">30B 정밀(⑥) · 신뢰도 룰엔진</div><div class="kc">일반화 · 8B 경량화 · layer 확장</div>
+
+        <div class="rl">Test</div>
+        <div class="kc">섀도우 환경 · 측정 프로토콜(τ/s/r/N)</div><div class="kc">단일 layer E2E 오프라인</div><div class="kc">예외 핸드오프 · 수용 게이트</div><div class="kc">제한 파일럿(실장비) · 회귀</div>
+
+        <div class="rl">🚦 게이트</div>
+        <div class="g g0">G0 · Stage-Gate</div><div class="g">G1</div><div class="g">G2</div><div class="g">G3</div>
+
+        <div class="rl">👤 변화관리</div>
+        <div class="cm"><span>운영팀 협업 · 엔지니어 신뢰 · HITL 승인 UI</span><span class="ar">──── 전 구간 상시 (Execution) ────▶</span></div>
+      </div>
+      <div class="call">모델 레인 ②~⑥ = #08 To-Be 적용범위 일치(Q2=②~⑤, Q3=⑥), 불일치=설계오류. <b>완전자동화 아님</b> — ⑦ 사람 승인은 Q2부터 끝까지 유지. 변화관리는 분기에 가두지 않는 가로 레인.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8 · [10] gates + roadmap ===== -->
+<section class="slide" data-stage="10">
+  <div class="pgno">08 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">10</div><div class="htxt">
+      <h2>🚦 게이트 레인 (G0~G3) + 실행 로드맵</h2>
+      <div class="sub">분기말 게이트 = 다음 분기 자원 투입 결정점 — G0가 핵심 안전장치</div></div></div>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:13%">게이트</th><th class="c" style="width:8%">시점</th><th>판정 기준</th><th style="width:16%">통과 →</th><th>미달 →</th></tr></thead>
+        <tbody>
+          <tr><td><b>🚦 G0</b><br><span style="color:var(--s10);font-weight:700">Stage-Gate</span></td><td class="c mono">Q1말</td><td>Phase0 PoC: P95 오차 ≤ τ <b>그리고</b> 오인식 recall ≥ r</td><td>Q2 착수 (GUI 제어 통합)</td><td><b style="color:var(--alert)">과제 재설계</b> — fine-tune/전용 vision/hybrid (자원 투입 전 중단)</td></tr>
+          <tr><td><b>🚦 G1</b></td><td class="c mono">Q2말</td><td>단일 layer ②~⑤ E2E 오프라인 통과 · ⑦ 승인 동작</td><td>Q3 착수 (⑥ 본격)</td><td>layer/패턴 좁혀 진행 + 원인 분석</td></tr>
+          <tr><td><b>🚦 G2</b></td><td class="c mono">Q3말</td><td>⑥ 재정합 + 예외 핸드오프 수용 게이트(recall/false-alarm)</td><td>Q4 착수 (확장·이관)</td><td>핸드오프 임계 τ/r 재조정 후 재검증</td></tr>
+          <tr><td><b>🚦 G3</b></td><td class="c mono">Q4말</td><td>제한 파일럿 회귀 통과 · 운영 SOP 정립</td><td>운영 이관·확장 결정</td><td>파일럿 범위 유지·안정화</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th style="width:13%">실행 로드맵</th><th>오너십 · RACI · Kill</th></tr></thead>
+        <tbody>
+          <tr><td><b>오너십</b></td><td>Champion=&lt;담당 임원&gt;(A) · 워크스트림 리드(R): 프로세스·데이터·AI모델·Test·변화관리 각 &lt;리드&gt;</td></tr>
+          <tr><td><b>RACI</b></td><td><b>R</b> 워크스트림 리드 · <b>A</b> Champion · <b>C</b> 데이터/모델 오너·<b>보안 승인자</b>·운영팀 · <b>I</b> 현업 엔지니어</td></tr>
+          <tr><td><b>Kill 기준</b></td><td>게이트 재설계 <b>누적 2회 초과 → 재설계 아닌 과제 중단(Kill)</b>, 결정=Champion (좀비 과제 자원 잠식 방지)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 9 · [11] checklist ===== -->
+<section class="slide" data-stage="11">
+  <div class="pgno">09 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">11</div><div class="htxt">
+      <h2>설계 검증 체크리스트 (6질문)</h2>
+      <div class="sub">Review = 신규 생성 아닌 검산 — ✅ 미충족 = 출처 파일 부실 신호</div></div></div>
+    <div class="body">
+      <table>
+        <thead><tr><th class="c" style="width:5%">#</th><th style="width:30%">점검 질문</th><th class="c" style="width:8%">판정</th><th>근거 — 어느 산출물이 답하나</th></tr></thead>
+        <tbody>
+          <tr><td class="c mono">1</td><td>AI·사람 역할이 Task별로 명확히 구분되는가?</td><td class="c"><span class="chip ok">✅</span></td><td>#08 🤖/🧑 Swimlane(②~⑥=AI / ①·⑦·예외=사람) + #02 AI 대체 판정</td></tr>
+          <tr><td class="c mono">2</td><td>최대 병목 구간을 개선하는가?</td><td class="c"><span class="chip ok">✅</span></td><td>#03 ⑥ 최대 병목 식별 → #07 s₆=최대 → #08 ⑥ VLM 실시간 재정합 대체</td></tr>
+          <tr><td class="c mono">3</td><td>제약을 다각도로 검토하는가?</td><td class="c"><span class="chip ok">✅</span></td><td>#09 4관점(업무·데이터·시스템/인프라·조직 문화) 장애·선결</td></tr>
+          <tr><td class="c mono">4</td><td>KSF가 선결 조건 위주로 명확한가?</td><td class="c"><span class="chip ok">✅</span></td><td>#09 선결 우선순위 #1~#4 + #05 준비계획 구체성(PoC)</td></tr>
+          <tr><td class="c mono">5</td><td>과제가 전략에서 연역됐는가(추적성)?</td><td class="c"><span class="chip ok">✅</span></td><td>#01 Top-Down 연계표(출발) ↔ #06 과제정의 각 필드(도착)</td></tr>
+          <tr><td class="c mono">6</td><td>가치가 정량화됐는가?</td><td class="c"><span class="chip tri">△</span></td><td>#05 ROI=ΔS×N 구조는 잡힘, 값은 placeholder(τ/s/r/N) → 캠프 실측 시 ✅</td></tr>
+        </tbody>
+      </table>
+      <div class="call"><b>판정 결론</b> — ✅ 5 + △ 1. 모든 질문이 가리키는 출처 파일이 답을 내므로 <b>12개 산출물은 한 줄(전략→Pain→근본원인→과제정의→To-Be→KSF→일정)로 모순 없이 꿰인다.</b> #6의 △는 결함이 아니라 <b>설계 깊이의 경계</b>(실측은 캠프 확정) — 후속 작업으로 이월.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10 · [11] cross-check + close ===== -->
+<section class="slide" data-stage="11">
+  <div class="pgno">10 / 10</div>
+  <div class="pad">
+    <div class="head"><div class="tag">11</div><div class="htxt">
+      <h2>교차 정합성 + 마무리 (피드백 루프)</h2>
+      <div class="sub">파일 간 값이 서로 어긋나지 않는지 검산 (불일치 = 설계 오류)</div></div></div>
+    <div class="body">
+      <div class="cols" style="align-items:start">
+        <table>
+          <thead><tr><th>교차 정합성 스팟체크</th><th class="c" style="width:18%">기대</th></tr></thead>
+          <tbody>
+            <tr><td>AI 수행 범위 ②~⑥ &nbsp;<span style="color:var(--ink-3)">#06 ↔ #08 🤖</span></td><td class="c"><span class="chip ok">동일</span></td></tr>
+            <tr><td>사람 최종 승인 ⑦ &nbsp;<span style="color:var(--ink-3)">#08 🧑 ↔ #09</span></td><td class="c"><span class="chip ok">동일</span></td></tr>
+            <tr><td>운영 기준 θ/τ/r &nbsp;<span style="color:var(--ink-3)">#08 ↔ #09 ↔ #10</span></td><td class="c"><span class="chip ok">동일</span></td></tr>
+            <tr><td>KSF 4관점 ↔ 일정 테마 &nbsp;<span style="color:var(--ink-3)">#09 ↔ #10</span></td><td class="c"><span class="chip ok">1:1</span></td></tr>
+            <tr><td>placeholder 표기 &nbsp;<span style="color:var(--ink-3)">전 파일</span></td><td class="c"><span class="chip ok">통일</span></td></tr>
+          </tbody>
+        </table>
+        <table>
+          <thead><tr><th>피드백 루프 (△→✅)</th><th class="c" style="width:22%">확정 주체</th></tr></thead>
+          <tbody>
+            <tr><td><b>Champion</b> &lt;담당 임원&gt; → #06</td><td class="c">조직</td></tr>
+            <tr><td><b>θ, τ</b> 임계 → #08·#09·#10</td><td class="c">엔지니어(캠프)</td></tr>
+            <tr><td><b>s, s′</b> 소요시간 → #07·#08·#05</td><td class="c">실측 (Phase0~1)</td></tr>
+            <tr><td><b>r, N</b> 재시도·처리량 → #08·#05</td><td class="c">엔지니어·파일럿</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="call"><b>패키징 · 발표 · 루프</b> — #00 README가 11산출물을 한 묶음으로 인덱싱(인덱스↔파일 일치 = 패키징 검증). <b>업데이트 루프</b>: 캠프 피드백 → placeholder 입력 → 해당 #0N 수정 → #6 재검산 → #00 last_updated 갱신 ⇒ #6 △→✅.</div>
+      <div style="text-align:center;font-family:var(--serif);font-size:1.15em;color:var(--s11);font-weight:600;margin-top:.2em">설계가 점검을 통과했다 — 남은 것은 캠프의 실측 확정.</div>
+    </div>
+  </div>
+</section>
+
+</div>
+<div class="hint">← → 또는 ↑ ↓ 로 이동 &nbsp;·&nbsp; <b>P</b> 인쇄/PDF</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+function go(n){i=Math.max(0,Math.min(slides.length-1,n));slides[i].scrollIntoView({behavior:'smooth',block:'center'});}
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1);}
+  else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(i-1);}
+  else if(e.key==='Home'){go(0);}else if(e.key==='End'){go(slides.length-1);}
+  else if(e.key==='p'||e.key==='P'){window.print();}
+});
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting)i=slides.indexOf(en.target);}),{threshold:.5});
+slides.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
