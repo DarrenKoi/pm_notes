@@ -7,7 +7,7 @@ type: project-index
 
 # Smart Align Agent — CD-SEM Align Fail 대응 자동화
 
-> **Smart Align Agent** = CD-SEM **Auto Recipe Creation**(셋업 ②~⑥) 중 **1차 PoC = Align Fail 대응 자동화**. VLM이 SEM 화면을 판독하고 GUI를 직접 제어해, 실측 시작 시 발생하는 **좌표 shift · align 실패 · 오인식을 실시간 재정합**한다. ①(의뢰 검토)·⑦(최종 승인)은 사람이 유지 — **완전자동화가 아닌 Human-in-the-loop**.
+> **Smart Align Agent** = CD-SEM **Auto Recipe Creation**(셋업 ②~⑥) 중 **1차 PoC = Align Fail 대응 자동화**. VLM이 SEM 화면을 판독하고 GUI를 직접 제어해, Recipe Setup 후 **공정 variation으로 실측 이미지가 달라져 발생하는 좌표 shift · align 실패 · 오인식을 실시간 재정합**한다. ①(의뢰 검토)·⑦(최종 승인)은 사람이 유지 — **완전자동화가 아닌 Human-in-the-loop**.
 
 이 폴더는 [`../_가이드/01·02`](../_가이드/) 방법론 틀을 ITC AIX 실제 과제로 채운 **첫 번째 프로젝트 사례**다. 표준 근거는 [`../lectures/`](../lectures/README.md).
 
@@ -15,7 +15,7 @@ type: project-index
 
 | 문서 | 성격 | 내용 |
 |------|------|------|
-| [`03-적용_CDSEM기획.md`](./03-적용_CDSEM기획.md) | 기획 (Track A) | **Discovery** — End-to-End SOP · 망라 Pain · 정량 우선순위 선정. 1차 PoC를 ⑥(+③④) 최대 병목으로 좁힘. |
+| [`03-적용_CDSEM기획.md`](./03-적용_CDSEM기획.md) | 기획 (Track A) | **Discovery** — End-to-End SOP · 망라 Pain · 정량 우선순위 선정. 1차 PoC를 ⑥(+③④) 최대 병목으로 좁힘 — align fail 대응은 ⑥ 오측/인식 실패 수정과 같은 개념이고 align image 재등록이 비교적 단순해 진입점으로 선택. |
 | [`04-적용_CDSEM기술.md`](./04-적용_CDSEM기술.md) | 기술 (Track B) | **To-Be 설계** — AI 과제 정의서 · To-Be Swimlane(🤖/🧑) · KSF·제약 4측면. |
 | [`05-적용_CDSEM_PoC실험설계.md`](./05-적용_CDSEM_PoC실험설계.md) | 기술 백업 | **KSF#1 검증** — VLM 좌표 재정합 정확도 PoC 실험 *설계*(04 Phase 0). 실행 아님. |
 | [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) | 상세 | **실행기획 11단계 세트** — 전략일관성→…→KSF→개발일정→Review. Validation·Execution 포함, 내년 실행 가능 깊이. |
