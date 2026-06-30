@@ -68,7 +68,7 @@ type: 적용사례-기술
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-> **명칭** — 위 1차 PoC(Align fail 대응 자동화 = ⑥+③④)를 **Smart Align Agent**로 명명한다. 과제명 `Auto Recipe Creation`(②~⑥ 전체)의 1차 PoC 범위에 붙는 Agent 이름이며, 과제명 자체를 대체하지 않는다. Align fail에 먼저 대응하는 이유 — align fail 수정과 ⑥ 오측/인식 실패 수정은 큰 틀에서 같은 개념이고, align image 재등록(recipe tuning)이 비교적 간단해 최대 병목을 정조준하면서도 PoC로 다루기 좋기 때문이다.
+> **명칭** — 위 1차 PoC(Align fail 대응 자동화 = ⑥+③④)를 **Align Agent**로 명명한다. 과제명 `Auto Recipe Creation`(②~⑥ 전체)의 1차 PoC 범위에 붙는 Agent 이름이며, 과제명 자체를 대체하지 않는다. Align fail에 먼저 대응하는 이유 — align fail 수정과 ⑥ 오측/인식 실패 수정은 큰 틀에서 같은 개념이고, align image 재등록(recipe tuning)이 비교적 간단해 최대 병목을 정조준하면서도 PoC로 다루기 좋기 때문이다.
 
 ### Step 9~10. As-Is → To-Be 프로세스 (Swimlane)
 

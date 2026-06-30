@@ -49,7 +49,7 @@ lectures/captures/01~10 + lectures 완본 덱  (원문 전사·표준, 불변)
 _가이드/01·02 (방법론 "틀")     ← 프레임워크. 일반론. 재사용 가능.
       │  01=기획(Track A Discovery), 02=기술(Track B To-Be 설계)
       ▼
-프로젝트_<이름>/03·04… (적용 "사례")  ← 틀을 실제 과제로 채운 인스턴스 (예: CD-SEM = Smart Align Agent)
+프로젝트_<이름>/03·04… (적용 "사례")  ← 틀을 실제 과제로 채운 인스턴스 (예: CD-SEM = Align Agent)
 ```
 
 - **`lectures/captures/`** = 원문 전사. 캡처 이미지를 그대로 옮긴 것이며 **재해석·요약·수정하지 않는다.** frontmatter에 원본 파일명(`source:`)과 `type: source-transcription`을 단다. `lectures/`가 상위·완본 출처다.

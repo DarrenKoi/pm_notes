@@ -5,9 +5,9 @@ last_updated: 2026-06-30
 type: project-index
 ---
 
-# Smart Align Agent — CD-SEM Align Fail 대응 자동화
+# Align Agent — CD-SEM Align Fail 대응 자동화
 
-> **Smart Align Agent** = CD-SEM **Auto Recipe Creation**(셋업 ②~⑥) 중 **1차 PoC = Align Fail 대응 자동화**. VLM이 SEM 화면을 판독하고 GUI를 직접 제어해, Recipe Setup 후 **공정 variation으로 실측 이미지가 달라져 발생하는 좌표 shift · align 실패 · 오인식을 실시간 재정합**한다. ①(의뢰 검토)·⑦(최종 승인)은 사람이 유지 — **완전자동화가 아닌 Human-in-the-loop**.
+> **Align Agent** = CD-SEM **Auto Recipe Creation**(셋업 ②~⑥) 중 **1차 PoC = Align Fail 대응 자동화**. VLM이 SEM 화면을 판독하고 GUI를 직접 제어해, Recipe Setup 후 **공정 variation으로 실측 이미지가 달라져 발생하는 좌표 shift · align 실패 · 오인식을 실시간 재정합**한다. ①(의뢰 검토)·⑦(최종 승인)은 사람이 유지 — **완전자동화가 아닌 Human-in-the-loop**.
 
 이 폴더는 [`../_가이드/01·02`](../_가이드/) 방법론 틀을 ITC AIX 실제 과제로 채운 **첫 번째 프로젝트 사례**다. 표준 근거는 [`../lectures/`](../lectures/README.md).
 

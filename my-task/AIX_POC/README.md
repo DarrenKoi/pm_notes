@@ -8,7 +8,7 @@
 |------|----|------|
 | [`lectures/`](./lectures/README.md) | **표준** | New AI Design Camp **V2.7 완본 강의 덱**(`design-camp-deck-v2.7.md`) + 편집 Template(`design-camp-template-v2.7.md`) + [`captures/`](./lectures/captures/)(초기 캡처 10장 전사). **팀을 가이드하는 기준점** — 모든 틀·적용 문서의 1차 근거. |
 | [`_가이드/`](./_가이드/) | **가이드** | 재사용 방법론 틀: [`01-기획문서_AX서비스기획.md`](./_가이드/01-기획문서_AX서비스기획.md)(Why/What/How · 4 Step · 12-Step Track A · 적정성 스코어카드 · Validation/Execution) · [`02-기술문서_AI과제정의구현.md`](./_가이드/02-기술문서_AI과제정의구현.md)(과제 정의서 · To-Be Swimlane · KSF/제약 · Modeling Rule · 일정 트랙) · [`00-템플릿_AI과제발굴/`](./_가이드/00-템플릿_AI과제발굴/00-README.md)(도메인 중립 빈 양식 + 퍼실리테이션 키트). |
-| [`프로젝트_smart_align_agent/`](./프로젝트_smart_align_agent/README.md) | **프로젝트** | **Smart Align Agent** — CD-SEM Auto Recipe Creation 중 1차 PoC(**Align Fail 대응 자동화**). Discovery(03)·기술 To-Be(04)·PoC 실험설계(05)·실행기획 11단계 세트(07)·발표물. |
+| [`프로젝트_smart_align_agent/`](./프로젝트_smart_align_agent/README.md) | **프로젝트** | **Align Agent** — CD-SEM Auto Recipe Creation 중 1차 PoC(**Align Fail 대응 자동화**). Discovery(03)·기술 To-Be(04)·PoC 실험설계(05)·실행기획 11단계 세트(07)·발표물. |
 | `tools/` | — | 마크다운 → PPTX 변환기(`md2pptx.py`, `md2pptx_doc.py`). |
 
 ## 🧩 프로젝트 폴더 컨벤션
