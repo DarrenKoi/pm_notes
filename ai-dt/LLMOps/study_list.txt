@@ -1,0 +1,22 @@
+1. LLMOps 기초와 라이프사이클
+-. LLMOps 개요 및 MLOps와의 차이, LLM 앱 라이프사이클 이해
+-. 프롬프트 관리 및 버전 관리 (Prompt Registry, 템플릿)
+-. 트레이싱·관측성(Observability) — 실행 로그, span, 토큰·비용 추적
+
+2. LLM 평가 기초
+-. LLM 평가 개요 — 왜 어려운가, 평가 패러다임(reference-based / reference-free / human)
+-. 평가 데이터셋 구축 — golden set, 합성 데이터, 라벨링
+-. 자동 평가 지표 — exact match, BLEU/ROUGE, BERTScore, 임베딩 유사도
+
+3. LLM/RAG/Agent 심화 평가
+-. LLM-as-a-Judge — rubric, pointwise/pairwise, 편향 완화·보정
+-. RAG 평가 — 검색 지표(recall/precision/MRR/nDCG), 생성 지표(faithfulness/answer relevance)
+-. Agent·Tool 평가 — trajectory, tool call 정확도, task success
+
+4. 안전성·운영·배포
+-. 안전성·환각·가드레일 평가 — hallucination, toxicity, PII, red teaming
+-. 온라인 평가와 배포 — A/B, canary, regression gate(CI)
+-. 모니터링과 드리프트 — production monitoring, cost/latency, feedback loop
+
+5. 실전 Mini Project
+-. 사내 RAG/Agent 평가 파이프라인 구축 — 요구사항 정의, 구현, 테스트, 발표·피드백
