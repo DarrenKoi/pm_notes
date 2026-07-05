@@ -132,15 +132,21 @@ print(crag.invoke({"question": "EQP-102 온도 알람 조치"})["generation"])
 ### 4) Agentic RAG (검색을 도구로)
 retriever를 도구로 만들어 Agent가 검색 여부·횟수를 스스로 결정.
 ```python
+from langchain.agents import create_agent
 from langchain.tools.retriever import create_retriever_tool
-from langgraph.prebuilt import create_react_agent
 
 retriever_tool = create_retriever_tool(
     retriever, name="search_docs",
     description="사내 공정/설비 문서에서 관련 내용을 검색한다.")
 
-agent = create_react_agent(llm, tools=[retriever_tool])
-out = agent.invoke({"messages": [("user", "포토 공정 결함 원인과 조치를 문서 근거로 알려줘")]})
+agent = create_agent(
+    model=llm,
+    tools=[retriever_tool],
+    system_prompt="답변 전 필요한 경우 search_docs로 근거 문서를 검색한다.",
+)
+out = agent.invoke({
+    "messages": [{"role": "user", "content": "포토 공정 결함 원인과 조치를 문서 근거로 알려줘"}]
+})
 print(out["messages"][-1].content)
 ```
 

@@ -120,5 +120,5 @@ for step in graph.stream({"text": "..."}):
 - [07. Condition/Branching/Tool workflow](./07-condition-branching-tool-workflow.md) — 조건부 엣지
 
 ## 참고 자료 (References)
-- LangGraph 개요: https://langchain-ai.github.io/langgraph/concepts/low_level/
+- LangGraph 개요: https://docs.langchain.com/oss/python/langgraph/overview
 - StateGraph, reducer, `add_messages`

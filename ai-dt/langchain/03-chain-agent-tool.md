@@ -11,7 +11,7 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - **Chain**은 흐름이 고정된 파이프라인이다. 하지만 "질문에 따라 계산기를 쓸지, 검색을 할지"처럼 **분기가 데이터에 달린** 문제는 Chain만으론 부족하다.
-- **Tool**은 LLM에게 "이런 함수를 쓸 수 있어"라고 알려주는 것이고, **Agent**는 LLM이 스스로 어떤 Tool을 언제 부를지 결정하는 루프다.
+- **Tool**은 LLM에게 "이런 함수를 쓸 수 있어"라고 알려주고, **Agent**는 LLM이 스스로 어떤 Tool을 언제 부를지 결정하는 루프다.
 - 사내에서 "장비 상태 조회 API", "사양 DB 검색" 같은 기능을 LLM이 필요할 때 호출하게 하려면 Tool/Agent가 핵심이다.
 
 ## 핵심 개념 (What)
@@ -84,13 +84,17 @@ while True:
 print(ai.content)
 ```
 
-### 4) 최신 권장: `create_react_agent` (LangGraph prebuilt)
-위 루프를 직접 짤 필요 없이, LangGraph의 prebuilt agent를 쓴다. (상세는 [08번](./08-langgraph-agent-scenario.md))
+### 4) 최신 권장: `create_agent` (LangChain)
+위 루프를 직접 짤 필요 없이, LangChain의 `create_agent`를 쓴다. `create_agent`는 모델·도구·시스템 프롬프트를 조합하는 고수준 Agent harness다. 상태 머신, HITL, 장시간 실행 제어가 필요하면 [08번](./08-langgraph-agent-scenario.md)의 LangGraph로 확장한다.
 ```python
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
-agent = create_react_agent(llm, tools=[multiply, get_equipment_status])
-out = agent.invoke({"messages": [("user", "EQP-102 상태와 12*7 알려줘")]})
+agent = create_agent(
+    model=llm,
+    tools=[multiply, get_equipment_status],
+    system_prompt="너는 도구를 사용해 사실을 확인한 뒤 한국어로 답한다.",
+)
+out = agent.invoke({"messages": [{"role": "user", "content": "EQP-102 상태와 12*7 알려줘"}]})
 print(out["messages"][-1].content)
 ```
 
@@ -118,4 +122,4 @@ print(report.defect_type, report.severity, report.action)   # 타입 보장된 �
 ## 참고 자료 (References)
 - Tool calling: https://docs.langchain.com/oss/python/concepts/tool-calling
 - `bind_tools`, `with_structured_output` (ChatOpenAI 통합 문서)
-- `create_react_agent` (langgraph-prebuilt)
+- Agents / `create_agent`: https://docs.langchain.com/oss/python/langchain/agents

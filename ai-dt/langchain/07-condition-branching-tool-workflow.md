@@ -130,5 +130,5 @@ graph.invoke(inputs, {"recursion_limit": 10})   # 무한 루프 방지
 - [11. RAG 질의응답 흐름](./11-rag-qa-flow.md) — CRAG 루프에 조건부 엣지 활용
 
 ## 참고 자료 (References)
-- Conditional edges: https://langchain-ai.github.io/langgraph/concepts/low_level/#conditional-edges
+- LangGraph overview: https://docs.langchain.com/oss/python/langgraph/overview
 - `ToolNode`, `tools_condition` (langgraph-prebuilt)

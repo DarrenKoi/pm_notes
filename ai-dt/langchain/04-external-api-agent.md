@@ -91,16 +91,20 @@ def get_spec(part_no: str) -> str:
 
 ### 4) Agent에 연결
 ```python
+from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
-from langgraph.prebuilt import create_react_agent
 
 # 사내:
 llm = ChatOpenAI(model="Kimi-K2.5", base_url="http://llm-gateway.internal/v1",
                  api_key="EMPTY", temperature=0)
 
-agent = create_react_agent(llm, tools=[get_weather, get_equipment_status, get_spec])
+agent = create_agent(
+    model=llm,
+    tools=[get_weather, get_equipment_status, get_spec],
+    system_prompt="필요할 때만 도구를 호출하고, 도구 오류는 사용자에게 명확히 설명한다.",
+)
 out = agent.invoke({"messages": [
-    ("user", "EQP-102 상태 확인하고, 문제 있으면 부품 PN-77 사양도 알려줘")
+    {"role": "user", "content": "EQP-102 상태 확인하고, 문제 있으면 부품 PN-77 사양도 알려줘"}
 ]})
 print(out["messages"][-1].content)
 ```

@@ -8,7 +8,7 @@
 -. LangGraph 개요 및 상태 머신 이해
 -. 상태 기반 멀티스텝 대화 흐름 설계
 -. Condition, Branching, Tool 결합 workflow 실습
--. 사용자 시나리고 기반 LangGraph Agent 구축
+-. 사용자 시나리오 기반 LangGraph Agent 구축
 
 3. RAG 기반 응답 Agent 개발
 -. 문서 임베딩 및 FAISS 벡터 스토어 구축
@@ -17,5 +17,4 @@
 -. PDF, 웹 문서, 내부 지식 적용 사례 실습
 
 4. 실전 Mini Project
--. 주제 선정 및 요구 사항
-정의, 구현, 테스트, 발표 및 피드백
+-. 주제 선정 및 요구 사항 정의, 구현, 테스트, 발표 및 피드백

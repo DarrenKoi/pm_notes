@@ -81,7 +81,7 @@ if __name__ == "__main__":
     ans, src = ask("EQP-102 온도과열 알람이 뜨면?")
     print(ans, "\n근거:", src)
 ```
-> 확장: 메모리가 필요하면 [06번](./06-multistep-conversation-flow.md)의 checkpointer 그래프로 감싸고, API 조회까지 필요하면 [08번](./08-langgraph-agent-scenario.md)의 `create_react_agent`로 승격한다.
+> 확장: 단순 도구 선택은 [03번](./03-chain-agent-tool.md)의 `create_agent`로 붙이고, 메모리·승인·조건 분기가 필요하면 [06번](./06-multistep-conversation-flow.md)의 checkpointer와 [08번](./08-langgraph-agent-scenario.md)의 LangGraph 흐름으로 승격한다.
 
 ### 간단한 UI (선택)
 ```python

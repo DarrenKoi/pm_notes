@@ -8,9 +8,14 @@
 
 - **언어**: 한국어 (기술 용어는 영어 병기)
 - **코드**: 실행 가능한 완전한 예제. 모든 LLM 호출은 **공개 OpenAI API**와 **사내 OpenAI 호환 엔드포인트**(Kimi-K2.5 / Qwen3-VL / BGE-M3)를 **병기**합니다.
-- **깊이**: 커리큘럼의 각 라인을 별도 문서로 다루고, 2024년 이후 최신 기법(LCEL Runnable, tool calling, `with_structured_output`, `create_react_agent`, LangGraph checkpointer, 하이브리드 검색·리랭킹·CRAG/Self-RAG·Agentic RAG 등)을 포함합니다.
+- **깊이**: 커리큘럼의 각 라인을 별도 문서로 다루고, 2024년 이후 핵심 기법(LCEL Runnable, tool calling, `with_structured_output`, `create_agent`, LangGraph `create_react_agent`, checkpointer, 하이브리드 검색·리랭킹·CRAG/Self-RAG·Agentic RAG 등)을 포함합니다.
 
 > ⚠️ **사내 환경 주의**: 외부 LLM API(OpenAI/Anthropic/Google)는 방화벽으로 차단됩니다. 실제 사내 실행 시에는 항상 "사내 엔드포인트" 코드 블록을 사용하세요. 공개 API 블록은 커리큘럼의 표준 패턴을 이해하기 위한 참고용입니다.
+
+## API 버전 메모
+
+- 일반 Agent는 LangChain의 `create_agent`를 우선 학습합니다. 현재 LangChain 문서는 이를 모델·도구·프롬프트를 조합하는 고수준 agent harness로 설명합니다.
+- LangGraph는 장시간 실행, 상태 저장, HITL, 조건 분기처럼 흐름 제어가 중요한 Agent 워크플로우에 사용합니다. 이 문서 묶음에서는 05~08번에서 LangGraph를 별도로 다룹니다.
 
 ---
 
@@ -19,10 +24,11 @@
 ### 1. LangChain 이해 및 활용
 | 문서 | 내용 |
 |------|------|
+| [커리큘럼 커버리지 점검](./curriculum-coverage.md) | `study_list.txt` 항목별 생성 문서 매핑과 보강 포인트 |
 | [01. OpenAI API & LangChain 구조](./01-openai-api-and-langchain-structure.md) | LLM 호출의 원리, LangChain 패키지 구조, Message/Model/Prompt 추상화 |
 | [02. LCEL 실습](./02-lcel.md) | Runnable 프로토콜, `\|` 파이프, `invoke/stream/batch`, 병렬·조건 구성 |
-| [03. Chain · Agent · Tool](./03-chain-agent-tool.md) | Tool 정의, `bind_tools`, `with_structured_output`, Agent 루프 |
-| [04. 외부 API 연동 Agent](./04-external-api-agent.md) | 실 API를 호출하는 Tool 설계, 인증·에러·재시도·타임아웃 |
+| [03. Chain · Agent · Tool](./03-chain-agent-tool.md) | Tool 정의, `bind_tools`, `create_agent`, `with_structured_output`, Agent 루프 |
+| [04. 외부 API 연동 Agent](./04-external-api-agent.md) | 실 API를 호출하는 Tool 설계, 인증·에러·재시도·타임아웃, Agent 연결 |
 
 ### 2. LangGraph 워크플로우 설계
 | 문서 | 내용 |
@@ -30,7 +36,7 @@
 | [05. LangGraph 개요 & 상태 머신](./05-langgraph-overview-state-machine.md) | State/Node/Edge, StateGraph, reducer, 컴파일 |
 | [06. 멀티스텝 대화 흐름](./06-multistep-conversation-flow.md) | 상태 누적, checkpointer 기반 메모리, thread_id |
 | [07. Condition · Branching · Tool workflow](./07-condition-branching-tool-workflow.md) | `add_conditional_edges`, `ToolNode`, `tools_condition`, 루프 |
-| [08. 시나리오 기반 Agent 구축](./08-langgraph-agent-scenario.md) | `create_react_agent`, 커스텀 그래프, HITL |
+| [08. 시나리오 기반 Agent 구축](./08-langgraph-agent-scenario.md) | LangGraph `create_react_agent`, 커스텀 그래프, HITL |
 
 ### 3. RAG 기반 응답 Agent 개발
 | 문서 | 내용 |
@@ -84,6 +90,6 @@ embeddings = OpenAIEmbeddings(
 
 ## 📖 참고 자료 (References)
 - LangChain (Python): https://docs.langchain.com/oss/python/
-- LangGraph: https://langchain-ai.github.io/langgraph/
+- LangGraph: https://docs.langchain.com/oss/python/langgraph/overview
 - FAISS: https://github.com/facebookresearch/faiss/wiki
 - BGE-M3: https://huggingface.co/BAAI/bge-m3

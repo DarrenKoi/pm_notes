@@ -11,7 +11,7 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - LLM 앱을 만들 때 매번 원시 HTTP 요청을 다루면 **프롬프트 관리, 모델 교체, 스트리밍, 도구 호출**을 직접 구현해야 한다.
-- LangChain은 이 반복 작업을 **표준 인터페이스(Runnable)**로 묶어, 모델·프롬프트·검색기·파서를 레고처럼 조립하게 해준다.
+- LangChain은 이 반복 작업을 **표준 인터페이스(Runnable)**로 묶어, 모델·프롬프트·검색기·파서를 레고처럼 조립한다.
 - 사내 환경에서는 모델이 자주 바뀐다(Kimi-K2.5 → Qwen 등). LangChain의 추상화를 쓰면 **한 줄(`base_url`, `model`)만 바꿔** 모델을 교체할 수 있다.
 
 ## 핵심 개념 (What)
@@ -105,7 +105,7 @@ print(msgs.messages)
 ```
 
 ### 최신 기법: `init_chat_model`로 모델 provider 추상화
-LangChain 최신 버전은 provider 문자열로 모델을 초기화하는 헬퍼를 제공한다. 사내에서는 여전히 `ChatOpenAI` + `base_url`이 가장 확실하지만, 코드 이식성을 위해 알아둘 가치가 있다.
+LangChain 최신 버전은 provider 문자열로 모델을 초기화하는 헬퍼를 제공한다. 사내에서는 여전히 `ChatOpenAI` + `base_url`이 가장 확실하지만, 코드 이식성 측면에서 알아둘 만하다.
 
 ```python
 from langchain.chat_models import init_chat_model

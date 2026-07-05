@@ -6,7 +6,7 @@ last_updated: 2026-07-06
 
 # 08. 사용자 시나리오 기반 LangGraph Agent 구축
 
-> 실제 업무 시나리오를 하나 잡아, prebuilt `create_react_agent`와 커스텀 그래프를 함께 써서 메모리·승인(HITL)까지 갖춘 Agent를 만든다.
+> 실제 업무 시나리오를 하나 잡아, LangGraph prebuilt `create_react_agent`와 커스텀 그래프를 함께 써서 메모리·승인(HITL)까지 갖춘 Agent를 만든다.
 
 ## 왜 필요한가? (Why)
 
@@ -17,7 +17,7 @@ last_updated: 2026-07-06
 ## 핵심 개념 (What)
 
 ### `create_react_agent` (가장 빠른 길)
-07번의 "agent ↔ tools 루프"를 한 줄로 만들어준다. checkpointer, system prompt, 구조화 응답 등을 인자로 받는다.
+07번의 "agent ↔ tools 루프"를 LangGraph 그래프로 만든다. 일반 Agent는 [03번](./03-chain-agent-tool.md)의 LangChain `create_agent`가 더 단순하지만, checkpointer, HITL, 조건 분기, 상태 조회/수정이 필요한 시나리오는 LangGraph로 설계한다.
 
 ### Human-in-the-loop (HITL)
 `interrupt`로 그래프를 특정 지점에서 **일시정지**하고 사람 입력을 기다린다. 승인/거부/수정 후 `Command(resume=...)`로 재개한다. 삭제·변경 같은 부작용 도구 앞에 둔다.
@@ -114,5 +114,5 @@ print(result["messages"][-1].content)
 - [11. RAG 질의응답 흐름](./11-rag-qa-flow.md) — Agentic RAG로 확장
 
 ## 참고 자료 (References)
-- `create_react_agent`: https://langchain-ai.github.io/langgraph/reference/prebuilt/
-- Human-in-the-loop / `interrupt`: https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/
+- LangGraph overview: https://docs.langchain.com/oss/python/langgraph/overview
+- Agents / `create_agent`: https://docs.langchain.com/oss/python/langchain/agents

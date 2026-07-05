@@ -11,7 +11,7 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - 챗봇은 이전 발화를 기억해야 한다("그거 더 자세히" ← "그거"가 뭔지 알아야 함).
-- 매 요청마다 전체 히스토리를 앱이 직접 관리하면 번거롭다. LangGraph의 **checkpointer**는 `thread_id`별로 상태를 자동 저장해, 다음 호출 때 이어서 진행하게 해준다.
+- 매 요청마다 전체 히스토리를 앱이 직접 관리하면 번거롭다. LangGraph의 **checkpointer**는 `thread_id`별로 상태를 자동 저장해, 다음 호출 때 이어서 진행한다.
 - 사내 멀티스텝 시나리오(예: "설비 조회 → 이상 확인 → 조치 추천"을 대화로 진행)에서 상태 유지가 필수다.
 
 ## 핵심 개념 (What)
@@ -113,5 +113,5 @@ print(snapshot.values["messages"])
 - [08. 시나리오 기반 Agent 구축](./08-langgraph-agent-scenario.md)
 
 ## 참고 자료 (References)
-- Persistence / checkpointer: https://langchain-ai.github.io/langgraph/concepts/persistence/
+- Persistence / checkpointer: https://docs.langchain.com/oss/python/langgraph/overview
 - `add_messages`, `MessagesState`, `trim_messages`
