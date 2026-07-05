@@ -33,6 +33,13 @@
 #### Hybrid Search
 - [보조 용어 사전 DB (Elasticsearch)](./rag/auxiliary-glossary-db.md) - ES BM25로 전문 용어 관리, 쿼리 확장, LangGraph 통합
 
+### LangChain / LangGraph / RAG 커리큘럼 (study_list)
+- [LangChain 학습 노트 목차](./langchain/README.md) - `study_list.txt` 4모듈 커리큘럼, 공개 OpenAI + 사내 엔드포인트 병기
+  - **M1 LangChain 기초**: [OpenAI API & 구조](./langchain/01-openai-api-and-langchain-structure.md) · [LCEL](./langchain/02-lcel.md) · [Chain·Agent·Tool](./langchain/03-chain-agent-tool.md) · [외부 API Agent](./langchain/04-external-api-agent.md)
+  - **M2 LangGraph**: [상태 머신](./langchain/05-langgraph-overview-state-machine.md) · [멀티스텝 대화](./langchain/06-multistep-conversation-flow.md) · [Condition/Branching/Tool](./langchain/07-condition-branching-tool-workflow.md) · [시나리오 Agent](./langchain/08-langgraph-agent-scenario.md)
+  - **M3 RAG**: [임베딩·FAISS](./langchain/09-document-embedding-faiss.md) · [Retriever 튜닝](./langchain/10-retriever-tuning.md) · [RAG 질의응답](./langchain/11-rag-qa-flow.md) · [PDF/웹/내부지식](./langchain/12-rag-document-sources.md)
+  - **M4 Mini Project**: [주제선정→구현→테스트→발표](./langchain/13-mini-project.md)
+
 ### MCP (Model Context Protocol)
 - [MCP 시리즈 목차](./mcp/README.md)
   - [MCP 기초](./mcp/mcp-basics.md) - Server/Client 아키텍처, Tools/Resources/Prompts, FastMCP
