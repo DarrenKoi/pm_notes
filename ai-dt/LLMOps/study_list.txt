@@ -20,3 +20,7 @@
 
 5. 실전 Mini Project
 -. 사내 RAG/Agent 평가 파이프라인 구축 — 요구사항 정의, 구현, 테스트, 발표·피드백
+
+6. 거버넌스·사고대응
+-. 아티팩트 계보와 release governance — prompt/model/index/tool/eval/guardrail 버전 조합, 승인 기준
+-. Incident response와 postmortem — 품질·안전·도구 사고 분류, 롤백, 사고 케이스의 eval set 편입

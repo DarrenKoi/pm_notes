@@ -11,7 +11,7 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - LLM 파이프라인은 여러 단계(검색 → 프롬프트 조립 → LLM 호출 → 후처리)를 거친다. 답이 이상할 때 **어느 단계에서 틀어졌는지** 로그 없이는 알 수 없다.
-- 평가 점수가 떨어졌을 때, trace가 있으면 **실패 케이스를 그대로 재현**해 원인(검색 실패 vs 생성 실패)을 가른다. → [08](./08-rag-evaluation.md), [09](./09-agent-tool-evaluation.md)
+- 평가 점수가 떨어졌을 때 trace가 있으면 **실패 케이스를 그대로 재현**해 원인(검색 실패 vs 생성 실패)을 가른다. → [08](./08-rag-evaluation.md), [09](./09-agent-tool-evaluation.md)
 - 품질만 보면 함정에 빠진다. **토큰·비용·지연**을 같이 기록해야 "품질 +2%, 비용 +200%" 같은 나쁜 거래를 걸러낸다.
 
 ## 핵심 개념 (What)
@@ -25,7 +25,7 @@ last_updated: 2026-07-06
 | 카테고리 | 필드 |
 |----------|------|
 | 식별 | `trace_id`, `span`, `timestamp` |
-| 버전 | `prompt_version`, `model`, `retriever_version` |
+| 버전 | `release_id`, `prompt_version`, `model`, `retriever_version`, `tool_schema_version` |
 | 입출력 | `input`, `output`(민감정보 마스킹) |
 | 비용 | `prompt_tokens`, `completion_tokens`, `est_cost` |
 | 성능 | `latency_ms`, `error` |
@@ -35,6 +35,20 @@ last_updated: 2026-07-06
 LangSmith/Langfuse 같은 SaaS는 외부망이라 막힌다. 대안:
 - **표준 로깅 + 사내 저장소**(OpenSearch/파일)에 위 스키마로 JSON을 적재.
 - 사내에 Langfuse를 **self-host** 하는 방법도 있으나, 우선 표준 로깅으로 스키마를 확정한 뒤 도구를 붙이는 편이 안전.
+
+### 4) OpenTelemetry GenAI 관점으로 맞춰두기
+OpenTelemetry는 GenAI 전용 semantic conventions를 별도 저장소로 관리한다. 지금 당장 OTel collector를 붙이지 않더라도 필드명을 아래처럼 맞춰두면 나중에 표준 트레이싱으로 옮기기 쉽다.
+
+| 내부 필드 | OTel GenAI 대응 | 메모 |
+|---|---|---|
+| `span="llm_call"` | `gen_ai.operation.name=chat` | chat/completion/embedding/retrieval 등 작업명 |
+| `model` | `gen_ai.request.model`, `gen_ai.response.model` | 요청 모델과 실제 응답 모델이 다를 수 있음 |
+| `prompt_version` | `gen_ai.prompt.version` | [14](./14-artifact-lineage-governance.md)의 manifest와 연결 |
+| `prompt_tokens` | `gen_ai.usage.input_tokens` | 캐시 토큰 포함 여부를 일관되게 정의 |
+| `completion_tokens` | `gen_ai.usage.output_tokens` | reasoning token이 있으면 별도 보관 |
+| `streaming` | `gen_ai.request.stream` | streaming이면 time-to-first-token도 기록 |
+
+주의: OTel의 `gen_ai.input.messages`, `gen_ai.output.messages`, `gen_ai.system_instructions`는 민감정보를 포함하기 쉬운 opt-in 성격의 필드다. 사내 기본값은 **원문 저장 금지 + 마스킹/해시/외부 보관 포인터**로 둔다.
 
 ## 어떻게 사용하는가? (How)
 
@@ -82,12 +96,17 @@ client = OpenAI(base_url="http://llm-gateway.internal/v1", api_key="EMPTY")
 PRICE = {"Kimi-K2.5": {"in": 0.0, "out": 0.0}}   # 사내: 실제 단가/쿼터로 대체
 
 @span("llm_call")
-def traced_chat(model, messages, prompt_version="v4", temperature=0):
+def traced_chat(model, messages, prompt_version="v4", release_id="rag-photo-2026-07-06-01", temperature=0):
     r = client.chat.completions.create(model=model, messages=messages, temperature=temperature)
     u = r.usage
     log_span({
-        "span": "llm_call.usage", "model": model, "prompt_version": prompt_version,
+        "span": "llm_call.usage", "release_id": release_id,
+        "model": model, "prompt_version": prompt_version,
+        "gen_ai.operation.name": "chat",
+        "gen_ai.request.model": model,
         "prompt_tokens": u.prompt_tokens, "completion_tokens": u.completion_tokens,
+        "gen_ai.usage.input_tokens": u.prompt_tokens,
+        "gen_ai.usage.output_tokens": u.completion_tokens,
     })
     return r.choices[0].message.content
 ```
@@ -116,7 +135,9 @@ def rag_answer(question):
 - [02. 프롬프트 버전 관리](./02-prompt-management-versioning.md) — 각 span에 `prompt_version`을 남기는 이유
 - [09. Agent·Tool 평가](./09-agent-tool-evaluation.md) — trajectory 평가는 span 트리 위에서 이뤄진다
 - [12. 모니터링 & 드리프트](./12-monitoring-drift.md) — trace를 집계해 production 지표로
+- [14. 아티팩트 계보와 거버넌스](./14-artifact-lineage-governance.md) — trace와 release manifest 연결
 
 ## 참고 자료 (References)
 - OpenTelemetry(트레이싱 개념 원류): https://opentelemetry.io/docs/concepts/
+- OpenTelemetry GenAI Semantic Conventions: https://github.com/open-telemetry/semantic-conventions-genai
 - Langfuse(self-host 가능한 LLM observability): https://langfuse.com/docs

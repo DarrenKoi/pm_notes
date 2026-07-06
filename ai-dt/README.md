@@ -40,6 +40,14 @@
   - **M3 RAG**: [임베딩·FAISS](./langchain/09-document-embedding-faiss.md) · [Retriever 튜닝](./langchain/10-retriever-tuning.md) · [RAG 질의응답](./langchain/11-rag-qa-flow.md) · [PDF/웹/내부지식](./langchain/12-rag-document-sources.md)
   - **M4 Mini Project**: [주제선정→구현→테스트→발표](./langchain/13-mini-project.md)
 
+### LLMOps & 평가(Evaluation) 커리큘럼 (study_list)
+- [LLMOps & 평가 학습 노트 목차](./llmops/README.md) - `study_list.txt` 5모듈 커리큘럼, 판정/임베딩을 사내 엔드포인트로 병기
+  - **M1 LLMOps 기초**: [개요·라이프사이클](./llmops/01-llmops-overview-lifecycle.md) · [프롬프트 버전관리](./llmops/02-prompt-management-versioning.md) · [트레이싱·관측성](./llmops/03-tracing-observability.md)
+  - **M2 평가 기초**: [평가 개요](./llmops/04-llm-evaluation-overview.md) · [평가 데이터셋](./llmops/05-eval-dataset-construction.md) · [자동 지표](./llmops/06-automatic-metrics.md)
+  - **M3 심화 평가**: [LLM-as-a-Judge](./llmops/07-llm-as-a-judge.md) · [RAG 평가](./llmops/08-rag-evaluation.md) · [Agent·Tool 평가](./llmops/09-agent-tool-evaluation.md)
+  - **M4 안전·운영**: [안전·환각·가드레일](./llmops/10-safety-hallucination-guardrails.md) · [온라인 평가·배포](./llmops/11-online-eval-deployment.md) · [모니터링·드리프트](./llmops/12-monitoring-drift.md)
+  - **M5 Mini Project**: [사내 RAG/Agent 평가 파이프라인](./llmops/13-mini-project.md)
+
 ### MCP (Model Context Protocol)
 - [MCP 시리즈 목차](./mcp/README.md)
   - [MCP 기초](./mcp/mcp-basics.md) - Server/Client 아키텍처, Tools/Resources/Prompts, FastMCP

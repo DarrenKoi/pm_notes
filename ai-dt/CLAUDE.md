@@ -23,6 +23,7 @@ ai-dt/
 | 주제 | 상태 | 주요 문서 |
 |------|------|-----------|
 | LangChain 커리큘럼 | 🟢 1차 완료 | study_list 4모듈 13편 + README (공개/사내 엔드포인트 병기) |
+| LLMOps & 평가 커리큘럼 | 🟢 1차 완료 | study_list 5모듈 13편 + README (판정/임베딩 사내 엔드포인트 병기) |
 | RAG/LangGraph | 🟡 진행 중 | basics, advanced, rag 통합 |
 | RAG/Milvus | 🟡 진행 중 | basics, rag 통합 |
 | MCP | 🟡 진행 중 | basics, langgraph 통합 |

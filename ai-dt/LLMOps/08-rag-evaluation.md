@@ -98,7 +98,7 @@ JSON만: {{"claims":[{{"claim":"...","supported":0또는1}}]}}
 ```
 
 ### Answer Relevance — 질문 역생성 방식
-"이 답변으로부터 원래 질문을 복원"하게 하고, 복원된 질문과 실제 질문의 임베딩 유사도로 관련성 측정(RAGAS 방식).
+"이 답변에서 원래 질문을 복원"하게 하고 복원된 질문과 실제 질문의 임베딩 유사도로 관련성 측정(RAGAS 방식).
 
 ```python
 def answer_relevance(question: str, answer: str, n=3) -> float:
@@ -126,7 +126,7 @@ emb = OpenAIEmbeddings(model="BGE-M3", base_url="http://llm-gateway.internal/v1"
 # result = evaluate(dataset, metrics=[rg_faith, answer_relevancy, context_recall], llm=judge, embeddings=emb)
 ```
 
-> 로컬엔 벡터DB가 없으므로, 검색 지표는 **저장된 retrieved_ids 로그**로 오프라인 계산하고, 생성 지표는 소규모 케이스로 검증한다. → [03](./03-tracing-observability.md)
+> 로컬엔 벡터DB가 없으므로, 검색 지표는 **저장된 retrieved_ids 로그**로 오프라인 계산하고 생성 지표는 소규모 케이스로 검증한다. → [03](./03-tracing-observability.md)
 
 ## 관련 문서
 - [05. 평가 데이터셋 구축](./05-eval-dataset-construction.md) — gold context 준비

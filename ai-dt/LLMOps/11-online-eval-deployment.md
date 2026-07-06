@@ -6,11 +6,11 @@ last_updated: 2026-07-06
 
 # 11. 온라인 평가 및 배포
 
-> 오프라인 점수가 좋아도 실사용에서 나빠질 수 있다. 배포 전 **CI regression gate**로 회귀를 막고, 배포 시 **canary·A/B**로 실제 트래픽에서 검증한다.
+> 오프라인 점수가 좋아도 실사용에서 나빠질 수 있다. 배포 전 **CI regression gate**로 회귀를 막고 배포 시 **canary·A/B**로 실제 트래픽에서 검증한다.
 
 ## 왜 필요한가? (Why)
 
-- 오프라인 eval set은 과거의 스냅샷이다. 실제 사용자는 **데이터셋에 없는 질문**을 하고, 진짜 만족도는 트래픽에서만 드러난다.
+- 오프라인 eval set은 과거의 스냅샷이다. 실제 사용자는 **데이터셋에 없는 질문**을 하고 진짜 만족도는 트래픽에서만 드러난다.
 - 프롬프트·모델·검색을 바꿀 때마다 손으로 확인하면 반드시 회귀가 샌다. **자동 게이트**가 배포의 안전벨트다.
 - 전면 배포는 위험하다. **일부 트래픽(canary)**에 먼저 태워 지표를 보고 확대/롤백하는 게 표준.
 
@@ -27,6 +27,8 @@ last_updated: 2026-07-06
 ### 2) CI Regression Gate
 PR마다 `eval_set.jsonl`을 돌려 **핵심 지표가 baseline 이하로 떨어지면 머지 차단**. 안전 지표([10](./10-safety-hallucination-guardrails.md))는 하드 컷(무조건 통과 요구). 이게 LLMOps Level 2의 핵심. → [01](./01-llmops-overview-lifecycle.md)
 
+배포 단위는 코드 커밋이 아니라 [14](./14-artifact-lineage-governance.md)의 **release manifest**다. gate는 `prompt/model/index/tool/eval/rubric/guardrail` 버전 조합을 입력으로 받아야 한다.
+
 ### 3) 온라인 지표 (proxy)
 실시간 정답은 없으므로 **간접 신호**를 본다: 사용자 피드백(👍/👎), 재질문·이탈률, 응답 채택률, latency/cost, 안전 트리거 발생률. → [12](./12-monitoring-drift.md)
 
@@ -42,6 +44,7 @@ PR마다 `eval_set.jsonl`을 돌려 **핵심 지표가 baseline 이하로 떨어
 import json, sys, statistics
 
 BASELINE = json.load(open("baseline_scores.json"))   # 직전 승인 버전 점수
+MANIFEST = json.load(open("release_manifest.json"))  # 14번 문서의 manifest
 THRESH = {"correctness": -0.02, "faithfulness": -0.02}  # 허용 하락폭
 
 def gate(current: dict) -> bool:
@@ -53,6 +56,7 @@ def gate(current: dict) -> bool:
         ok &= delta >= min_delta
     # 안전은 하드 컷 (10번 safety_gate)
     ok &= current["safety_pass"]
+    print("release:", MANIFEST["release_id"], "prompt:", MANIFEST["artifacts"]["prompt"])
     return ok
 
 if __name__ == "__main__":
@@ -98,13 +102,16 @@ def ab_compare(fb_a: list[int], fb_b: list[int]) -> dict:
 ### 배포 결정 규칙
 - canary 지표(피드백·안전·latency)가 stable 대비 **유의하게 나쁘지 않으면** 확대.
 - 안전 트리거 급증 or 👎 유의 상승 → **즉시 롤백**(프롬프트 버전 되돌리기 — [02](./02-prompt-management-versioning.md)).
+- SEV-1/SEV-2 사고가 의심되면 canary 확대가 아니라 [15. Incident Response](./15-incident-response-postmortem.md)로 전환.
 
-> 로컬엔 실트래픽이 없으므로 **regression gate 로직까지만** 검증하고, canary/A/B는 사내 서빙에서 붙인다.
+> 로컬엔 실트래픽이 없으므로 **regression gate 로직까지만** 검증하고 canary/A/B는 사내 서빙에서 붙인다.
 
 ## 관련 문서
 - [01. LLMOps 개요](./01-llmops-overview-lifecycle.md) — 오프라인/온라인 평가의 큰 그림
 - [10. 안전성·가드레일 평가](./10-safety-hallucination-guardrails.md) — CI 하드 컷 대상
 - [12. 모니터링 & 드리프트](./12-monitoring-drift.md) — 배포 후 지속 관찰
+- [14. 아티팩트 계보와 거버넌스](./14-artifact-lineage-governance.md) — release manifest와 승인 기준
+- [15. Incident Response](./15-incident-response-postmortem.md) — 이상 감지 후 롤백·postmortem 절차
 
 ## 참고 자료 (References)
 - Canary release(개념): https://martinfowler.com/bliki/CanaryRelease.html

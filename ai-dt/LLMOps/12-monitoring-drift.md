@@ -10,7 +10,7 @@ last_updated: 2026-07-06
 
 ## 왜 필요한가? (Why)
 
-- 세상은 변한다. 사용자 질문 주제가 바뀌고(신규 공정·용어), 사내 문서가 갱신되고, 모델이 교체된다. **어제의 좋은 시스템이 오늘 조용히 나빠진다.**
+- 세상은 변한다. 사용자 질문 주제가 바뀌고(신규 공정·용어) 사내 문서가 갱신되고 모델이 교체된다. **어제의 좋은 시스템이 오늘 조용히 나빠진다.**
 - 오프라인 eval set은 고정이라 **새로운 실패**를 못 잡는다. production 로그에서 이상을 캐 **eval set을 살아있게** 유지해야 한다. → [05](./05-eval-dataset-construction.md)
 - 비용·지연은 방치하면 새어나간다. 품질과 **함께** 봐야 지속 가능하다.
 
@@ -32,6 +32,18 @@ last_updated: 2026-07-06
 
 ### 3) Feedback loop — 관찰을 개선으로
 production에서 캔 **낮은 점수·👎·새 주제** 케이스를 라벨링해 eval set에 추가 → 다음 개선의 회귀 테스트가 된다. 이 순환이 LLMOps Level 3. → [01](./01-llmops-overview-lifecycle.md)
+
+### 4) SLO와 알림은 품질·비용·안전을 나눠 둔다
+운영 지표는 대시보드에만 있으면 늦다. 아래처럼 "언제 대응할지"를 정해둔다.
+
+| SLO | 경고 | 사고 전환 |
+|---|---|---|
+| p95 latency | baseline 대비 30% 상승 | 2시간 이상 지속 또는 canary에서만 급등 |
+| avg tokens/request | baseline 대비 30% 상승 | token 폭증으로 쿼터/비용 위험 |
+| thumbs-down rate | baseline 대비 50% 상승 | 특정 release_id에서만 반복 |
+| leak_rate | 0 초과 | 즉시 SEV-1 후보 |
+| injection_resistance | 0.95 미만 | 배포 차단, red team 보강 |
+| faithfulness sample | baseline 대비 0.05 하락 | SEV-2 후보, 검색/생성 분리 진단 |
 
 ## 어떻게 사용하는가? (How)
 
@@ -100,18 +112,24 @@ def alert(cur: dict, base: dict) -> list[str]:
         alerts.append("p95 지연 악화")
     if cur["avg_tokens"] and cur["avg_tokens"] > base["avg_tokens"] * 1.3:
         alerts.append("토큰/비용 급증")
+    if cur.get("leak_rate", 0) > 0:
+        alerts.append("SEV-1 후보: 누출 감지")
+    if cur.get("faithfulness", 1.0) < base.get("faithfulness", 1.0) - 0.05:
+        alerts.append("SEV-2 후보: faithfulness 하락")
     return alerts     # 알림 → 롤백 검토 (11번)
 ```
 
 ### 대시보드에 두는 4개 패널
-1. 품질 추이(👎·사후 judge) 2. 비용(일 토큰·버전별) 3. 지연(p50/p95·단계별) 4. 드리프트·신규 실패 수.
+1. 품질 추이(👎·사후 judge) 2. 비용(일 토큰·버전별) 3. 지연(p50/p95·단계별) 4. 드리프트·신규 실패 수 5. release_id별 안전 트리거.
 
-> 로컬엔 OpenSearch/실트래픽이 없으므로 **집계·드리프트 계산 로직까지만** 검증하고, 적재·대시보드·알림은 사내에서 붙인다. → [03](./03-tracing-observability.md)
+> 로컬엔 OpenSearch/실트래픽이 없으므로 **집계·드리프트 계산 로직까지만** 검증하고 적재·대시보드·알림은 사내에서 붙인다. → [03](./03-tracing-observability.md)
 
 ## 관련 문서
 - [03. 트레이싱 & 관측성](./03-tracing-observability.md) — 모니터링의 원천 로그
 - [05. 평가 데이터셋 구축](./05-eval-dataset-construction.md) — feedback loop로 데이터셋 갱신
 - [11. 온라인 평가 & 배포](./11-online-eval-deployment.md) — 이상 감지 시 롤백
+- [14. 아티팩트 계보와 거버넌스](./14-artifact-lineage-governance.md) — release_id별 지표 분리
+- [15. Incident Response](./15-incident-response-postmortem.md) — 알림을 사고 대응으로 전환하는 기준
 
 ## 참고 자료 (References)
 - Data drift 개념: https://en.wikipedia.org/wiki/Concept_drift

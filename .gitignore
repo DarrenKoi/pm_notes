@@ -12,3 +12,6 @@ screenshots/*.jpg
 screenshots/*.jpeg
 **/screenshots/*.jpg
 **/screenshots/*.jpeg
+
+# humanize-korean skill scratch output
+_workspace/
