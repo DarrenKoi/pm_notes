@@ -47,7 +47,61 @@ production에서 캔 **낮은 점수·👎·새 주제** 케이스를 라벨링�
 
 ## 어떻게 사용하는가? (How)
 
+### Arize Phoenix로 production 모니터링
+
+사내에서는 **Arize Phoenix**를 self-host하여 production 모니터링을 수행한다. Phoenix는 [03번](./03-tracing-observability.md)에서 설정한 트레이싱 데이터를 기반으로 대시보드, 평가, 드리프트 감지를 제공한다.
+
+```python
+# ── Phoenix에 production trace 전송 (03번에서 이미 설정) ─────────
+import os
+os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://phoenix.internal:6006"
+
+from openinference.instrumentation.openai import OpenAIInstrumentor
+from phoenix.otel import register
+tracer_provider = register()
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+```
+
+```python
+# ── Phoenix 클라이언트로 trace 데이터 조회 ───────────────────────
+import phoenix as px
+
+client = px.Client(endpoint="http://phoenix.internal:6006")
+
+# 최근 trace를 DataFrame으로 가져와 분석
+traces_df = client.get_spans_dataframe()
+
+# 특정 기간의 trace만 필터링
+import pandas as pd
+recent = traces_df[traces_df["start_time"] > pd.Timestamp.now() - pd.Timedelta(days=1)]
+print(f"최근 24시간 span 수: {len(recent)}")
+print(f"평균 latency: {recent['latency_ms'].mean():.0f}ms")
+```
+
+```python
+# ── Phoenix Evaluations: production 샘플에 사후 채점 결과 연결 ───
+from phoenix.evals import run_evals, llm_classify
+import phoenix as px
+
+client = px.Client(endpoint="http://phoenix.internal:6006")
+
+# 사후 채점 결과를 Phoenix에 업로드하면 trace와 연결되어 UI에서 확인 가능
+from phoenix.trace import SpanEvaluations
+eval_results = SpanEvaluations(
+    eval_name="faithfulness",
+    dataframe=scored_df,         # span_id, score, label 컬럼 포함
+)
+client.log_evaluations(eval_results)
+# → Phoenix UI의 Evaluations 탭에서 점수 분포·추이를 시각화
+```
+
+> Phoenix UI에서 확인 가능한 모니터링 항목:
+> - **Traces 탭**: 개별 요청의 워터폴 뷰, 입출력 확인, 에러 span 필터링
+> - **Evaluations 탭**: 사후 채점 점수 분포, 시간별 추이 차트
+> - **Embeddings 탭**: 입력 임베딩의 클러스터·드리프트 시각화 (아래 드리프트 감지 참고)
+
 ### trace 로그를 집계해 일별 지표 (03번 로그 위에서)
+Phoenix 대시보드와 별개로, 커스텀 알림·SLO 판정을 위해 직접 집계하는 코드도 유지한다.
 
 ```python
 import statistics
@@ -68,8 +122,27 @@ def daily_metrics(spans: list[dict]) -> dict:
     }
 ```
 
-### 입력 드리프트 감지 (임베딩 분포 이동)
-기준 기간(reference)과 최근(current) 질문 임베딩의 **중심 거리**로 주제 이동을 근사.
+### 입력 드리프트 감지
+
+#### 방법 1: Phoenix Embeddings 탭 활용 (권장)
+Phoenix는 임베딩 시각화와 드리프트 감지를 기본 제공한다. trace에 임베딩 벡터가 포함되어 있으면 **Embeddings 탭**에서 UMAP 클러스터링과 기간별 분포 비교를 바로 확인할 수 있다.
+
+```python
+# Phoenix에서 임베딩 드리프트를 프로그래밍 방식으로 조회
+import phoenix as px
+
+client = px.Client(endpoint="http://phoenix.internal:6006")
+
+# 기간별 임베딩 데이터 추출
+embeddings_df = client.get_spans_dataframe(
+    filter_condition="span_kind == 'EMBEDDING'"
+)
+# Phoenix UI의 Embeddings 탭에서 reference vs current 기간을 선택하면
+# 클러스터 이동·신규 주제 유입을 시각적으로 확인할 수 있다.
+```
+
+#### 방법 2: 커스텀 드리프트 점수 (임베딩 중심 거리)
+Phoenix와 별도로, 기준 기간(reference)과 최근(current) 질문 임베딩의 **중심 거리**로 주제 이동을 근사한다. 알림 자동화에 활용.
 
 ```python
 import numpy as np
@@ -119,10 +192,19 @@ def alert(cur: dict, base: dict) -> list[str]:
     return alerts     # 알림 → 롤백 검토 (11번)
 ```
 
-### 대시보드에 두는 4개 패널
-1. 품질 추이(👎·사후 judge) 2. 비용(일 토큰·버전별) 3. 지연(p50/p95·단계별) 4. 드리프트·신규 실패 수 5. release_id별 안전 트리거.
+### 대시보드 구성 — Phoenix + 커스텀 알림 병행
 
-> 로컬엔 OpenSearch/실트래픽이 없으므로 **집계·드리프트 계산 로직까지만** 검증하고 적재·대시보드·알림은 사내에서 붙인다. → [03](./03-tracing-observability.md)
+**Phoenix UI가 기본 대시보드 역할**을 하고, SLO 알림과 커스텀 집계는 위 코드로 보완한다.
+
+| 패널 | Phoenix 제공 | 커스텀 보완 |
+|------|-------------|------------|
+| 품질 추이(👎·사후 judge) | Evaluations 탭 — 점수 분포·시간 추이 | `mine_failures`로 개선 후보 추출 |
+| 비용(일 토큰·버전별) | Traces 탭 — 토큰 사용량 집계 | `daily_metrics`로 SLO 초과 알림 |
+| 지연(p50/p95·단계별) | Traces 워터폴 — 단계별 latency 분해 | `alert`로 p95 임계 알림 |
+| 드리프트·신규 실패 수 | Embeddings 탭 — 클러스터 이동 시각화 | `drift_score`로 수치 알림 |
+| release_id별 안전 트리거 | Traces 필터 — release_id별 조회 | `alert`로 SEV-1/SEV-2 판정 |
+
+> 로컬에서는 `px.launch_app()`으로 Phoenix를 띄워 위 패널을 바로 확인할 수 있다. production에서는 사내 Phoenix 서버에 집계하고, 알림은 커스텀 스크립트(cron)로 발송한다. → [03](./03-tracing-observability.md)
 
 ## 관련 문서
 - [03. 트레이싱 & 관측성](./03-tracing-observability.md) — 모니터링의 원천 로그
@@ -132,5 +214,7 @@ def alert(cur: dict, base: dict) -> list[str]:
 - [15. Incident Response](./15-incident-response-postmortem.md) — 알림을 사고 대응으로 전환하는 기준
 
 ## 참고 자료 (References)
+- Arize Phoenix(사내 사용 LLM 모니터링): https://docs.arize.com/phoenix
+- Phoenix Evaluations 가이드: https://docs.arize.com/phoenix/evaluation
 - Data drift 개념: https://en.wikipedia.org/wiki/Concept_drift
 - Production ML monitoring(일반): "monitor inputs, outputs, and business metrics"
