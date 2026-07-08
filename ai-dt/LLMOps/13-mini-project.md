@@ -27,6 +27,7 @@ llmops-eval/
 │   └── safety.py           # 10: 거절/누출/인젝션
 ├── run_eval.py             # 04: 하네스 (데이터×시스템×채점기→리포트)
 ├── ci_eval.py              # 11: regression gate
+├── tracing.py              # 03: Phoenix 계측 설정 (OpenInference)
 ├── release_manifest.json   # 14: 배포 아티팩트 버전 조합
 ├── incidents/              # 15: 사고 기록과 postmortem
 └── report.md               # 결과·개선안 (발표용)
@@ -56,7 +57,18 @@ print(f"총 {len(ds)}건 / 거절 케이스 {len(refuse)}건({len(refuse)/len(ds
 
 ### 3단계 — 평가 대상 시스템 구현 (→ [02](./02-prompt-management-versioning.md))
 - 버전 관리되는 프롬프트로 RAG 답변 함수 `answer(question) -> (pred, contexts, retrieved_ids)`.
-- 트레이싱 심어 검색·생성 span 기록. → [03](./03-tracing-observability.md)
+- **Arize Phoenix** 계측 설정(`tracing.py`) — OpenAI 클라이언트 자동 계측으로 검색·생성 span 기록. → [03](./03-tracing-observability.md)
+
+```python
+# tracing.py — 프로젝트 시작 시 1회 호출
+import os
+os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://phoenix.internal:6006"
+
+from openinference.instrumentation.openai import OpenAIInstrumentor
+from phoenix.otel import register
+tracer_provider = register()
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+```
 
 ### 4단계 — 채점기 조립 (→ [06](./06-automatic-metrics.md)/[07](./07-llm-as-a-judge.md)/[08](./08-rag-evaluation.md)/[10](./10-safety-hallucination-guardrails.md))
 
@@ -124,6 +136,7 @@ def main():
 | 두 버전을 같은 잣대로 비교, 회귀 케이스 식별 | ☐ |
 | CI regression gate + 안전 하드컷 동작 | ☐ |
 | 실패 분석에서 검색/생성 원인 분리 | ☐ |
+| Phoenix 계측으로 trace가 수집되고 UI에서 조회 가능 | ☐ |
 | release manifest에 아티팩트 버전과 rollback 대상 명시 | ☐ |
 | incident/postmortem을 통해 실패 케이스를 eval set에 편입 | ☐ |
 

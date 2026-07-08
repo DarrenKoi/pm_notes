@@ -30,7 +30,7 @@
 | [커리큘럼 커버리지 점검](./curriculum-coverage.md) | `study_list.txt` 항목별 생성 문서 매핑과 보강 포인트 |
 | [01. LLMOps 개요 & 라이프사이클](./01-llmops-overview-lifecycle.md) | LLMOps 정의, MLOps와의 차이, LLM 앱 라이프사이클, 평가 중심 루프 |
 | [02. 프롬프트 관리 & 버전 관리](./02-prompt-management-versioning.md) | 프롬프트를 코드처럼, registry/버전/템플릿, 회귀 방지 |
-| [03. 트레이싱 & 관측성](./03-tracing-observability.md) | span/trace 개념, 토큰·비용·지연 추적, 사내 자체 로깅 설계 |
+| [03. 트레이싱 & 관측성](./03-tracing-observability.md) | span/trace 개념, 토큰·비용·지연 추적, **Arize Phoenix** 계측·대시보드 |
 
 ### 2. LLM 평가 기초
 | 문서 | 내용 |
@@ -51,7 +51,7 @@
 |------|------|
 | [10. 안전성·환각·가드레일 평가](./10-safety-hallucination-guardrails.md) | hallucination, toxicity, PII/기밀 누출, jailbreak, red teaming |
 | [11. 온라인 평가 & 배포](./11-online-eval-deployment.md) | A/B, canary, 오프라인 regression gate를 CI에 연결 |
-| [12. 모니터링 & 드리프트](./12-monitoring-drift.md) | production 지표, cost/latency, 데이터·행동 드리프트, feedback loop |
+| [12. 모니터링 & 드리프트](./12-monitoring-drift.md) | production 지표(**Phoenix** 대시보드), cost/latency, 데이터·행동 드리프트, feedback loop |
 
 ### 5. 실전 Mini Project
 | 문서 | 내용 |
@@ -73,6 +73,7 @@
 pip install openai                        # 사내 OpenAI 호환 클라이언트
 pip install pandas numpy scikit-learn     # 데이터셋·지표 계산
 pip install evaluate rouge-score          # BLEU/ROUGE 등 참조 기반 지표
+pip install arize-phoenix openinference-instrumentation-openai  # LLM 관측성 (트레이싱·모니터링)
 # 선택: 평가 프레임워크 (판정/임베딩 모델은 반드시 사내 엔드포인트로 교체)
 pip install ragas deepeval
 ```
@@ -121,6 +122,7 @@ def embed(texts, model=EMBED_MODEL):
 - OpenAI 호환 클라이언트: `OpenAI(base_url=..., api_key=..., model=...)`
 - RAGAS (RAG 평가 지표): https://docs.ragas.io/
 - DeepEval (LLM 평가 프레임워크): https://docs.confident-ai.com/
+- Arize Phoenix(사내 사용 LLM observability): https://docs.arize.com/phoenix
 - OpenAI Evals(개념 참고): https://github.com/openai/evals
 - OpenTelemetry GenAI Semantic Conventions: https://github.com/open-telemetry/semantic-conventions-genai
 - OWASP Top 10 for LLM Applications 2025: https://genai.owasp.org/llm-top-10/
