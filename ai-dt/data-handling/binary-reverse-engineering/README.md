@@ -63,6 +63,7 @@ python3 bre.py stamps  yourfile.dat --max-bytes 8192
 
 | 문서 | 내용 |
 |------|------|
+| [reverse-engineering-concepts.md](./reverse-engineering-concepts.md) | **개념 입문** — 역공학이 무엇이고 왜 되는지, 용어(바이트·offset·dtype·endianness·stride)와 6단계 방법을 쉬운 말로 (사람이 처음 읽는 문서) |
 | [00-agent-brief.md](./00-agent-brief.md) | **agent 작업 계약** — 미션·완료정의·게이트·`findings.json` 공유상태·가드레일 (먼저 읽음) |
 | [00-agent-runbook.md](./00-agent-runbook.md) | **phase 파이프라인** — 각 phase의 입력/명령/합격기준/산출물 |
 | [01-toolkit-reference.md](./01-toolkit-reference.md) | 범용 binary RE 도구·기법 총람 (triage·hex editor·Kaitai·통계 탐지) |
