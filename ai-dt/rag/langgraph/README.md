@@ -34,4 +34,5 @@ last_updated: 2026-01-31
 
 ## 관련 문서
 
+- [Advanced RAG 완전 가이드](../advanced-rag/README.md) — Agentic RAG + 멀티에이전트 통합
 - [AI/DT 분야 목차](../../README.md)
