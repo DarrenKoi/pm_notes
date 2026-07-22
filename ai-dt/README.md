@@ -81,3 +81,6 @@
   - [05. Handoffs](./ai-coding-dictionary/05-handoffs.md) - Clearing, Spec, Ticket, Compaction
   - [06. Memory and Steering](./ai-coding-dictionary/06-memory-and-steering.md) - Memory system, AGENTS.md, Skill, Subagent
   - [07. Patterns of Work](./ai-coding-dictionary/07-patterns-of-work.md) - AFK, Vibe coding, Grilling, Human/Automated review
+
+### Agent Documentation
+- [OpenWiki 사용법](./openwiki/README.md) - 코드베이스 문서를 생성/갱신하는 에이전트용 CLI 설치, 실행, CI 운영 가이드
