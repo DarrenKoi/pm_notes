@@ -82,5 +82,18 @@
   - [06. Memory and Steering](./ai-coding-dictionary/06-memory-and-steering.md) - Memory system, AGENTS.md, Skill, Subagent
   - [07. Patterns of Work](./ai-coding-dictionary/07-patterns-of-work.md) - AFK, Vibe coding, Grilling, Human/Automated review
 
+### AI 용어 및 기술 소개
+- [AI 용어 및 기술 소개](./ai-terms-and-technologies/README.md) - 전사 구성원을 위한 LLM·RAG·Agent·AI 리터러시·보안·AX 입문 자료
+  - [통합본](./ai-terms-and-technologies/all-in-one.md) - 9개 주제를 한 편으로 읽는 문서
+  - [01. AI 모델의 종류](./ai-terms-and-technologies/01-ai-model-families.md) - LLM, SLM, VLM, VLA, 지식 증류
+  - [02. 벡터, 임베딩, RAG와 온톨로지](./ai-terms-and-technologies/02-vector-embedding-and-rag.md) - 지식 자산화, 의미 검색과 검색 증강 생성
+  - [03. 제로샷과 퓨샷](./ai-terms-and-technologies/03-zero-shot-and-few-shot.md) - 프롬프트 예시의 수와 활용 기준
+  - [04. 바이브 코딩에서 하네스까지](./ai-terms-and-technologies/04-vibe-coding-harness-agent-orchestration.md) - Harness, AI Agent, Orchestration
+  - [05. AI 리터러시, 편향과 슬롭](./ai-terms-and-technologies/05-ai-literacy-bias-and-slop.md) - 책임 있는 AI 활용과 검증
+  - [06. 탈옥과 AI 보안](./ai-terms-and-technologies/06-jailbreak-and-ai-security.md) - 탈옥·프롬프트 인젝션과 최근 사례
+  - [07. AX와 AI 데이터 센터](./ai-terms-and-technologies/07-ax-and-ai-data-centers.md) - AI 전환과 이를 뒷받침하는 인프라
+  - [08. 토큰, 컨텍스트 윈도우, 환각](./ai-terms-and-technologies/08-token-context-window-and-hallucination.md) - 토큰·컨텍스트 한도·환각·비결정성
+  - [09. 프롬프트, RAG, 파인튜닝 중 무엇을 선택할까](./ai-terms-and-technologies/09-prompt-rag-finetuning-and-evaluation.md) - 방법 선택 기준과 골든셋 평가
+
 ### Agent Documentation
 - [OpenWiki 사용법](./openwiki/README.md) - 코드베이스 문서를 생성/갱신하는 에이전트용 CLI 설치, 실행, CI 운영 가이드
