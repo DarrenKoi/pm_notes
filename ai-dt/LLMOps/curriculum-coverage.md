@@ -11,23 +11,23 @@
 
 ## 항목별 매핑
 
-| `study_list.txt` 항목 | 생성 문서 | 상태 |
-|---|---|---|
-| LLMOps 개요 및 MLOps와의 차이, 라이프사이클 | [01](./01-llmops-overview-lifecycle.md) | 완료 |
-| 프롬프트 관리 및 버전 관리 | [02](./02-prompt-management-versioning.md) | 완료 |
-| 트레이싱·관측성(Observability) | [03](./03-tracing-observability.md) | 완료 |
-| LLM 평가 개요(패러다임) | [04](./04-llm-evaluation-overview.md) | 완료 |
-| 평가 데이터셋 구축 | [05](./05-eval-dataset-construction.md) | 완료 |
-| 자동 평가 지표 | [06](./06-automatic-metrics.md) | 완료 |
-| LLM-as-a-Judge | [07](./07-llm-as-a-judge.md) | 완료 |
-| RAG 평가(검색·생성 지표) | [08](./08-rag-evaluation.md) | 완료 |
-| Agent·Tool 평가 | [09](./09-agent-tool-evaluation.md) | 완료 |
-| 안전성·환각·가드레일 평가 | [10](./10-safety-hallucination-guardrails.md) | 완료 |
-| 온라인 평가와 배포(CI gate) | [11](./11-online-eval-deployment.md) | 완료 |
-| 모니터링과 드리프트 | [12](./12-monitoring-drift.md) | 완료 |
-| 실전 Mini Project | [13](./13-mini-project.md) | 완료 |
-| 아티팩트 계보와 release governance | [14](./14-artifact-lineage-governance.md) | 추가 보강 |
-| Incident response와 postmortem | [15](./15-incident-response-postmortem.md) | 추가 보강 |
+| `study_list.txt` 항목 | 생성 문서 |
+|---|---|
+| LLMOps 개요 및 MLOps와의 차이, 라이프사이클 | [01](./01-llmops-overview-lifecycle.md) |
+| 프롬프트 관리 및 버전 관리 | [02](./02-prompt-management-versioning.md) |
+| 트레이싱·관측성(Observability) | [03](./03-tracing-observability.md) |
+| LLM 평가 개요(패러다임) | [04](./04-llm-evaluation-overview.md) |
+| 평가 데이터셋 구축 | [05](./05-eval-dataset-construction.md) |
+| 자동 평가 지표 | [06](./06-automatic-metrics.md) |
+| LLM-as-a-Judge | [07](./07-llm-as-a-judge.md) |
+| RAG 평가(검색·생성 지표) | [08](./08-rag-evaluation.md) |
+| Agent·Tool 평가 | [09](./09-agent-tool-evaluation.md) |
+| 안전성·환각·가드레일 평가 | [10](./10-safety-hallucination-guardrails.md) |
+| 온라인 평가와 배포(CI gate) | [11](./11-online-eval-deployment.md) |
+| 모니터링과 드리프트 | [12](./12-monitoring-drift.md) |
+| 실전 Mini Project | [13](./13-mini-project.md) |
+| 아티팩트 계보와 release governance | [14](./14-artifact-lineage-governance.md) |
+| Incident response와 postmortem | [15](./15-incident-response-postmortem.md) |
 
 ## 문서 간 흐름(의존)
 

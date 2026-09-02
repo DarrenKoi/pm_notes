@@ -11,21 +11,21 @@
 
 ## 항목별 매핑
 
-| `study_list.txt` 항목 | 생성 문서 | 상태 |
-|---|---|---|
-| OpenAI API 및 LangChain 구조 이해 | [01](./01-openai-api-and-langchain-structure.md) | 완료 |
-| LCEL 실습 | [02](./02-lcel.md) | 완료 |
-| Chain, Agent, Tool 정의 및 사용 | [03](./03-chain-agent-tool.md) | 보강 완료 |
-| 외부 API 연동 기능 수행 Agent 설계 | [04](./04-external-api-agent.md) | 보강 완료 |
-| LangGraph 개요 및 상태 머신 이해 | [05](./05-langgraph-overview-state-machine.md) | 링크 보강 완료 |
-| 상태 기반 멀티스텝 대화 흐름 설계 | [06](./06-multistep-conversation-flow.md) | 링크 보강 완료 |
-| Condition, Branching, Tool 결합 workflow 실습 | [07](./07-condition-branching-tool-workflow.md) | 링크 보강 완료 |
-| 사용자 시나리오 기반 LangGraph Agent 구축 | [08](./08-langgraph-agent-scenario.md) | 보강 완료 |
-| 문서 임베딩 및 FAISS 벡터 스토어 구축 | [09](./09-document-embedding-faiss.md) | 완료 |
-| Retriever 구성 및 성능 튜닝 | [10](./10-retriever-tuning.md) | 완료 |
-| RAG 기반 질의 응답 흐름 구성 | [11](./11-rag-qa-flow.md) | 보강 완료 |
-| PDF, 웹 문서, 내부 지식 적용 사례 실습 | [12](./12-rag-document-sources.md) | 완료 |
-| 주제 선정 및 요구 사항 정의, 구현, 테스트, 발표 및 피드백 | [13](./13-mini-project.md) | 보강 완료 |
+| `study_list.txt` 항목 | 생성 문서 |
+|---|---|
+| OpenAI API 및 LangChain 구조 이해 | [01](./01-openai-api-and-langchain-structure.md) |
+| LCEL 실습 | [02](./02-lcel.md) |
+| Chain, Agent, Tool 정의 및 사용 | [03](./03-chain-agent-tool.md) |
+| 외부 API 연동 기능 수행 Agent 설계 | [04](./04-external-api-agent.md) |
+| LangGraph 개요 및 상태 머신 이해 | [05](./05-langgraph-overview-state-machine.md) |
+| 상태 기반 멀티스텝 대화 흐름 설계 | [06](./06-multistep-conversation-flow.md) |
+| Condition, Branching, Tool 결합 workflow 실습 | [07](./07-condition-branching-tool-workflow.md) |
+| 사용자 시나리오 기반 LangGraph Agent 구축 | [08](./08-langgraph-agent-scenario.md) |
+| 문서 임베딩 및 FAISS 벡터 스토어 구축 | [09](./09-document-embedding-faiss.md) |
+| Retriever 구성 및 성능 튜닝 | [10](./10-retriever-tuning.md) |
+| RAG 기반 질의 응답 흐름 구성 | [11](./11-rag-qa-flow.md) |
+| PDF, 웹 문서, 내부 지식 적용 사례 실습 | [12](./12-rag-document-sources.md) |
+| 주제 선정 및 요구 사항 정의, 구현, 테스트, 발표 및 피드백 | [13](./13-mini-project.md) |
 
 ## 남은 개선 후보
 

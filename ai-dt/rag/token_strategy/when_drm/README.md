@@ -31,11 +31,11 @@ last_updated: 2026-02-12
 
 ## 문서 목록
 
-| 파일 | 내용 | 상태 |
-|------|------|------|
-| [screenshot-vlm-pipeline.md](./screenshot-vlm-pipeline.md) | Phase 1: 스크린샷 + VLM 기반 추출 파이프라인 | 🟢 |
-| [vlm-chunking-strategy.md](./vlm-chunking-strategy.md) | VLM 추출 결과물의 청킹 전략 | 🟢 |
-| [post-drm-hybrid.md](./post-drm-hybrid.md) | Phase 2: DRM 해제 후 하이브리드 전략 | 🟢 |
+| 파일 | 내용 |
+|------|------|
+| [screenshot-vlm-pipeline.md](./screenshot-vlm-pipeline.md) | Phase 1: 스크린샷 + VLM 기반 추출 파이프라인 |
+| [vlm-chunking-strategy.md](./vlm-chunking-strategy.md) | VLM 추출 결과물의 청킹 전략 |
+| [post-drm-hybrid.md](./post-drm-hybrid.md) | Phase 2: DRM 해제 후 하이브리드 전략 |
 
 ## 전체 아키텍처 요약
 

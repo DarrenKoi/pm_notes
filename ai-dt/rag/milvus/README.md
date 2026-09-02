@@ -16,10 +16,10 @@
 
 ## 문서 목차
 
-| 순서 | 문서 | 설명 | 상태 |
-|------|------|------|------|
-| 1 | [Milvus 기초](./milvus-basics.md) | 아키텍처, Collection, Index, 유사도 검색 | 🟡 진행중 |
-| 2 | [Milvus RAG 연동](./milvus-rag-integration.md) | LangChain/LangGraph와 Milvus 통합 | 🟡 진행중 |
+| 순서 | 문서 | 설명 |
+|------|------|------|
+| 1 | [Milvus 기초](./milvus-basics.md) | 아키텍처, Collection, Index, 유사도 검색 |
+| 2 | [Milvus RAG 연동](./milvus-rag-integration.md) | LangChain/LangGraph와 Milvus 통합 |
 
 ## 사전 지식
 
