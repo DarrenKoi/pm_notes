@@ -29,6 +29,8 @@
 | 아티팩트 계보와 release governance | [14](./14-artifact-lineage-governance.md) |
 | Incident response와 postmortem | [15](./15-incident-response-postmortem.md) |
 
+> 14·15는 `study_list.txt`에 없던 **추가 보강** 문서다. 나머지 01~13은 항목 그대로 대응한다.
+
 ## 문서 간 흐름(의존)
 
 - 개념 축: 01(개요) → 04(평가 개요)가 전체를 관통.
