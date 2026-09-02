@@ -1,15 +1,15 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a mixed knowledge base plus runnable examples.
-- `ai-dt/`: AI/DT study notes (RAG, MCP, OpenSearch).
-- `web-development/`: web learning notes and sample projects.
-- `dev-environment/`: terminal/tooling notes.
-- `Codes/python/`: executable Python examples (`history-opensearch`, `opensearch_handler`, etc.).
-- `web-development/python/flask/job-scheduler/`: the most complete app (Flask backend + Nuxt frontend).
+Mixed knowledge base plus runnable examples. **Each top-level folder is a standalone topic** — see the 폴더 독립성 원칙 in [`CLAUDE.md`](CLAUDE.md) before you start; it is this repo's first rule.
+- `ai-dt/`: AI/DT study notes (RAG, MCP, OpenSearch, LLMOps, roadmap).
+- `web-development/`: web learning notes and sample projects (most complete app: `python/flask/job-scheduler`, Flask + Nuxt).
+- `Codes/python/`: executable Python examples (`opensearch_handler`, `history-opensearch`, `drm-pptx-extraction`, ...).
+- `dev-environment/`: terminal/tooling notes (codex, pi, terminal, warp, vlm).
+- `my-task/`: in-flight deliverables (`AIX_POC`, `2026_report`) — has its own `CLAUDE.md`.
+- `RAG/`, `docs/`, `_workspace/`: one-off analysis, agent-ops docs, scratch.
 
-Keep docs close to their topic (`README.md` in each module), and keep runnable code within its module folder.
-
+Scope every search, edit, and commit to a single top-level folder. Keep docs next to their topic (`README.md` per module) and runnable code inside its module folder. No cross-folder links.
 
 ## Coding Style & Naming Conventions
 - Python: 4-space indentation, `snake_case` functions/variables, `PascalCase` classes, type hints for new/changed code.

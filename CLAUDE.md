@@ -1,4 +1,4 @@
-# Knowledge Base - CLAUDE.md
+# pm_notes - CLAUDE.md
 
 > 이 파일은 Claude Code가 이 repository의 컨텍스트를 이해하고 일관된 방식으로 문서를 생성/관리하기 위한 가이드입니다.
 
@@ -12,42 +12,34 @@
 
 ## 📁 폴더 구조
 
-```
-knowledge-base/
-├── CLAUDE.md                           # 이 파일 (Claude Code 컨텍스트)
-├── README.md                           # 전체 목차
-│
-├── web-development/
-│   ├── README.md
-│   ├── python/
-│   │   ├── fastapi/                   # FastAPI 백엔드 개발
-│   │   └── flask/                     # Flask 웹 애플리케이션
-│   └── typescript/
-│       ├── vue/                       # Vue.js 프론트엔드
-│       └── nuxt/                      # Nuxt.js SSR/SSG
-│
-├── ai-dt/
-│   ├── README.md
-│   ├── rag/
-│   │   └── langgraph/                 # LangGraph 기반 RAG 시스템
-│   ├── mcp/                           # Model Context Protocol
-│   └── data-handling/                 # 데이터 처리 및 파이프라인
-│
-└── _templates/                         # 문서 템플릿
-    ├── concept.md                     # 개념 설명용
-    ├── tutorial.md                    # 실습/튜토리얼용
-    ├── cheatsheet.md                  # 빠른 참조용
-    └── troubleshooting.md             # 문제 해결 기록용
-```
+**최상위 폴더 = 하나의 독립 주제.** 하위 트리는 각 폴더의 README.md가 관리하므로 여기서는 폴더 목록만 유지한다.
 
-### 폴더 독립성 원칙 (Standalone Folders)
+| 폴더 | 주제 |
+|------|------|
+| `ai-dt/` | AI/DT 학습 노트 (RAG, MCP, OpenSearch, LLMOps, ITC 로드맵) |
+| `web-development/` | 웹 개발 노트 + 예제 앱 (FastAPI / Flask / Vue / Nuxt) |
+| `Codes/python/` | 실행 가능한 파이썬 예제 (opensearch_handler, drm-pptx-extraction 등) |
+| `dev-environment/` | 개발 환경·툴링 노트 (codex, pi, terminal, warp, vlm) |
+| `my-task/` | 진행 중인 업무 산출물 (AIX_POC, 2026_report) — 자체 CLAUDE.md 있음 |
+| `RAG/` | RAG 관련 단발 분석 문서 |
+| `docs/` | 에이전트 운영 문서 (issue-tracker, triage-labels, domain) |
+| `_workspace/` | 세션 임시 작업물 |
 
-**각 최상위 폴더(및 그 하위 주제 폴더)는 서로 독립적인(standalone) 단위입니다.**
+### 폴더 독립성 원칙 (Standalone Folders) — 이 저장소의 1순위 규칙
 
-- 폴더끼리는 서로 관련이 없다고 간주한다 — 한 폴더의 작업이 다른 폴더에 영향을 주지 않는다
-- 문서 작성/수정 시 **해당 폴더 안에서만** 컨텍스트를 찾는다 (다른 폴더의 문서를 근거로 삼지 않음)
-- 폴더 간 크로스 링크(cross-folder link)는 만들지 않는다 — 관련 문서 링크는 같은 폴더 내부로 한정
-- 각 폴더는 자체 README.md로 완결된 목차를 유지한다
+**최상위 폴더는 서로 다른 주제의 별개 저장소처럼 다룬다. 한 대화는 한 폴더 안에서 끝난다.**
+
+작업할 폴더가 정해지면:
+
+- **탐색 범위를 그 폴더로 한정한다** — `grep`/`find`/`Read` 경로를 해당 폴더로 제한한다. 저장소 전역 검색으로 다른 폴더 내용을 끌어오지 않는다.
+- **다른 폴더의 문서를 근거·참조·용어 출처로 삼지 않는다** — 같은 단어라도 폴더마다 뜻이 다를 수 있다. 모르면 폴더 밖을 뒤지지 말고 사용자에게 묻는다.
+- **폴더 간 크로스 링크를 만들지 않는다** — 관련 문서 링크는 같은 폴더 내부로 한정.
+- **변경을 폴더 밖으로 번지게 하지 않는다** — 한 폴더 작업이 다른 폴더의 문서나 README를 수정하게 두지 않는다. 커밋도 폴더 단위로 나눈다.
+- 각 폴더는 자체 README.md로 완결된 목차를 유지한다.
+
+**예외 — 전역 파일은 어느 폴더에서든 읽는다:** 루트 `CLAUDE.md` · `AGENTS.md` · `README.md` · `CONTEXT-MAP.md`, 그리고 `docs/agents/`. 그 외에는 폴더 밖을 보지 않는다.
+
+**작업 폴더가 불분명하면 먼저 물어본다** — 여러 폴더를 추측으로 훑지 않는다.
 
 ---
 
@@ -122,41 +114,6 @@ last_updated: 2025-01-31
 
 ---
 
-## 📋 자주 사용하는 Claude Code 명령어 패턴
-
-### 새로운 주제 학습 시작
-```
-"[분야]/[주제]/ 폴더에 [토픽]에 대해 정리해줘.
-기본 개념부터 시작해서 실제 구현 코드까지 단계별로 작성하고,
-내가 [관련 프로젝트]할 때 어떻게 연결되는지도 포함해줘"
-```
-
-### 기존 문서 확장
-```
-"[파일 경로] 읽고, [새로운 섹션] 추가해줘.
-실무에서 자주 쓰는 패턴 위주로"
-```
-
-### 복습용 요약 생성
-```
-"[폴더 경로] 전체 읽고 핵심 개념 cheatsheet 만들어줘"
-```
-
-### 트러블슈팅 기록
-```
-"[문제 상황] 해결했어. troubleshooting 문서에 기록해줘.
-원인, 해결 과정, 최종 해결책 포함해서"
-```
-
-### README 업데이트
-```
-"오늘 [주제] 관련 문서 작성했어.
-해당 폴더 README.md 목차 업데이트하고,
-루트 README.md에도 진행상황 반영해줘"
-```
-
----
-
 ## 🧠 질문 기반 자동 문서화
 
 사용자가 특정 기술 질문을 했을 때, 해당 질문이 기존 하위 폴더/주제(예: FastAPI, LangGraph, Vue, MCP 등)와 명확히 매칭되면:
@@ -192,28 +149,8 @@ last_updated: 2025-01-31
 
 ---
 
-## 🔄 워크플로우
-
-```
-1. 궁금한 주제 발생
-   ↓
-2. Claude Code: "이 주제 기본 문서 만들어줘"
-   ↓
-3. 읽고 이해하면서 추가 질문
-   ↓
-4. Claude Code: "이 부분 더 자세히 / 예제 추가"
-   ↓
-5. 실습 후 insights 추가
-   ↓
-6. Git commit으로 버전 관리
-   ↓
-7. 주기적으로 복습 및 업데이트
-```
-
----
-
-### 학습 ↔ 실무 연결
-문서 작성 시 실무 프로젝가 있으면 연관성을 고려:
+## 학습 ↔ 실무 연결
+문서 작성 시 실무 프로젝트가 있으면 연관성을 고려:
 - "이 기술이 Recipe Setup 자동화에 어떻게 적용될 수 있는가?"
 - "SKEWNONO에서 이 패턴을 사용할 수 있는가?"
 
@@ -244,5 +181,5 @@ Multi-context layout — `CONTEXT-MAP.md` at the repo root points to per-subproj
 
 ---
 
-*Last updated: 2025-01-31*
+*Last updated: 2026-09-03*
 
