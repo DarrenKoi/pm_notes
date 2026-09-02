@@ -1,17 +1,17 @@
 ---
-tags: [opensearch, elasticsearch, python, handler, client, bulk, search, aggregation]
+tags: [opensearch, python, handler, client, bulk, search, aggregation]
 level: intermediate
 last_updated: 2026-02-12
 ---
 
-# opensearch_handler — 범용 OpenSearch/ES 핸들러
+# opensearch_handler — 범용 OpenSearch 핸들러
 
-> OpenSearch와 Elasticsearch 7.x를 위한 공유 Python 패키지. 클라이언트 생성, 인덱스 관리, 문서 CRUD, 검색, Aggregation을 단일 인터페이스로 제공한다.
+> OpenSearch를 위한 공유 Python 패키지. 클라이언트 생성, 인덱스 관리, 문서 CRUD, 검색, Aggregation을 단일 인터페이스로 제공한다.
 
 ## 왜 필요한가? (Why)
 
 - `opensearch-py`는 저수준 클라이언트라서 매번 `hosts` 포맷 구성, SSL 옵션, bulk action 변환 등 **보일러플레이트**가 반복된다
-- knowhow-elasticsearch, history-opensearch 등 여러 프로젝트에서 **동일한 패턴**을 복사하고 있었다
+- 여러 OpenSearch 프로젝트에서 **동일한 패턴**을 복사하고 있었다
 - 프로젝트마다 클라이언트 코드를 유지보수하면 **불일치와 버그**가 생긴다
 
 `opensearch_handler`는 이 공통 패턴을 한 곳에 모아, 프로젝트별로는 **도메인 로직만** 작성하면 되게 한다.
@@ -228,7 +228,6 @@ client = osh.create_client(host="localhost", use_ssl=False)
 
 ## 관련 문서
 
-- [knowhow-elasticsearch 구조](./knowhow-elasticsearch-architecture.md) - 이 핸들러를 사용하는 프로젝트 예시
 - [Python 클라이언트 활용](./python-client.md) - 대용량 Bulk 처리, Async, 에러 핸들링
 - [하이브리드 검색](./hybrid-search.md) - 벡터 + 키워드 결합 전략
 - [실습 코드](../../../Codes/python/opensearch_handler/)

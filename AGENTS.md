@@ -5,7 +5,7 @@ This repository is a mixed knowledge base plus runnable examples.
 - `ai-dt/`: AI/DT study notes (RAG, MCP, OpenSearch).
 - `web-development/`: web learning notes and sample projects.
 - `dev-environment/`: terminal/tooling notes.
-- `Codes/python/`: executable Python examples (`history-opensearch`, `knowhow-elasticsearch`, `opensearch_handler`, etc.).
+- `Codes/python/`: executable Python examples (`history-opensearch`, `opensearch_handler`, etc.).
 - `web-development/python/flask/job-scheduler/`: the most complete app (Flask backend + Nuxt frontend).
 
 Keep docs close to their topic (`README.md` in each module), and keep runnable code within its module folder.

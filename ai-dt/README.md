@@ -30,9 +30,6 @@
   - [키워드 검색 (BM25)](./rag/opensearch/keyword-search-bm25.md) - Full-text 검색, 분석기, 한국어 처리
   - [하이브리드 검색](./rag/opensearch/hybrid-search.md) - 벡터 + 키워드 결합, Score Normalization, RRF
 
-#### Hybrid Search
-- [보조 용어 사전 DB (Elasticsearch)](./rag/auxiliary-glossary-db.md) - ES BM25로 전문 용어 관리, 쿼리 확장, LangGraph 통합
-
 ### LangChain / LangGraph / RAG 커리큘럼 (study_list)
 - [LangChain 학습 노트 목차](./langchain/README.md) - `study_list.txt` 4모듈 커리큘럼, 공개 OpenAI + 사내 엔드포인트 병기
   - **M1 LangChain 기초**: [OpenAI API & 구조](./langchain/01-openai-api-and-langchain-structure.md) · [LCEL](./langchain/02-lcel.md) · [Chain·Agent·Tool](./langchain/03-chain-agent-tool.md) · [외부 API Agent](./langchain/04-external-api-agent.md)

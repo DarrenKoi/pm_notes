@@ -246,6 +246,5 @@ LLM 컨텍스트:
 ## 참고 자료
 
 - [정규화(Normalization)란 무엇인가 - 교과서 너머의 이해](https://wikidocs.net/blog/%40jcnahm/12324/)
-- [보조 용어 사전 DB](../../rag/auxiliary-glossary-db.md)
 - [OpenSearch Object Field Types](https://docs.opensearch.org/latest/mappings/supported-field-types/object-fields/)
 - [MongoDB Vector Search Overview](https://www.mongodb.com/docs/atlas/atlas-search/vector-search/)

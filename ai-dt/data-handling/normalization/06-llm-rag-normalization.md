@@ -248,4 +248,3 @@ LLM 출력은 바로 원천 데이터로 쓰지 말고 candidate로 다룬다. �
 - [MongoDB Vector Search Overview](https://www.mongodb.com/docs/atlas/atlas-search/vector-search/)
 - [Redis Vector Search Concepts](https://redis.io/docs/latest/develop/ai/search-and-query/vectors/)
 - [OpenSearch RAG 파이프라인 연동](../../rag/opensearch/rag-integration.md)
-- [보조 용어 사전 DB](../../rag/auxiliary-glossary-db.md)
