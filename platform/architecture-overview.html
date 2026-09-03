@@ -1,0 +1,527 @@
+<title>에이전트 레지스트리 구조도</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#EEF1F3;
+  --surface:#FFFFFF;
+  --surface-2:#F6F8F9;
+  --ink:#151B21;
+  --ink-2:#3D4B57;
+  --muted:#6A7A87;
+  --line:#D2DADF;
+  --line-2:#E4EAEE;
+  --accent:#0F6F8C;
+  --accent-soft:#DCEBF0;
+  --warn:#8A6410;
+  --warn-soft:#F4EBD6;
+  --stop:#A6482A;
+  --stop-soft:#F5E3DC;
+  --ok:#2C6E4F;
+  --ok-soft:#DDEBE3;
+  --shadow:0 1px 2px rgba(21,27,33,.06),0 8px 24px -16px rgba(21,27,33,.28);
+  --sans:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#101619;
+    --surface:#171F24;
+    --surface-2:#1D262C;
+    --ink:#E7EDF1;
+    --ink-2:#B7C4CD;
+    --muted:#8494A0;
+    --line:#2C3941;
+    --line-2:#232E35;
+    --accent:#5FB6D0;
+    --accent-soft:#173038;
+    --warn:#D3A94E;
+    --warn-soft:#332A16;
+    --stop:#DE8E70;
+    --stop-soft:#37211A;
+    --ok:#79C29B;
+    --ok-soft:#172B21;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#101619; --surface:#171F24; --surface-2:#1D262C;
+  --ink:#E7EDF1; --ink-2:#B7C4CD; --muted:#8494A0;
+  --line:#2C3941; --line-2:#232E35;
+  --accent:#5FB6D0; --accent-soft:#173038;
+  --warn:#D3A94E; --warn-soft:#332A16;
+  --stop:#DE8E70; --stop-soft:#37211A;
+  --ok:#79C29B; --ok-soft:#172B21;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:48px 24px 96px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-size:2.15rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+h2{font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+h3{font-size:1rem;font-weight:600}
+p{margin:0}
+code,.mono{font-family:var(--mono);font-size:.86em;font-variant-ligatures:none}
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+}
+
+/* ---- masthead ---- */
+.masthead{
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+  gap:40px;align-items:end;
+  padding-bottom:28px;border-bottom:2px solid var(--ink);margin-bottom:40px;
+}
+.masthead p{color:var(--ink-2);max-width:46ch;margin-top:14px}
+.facts{display:flex;flex-direction:column;gap:10px}
+.fact{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  padding-bottom:8px;border-bottom:1px solid var(--line-2)}
+.fact dt{font-size:.8rem;color:var(--muted)}
+.fact dd{margin:0;font-family:var(--mono);font-size:.82rem;font-weight:500;color:var(--ink);text-align:right}
+
+section{margin-top:56px}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.sec-note{color:var(--muted);font-size:.88rem;max-width:70ch;margin-bottom:20px}
+
+/* ---- generic panel ---- */
+.panel{
+  background:var(--surface);border:1px solid var(--line);border-radius:3px;
+  padding:22px 24px;box-shadow:var(--shadow);
+}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media(max-width:820px){.grid-3,.grid-2,.masthead{grid-template-columns:1fr}}
+
+/* ---- topology figure ---- */
+.figure{background:var(--surface);border:1px solid var(--line);border-radius:3px;
+  padding:24px;box-shadow:var(--shadow);overflow-x:auto}
+.figure svg{display:block;min-width:640px;width:100%;height:auto}
+figcaption{margin-top:14px;font-size:.82rem;color:var(--muted);max-width:72ch}
+
+/* ---- asset kind cards ---- */
+.kind{background:var(--surface);border:1px solid var(--line);border-radius:3px;
+  padding:0;overflow:hidden;display:flex;flex-direction:column}
+.kind-top{padding:18px 20px 16px;border-bottom:1px solid var(--line-2)}
+.kind-top h3{margin-bottom:4px}
+.kind .act{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--accent);font-weight:600}
+.kind dl{margin:0;padding:16px 20px 18px;display:flex;flex-direction:column;gap:12px}
+.kind dt{font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+.kind dd{margin:2px 0 0;font-size:.9rem;color:var(--ink-2)}
+.kind.pulled{border-color:var(--accent);border-width:1px}
+.kind.pulled .kind-top{background:var(--accent-soft)}
+
+/* ---- layer stack ---- */
+.stack{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:3px;
+  overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.row{display:grid;grid-template-columns:64px minmax(0,1.1fr) minmax(0,1.5fr) minmax(0,1fr);
+  gap:16px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line-2)}
+.row:last-child{border-bottom:0}
+.row:nth-child(even){background:var(--surface-2)}
+.row .lid{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--accent)}
+.row .lname{font-weight:600;font-size:.92rem}
+.row .ldesc{font-size:.84rem;color:var(--muted)}
+.row .ltech{font-family:var(--mono);font-size:.78rem;color:var(--ink-2)}
+.row.new{background:var(--accent-soft)}
+.row.new .lname::after{content:"신설";font-family:var(--sans);font-size:.66rem;font-weight:600;
+  margin-left:8px;padding:1px 6px;border-radius:2px;background:var(--accent);color:var(--surface);
+  vertical-align:1px;letter-spacing:.02em}
+@media(max-width:820px){
+  .row{grid-template-columns:52px 1fr;row-gap:4px}
+  .row .ldesc,.row .ltech{grid-column:2}
+}
+
+/* ---- tables ---- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.88rem}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line-2);vertical-align:top}
+thead th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;background:var(--surface-2);border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+td.mono{font-family:var(--mono);font-size:.8rem}
+.chip{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:2px;
+  letter-spacing:.02em;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.part{background:var(--warn-soft);color:var(--warn)}
+.chip.no{background:var(--stop-soft);color:var(--stop)}
+
+/* ---- tuple diagram ---- */
+.tuple{background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:18px 20px;
+  font-family:var(--mono);font-size:.84rem;line-height:2;overflow-x:auto}
+.tuple .k{color:var(--accent);font-weight:600}
+.tuple .c{color:var(--muted)}
+
+/* ---- callout ---- */
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:16px 20px;
+  border-radius:0 3px 3px 0;border-top:1px solid var(--line);border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line)}
+.callout.stop{border-left-color:var(--stop)}
+.callout h3{margin-bottom:6px;font-size:.94rem}
+.callout p{font-size:.88rem;color:var(--ink-2)}
+.src{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:8px;display:block}
+
+/* ---- decision list ---- */
+.decisions{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);box-shadow:var(--shadow)}
+.dec{display:grid;grid-template-columns:52px minmax(0,1fr);gap:16px;padding:14px 18px;
+  border-bottom:1px solid var(--line-2)}
+.dec:last-child{border-bottom:0}
+.dec .did{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--accent)}
+.dec .dwhat{font-weight:600;font-size:.9rem;margin-bottom:3px}
+.dec .dwhy{font-size:.84rem;color:var(--muted)}
+
+/* ---- unknowns ---- */
+.unknowns{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.unk{border:1px dashed var(--line);background:var(--surface);border-radius:3px;padding:16px 18px}
+.unk .q{font-family:var(--mono);font-size:.76rem;font-weight:600;color:var(--stop);letter-spacing:.04em}
+.unk h3{margin:6px 0 4px;font-size:.92rem}
+.unk p{font-size:.83rem;color:var(--muted)}
+
+footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-size:.78rem;color:var(--muted);font-family:var(--mono)}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div>
+    <span class="eyebrow">사업부 1차 플랫폼 · 설계 요약</span>
+    <h1>사내 AI Agent·Skill<br>공유 레지스트리 구조</h1>
+    <p>사업부마다 독립 배포되는 1차 레지스트리와 그 위의 전사 2차 플랫폼. 이 문서는 팀 논의를 위해 구조·결정·미결을 한 장으로 모은 것이다.</p>
+  </div>
+  <dl class="facts">
+    <div class="fact"><dt>배포 단위</dt><dd>사업부별 독립 인스턴스</dd></div>
+    <div class="fact"><dt>자산 종류</dt><dd>Skill / MCP server / hosted agent</dd></div>
+    <div class="fact"><dt>소프트웨어 계층</dt><dd>L1–L10 + L6b</dd></div>
+    <div class="fact"><dt>구축 규모</dt><dd>6.5 FTE · 약 6.5개월</dd></div>
+    <div class="fact"><dt>구현 티켓</dt><dd>30개 · 7개 물결</dd></div>
+  </dl>
+</header>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">01</span><h2>배포 토폴로지</h2></div>
+  <p class="sec-note">사업부(Biz)마다 별도 인스턴스로 배포한다. 하나를 여러 사업부가 나눠 쓰는 멀티테넌시가 아니다. 그래서 <strong>인스턴스 경계가 곧 보안 경계</strong>이고 크로스-Biz 접근은 앱 내부 권한이 아니라 토큰 레이어 문제가 된다.</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 900 400" role="img" aria-label="사업부별 1차 인스턴스와 전사 2차 플랫폼의 관계도">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+        </marker>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+
+      <!-- users -->
+      <rect x="40" y="18" width="240" height="44" rx="2" fill="var(--surface-2)" stroke="var(--line)"/>
+      <text x="160" y="45" text-anchor="middle" font-family="var(--sans)" font-size="13" fill="var(--ink)">사원 PC · 에이전트 런타임</text>
+
+      <rect x="620" y="18" width="240" height="44" rx="2" fill="var(--surface-2)" stroke="var(--line)"/>
+      <text x="740" y="45" text-anchor="middle" font-family="var(--sans)" font-size="13" fill="var(--ink)">팀 서버 (hosted agent)</text>
+
+      <!-- idp -->
+      <rect x="360" y="18" width="180" height="44" rx="22" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="450" y="45" text-anchor="middle" font-family="var(--sans)" font-size="13" font-weight="600" fill="var(--accent)">공통 사내 IdP</text>
+
+      <!-- biz A -->
+      <rect x="40" y="120" width="330" height="130" rx="3" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="60" y="146" font-family="var(--mono)" font-size="11" font-weight="600" fill="var(--accent)">BIZ-A · 1차 인스턴스</text>
+      <text x="60" y="172" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">FastAPI · MongoDB · Redis</text>
+      <text x="60" y="192" font-family="var(--sans)" font-size="12" fill="var(--ink-2)">OpenSearch · MinIO</text>
+      <rect x="60" y="206" width="290" height="28" rx="2" fill="var(--accent-soft)" stroke="none"/>
+      <text x="72" y="225" font-family="var(--sans)" font-size="11.5" fill="var(--accent)">L6b Endpoint Broker — 헬스체크 · 계량</text>
+
+      <!-- biz B -->
+      <rect x="410" y="120" width="330" height="130" rx="3" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="4 3"/>
+      <text x="430" y="146" font-family="var(--mono)" font-size="11" font-weight="600" fill="var(--muted)">BIZ-B · 1차 인스턴스</text>
+      <text x="430" y="172" font-family="var(--sans)" font-size="12" fill="var(--muted)">동일 구성 · 독립 배포</text>
+      <text x="430" y="196" font-family="var(--sans)" font-size="12" fill="var(--muted)">N개까지 복제</text>
+
+      <text x="775" y="180" font-family="var(--mono)" font-size="22" fill="var(--line)">···</text>
+
+      <!-- second tier -->
+      <rect x="180" y="310" width="540" height="66" rx="3" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.5"/>
+      <text x="450" y="337" text-anchor="middle" font-family="var(--sans)" font-size="14" font-weight="600" fill="var(--ink)">2차 전사 플랫폼</text>
+      <text x="450" y="357" text-anchor="middle" font-family="var(--sans)" font-size="11.5" fill="var(--muted)">별도 운영 주체 · 검증된 자산만 승격</text>
+
+      <!-- arrows: user -> idp -> instance -->
+      <line x1="280" y1="40" x2="352" y2="40" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#ar)"/>
+      <line x1="160" y1="62" x2="160" y2="112" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#ar)"/>
+      <text x="170" y="92" font-family="var(--mono)" font-size="10.5" fill="var(--accent)">조회 · 설치</text>
+
+      <line x1="620" y1="40" x2="548" y2="40" stroke="var(--muted)" stroke-width="1.2" marker-end="url(#ar2)"/>
+      <line x1="740" y1="62" x2="740" y2="112" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <line x1="740" y1="112" x2="340" y2="112" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#ar2)"/>
+      <text x="470" y="106" font-family="var(--mono)" font-size="10.5" fill="var(--muted)">엔드포인트 등록</text>
+
+      <!-- promotion arrows -->
+      <line x1="200" y1="250" x2="290" y2="302" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#ar)"/>
+      <text x="120" y="288" font-family="var(--mono)" font-size="10.5" fill="var(--accent)">승격 신청 (push)</text>
+
+      <line x1="470" y1="302" x2="380" y2="250" stroke="var(--muted)" stroke-width="1.2" marker-end="url(#ar2)"/>
+      <text x="486" y="288" font-family="var(--mono)" font-size="10.5" fill="var(--muted)">증분 폴링 (pull)</text>
+
+      <line x1="600" y1="302" x2="600" y2="250" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar2)"/>
+      <text x="612" y="280" font-family="var(--mono)" font-size="10.5" fill="var(--muted)">lazy copy</text>
+    </svg>
+    <figcaption>인스턴스 관계는 <strong>N-to-1</strong>을 기본으로 한다. Biz 끼리 직접 신뢰를 맺으면 관계 수가 N²로 늘고 클라이언트 신뢰 모델이 비전이(non-transitive)라 그 부담을 줄일 방법이 없다. 타 Biz 에이전트는 원칙적으로 전사(2차)를 경유한다.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">02</span><h2>"Agent"는 세 가지다</h2></div>
+  <p class="sec-note">가장 중요한 구분. 셋의 <strong>배포 행위가 근본적으로 다르다.</strong> 그래서 심사·폐기·계측 경로가 전부 갈린다.</p>
+  <div class="grid-3">
+    <div class="kind">
+      <div class="kind-top"><h3>Skill</h3><span class="act">내려받아 설치</span></div>
+      <dl>
+        <div><dt>실체</dt><dd><code>SKILL.md</code> + 스크립트 파일 묶음</dd></div>
+        <div><dt>아티팩트</dt><dd>MinIO 번들</dd></div>
+        <div><dt>의존</dt><dd>사용자 로컬 런타임</dd></div>
+        <div><dt>계측</dt><dd>설치 시점까지만</dd></div>
+      </dl>
+    </div>
+    <div class="kind">
+      <div class="kind-top"><h3>MCP server</h3><span class="act">설치 또는 연결</span></div>
+      <dl>
+        <div><dt>실체</dt><dd>실행형 프로세스 또는 원격 엔드포인트</dd></div>
+        <div><dt>아티팩트</dt><dd>번들 또는 없음</dd></div>
+        <div><dt>의존</dt><dd>실행 환경 또는 제공 서버</dd></div>
+        <div><dt>계측</dt><dd>원격이면 호출까지</dd></div>
+      </dl>
+    </div>
+    <div class="kind pulled">
+      <div class="kind-top"><h3>Hosted agent</h3><span class="act">접근 권한 부여</span></div>
+      <dl>
+        <div><dt>실체</dt><dd>팀 서버가 띄워둔 서비스</dd></div>
+        <div><dt>아티팩트</dt><dd>없음 — 엔드포인트만</dd></div>
+        <div><dt>의존</dt><dd><strong>제공 팀의 서버 가동 상태</strong></dd></div>
+        <div><dt>계측</dt><dd>호출 · 지연 · 에러 전부</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="callout">
+      <h3>hosted agent 가 설계를 바꾼 지점</h3>
+      <p>아티팩트가 없으므로 불변성·서명 모델이 적용되지 않는다. 심사 대상이 <em>"무엇이 배포되는가"</em>에서 <em>"누가 무엇을 계속 책임지는가"</em>로 바뀐다. 제공 팀이 서버를 내리면 사용자가 즉시 깨지므로 유예기간과 사전 통보가 절차가 아니라 요구사항이다.</p>
+    </div>
+    <div class="callout">
+      <h3>제약이 만들어낸 관측 가능성</h3>
+      <p>Anthropic 은 Skills API 로 사용량 분석을 제공하지 않는다고 명시한다. 그런데 hosted agent 는 호출이 Endpoint Broker 를 지나므로 <strong>확실하게 계량된다.</strong> 그래서 승격 지표를 종류별로 다르게 잡는다 — 경유형은 실제 호출량, 설치형은 설치 수와 게이트웨이 호출 수.</p>
+      <span class="src">platform.claude.com · agent-skills/enterprise</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">03</span><h2>소프트웨어 계층</h2></div>
+  <p class="sec-note">L1–L10 과 L6b 를 <strong>하나의 FastAPI 앱 + 워커</strong>로 구현한다. 인스턴스가 이미 N개로 늘어나는 구조라 서비스 수까지 곱하면 운영 부하가 N×M 이 된다.</p>
+  <div class="stack">
+    <div class="row"><span class="lid">L1</span><span class="lname">Artifact Store</span><span class="ldesc">번들 저장. 발행 버전은 불변</span><span class="ltech">MinIO · Object Lock</span></div>
+    <div class="row"><span class="lid">L2</span><span class="lname">Catalog</span><span class="ldesc">정규화 문서 · 소유권 · 심사 상태</span><span class="ltech">MongoDB</span></div>
+    <div class="row"><span class="lid">L3</span><span class="lname">Search</span><span class="ldesc">전문 검색 · 패싯 · 랭킹</span><span class="ltech">OpenSearch</span></div>
+    <div class="row"><span class="lid">L4</span><span class="lname">API</span><span class="ldesc">발행 · 조회 · 상태전이 · 승격</span><span class="ltech">FastAPI</span></div>
+    <div class="row"><span class="lid">L5</span><span class="lname">Auth</span><span class="ldesc">SSO · M2M · 소유권 판정</span><span class="ltech">OIDC · RFC 9068</span></div>
+    <div class="row"><span class="lid">L6</span><span class="lname">Distribution</span><span class="ldesc">런타임별 배포 표면 (어댑터)</span><span class="ltech">marketplace.json · generic</span></div>
+    <div class="row new"><span class="lid">L6b</span><span class="lname">Endpoint Broker</span><span class="ldesc">hosted agent 중개 · 헬스체크 · 계량</span><span class="ltech">자체 구현</span></div>
+    <div class="row"><span class="lid">L7</span><span class="lname">Cache / Queue</span><span class="ldesc">캐시 · 레이트리밋 · 잡</span><span class="ltech">Redis</span></div>
+    <div class="row"><span class="lid">L8</span><span class="lname">Observability</span><span class="ldesc">사용량 · 지연 · 에러</span><span class="ltech">OTel → Data Prepper</span></div>
+    <div class="row"><span class="lid">L9</span><span class="lname">Federation</span><span class="ldesc">전사 인스턴스와 동기화</span><span class="ltech">push + pull + lazy copy</span></div>
+    <div class="row"><span class="lid">L10</span><span class="lname">Governance</span><span class="ldesc">심사 게이트 · 서명 · 등급</span><span class="ltech">cosign · in-toto/SLSA</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">04</span><h2>매년 바뀌는 팀 이름</h2></div>
+  <p class="sec-note">우리 조직의 특성이 그대로 설계 제약이 됐다. 팀 이름은 매년 바뀌고 사원 마스터에 불변 조직 코드가 있는지는 확인할 수 없다. 확실한 것은 <code>empno</code> 가 불변이라는 것뿐이다.</p>
+
+  <div class="grid-2">
+    <div class="callout stop">
+      <h3>반례 — npm 의 실패 방식</h3>
+      <p>npm 은 스코프가 곧 조직명이라 조직 이름을 바꿀 수 없다. 새 조직을 만들고, 멤버와 팀을 옮기고, 모든 <code>package.json</code> 의 스코프를 고치고, <strong>전 패키지를 재발행</strong>한 뒤 지원팀에 옛 조직 삭제를 요청해야 한다.</p>
+      <span class="src">docs.npmjs.com/renaming-an-organization</span>
+    </div>
+    <div class="callout">
+      <h3>선례 — MCP 의 분리</h3>
+      <p>MCP <code>server.json</code> 은 <code>name</code>(불변, reverse-DNS, 패턴 강제)과 <code>title</code>("optional human-readable display name")을 <strong>스키마 수준에서 분리</strong>해 뒀다. 우리도 같은 분리를 팀에 적용한다.</p>
+      <span class="src">github.com/modelcontextprotocol/registry</span>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <h3 style="margin-bottom:10px">우리의 답 — 이름이 아니라 관계로</h3>
+    <div class="tuple">
+      <span class="c"># 네임스페이스에 팀명이 아니라 team_id 를 넣는다</span><br>
+      <span class="k">kr.co.skhynix.dram.T-004821</span>/defect-summarizer<br><br>
+      <span class="c"># 소유권은 관계 튜플. subject 자리에 집합을 넣을 수 있다</span><br>
+      agent:…/defect-summarizer<span class="k">#maintainer</span> @ <span class="k">team:T-004821#member</span><br>
+      team:T-004821<span class="k">#member</span> @ user:E123456<br>
+      team:T-004821<span class="k">#member</span> @ user:E789012
+    </div>
+    <div class="tbl-wrap" style="margin-top:16px;box-shadow:none">
+      <table>
+        <thead><tr><th>사건</th><th>바뀌는 것</th><th>튜플 변경</th><th>문서 재발행</th></tr></thead>
+        <tbody>
+          <tr><td>팀 이름 변경</td><td><code>displayName</code> 1건</td><td class="mono">0건</td><td class="mono">0건</td></tr>
+          <tr><td>사원의 팀 이동</td><td><code>members</code> 배열</td><td class="mono">1건</td><td class="mono">0건</td></tr>
+          <tr><td>팀 병합</td><td><code>successorTeamId</code></td><td class="mono">멤버십만</td><td class="mono">0건</td></tr>
+          <tr><td>조직 코드가 나중에 발견됨</td><td>참조 필드 추가</td><td class="mono">0건</td><td class="mono">0건</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;font-size:.86rem;color:var(--ink-2)"><strong>절대 규칙:</strong> 튜플의 subject 에 표시명·이메일을 넣지 않는다. Google 은 Directory API 문서에서 "그룹 이메일을 영속 데이터의 키로 쓰지 말라"고 하면서 정작 Cloud IAM 은 principal 을 <code>group:EMAIL</code> 로 바인딩한다 — 자사 제품 안의 모순이다. 우리는 그 함정을 처음부터 만들지 않는다.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">05</span><h2>규모 판정 — 엔진을 도입하지 않는 이유</h2></div>
+  <p class="sec-note">관계 튜플 모델은 Google 의 Zanzibar 에서 왔다. 그런데 <strong>모델은 가져오되 규모 대응책은 가져오지 않는다.</strong></p>
+  <div class="grid-2">
+    <div class="panel">
+      <span class="eyebrow">논문이 말하는 실제 숫자</span>
+      <div style="display:flex;align-items:baseline;gap:12px;margin:14px 0 6px">
+        <span style="font-family:var(--mono);font-size:2.4rem;font-weight:600;color:var(--accent);letter-spacing:-.02em">15,000</span>
+        <span style="font-size:.86rem;color:var(--muted)">네임스페이스당 튜플 <strong>중앙값</strong></span>
+      </div>
+      <p style="font-size:.86rem;color:var(--ink-2)">흔히 인용되는 2조 튜플은 <strong>1,500개 이상 네임스페이스의 합계</strong>다. 우리 레지스트리 전체가 대략 그 한 개 네임스페이스 크기다.</p>
+      <span class="src">Zanzibar, USENIX ATC '19</span>
+    </div>
+    <div class="panel">
+      <span class="eyebrow">결론과 재검토 조건</span>
+      <p style="font-size:.88rem;margin:12px 0 14px;color:var(--ink-2)">SpiceDB · OpenFGA · Ory Keto 는 모두 폐쇄망 자체 호스팅이 되지만 <strong>셋 다 우리에게 없는 관계형 DB</strong>를 요구한다. MongoDB 튜플 컬렉션으로 충분하다.</p>
+      <div class="tbl-wrap" style="box-shadow:none">
+        <table style="min-width:0">
+          <thead><tr><th>재검토 트리거</th><th>값</th></tr></thead>
+          <tbody>
+            <tr><td>튜플 수</td><td class="mono">1,000,000</td></tr>
+            <tr><td>관계 그래프 깊이</td><td class="mono">3</td></tr>
+            <tr><td>인가 판정 QPS</td><td class="mono">1,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:10px">이전 비용은 스키마 변환 스크립트 1개다. 지금 미루는 데 드는 비용이 없다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">06</span><h2>조직 동기화</h2></div>
+  <p class="sec-note">사원 마스터가 <code>empno</code> → 이름 · 현재 소속팀명 · 팀 코드명을 조회 API 로 제공한다. 멤버십은 <strong>1일 1회 야간 배치</strong>로 자동 동기화하고 관리 UI 를 만들지 않는다. 팀마다 멤버 집합이 있으므로 <strong>집합을 비교하면 조직 개편의 종류를 추론</strong>할 수 있다.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>관측</th><th>해석</th><th>처리</th><th>근거</th></tr></thead>
+      <tbody>
+        <tr><td>코드 동일, 이름만 변경</td><td>단순 rename</td><td><span class="chip ok">자동</span></td><td>정보 손실 없음</td></tr>
+        <tr><td>코드 변경, 멤버 대부분 일치</td><td>같은 팀의 코드 변경</td><td><span class="chip ok">자동</span></td><td><code>teamId</code> 유지</td></tr>
+        <tr><td>한 팀 멤버가 여러 팀으로 분산</td><td>분할 (split)</td><td><span class="chip part">사람 판단</span></td><td>자산의 행선지 결정 필요</td></tr>
+        <tr><td>여러 팀 멤버가 한 팀으로 수렴</td><td>병합 (merge)</td><td><span class="chip part">승인</span></td><td><code>successorTeamId</code> 제안</td></tr>
+        <tr><td>팀 소멸, 멤버 흩어짐</td><td>해체</td><td><span class="chip no">승계 시도</span></td><td>원작성자 <code>empno</code> 경로</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout" style="margin-top:16px">
+    <h3>동기화 실패가 권한 상실이 되면 안 된다</h3>
+    <p>조회 API 가 죽거나 부분 응답을 주면 <strong>마지막 성공 스냅샷을 유지</strong>하고 멤버를 지우지 않는다. 연속 3일 실패 시 경보. 읽기는 하루 지연을 허용하되, <strong>발행·승격 같은 쓰기 동작 직전에만 실시간 조회</strong>한다.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">07</span><h2>GitLab 을 배포 백엔드로 쓸 수 있는가</h2></div>
+  <p class="sec-note">절반은 된다. 저장·인증·심사 파이프라인은 GitLab 이 가져가고 <strong>카탈로그·검색·텔레메트리·승격·hosted agent 는 여전히 우리 몫</strong>이다.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>계층</th><th>대체</th><th>GitLab 기능</th><th>남는 문제</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">L5 Auth</td><td><span class="chip ok">전부</span></td><td>OIDC provider (Free)</td><td>토폴로지 결정 필요</td></tr>
+        <tr><td class="mono">L10 Governance</td><td><span class="chip part">부분(큼)</span></td><td>MR 승인 · CI · secret detection</td><td>강제 승인은 Premium 부터</td></tr>
+        <tr><td class="mono">L1 Artifact</td><td><span class="chip part">부분</span></td><td>generic package · container registry</td><td>불변성이 약함. Maintainer 가 삭제 가능</td></tr>
+        <tr><td class="mono">L4 API · L6 배포</td><td><span class="chip part">부분</span></td><td>REST API · 다운로드</td><td>어댑터·스키마 계약은 우리 몫</td></tr>
+        <tr><td class="mono">L2 Catalog</td><td><span class="chip no">불가</span></td><td>—</td><td>질의 가능한 자산 문서 저장소가 없음</td></tr>
+        <tr><td class="mono">L3 Search</td><td><span class="chip no">불가</span></td><td>advanced search</td><td><strong>패키지·레지스트리를 색인하지 않음</strong></td></tr>
+        <tr><td class="mono">L6b Broker</td><td><span class="chip no">불가</span></td><td>—</td><td>hosted agent 대응 기능 자체가 없음</td></tr>
+        <tr><td class="mono">L8 관측</td><td><span class="chip no">거의 불가</span></td><td>감사 이벤트 (Premium)</td><td>다운로드 수·pull 이벤트 웹훅 없음</td></tr>
+        <tr><td class="mono">L9 연합</td><td><span class="chip no">방향 불일치</span></td><td>Geo · 미러링 · export</td><td>승격 의미론에 맞지 않음</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid-3" style="margin-top:16px">
+    <div class="callout stop">
+      <h3>불변성이 약하다</h3>
+      <p>generic package 는 기본이 동일 버전 재발행 허용이고 중복을 막아도 <strong>Maintainer 가 삭제할 수 있다.</strong> Object Lock 등가물은 컨테이너 불변 태그(Ultimate)뿐이다.</p>
+    </div>
+    <div class="callout stop">
+      <h3>사용량을 못 준다</h3>
+      <p>패키지 API 는 <code>last_downloaded_at</code> 하나뿐. <strong>다운로드 카운트도 발행·pull 웹훅 이벤트도 없다.</strong> GitLab 이 다운로드를 서빙하면 아무도 세지 않는다.</p>
+    </div>
+    <div class="callout stop">
+      <h3>rename 을 안전하게 만들지 않는다</h3>
+      <p>리다이렉트는 옛 경로를 누가 점유하면 죽고 <strong>컨테이너 태그가 있으면 네임스페이스 rename 자체가 차단</strong>된다. 경로에 팀명을 넣지 않는 규칙이 오히려 더 중요해진다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">08</span><h2>주요 결정</h2></div>
+  <div class="decisions">
+    <div class="dec"><span class="did">D5</span><div><div class="dwhat">인스턴스 관계는 N-to-1 기본</div><div class="dwhy">신뢰가 비전이라 N-to-N 은 관계 수가 N² 로 늘어난다</div></div></div>
+    <div class="dec"><span class="did">D6</span><div><div class="dwhat">승격은 push(결정) + pull(메타데이터) + lazy copy(아티팩트)</div><div class="dwhy">push 연합을 표준화한 1차 자료가 없고 사전 전량 미러링은 어느 자료도 지지하지 않는다</div></div></div>
+    <div class="dec"><span class="did">D8</span><div><div class="dwhat">Object Lock 은 COMPLIANCE 가 아니라 GOVERNANCE 모드</div><div class="dwhy">COMPLIANCE 는 root 도 삭제 불가 — 보안 사고 시 회수가 불가능해진다</div></div></div>
+    <div class="dec"><span class="did">D10</span><div><div class="dwhat">자산을 3종으로 나누고 배포·심사·폐기 경로를 분리</div><div class="dwhy">셋의 배포 행위가 근본적으로 다르다</div></div></div>
+    <div class="dec"><span class="did">D13</span><div><div class="dwhat">팀은 조직이 아니라 <code>empno</code> 집합을 갖는 그룹. <code>team_id</code> 는 자체 발급</div><div class="dwhy">조직 코드의 불변성을 확인할 수 없으므로 그것에 의존하지 않는다</div></div></div>
+    <div class="dec"><span class="did">D15</span><div><div class="dwhat">전용 권한 엔진 미도입 — MongoDB 튜플 컬렉션</div><div class="dwhy">우리 전체가 Zanzibar 한 개 네임스페이스 크기. 엔진 셋 다 없는 DB 를 요구한다</div></div></div>
+    <div class="dec"><span class="did">D17</span><div><div class="dwhat">조직 동기화는 1일 1회 야간 배치</div><div class="dwhy">하루 지연 허용이 확정되어 실시간 동기화·이벤트 구독·캐시 무효화가 전부 불필요해졌다</div></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="eyebrow">09</span><h2>이 회의에서 정해야 할 것</h2></div>
+  <p class="sec-note">아직 답이 없고 <strong>답에 따라 구현 대상이 갈리는</strong> 항목들이다.</p>
+  <div class="unknowns">
+    <div class="unk">
+      <span class="q">GQ1 · GQ3 · GQ4</span>
+      <h3>사내 GitLab 실측</h3>
+      <p>라이선스 티어, 컨테이너 레지스트리 활성 여부, 임의 OCI 아티팩트 지원. UI 15분 + <code>oras push</code> 30분이면 판정된다. L1·L5·L10 의 구현 대상이 여기서 정해진다.</p>
+    </div>
+    <div class="unk">
+      <span class="q">사원 마스터</span>
+      <h3>조회 API 계약</h3>
+      <p>응답 스키마, 인증, 호출 한도, Redis 직접 읽기 허용 여부. Org Sync 는 가짜 구현으로 먼저 진행하지만 실제 연동에 필요하다.</p>
+    </div>
+    <div class="unk">
+      <span class="q">Q2d</span>
+      <h3>복수 팀 소속</h3>
+      <p>한 사원이 겸직·매트릭스로 여러 팀에 속할 수 있는가. <code>members</code> 가 단순 집합이면 되는지 주·부 소속 구분이 필요한지가 갈린다.</p>
+    </div>
+    <div class="unk">
+      <span class="q">Q13</span>
+      <h3>지원 런타임 우선순위</h3>
+      <p>오픈소스 런타임 중 무엇을 먼저 지원하는가. <strong>어댑터 개수가 곧 개발량</strong>이다. 현재 계획은 P1 에 2개까지.</p>
+    </div>
+    <div class="unk">
+      <span class="q">Q9</span>
+      <h3>런타임 계측 가능 여부</h3>
+      <p>사내 배포 런타임에 OTLP exporter 를 기본 탑재할 수 있는가. 설치형 자산의 실행을 볼 수 있는 유일한 경로다.</p>
+    </div>
+    <div class="unk">
+      <span class="q">인력</span>
+      <h3>6.5 FTE 확보</h3>
+      <p>못 하면 인원을 늘리는 대신 <strong>범위를 줄인다.</strong> 버릴 수 있는 순서는 확산 자동화 → 승격·연합 → 서명 → 어댑터 2호. Endpoint Broker 와 정적 스캔은 버리지 않는다.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>platform/ · 설계 문서 6종 · 조사 3건 · 구현 티켓 30개</span>
+  <span>2026-09-03</span>
+</footer>
+
+</div>

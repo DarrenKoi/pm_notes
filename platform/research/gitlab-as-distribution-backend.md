@@ -6,20 +6,20 @@ last_updated: 2026-09-03
 
 # GitLab을 배포 백엔드로 쓸 수 있는가 — 1차 출처 조사
 
-> 사내에 GitLab(self-managed)이 제공된다는 전제에서, [02-architecture.md](../02-architecture.md) 의 L1~L10·L6b 중 어디까지를 GitLab이 실제로 대체하는지 docs.gitlab.com 기준으로 확인한 결과. 결론부터: **아티팩트 저장·인증·발행 게이트는 대체 가능, 카탈로그·검색·텔레메트리·연합·Endpoint Broker 는 대체 불가.**
+> 사내에 GitLab(self-managed)이 제공된다는 전제에서 [02-architecture.md](../02-architecture.md) 의 L1~L10·L6b 중 어디까지를 GitLab이 실제로 대체하는지 docs.gitlab.com 기준으로 확인한 결과. 결론부터: 아티팩트 저장·인증·발행 게이트는 **대체 가능**, 카탈로그·검색·텔레메트리·연합·Endpoint Broker 는 **대체 불가**.
 
 ---
 
 ## 왜 필요한가? (Why)
 
-현재 설계는 가용 스택에 OCI 레지스트리가 없다는 전제(G4)에서 출발해 **MinIO Object Lock + 자체 매니페스트**로 digest 불변성을 직접 구현하기로 했고, 인증·발행 파이프라인·심사 게이트를 전부 자체 FastAPI 앱 안에 넣었다. GitLab 이 제공된다면 그 중 상당 부분이 이미 만들어져 있는 기능이다. 무엇이 실제로 겹치는지 확인하지 않으면 두 가지 실패 중 하나로 간다.
+현재 설계는 가용 스택에 OCI 레지스트리가 없다는 전제(G4)에서 출발한다. digest 불변성은 MinIO Object Lock + 자체 매니페스트로 직접 구현하기로 했고 인증·발행 파이프라인·심사 게이트는 전부 자체 FastAPI 앱 안에 넣었다. GitLab 이 제공된다면 그 중 상당 부분이 이미 만들어져 있는 기능이다. 무엇이 실제로 겹치는지 확인하지 않으면 두 가지 실패 중 하나로 간다.
 
 | 실패 | 증상 |
 |---|---|
 | 과소평가 | 이미 있는 것(불변 태그, 서명 저장, 승인 규칙, 감사)을 다시 만든다 |
 | 과대평가 | "GitLab이 다 해준다"고 가정했다가 티어 부족·기능 부재로 설계가 중간에 무너진다 |
 
-**티어가 답을 결정한다.** 아래 조사에서 핵심 기능 다수가 Premium/Ultimate 이고, 그 중 하나(불변 컨테이너 태그)는 Ultimate 전용이다. 회사 라이선스가 Free 이면 이 문서의 결론이 절반으로 줄어든다 → [열린 질문 GQ1](#열린-질문-사용자가-답해야-할-것).
+아래 조사에서 핵심 기능 다수가 Premium/Ultimate 이고 그 중 하나(불변 컨테이너 태그)는 Ultimate 전용이다. 결국 티어가 답을 결정한다. 회사 라이선스가 Free 이면 이 문서의 결론이 절반으로 줄어든다 → [열린 질문 GQ1](#열린-질문-사용자가-답해야-할-것).
 
 ---
 
@@ -83,7 +83,7 @@ last_updated: 2026-09-03
 - **metadata database:** PostgreSQL 기반, **17.3 GA**. 보호·불변 태그 등 신기능은 metadata DB 버전에만 구현된다. self-managed 는 전용 PostgreSQL 준비, 기존 레지스트리는 1단계/3단계 import(읽기 전용 구간 발생), 백업 절차에 레지스트리 DB 포함, 업그레이드 시 마이그레이션 실행이 필요 — https://docs.gitlab.com/administration/packages/container_registry_metadata_database/
 - **cosign:** GitLab 공식 서명 예제는 **Sigstore public infrastructure 기반 keyless** 만 다룬다(Fulcio/Rekor). GitLab OIDC 토큰으로 단명 키를 받고 certificate transparency log 에 기록한 뒤 폐기하는 방식 — https://docs.gitlab.com/ci/yaml/signing_examples/ . **자체 키 서명이나 private Sigstore 배포는 이 문서가 다루지 않는다.** 폐쇄망에서는 keyless 를 쓸 수 없으므로 기존 설계대로 cosign 자체 키를 유지해야 한다(§10).
 
-**요약:** GitLab 컨테이너 레지스트리는 digest 기반 불변성과 서명 첨부를 **컨테이너 이미지에 대해서는** 사실상 제공한다. 그러나 (a) Ultimate 이어야 하고, (b) metadata DB 구성이 선행돼야 하고, (c) 임의 OCI 아티팩트로 skill 번들을 넣는 경로는 문서로 보증되지 않는다. **"MinIO + 자체 매니페스트를 통째로 버릴 수 있다"는 결론은 현재 근거로는 나오지 않는다.**
+GitLab 컨테이너 레지스트리는 digest 기반 불변성과 서명 첨부를 컨테이너 이미지에 대해서는 사실상 제공한다. 그러나 Ultimate 이어야 하고 metadata DB 구성이 선행돼야 한다. 임의 OCI 아티팩트로 skill 번들을 넣는 경로는 문서로 보증되지 않는다. "MinIO + 자체 매니페스트를 통째로 버릴 수 있다"는 결론은 **현재 근거로는 나오지 않는다.**
 
 ---
 
@@ -105,12 +105,12 @@ last_updated: 2026-09-03
 
 #### 판정
 
-**GitLab 은 npm-scope 실패모드를 "절반만" 피한다.**
+GitLab 은 npm-scope 실패모드를 절반만 피한다.
 
 - npm 보다 나은 점: 안정적 숫자 ID 가 있고 API 가 그것으로 주소지정할 수 있다. 리다이렉트가 있어 rename 이 곧 전 패키지 재발행을 뜻하지 않는다.
 - npm 과 **똑같이 나쁜 점**: 사람이 보고 쓰는 식별자(그룹/프로젝트 path, 컨테이너 이미지 경로, 패키지 URL)는 여전히 **경로 기반**이고, 컨테이너 태그가 존재하면 rename 자체가 차단된다. 리다이렉트는 옛 경로 재사용 한 번으로 소멸하는 **약한 보장**이다.
 
-**따라서 우리 설계의 §6 원칙(네임스페이스에 팀명 금지, `team_id` 사용)은 GitLab 을 도입해도 그대로 유지해야 한다.** GitLab 그룹 path 를 `dram-ai-solution-2team` 이 아니라 `t-004821` 처럼 불변 코드로 만들고, 표시명(group name)만 매년 바꾸는 방식이다. GitLab 이 rename 문제를 대신 풀어주는 게 아니라, **우리가 rename 을 안 하도록 GitLab 을 쓰는 것**이 답이다.
+따라서 우리 설계의 §6 원칙(네임스페이스에 팀명 금지, `team_id` 사용)은 GitLab 을 도입해도 그대로 유지해야 한다. GitLab 그룹 path 를 `dram-ai-solution-2team` 이 아니라 `t-004821` 처럼 불변 코드로 만들고 표시명(group name)만 매년 바꾸는 방식이다. GitLab 이 rename 문제를 대신 풀어주는 게 아니라 **우리가 rename 을 안 하도록 GitLab 을 쓰는 것**이 답이다.
 
 ---
 
@@ -146,9 +146,9 @@ last_updated: 2026-09-03
 | ⑥ 사람 심사 | MR 승인 규칙 + CODEOWNERS | **Premium** | Free 에서는 Developer 이상이 승인할 수 있으나 승인 없이도 머지가 가능해 **차단 게이트가 되지 않는다**(https://docs.gitlab.com/user/project/merge_requests/approvals/) |
 | ⑦ active + 색인 | 우리 워커 | — | |
 
-**SAST 의 한계(중요):** 지원 언어 목록에 C/C++/C#/Go/Java/JS/PHP/Python/Ruby/TS/YAML 등이 있고, Apex/Elixir/Groovy/Kotlin/Scala 는 표준 분석기 전용이다. **셸 스크립트/bash 는 지원 언어로 명시돼 있지 않다** — https://docs.gitlab.com/user/application_security/sast/ . Skill 번들의 상당수가 셸·설정 파일이라면 **GitLab SAST 는 우리 §8-② 게이트를 대체하지 못하고 보완만 한다.** 자격증명 하드코딩은 secret detection 이 잡지만, "외부 네트워크 호출·셸/파일시스템 접근 범위" 검사는 여전히 자체 규칙이 필요하다.
+SAST 의 한계(중요): 지원 언어 목록에 C/C++/C#/Go/Java/JS/PHP/Python/Ruby/TS/YAML 등이 있고 Apex/Elixir/Groovy/Kotlin/Scala 는 표준 분석기 전용이다. 셸 스크립트/bash 는 지원 언어로 명시돼 있지 않다 — https://docs.gitlab.com/user/application_security/sast/ . Skill 번들의 상당수가 셸·설정 파일이라면 **GitLab SAST 는 우리 §8-② 게이트를 대체하지 못하고 보완만 한다.** 자격증명 하드코딩은 secret detection 이 잡지만 "외부 네트워크 호출·셸/파일시스템 접근 범위" 검사는 여전히 자체 규칙이 필요하다.
 
-**오프라인 실행:** SAST 는 폐쇄망에서 `SECURE_ANALYZERS_PREFIX` 를 사내 레지스트리로 돌려 실행할 수 있다 — https://docs.gitlab.com/user/application_security/sast/ . 단 분석기 이미지·시그니처 DB 를 인터넷 연결 중계 시스템으로 주기적으로 가져와야 하고, GitLab Self-Managed 오프라인 운영에는 **"opt-out exemption of cloud licensing"** 이 사전에 필요하다 — https://docs.gitlab.com/user/application_security/offline_deployments/
+오프라인 실행: SAST 는 폐쇄망에서 `SECURE_ANALYZERS_PREFIX` 를 사내 레지스트리로 돌려 실행할 수 있다 — https://docs.gitlab.com/user/application_security/sast/ . 단 분석기 이미지·시그니처 DB 를 인터넷 연결 중계 시스템으로 주기적으로 가져와야 한다. GitLab Self-Managed 오프라인 운영에는 "opt-out exemption of cloud licensing" 이 사전에 필요하다 — https://docs.gitlab.com/user/application_security/offline_deployments/
 
 ---
 
@@ -159,7 +159,7 @@ last_updated: 2026-09-03
 - **감사 이벤트는 Premium 부터.** Free 에서는 "successful sign-in events are the only audit events available at all tiers". 그룹·프로젝트 감사 이벤트는 Premium/Ultimate 이고 보존은 무기한, API 는 조회 구간 최대 30일 — https://docs.gitlab.com/user/compliance/audit_events/
 - 그룹 웹훅 중 member/project/subgroup 이벤트는 Premium/Ultimate — https://docs.gitlab.com/user/project/integrations/webhook_events/
 
-→ **§10 의 "설치형은 설치 수로 판정한다"는 전략이 GitLab 위에서도 그대로 성립하지 않는다.** GitLab 을 저장소로 쓰면 다운로드는 GitLab 을 통과하는데, GitLab 이 그 횟수를 세어주지 않는다. 세려면 (a) 다운로드를 우리 API 가 프록시하거나(그러면 GitLab presigned URL 의 장점을 버림), (b) GitLab 앞단 리버스 프록시/게이트웨이 로그를 집계하거나, (c) 런타임 OTLP 에 의존해야 한다. **(b) 가 가장 현실적이다.**
+→ §10 의 "설치형은 설치 수로 판정한다"는 전략은 GitLab 위에서도 그대로 성립하지 않는다. GitLab 을 저장소로 쓰면 다운로드는 GitLab 을 통과하는데 GitLab 이 그 횟수를 세어주지 않는다. 세려면 (a) 다운로드를 우리 API 가 프록시하거나(그러면 GitLab presigned URL 의 장점을 버림), (b) GitLab 앞단 리버스 프록시/게이트웨이 로그를 집계하거나, (c) 런타임 OTLP 에 의존해야 한다. **(b) 가 가장 현실적이다.**
 
 ---
 
@@ -175,9 +175,9 @@ last_updated: 2026-09-03
 
 출처: https://docs.gitlab.com/administration/geo/ , https://docs.gitlab.com/user/project/repository/mirror/ , https://docs.gitlab.com/user/project/settings/import_export/ , https://docs.gitlab.com/user/packages/dependency_proxy/
 
-**결론: §9 의 "결정은 push, 데이터는 pull, 아티팩트는 lazy copy" 는 GitLab 이 있어도 그대로 우리가 구현해야 한다.** GitLab 이 제공하는 것은 그 파이프라인이 읽고 쓰는 **엔드포인트**(패키지 API, 레지스트리 API)뿐이다.
+§9 의 "결정은 push, 데이터는 pull, 아티팩트는 lazy copy" 는 GitLab 이 있어도 그대로 우리가 구현해야 한다. GitLab 이 제공하는 것은 그 파이프라인이 읽고 쓰는 엔드포인트(패키지 API, 레지스트리 API)뿐이다.
 
-**만약 회사가 GitLab 인스턴스를 하나만 준다면** 토폴로지가 근본적으로 바뀐다.
+회사가 GitLab 인스턴스를 하나만 준다면 토폴로지가 근본적으로 바뀐다.
 - 사업부 경계가 인스턴스가 아니라 **최상위 그룹**이 된다 → G1 의 "인스턴스 경계 = 보안 경계" 전제가 깨진다. 경계는 그룹 권한·visibility 로 내려간다.
 - 반대급부로 승격이 **인스턴스 간 연합 문제에서 그룹 간 이동/참조 문제로 축소된다.** 크로스-Biz 접근(§7.3)도 토큰 연합이 아니라 그룹 멤버십 문제가 된다.
 - CI_JOB_TOKEN 이 **인스턴스 경계를 넘지 못한다**는 제약(https://docs.gitlab.com/ci/jobs/ci_job_token/)이 사라지고, 대신 job token allowlist(그룹 200개·프로젝트 200개 상한)로 크로스-프로젝트 접근을 제어하게 된다.
@@ -213,7 +213,7 @@ last_updated: 2026-09-03
 - **잃는 것:** MinIO presigned URL·자체 토큰·자체 다운로드 API 를 여전히 다 만든다. GitLab 도입 이득이 "심사 UI + CI 러너" 로 축소된다.
 - **평가:** Free 티어이고 컨테이너 레지스트리가 꺼져 있다면 이게 현실적인 안이다.
 
-**권고: A안에서 시작하고, 사내 GitLab 이 Ultimate + 컨테이너 레지스트리 활성 + metadata DB 구성이라면 L1 을 컨테이너 레지스트리로 승격하는 것을 별도 검토.**
+권고는 **A안에서 시작하는 것**이다. 사내 GitLab 이 Ultimate + 컨테이너 레지스트리 활성 + metadata DB 구성이라면 L1 을 컨테이너 레지스트리로 승격하는 것을 별도 검토한다.
 
 ---
 
