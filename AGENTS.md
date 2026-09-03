@@ -5,7 +5,7 @@ Mixed knowledge base plus runnable examples. **Each top-level folder is a standa
 - `ai-dt/`: AI/DT study notes (RAG, MCP, OpenSearch, LLMOps, roadmap).
 - `web-development/`: web learning notes and sample projects (most complete app: `python/flask/job-scheduler`, Flask + Nuxt).
 - `Codes/python/`: executable Python examples (`opensearch_handler`, `history-opensearch`, `drm-pptx-extraction`, ...).
-- `dev-environment/`: terminal/tooling notes (codex, pi, terminal, warp, vlm).
+- `dev-environment/`: terminal/tooling notes (codex, pi, terminal, vlm).
 - `my-task/`: in-flight deliverables (`AIX_POC`, `2026_report`) — has its own `CLAUDE.md`.
 - `RAG/`, `docs/`, `_workspace/`: one-off analysis, agent-ops docs, scratch.
 

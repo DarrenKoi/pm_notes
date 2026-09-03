@@ -517,5 +517,4 @@ pi remove npm:<package>
 ## 관련 문서
 
 - [Codex CLI 실전 가이드](../codex/README.md)
-- [Warp 터미널 실전 가이드](../warp/README.md)
 - [개발 환경 인덱스](../README.md)

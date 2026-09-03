@@ -18,7 +18,6 @@ last_updated: 2026-07-22
 | 주제 | 설명 |
 |------|------|
 | [터미널 필수 명령어](./terminal/README.md) | Mac 터미널(zsh) 기본~중급 명령어 정리 |
-| [Warp 터미널 실전 가이드](./warp/README.md) | Warp 설치 이후 사용법, 생산성 기능, Codex/Claude Code 운영법 정리 |
 | [Codex CLI 실전 가이드](./codex/README.md) | Codex를 터미널에서 효율적으로 사용하는 기능/워크플로우 정리 |
 | [Pi 코딩 에이전트 실전 가이드](./pi/README.md) | Pi 설치 이후 사용법, 세션·안전 운영, PC 개발용 패키지 추천 |
 | [UI 특화 VLM 가이드](./vlm/README.md) | 폐쇄망에서 UI VLM 다운로드, 전송, 서빙 가이드 |

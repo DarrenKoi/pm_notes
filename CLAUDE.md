@@ -19,7 +19,7 @@
 | `ai-dt/` | AI/DT 학습 노트 (RAG, MCP, OpenSearch, LLMOps, ITC 로드맵) |
 | `web-development/` | 웹 개발 노트 + 예제 앱 (FastAPI / Flask / Vue / Nuxt) |
 | `Codes/python/` | 실행 가능한 파이썬 예제 (opensearch_handler, drm-pptx-extraction 등) |
-| `dev-environment/` | 개발 환경·툴링 노트 (codex, pi, terminal, warp, vlm) |
+| `dev-environment/` | 개발 환경·툴링 노트 (codex, pi, terminal, vlm) |
 | `my-task/` | 진행 중인 업무 산출물 (AIX_POC, 2026_report) — 자체 CLAUDE.md 있음 |
 | `RAG/` | RAG 관련 단발 분석 문서 |
 | `docs/` | 에이전트 운영 문서 (issue-tracker, triage-labels, domain) |
