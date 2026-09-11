@@ -120,7 +120,7 @@ def compact(client, model: str, messages: list[dict],
     cut = len(messages) - keep_last
     if cut <= 1:
         return messages
-    # 최근 구간이 tool 결과로 시작하면 짝이 되는 tool_call이 잘려
+    # 최근 구간이 tool 결과로 시작하면 짝이 되는 tool_call이 잘려서
     # API 에러가 난다. 그래서 경계를 앞으로 당긴다.
     while cut > 1 and messages[cut]["role"] == "tool":
         cut -= 1
