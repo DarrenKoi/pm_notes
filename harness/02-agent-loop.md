@@ -1,7 +1,7 @@
 ---
 tags: [harness-engineering, agent-loop, tool-calling, python]
 level: intermediate
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 ---
 
 # 02. 에이전트 루프 (Agent Loop)
@@ -79,7 +79,14 @@ Anthropic은 둘을 구분한다.
 
 ### Step 1. 최소 하네스 (약 90줄)
 
-사내 OpenAI 호환 엔드포인트에서 그대로 동작한다. `pip install openai pytest`
+Chat Completions의 `tools`와 `tool_calls`를 지원하는 엔드포인트용 학습 예제다.
+OpenAI 호환이라는 이름만으로 도구 호출 지원이 보장되지는 않는다.
+서버의 모델·도구 파서 설정과 응답 형식을 확인한다. `pip install openai pytest`
+
+이 예제는 파일 경로 격리, JSON Schema 검증, 업무 완료 판정을 구현하지 않는다.
+`read_file`은 임의 경로를 읽을 수 있고 `run_tests`는 저장소 코드를 실행한다.
+신뢰하는 연습 파일을 별도 작업 공간에서 사용하고, 운영 연결 전에는
+[06](./06-guardrails-and-permissions.md)의 실행 경계를 적용한다.
 
 ```python
 """mini_harness.py — 최소 에이전트 하네스.
@@ -266,6 +273,27 @@ print("ok")
 | 토큰·비용 예산, 트레이스 기록 | [08](./08-observability-and-cost.md) |
 | 완료 선언 뒤 검증 단계 | [05](./05-verification-and-evals.md) |
 | 스트리밍, 취소, 병렬 도구 실행 | 사용자 경험(UX) 요구가 생기면 추가 |
+
+## 확장할 때 유지할 실행 계약
+
+아래는 학습용 루프에 추가할 설계 기준이다. 도구가 없는 응답은
+`answer_ready`일 뿐이고, 검증이 통과해야 `completed`로 판정한다.
+
+| 상황 | 처리 | 기록할 이유 |
+|---|---|---|
+| 정상 답변 후 검증 실패 | 전체 예산 안에서 교정 | `verification_failed` |
+| 연결 끊김·출력 한도로 응답 불완전 | 부분 JSON을 실행하지 않음 | `model_error` |
+| 추가 정보·승인 필요 | 요청과 대기 상태 저장 | `waiting_input` / `waiting_approval` |
+| 취소 요청 | 새 행동 중단, 진행 중 호출 확인 | `cancel_requested` |
+| 턴·시간·토큰 한도 소진 | 부분 산출물과 미완료 항목 반환 | `budget_exceeded` |
+
+각 `tool_call_id`에 결과를 대응시킨다. 독립적인 읽기만 병렬화하고,
+쓰기나 앞선 결과에 의존하는 호출은 순서를 지킨다. 정책 거부도 명시적인
+결과여야 한다. 취소 응답을 받았다고 외부 쓰기가 취소됐다고 단정하지 않는다.
+[MCP Tasks의 취소 의미](https://tasks.extensions.modelcontextprotocol.io/specification/2026-07-28/tasks)
+
+재시도와 검증 재실행도 최초 작업의 예산을 공유한다. 새 루프마다 예산을 초기화하면
+최대 턴 제한이 있어도 전체 실행은 끝없이 길어질 수 있다.
 
 ## 학습 체크리스트
 

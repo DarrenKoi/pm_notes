@@ -1,7 +1,7 @@
 ---
 tags: [harness-engineering, security, sandbox, prompt-injection, hitl]
 level: intermediate
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 ---
 
 # 06. 가드레일과 권한 (Guardrails & Permissions)
@@ -87,11 +87,17 @@ last_updated: 2026-09-11
 
 ### Step 1. 권한 정책 함수
 
+아래는 도구 분류를 보여주는 예제이며 경로·사용자·테넌트 검증까지 수행하는 정책
+엔진은 아니다. `read_file`도 허용 경로 밖이면 거부해야 한다. `run_tests`는
+네트워크 요청·파일 삭제 등 임의 동작을 할 수 있다. 사전 승인한 격리 테스트
+환경에서는 자동 실행할 수 있지만, 도구 이름만으로 읽기 전용이라 판단하지 않는다.
+
 ```python
 import json
 
-READ_ONLY = {"read_file", "logs_search", "run_tests"}
-NEEDS_APPROVAL = {"send_mail", "create_ticket", "write_file"}
+READ_ONLY = {"read_file", "logs_search"}
+# 테스트는 임의 코드를 실행하므로 읽기 전용으로 분류하지 않는다.
+NEEDS_APPROVAL = {"send_mail", "create_ticket", "write_file", "run_tests"}
 # 주의: 문자열 패턴은 실수를 막는 과속방지턱일 뿐이다.
 # 진짜 경계는 샌드박스와 계정 권한이다.
 SUSPICIOUS = ("rm -rf", "drop table", "curl ", "wget ", "scp ")
@@ -147,6 +153,37 @@ docker run --rm \
 
 사내 LLM 엔드포인트만 호출해야 한다면 `--network none` 대신 허용 호스트만
 통과시키는 egress 프록시를 둔다.
+
+## 승인은 실행할 행동에 묶는다
+
+다음은 이 노트의 운영 권고다. “메일 발송 허용”보다 수신자·본문·첨부파일·계정이
+정해진 요청을 승인해야 한다. 승인 이후 인자가 달라지면 이전 승인은 적용되지 않는다.
+
+| 기록 | 목적 |
+|---|---|
+| 요청자·승인자·run ID | 누가 누구의 권한으로 행동하는지 추적 |
+| 도구·대상·정규화된 인자 | 승인한 행동과 실제 실행을 비교 |
+| 산출물 버전 또는 해시 | 승인 뒤 내용 변경 감지 |
+| 유효기간·사용 횟수 | 만료·재사용 통제 |
+| 정책 버전·승인 결과 | 재개 시 권한 재확인 |
+
+사용자가 이미 허용한 범위의 행동은 범위 승인으로 처리할 수 있다. 경계 밖 행동을
+새로 승인받는 것과 매 호출마다 같은 승인을 반복하는 것은 다르다. 복구할 때는
+대화 요약의 “승인됨” 문구가 아니라 승인 기록을 읽는다.
+
+### 신원과 입력 신뢰도는 별개다
+
+인증된 MCP 서버가 반환한 문서에도 비신뢰 입력이 있을 수 있다. 문서·스킬·도구
+설명이 다른 권한을 요구해도 정책이 자동 변경되면 안 된다. 자식 에이전트의 도구·
+경로·네트워크 권한도 별도 제한한다. 컨텍스트 격리만으로 권한은 격리되지 않는다.
+
+MCP의 2026-07-28 변경에는 issuer 검증과 발급자별 자격 증명 분리가 포함된다.
+에이전트 신원과 위임의 후속 발전 방향은 로드맵과 구분해 읽는다.
+[사양 변경](https://modelcontextprotocol.io/specification/2026-07-28/changelog),
+[8월 로드맵](https://blog.modelcontextprotocol.io/posts/mcp-roadmap/)
+
+도입 시 악성 도구 결과, 승인 이후 파일 변경, 만료된 승인 재사용을 별도 시나리오로
+검증한다. 로그에 인자 전체를 저장할 때는 비밀값을 제거하고 접근 범위를 제한한다.
 
 ## 학습 체크리스트
 

@@ -1,7 +1,7 @@
 ---
 tags: [harness-engineering, multi-agent, subagent, orchestration]
 level: advanced
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 ---
 
 # 09. 멀티 에이전트 (Multi-Agent)
@@ -105,6 +105,51 @@ def make_delegate(client, model):
 2. 컨텍스트가 가장 많이 부푸는 탐색 단계 하나만 `delegate`로 뺀다
 3. 성공률, 성공 1건당 토큰, 지연 시간을 기준선과 비교한다
 4. 좋아졌을 때만 범위를 넓힌다
+
+## 최신 패턴: isolated와 fork의 선택
+
+LangChain은 2026-09-08 서브에이전트 컨텍스트 모드를 소개했다.
+`isolated`는 새 컨텍스트에서 지정 태스크를 받고, `fork`는 부모의 대화·상태를
+이어받는다. 부모는 자식의 최종 결과를 받는다.
+[공식 발표](https://www.langchain.com/blog/organizing-context-in-a-multi-agent-harness)
+
+| 상황 | 우선 비교할 모드 | 이유 |
+|---|---|---|
+| 독립적인 질문 조사 | isolated | 무관한 부모 이력 불필요 |
+| 작성 결과의 독립 검증 | isolated | 작성자의 가설에 고정되는 편향 완화 |
+| 부모가 분석한 문제의 구현 계속하기 | fork | 재탐색·인수인계 누락 감소 |
+| 대화에서 장기 결정 추출 | fork | 대화 자체가 분석 대상 |
+
+fork가 항상 더 싸지는 않다. 캐시 적중과 중복 탐색 감소가 실제로 일어나는지
+측정한다. 부모 컨텍스트의 불필요한 정보도 상속될 수 있다.
+
+### 위임 계약 예시
+
+아래는 프레임워크 설정이 아니라 작업 요청에 담을 내용의 예다.
+
+```yaml
+objective: 추출 결과의 행 누락 여부 검증
+context_mode: isolated
+inputs: [sample-page, extracted-table, acceptance-criteria]
+allowed_actions: 제공된 입력 읽기와 비교
+forbidden_actions: 원본 수정, 외부 전송, 추가 위임
+budget: 상위 작업이 배정한 범위
+return: [판정, 행별 근거, 미검증 항목]
+stop_when: 비교 완료 또는 입력 부족
+```
+
+이 계약을 프롬프트에 적는 것만으로 권한이 강제되지는 않는다. 위 `make_delegate`
+예제는 [02](./02-agent-loop.md)의 도구를 그대로 사용하므로 임의 파일 읽기와 테스트
+실행도 가능하다. 읽기 전용 조사에 쓰려면 도구·파일시스템·네트워크 권한을
+실제로 제한해야 한다. [06](./06-guardrails-and-permissions.md)
+
+### 통합 담당자를 정한다
+
+다음은 이 노트의 운영 권고다. 워커가 끝났다는 보고는 전체 업무 완료가 아니다.
+부모는 산출물 버전·검증 증거·충돌을 확인하고 통합 결과를 다시 검증한다.
+worktree는 파일 편집을 분리하지만 DB·포트·외부 티켓 같은 공유 자원까지 격리하지
+않는다. 워커마다 담당 경로와 외부 자원을 정하고, 마지막 쓰기와 통합 검증의
+책임자를 한 곳에 둔다.
 
 ## 학습 체크리스트
 

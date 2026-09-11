@@ -1,7 +1,7 @@
 ---
 tags: [harness-engineering, ai-agent, concept]
 level: intermediate
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 ---
 
 # 01. 하네스 엔지니어링 핵심 개념
@@ -23,7 +23,10 @@ LLM 자체는 텍스트를 받아 텍스트를 내놓는 함수다. 파일을 �
   에이전트가 환경을 읽어낼 수 있는가(legibility)였다.
 
 결론은 같다. 모델 교체는 선택지가 적고 비싸다. 반면 하네스는 우리가 직접 통제할
-수 있는 영역이고, 품질 차이는 대부분 여기서 난다.
+수 있는 영역이다. 다만 이 사례만으로 모든 업무의 품질 차이가 주로 하네스에서
+난다고 일반화할 수는 없다. 모델·하네스·업무·환경을 함께 평가해야 한다.
+LangChain의 순위는 발표 당시 결과다.
+[실험 출처, 2026-02-17](https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering)
 
 > 사내 환경 메모: 사내 오픈소스 모델(OpenAI 호환 API)은 프런티어 API 모델보다
 > tool calling 형식 오류나 긴 컨텍스트 성능 저하가 더 잦을 수 있다. 그만큼

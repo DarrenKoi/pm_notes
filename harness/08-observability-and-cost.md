@@ -1,7 +1,7 @@
 ---
 tags: [harness-engineering, observability, tracing, opentelemetry, cost]
 level: intermediate
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 ---
 
 # 08. 관측과 비용 (Observability & Cost)
@@ -43,8 +43,9 @@ invoke_agent  (run 1건)
 | `gen_ai.response.finish_reasons` | 생성 종료 이유 (stop, tool_calls, length 등) |
 | `gen_ai.agent.name` | 에이전트 이름 |
 
-처음부터 표준 이름을 쓰면 나중에 도구(Langfuse, Arize Phoenix, MLflow 등)를
-바꿔도 데이터를 그대로 옮길 수 있다.
+표준 이름은 이동을 쉽게 하지만 exporter·스키마 버전까지 자동 호환되지는 않는다.
+실제 사용한 컨벤션 버전을 기록하고 필드 변경을 확인한다.
+[공식 GenAI 컨벤션](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
 
 ### 2. 무엇을 기록하나
 
@@ -184,6 +185,45 @@ def summarize(path: str) -> dict:
             "tokens_p50": tokens[len(tokens) // 2] if tokens else 0,
             "tokens_max": tokens[-1] if tokens else 0}
 ```
+
+## 성공을 관측하는 것과 예외를 관측하는 것은 다르다
+
+위 트레이서의 `status=ok`는 Python 예외가 없었다는 뜻이다. [02](./02-agent-loop.md)의
+`execute`는 오류도 문자열로 반환하므로, 도구가 실패해도 span은 `ok`일 수 있다.
+운영에서는 구조화된 도구 결과의 성공 여부를 별도 속성으로 기록한다.
+
+| 층 | 별도로 기록할 결과 |
+|---|---|
+| 모델 호출 | 응답 수신·잘림·타임아웃 |
+| 도구 | 성공·빈 결과·부분 성공·권한 거부 |
+| 검증 | 검증 종류·통과 여부·증거 위치 |
+| 업무 | 완료·실패·대기·취소·예산 중단 |
+
+이 표는 이 노트의 권고 스키마다. 학습용 JSONL은 OTel exporter가 아니며,
+부모 span ID·분산 전파·동시 쓰기 처리를 구현하지 않는다. 운영에서 도구 서비스와
+연결할 때는 trace/span ID를 전파하되, 비밀값을 baggage에 넣지 않는다.
+[MCP의 OTel 전파 규약](https://modelcontextprotocol.io/specification/2026-07-28/changelog)
+
+### 호출 전 예산과 호출 후 사용량을 함께 확인한다
+
+위 `Budget.charge`는 응답 이후 한도를 확인한다. 이미 사용한 토큰을 되돌릴 수
+없고, 진행 중인 호출을 시간 제한에 맞춰 취소하지도 않는다. 다음은 보강 기준이다.
+
+1. 호출 전에 남은 시간·토큰을 확인하고 가능한 출력 한도를 제한한다.
+2. 응답·도구 결과를 기록하고 체크포인트를 저장한 뒤 실제 사용량을 정산한다.
+3. 서브에이전트·재시도·검증·압축 비용까지 같은 업무 예산에서 차감한다.
+4. 병렬 워커는 예산을 원자적으로 예약한다. 각자 같은 잔액을 보고 실행하지 않는다.
+5. 경과 시간 측정에는 단조 시계, 감사 기록에는 날짜·시각을 쓴다.
+
+### 성공 1건당 비용과 사람의 개입을 같이 본다
+
+`전체 시행 비용 / 검증 성공 건수`로 계산한다. 성공이 0건이면 0원으로 표시하지
+말고 계산 불가로 보고한다. 비용이 낮아져도 사람의 재작업이 늘었다면 개선이라고
+단정하기 어렵다. 승인 대기 시간·검토 시간·재작업 비율을 함께 기록한다.
+
+운영 트레이스는 보존 기간·열람 권한·마스킹을 정한다. 원문 전체가 필요하면
+접근 통제된 별도 저장소에 두고 트레이스에는 참조를 남긴다. 기록만으로 동일 모델
+응답을 재현할 수는 없지만, 원인과 실행 순서를 추적할 수는 있어야 한다.
 
 ## 학습 체크리스트
 
