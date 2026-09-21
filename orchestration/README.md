@@ -30,7 +30,7 @@ last_updated: 2026-09-21
 
 **2. 검증은 다른 세션·다른 모델이 한다.** 리뷰어를 워커와 다른 모델로, fresh context 로 띄운다. 한 에이전트의 환각이 다음 단계에서 사실로 굳는 연쇄를 여기서 끊는다.
 
-**모델 ID가 다르다고 오류가 독립적이지는 않다.** Big·Medium 은 같은 GLM 계열이라 같은 착각을 공유할 수 있다. 독립성의 실질은 모델 이름이 아니라 ① 새 컨텍스트 ② 워커 보고가 아닌 **코드를 직접 읽는 것** ③ 검증 명령을 **직접 다시 돌리는 것** 에서 나온다. 리뷰어 프롬프트가 이 셋을 요구해야 의미가 있다.
+**모델 ID가 다르다고 오류가 독립적이지는 않다.** Big·Medium 은 둘 다 GLM 계열이라 같은 착각을 공유할 수 있다. 별칭(`HCP-*-Latest`)만 보면 계열이 안 보이므로 실제 모델을 확인해야 한다. 독립성의 실질은 모델 이름이 아니라 ① 새 컨텍스트 ② 워커 보고가 아닌 **코드를 직접 읽는 것** ③ 검증 명령을 **직접 다시 돌리는 것** 에서 나온다. 리뷰어 프롬프트가 이 셋을 요구해야 의미가 있다.
 
 빌트인 `reviewer` 에는 **`bash` 가 없다.** 읽기만 가능해서 검증 명령을 다시 돌리지 못한다. 그러면 워커 보고를 글로만 대조하게 되고, 게이트의 절반이 사라진다. 그래서 이 설정은 `reviewer` 의 `tools` 를 덮어써 `bash` 를 되돌려준다 — 이 폴더가 손대는 유일한 역할 정의다.
 
@@ -49,28 +49,43 @@ last_updated: 2026-09-21
 | `oracle` | `my-local-provider/HCP-Big-Latest` | high | 읽기 + bash | 판단·분해·드리프트 감시 |
 | `worker` | `my-local-provider/HCP-Medium-Latest` | high | 전체 (edit 포함) | 구현, 검증 명령 실행 |
 | `reviewer` | `my-local-provider/HCP-Big-Latest` | high | 읽기 + **bash**(덮어씀) + write | diff 검토, 검증 재현, 판정 |
-| `scout` | `my-local-provider/HCP-Small-Latest` | low | 읽기 + bash + write | 전수 검색, 선별, 목록화 |
+| `scout` | `itc-vlm/qwen3.8-27b` | low | 읽기 + bash + write | 전수 검색, 선별, 목록화 |
 | `researcher` / `evidence-auditor` | — | — | — | **꺼둔다** (외부 네트워크) |
 
-사내에서 쓸 수 있는 모델은 다섯이다. 역할에 배정한 넷 외에 둘은 용도를 따로 둔다.
+사내에서 쓸 수 있는 모델은 다섯이다. 별칭 뒤의 실제 모델이 계열을 결정하므로 같이 적어 둔다.
 
-| 모델 | context / maxTokens | 이 구성에서의 자리 |
-|------|--------------------|------------------|
-| `HCP-Big-Latest` | 1,048,574 / 1,048,574 | 판단(oracle) · 검증(reviewer) |
-| `HCP-Medium-Latest` | 1,048,574 / 1,048,574 | 구현(worker) · watchdog |
-| `HCP-Small-Latest` | 262,144 / 262,144 | 정찰(scout) |
-| `HCP-Vision-Latest` | 262,144 / 262,144, 이미지 | 역할 배정 없음. 스크린샷·캡처 문서를 읽혀야 할 때 런당 지정 |
-| `itc-vlm/qwen3.8-27b` | 262,144 / 32,768 | 역할 배정 없음. **교차 리뷰용 예비** (아래) |
+| 모델 | 실제 모델 | context / maxTokens | 이 구성에서의 자리 |
+|------|----------|--------------------|------------------|
+| `my-local-provider/HCP-Big-Latest` | GLM-5.3 | 1,048,574 / 1,048,574 | 판단(oracle) · 검증(reviewer) |
+| `my-local-provider/HCP-Medium-Latest` | GLM-5.3-flash | 1,048,574 / 1,048,574 | 구현(worker) · watchdog |
+| `my-local-provider/HCP-Small-Latest` | Qwen3.6-35B-A3B | 262,144 / 262,144 | 배정 없음. scout 의 **빠른 대안** |
+| `my-local-provider/HCP-Vision-Latest` | (이미지 입력) | 262,144 / 262,144 | 배정 없음. 스크린샷·캡처 문서용 |
+| `itc-vlm/qwen3.8-27b` | Qwen3.8 27B | 262,144 / 32,768 | 정찰(scout) · reviewer 교차 검증 |
 
-**`qwen3.8-27b` 를 교차 리뷰에 남겨둔 이유.** Big·Medium·Small 은 같은 계열이라 같은 착각을 공유할 수 있다. qwen 은 계열이 다르므로, 영향이 큰 변경에는 리뷰를 한 번 더 돌릴 값이 있다.
+**scout 에 `HCP-Small-Latest` 가 아니라 `qwen3.8-27b` 를 쓰는 이유.** `A3B` 는 총 35B 중
+**토큰당 활성 파라미터가 3B** 라는 뜻이다. 처리량은 이쪽이 훨씬 좋지만, scout 의 실패 모드는
+속도가 아니라 **호출부 누락**이다. scout 이 호출 지점을 하나 빠뜨리면 그 뒤 모든 워커가
+잘못된 범위를 공유하고, 무인 야간 실행이면 그대로 밤 하나를 날린다. scout 은 전체의 한 단계일
+뿐이고 물량은 worker 가 지므로, 정찰이 한 번 느린 비용보다 한 번 놓친 비용이 크다.
+
+물량이 많아 처리량이 급하면 런당 교체한다. `modelScope` 에 둘 다 열어 뒀다.
+
+```text
+/run scout[model=my-local-provider/HCP-Small-Latest] "..."
+```
+
+**`qwen3.8-27b` 를 reviewer 교차 검증에도 쓰는 이유.** Big·Medium 은 둘 다 GLM 계열이라 같은
+착각을 공유할 수 있다. qwen 은 계열이 다르므로 영향이 큰 변경에 2차 의견으로 값이 있다.
 
 ```text
 /run reviewer[model=itc-vlm/qwen3.8-27b] "이 diff 를 다시 검증해라. 앞선 리뷰 결과는 보지 마라."
 ```
 
-`modelScope.agents.reviewer.allow` 에 이 모델을 함께 넣어 둔 이유가 이것이다. 다만 **27B 는 Big 보다 판단이 약하므로 주 게이트가 아니라 2차 의견으로만 쓴다.** 출력 상한이 32,768 로 다른 모델보다 낮은 것도 감안한다.
+다만 27B 는 Big 보다 판단이 약하므로 **주 게이트가 아니라 2차 의견으로만** 쓴다. 출력 상한이
+32,768 로 다른 모델보다 낮은 것도 감안한다 — scout 의 긴 목록에는 충분하지만 장문 산출에는 좁다.
 
-`HCP-Vision-Latest` 는 코딩 오케스트레이션에서 상시로 쓸 일이 없어 역할에 배정하지 않았다. UI 버그 스크린샷이나 캡처한 문서를 읽혀야 할 때만 런당 모델로 지정한다.
+`HCP-Vision-Latest` 는 코딩 오케스트레이션에서 상시로 쓸 일이 없어 역할에 배정하지 않았다.
+UI 버그 스크린샷이나 캡처한 문서를 읽혀야 할 때만 런당 모델로 지정한다.
 
 `worker` 만 `edit` 을 가진다. 나머지 역할은 allowlist 에서 `edit` 을 뺐다.
 
