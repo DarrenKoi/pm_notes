@@ -68,41 +68,45 @@ def load(p):
 models, settings, subcfg = load(models_p), load(settings_p), load(subcfg_p)
 if "ERR" in (models, settings): print("\n".join(out)); sys.exit(0)
 
-# --- provider / 모델 정의 ---
-prov = None
+# --- provider / 모델 정의 (provider 가 여러 개일 수 있다) ---
+mdefs = {}          # "provider/id" -> 모델 정의
 if models:
     # models.json 의 최상위는 반드시 {"providers": {...}} 다. provider 를 바로 올리면
     # "must have required properties providers" 로 통째로 무시된다.
     if "providers" not in models:
         say("FAIL", 'models.json 최상위에 "providers" 키가 없다 → 파일 전체가 무시된다')
-        say("SKIP", '{"providers": {"hcp": {...}}} 형태여야 한다')
+        say("SKIP", '{"providers": {"<provider>": {...}}} 형태여야 한다')
         providers = {}
     else:
         say("OK", 'models.json 최상위 "providers" 구조 정상')
         providers = models["providers"]
-    cands = [k for k, v in providers.items() if isinstance(v, dict) and "models" in v]
-    if not cands:
-        say("FAIL", "models.json 에 models[] 를 가진 provider 가 없다")
-    else:
-        pname = "hcp" if "hcp" in cands else cands[0]
-        prov = providers[pname]
-        say("OK", f"provider '{pname}' 정의됨 ({len(prov.get('models',[]))} 모델)")
+
+    if not providers:
+        say("FAIL", "models.json 에 provider 가 하나도 없다")
+    for pname, prov in providers.items():
+        if not isinstance(prov, dict) or "models" not in prov:
+            say("SKIP", f"provider '{pname}': models[] 없음 (기존 모델 override 전용이면 정상)")
+            continue
+        ids = [m["id"] for m in prov["models"]]
+        say("OK", f"provider '{pname}' 정의됨 ({len(ids)} 모델: {', '.join(ids[:5])})")
+        for m in prov["models"]:
+            mdefs[f"{pname}/{m['id']}"] = m
+
         base = prov.get("baseUrl", "")
         if not base or "REPLACE-ME" in base or "example.com" in base:
-            say("FAIL", f"baseUrl 이 자리표시자다: {base!r}")
+            say("FAIL", f"provider '{pname}': baseUrl 이 자리표시자다: {base!r}")
             say("SKIP", "baseUrl 은 환경변수 치환이 안 된다. 실제 URL 문자열을 넣어야 한다")
         else:
-            say("OK", f"baseUrl 설정됨 ({base})")
+            say("OK", f"provider '{pname}' baseUrl: {base}")
+
         key = prov.get("apiKey", "")
         if key.startswith("$"):
             env = key.lstrip("$").strip("{}")
-            if os.environ.get(env): say("OK", f"apiKey 환경변수 {env} 설정됨")
-            else: say("FAIL", f"apiKey 가 ${env} 를 가리키는데 그 환경변수가 비어 있다")
-        elif key.startswith("!"): say("OK", "apiKey 를 셸 명령으로 가져온다")
-        elif key: say("FAIL", "apiKey 가 평문으로 박혀 있다. $ENV 또는 !command 를 써라")
-        else: say("FAIL", "apiKey 가 없다")
-
-mdefs = {m["id"]: m for m in (prov or {}).get("models", [])}
+            if os.environ.get(env): say("OK", f"provider '{pname}' apiKey 환경변수 {env} 설정됨")
+            else: say("FAIL", f"provider '{pname}': apiKey 가 ${env} 인데 그 환경변수가 비어 있다")
+        elif key.startswith("!"): say("OK", f"provider '{pname}' apiKey 를 셸 명령으로 가져온다")
+        elif key: say("FAIL", f"provider '{pname}': apiKey 가 평문으로 박혀 있다. $ENV 또는 !command 를 써라")
+        else: say("SKIP", f"provider '{pname}': apiKey 없음 (인증이 필요 없는 엔드포인트면 정상)")
 
 # --- settings: 역할 배정 ---
 sub = (settings or {}).get("subagents") or {}
@@ -147,14 +151,23 @@ checks = [(f"agentOverrides.{r}", ov[r].get("model"), ov[r].get("thinking"))
 if settings and settings.get("defaultThinkingLevel"):
     checks.append(("settings.defaultThinkingLevel", settings.get("defaultModel"), settings["defaultThinkingLevel"]))
 for label, mid, want in checks:
-    key = (mid or "").split("/")[-1]
-    md = mdefs.get(key)
+    md = mdefs.get(mid or "")
+    if md is None and mid and "/" not in mid:
+        hit = [k for k in mdefs if k.split("/")[-1] == mid]
+        md = mdefs[hit[0]] if len(hit) == 1 else None
     if not md: say("SKIP", f"{label}: 모델 {mid} 정의를 못 찾아 thinking 검사 생략"); continue
     lv = supported(md)
     if want in lv: say("OK", f"{label}: thinking '{want}' 지원됨")
     else:
         got = clamp_up(lv, want)
-        say("FAIL", f"{label}: '{want}' 는 {key} 가 지원하지 않는다 → 조용히 '{got}' 로 올라간다 (지원: {','.join(lv)})")
+        say("FAIL", f"{label}: '{want}' 는 {mid} 가 지원하지 않는다 → 조용히 '{got}' 로 올라간다 (지원: {','.join(lv)})")
+
+# --- 역할이 참조하는 모델이 실제로 정의돼 있나 ---
+for role, cfg in ov.items():
+    mid = cfg.get("model") if isinstance(cfg, dict) else None
+    if not mid or cfg.get("disabled"): continue
+    if mdefs and mid not in mdefs:
+        say("FAIL", f"agentOverrides.{role} 이 {mid} 를 가리키는데 models.json 에 그 정의가 없다")
 
 # --- modelScope 가 agentOverrides 를 막지 않는지 교차 검증 ---
 ms = sub.get("modelScope")
@@ -173,6 +186,14 @@ else:
         a = (ms.get("agents", {}).get(role) or {}).get("allow")
         if a and not allowed(a, mid):
             say("FAIL", f"modelScope.agents.{role}.allow 가 배정 모델 {mid} 와 불일치 → 그 역할이 항상 실패한다")
+    # 에이전트 규칙은 전역 규칙을 완화하지 못한다. 전역에 없는 대안 모델은 죽은 항목이다.
+    for role, cfg in (ms.get("agents") or {}).items():
+        for pat in (cfg or {}).get("allow", []):
+            if pat == "inherit" or "*" in pat: continue
+            if g and not allowed(g, pat):
+                say("FAIL", f"modelScope.agents.{role}.allow 의 {pat} 가 전역 allow 에 없다 → 쓰는 순간 거부된다")
+            elif mdefs and pat not in mdefs:
+                say("FAIL", f"modelScope.agents.{role}.allow 의 {pat} 가 models.json 에 정의돼 있지 않다")
     say("OK", "modelScope 와 역할 배정이 서로 모순되지 않음")
 
 # --- watchdog ---
@@ -208,6 +229,9 @@ s=json.load(open(sys.argv[1]))
 ov=s.get("subagents",{}).get("agentOverrides",{})
 ms=[c["model"] for c in ov.values() if isinstance(c,dict) and c.get("model")]
 if s.get("defaultModel"): ms.append(s["defaultModel"])
+# 역할에 배정하진 않았지만 modelScope 로 열어둔 대안 모델도 연결은 확인해 둔다
+for cfg in (s.get("subagents",{}).get("modelScope",{}).get("agents") or {}).values():
+    ms += [p for p in (cfg or {}).get("allow",[]) if p!="inherit" and "*" not in p]
 print("\n".join(sorted(set(ms))))' "$SETTINGS" 2>/dev/null)
 for m in $ROLE_MODELS; do
   # "provider/id" 와 "id" 둘 다 받는다. 접두사가 없으면 모델 열만 대조한다.

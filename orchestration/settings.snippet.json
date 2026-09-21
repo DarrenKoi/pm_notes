@@ -1,82 +1,58 @@
 {
-  "defaultModel": "hcp/HCP-Big-Latest",
+  "defaultModel": "my-local-provider/HCP-Big-Latest",
   "defaultThinkingLevel": "high",
   "httpIdleTimeoutMs": 900000,
   "subagents": {
-    "defaultModel": "hcp/HCP-Medium-Latest",
-    "defaultProvider": "hcp",
+    "defaultModel": "my-local-provider/HCP-Medium-Latest",
+    "defaultProvider": "my-local-provider",
     "agentOverrides": {
       "oracle": {
-        "model": "hcp/HCP-Big-Latest",
+        "model": "my-local-provider/HCP-Big-Latest",
         "thinking": "high",
-        "description": "설계·분해 티어 (HCP-Big). 판단과 계획만, 구현은 worker 로 넘긴다."
+        "description": "설계·분해 티어 (Big). 판단과 계획만, 구현은 worker 로 넘긴다."
       },
       "reviewer": {
-        "model": "hcp/HCP-Big-Latest",
+        "model": "my-local-provider/HCP-Big-Latest",
         "thinking": "high",
         "tools": "read, grep, find, ls, bash, write, watchdog_diff, contact_supervisor",
-        "description": "검증 게이트 (HCP-Big). worker 와 다른 세션·다른 모델로, 검증 명령을 직접 다시 돌린다."
+        "description": "검증 게이트 (Big). worker 와 다른 세션으로, 검증 명령을 직접 다시 돌린다. 영향이 큰 변경은 itc-vlm/qwen3.8-27b 로 교차 리뷰를 한 번 더 돌릴 수 있다."
       },
       "worker": {
-        "model": "hcp/HCP-Medium-Latest",
+        "model": "my-local-provider/HCP-Medium-Latest",
         "thinking": "high",
-        "description": "구현 티어 (HCP-Medium). 양산 작업."
+        "description": "구현 티어 (Medium). 양산 작업."
       },
       "scout": {
-        "model": "hcp/Qwen3.8-27b",
+        "model": "my-local-provider/HCP-Small-Latest",
         "thinking": "low",
-        "description": "정찰 티어 (Qwen3.8-27b). 전수 검색·선별·목록화."
+        "description": "정찰 티어 (Small). 전수 검색·선별·목록화."
       },
-      "researcher": {
-        "disabled": true
-      },
-      "evidence-auditor": {
-        "disabled": true
-      }
+      "researcher": { "disabled": true },
+      "evidence-auditor": { "disabled": true }
     },
     "modelScope": {
       "enforce": true,
       "strict": true,
-      "allow": [
-        "hcp/*"
-      ],
+      "allow": ["my-local-provider/*", "itc-vlm/*"],
       "agents": {
-        "oracle": {
-          "allow": [
-            "hcp/HCP-Big-Latest"
-          ]
-        },
+        "oracle": { "allow": ["my-local-provider/HCP-Big-Latest"] },
         "reviewer": {
-          "allow": [
-            "hcp/HCP-Big-Latest"
-          ]
+          "allow": ["my-local-provider/HCP-Big-Latest", "itc-vlm/qwen3.8-27b"]
         },
-        "worker": {
-          "allow": [
-            "hcp/HCP-Medium-Latest"
-          ]
-        },
+        "worker": { "allow": ["my-local-provider/HCP-Medium-Latest"] },
         "scout": {
-          "allow": [
-            "hcp/Qwen3.8-27b"
-          ]
+          "allow": ["my-local-provider/HCP-Small-Latest", "itc-vlm/qwen3.8-27b"]
         }
       }
     },
     "watchdog": {
       "enabled": true,
-      "main": {
-        "model": "hcp/HCP-Medium-Latest"
-      },
-      "cadence": {
-        "everyNTools": 10
-      },
+      "main": { "model": "my-local-provider/HCP-Medium-Latest" },
+      "cadence": { "everyNTools": 10 },
       "children": {
         "enabled": true,
-        "model": "hcp/HCP-Medium-Latest",
-        "cadence": {
-          "everyNTools": 10
-        }
+        "model": "my-local-provider/HCP-Medium-Latest",
+        "cadence": { "everyNTools": 10 }
       }
     }
   }

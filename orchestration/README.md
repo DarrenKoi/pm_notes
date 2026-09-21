@@ -46,11 +46,31 @@ last_updated: 2026-09-21
 
 | 빌트인 역할 | 모델 | thinking | 도구 | 하는 일 |
 |------|------|----------|------|---------|
-| `oracle` | HCP-Big-Latest (GLM-5.3) | high | 읽기 + bash | 판단·분해·드리프트 감시 |
-| `worker` | HCP-Medium-Latest (GLM-5.3-flash) | high | 전체 (edit 포함) | 구현, 검증 명령 실행 |
-| `reviewer` | HCP-Big-Latest (GLM-5.3) | high | 읽기 + **bash**(덮어씀) + write | diff 검토, 검증 재현, 판정 |
-| `scout` | Qwen3.8-27b | low | 읽기 + bash + write | 전수 검색, 선별, 목록화 |
+| `oracle` | `my-local-provider/HCP-Big-Latest` | high | 읽기 + bash | 판단·분해·드리프트 감시 |
+| `worker` | `my-local-provider/HCP-Medium-Latest` | high | 전체 (edit 포함) | 구현, 검증 명령 실행 |
+| `reviewer` | `my-local-provider/HCP-Big-Latest` | high | 읽기 + **bash**(덮어씀) + write | diff 검토, 검증 재현, 판정 |
+| `scout` | `my-local-provider/HCP-Small-Latest` | low | 읽기 + bash + write | 전수 검색, 선별, 목록화 |
 | `researcher` / `evidence-auditor` | — | — | — | **꺼둔다** (외부 네트워크) |
+
+사내에서 쓸 수 있는 모델은 다섯이다. 역할에 배정한 넷 외에 둘은 용도를 따로 둔다.
+
+| 모델 | context / maxTokens | 이 구성에서의 자리 |
+|------|--------------------|------------------|
+| `HCP-Big-Latest` | 1,048,574 / 1,048,574 | 판단(oracle) · 검증(reviewer) |
+| `HCP-Medium-Latest` | 1,048,574 / 1,048,574 | 구현(worker) · watchdog |
+| `HCP-Small-Latest` | 262,144 / 262,144 | 정찰(scout) |
+| `HCP-Vision-Latest` | 262,144 / 262,144, 이미지 | 역할 배정 없음. 스크린샷·캡처 문서를 읽혀야 할 때 런당 지정 |
+| `itc-vlm/qwen3.8-27b` | 262,144 / 32,768 | 역할 배정 없음. **교차 리뷰용 예비** (아래) |
+
+**`qwen3.8-27b` 를 교차 리뷰에 남겨둔 이유.** Big·Medium·Small 은 같은 계열이라 같은 착각을 공유할 수 있다. qwen 은 계열이 다르므로, 영향이 큰 변경에는 리뷰를 한 번 더 돌릴 값이 있다.
+
+```text
+/run reviewer[model=itc-vlm/qwen3.8-27b] "이 diff 를 다시 검증해라. 앞선 리뷰 결과는 보지 마라."
+```
+
+`modelScope.agents.reviewer.allow` 에 이 모델을 함께 넣어 둔 이유가 이것이다. 다만 **27B 는 Big 보다 판단이 약하므로 주 게이트가 아니라 2차 의견으로만 쓴다.** 출력 상한이 32,768 로 다른 모델보다 낮은 것도 감안한다.
+
+`HCP-Vision-Latest` 는 코딩 오케스트레이션에서 상시로 쓸 일이 없어 역할에 배정하지 않았다. UI 버그 스크린샷이나 캡처한 문서를 읽혀야 할 때만 런당 모델로 지정한다.
 
 `worker` 만 `edit` 을 가진다. 나머지 역할은 allowlist 에서 `edit` 을 뺐다.
 
@@ -67,19 +87,15 @@ allowlist 는 **기본값을 정하는 장치**이지 경계가 아니다. 진�
 
 ## 어떻게 사용하는가 (How)
 
-### 1. 사내 모델 등록
+### 1. 사내 모델 등록 (이미 돼 있으면 확인만)
 
-`models.json.example` 을 `~/.pi/agent/models.json` 으로 복사하고 `baseUrl` 을 사내 엔드포인트로 바꾼다.
+`~/.pi/agent/models.json` 에 `my-local-provider` 와 `itc-vlm` 두 provider 가 이미 등록돼 있다면 이 단계는 건너뛰고 `smoke.sh -l 0` 으로 확인만 한다.
 
-```bash
-cp orchestration/models.json.example ~/.pi/agent/models.json
-export HCP_API_KEY='...'   # 셸 프로필에. models.json 에 키를 쓰지 않는다.
-pi --list-models hcp       # 세 모델이 보여야 한다
-```
+새 모델을 추가할 때 걸리는 곳은 셋이다.
 
-- `apiKey` 와 `headers` 는 `$ENV_VAR` 치환이 된다. `!command` 로 쓰면 그 명령의 stdout을 쓴다.
-- **`baseUrl` 은 환경변수 치환이 되지 않는다.** 실제 URL 문자열을 그대로 넣어야 한다.
-- `Qwen3.8-27b` 의 `contextWindow` 는 vLLM `--max-model-len` 과 맞춘다. 예시값(131072)은 자리표시자다.
+- **최상위는 `{"providers": {...}}` 다.** provider 를 바로 올리면 `must have required properties providers` 로 **파일 전체가 무시되고** 모델이 하나도 안 보인다.
+- `apiKey` 와 `headers` 는 `$ENV_VAR` 치환이 되고 `!command` 도 된다. **`baseUrl` 은 치환이 안 된다** — 실제 URL 문자열을 넣어야 한다.
+- `contextWindow` / `maxTokens` / `thinkingLevelMap` 은 게이트웨이가 실제로 받아주는 값과 맞춰야 한다. 목록에 보이는 것과 긴 출력·thinking 요청이 성공하는 것은 별개다. `smoke.sh -l 2` 로 확인한다.
 
 ### 2. 역할별 티어 배선
 
@@ -87,7 +103,7 @@ pi --list-models hcp       # 세 모델이 보여야 한다
 
 | 파일 | 넣을 것 |
 |------|---------|
-| `~/.pi/agent/settings.json` | `settings.snippet.json` 내용 — pi 코어의 `defaultModel`(**부모 세션 모델**), `httpIdleTimeoutMs`, 그리고 `subagents.defaultModel`(**자식 기본값**), `agentOverrides`, `watchdog` |
+| `~/.pi/agent/settings.json` | `settings.snippet.json` 내용 — pi 코어의 `defaultModel`(**부모 세션 모델**), `httpIdleTimeoutMs`, 그리고 `subagents.defaultModel`(**자식 기본값**), `agentOverrides`, `modelScope`, `watchdog` |
 | `~/.pi/agent/extensions/subagent/config.json` | `subagent-config.snippet.json` 내용 — `timeoutMs`, `toolTimeoutMs`, `asyncByDefault` |
 
 저장소 단위로만 적용하려면 settings 쪽은 그 저장소의 `.pi/settings.json` 에 넣는다 (프로젝트 설정이 사용자 설정을 이긴다).
@@ -120,6 +136,8 @@ L0 이 잡아내는 것 중 눈으로는 안 보이는 것들:
 - `models.json` 최상위 `providers` 래퍼 누락 → **파일 전체가 조용히 무시된다**
 - `thinking: "medium"` → GLM 계열은 미지원이라 오류 없이 `high` 로 올라가 비용이 늘어난다
 - `modelScope.agents.<역할>.allow` 가 그 역할의 배정 모델과 어긋남 → 그 역할이 **항상** 실패한다
+- `agentOverrides` 가 가리키는 모델이 `models.json` 에 없음 (오타·provider 혼동)
+- 에이전트별 `allow` 에 넣은 대안 모델이 **전역 `allow` 에 없음** → 에이전트 규칙은 전역을 완화하지 못하므로 쓰는 순간 거부된다
 - `timeoutMs` 를 `settings.json` 에 넣음 → 오류 없이 무시된다
 - `apiKey` 평문 하드코딩
 
@@ -169,9 +187,9 @@ worker 로 <작업>을 구현해줘. 끝나면 reviewer 를 띄워서 검증 명
 | 항목 | 규칙 |
 |------|------|
 | 외부 전송 | `researcher` / `evidence-auditor` 를 끈다. 단 `bash` 가 있으면 우회 가능하다 — 실제 차단은 네트워크 정책으로 한다. |
-| 자격증명 | `HCP_API_KEY` 는 환경변수로만. `models.json` 과 저장소에 키를 넣지 않는다. |
+| 자격증명 | API 키는 환경변수로만 (`$HCP_API_KEY`, `$ITC_VLM_API_KEY`). `models.json` 과 저장소에 키를 넣지 않는다. |
 | 샌드박스 | pi에는 샌드박스도 권한 팝업도 없다. 자식은 실행 사용자 권한을 그대로 가진다. **하드 가드는 프롬프트 문구일 뿐 강제가 아니다.** 실제 경계가 필요하면 컨테이너/VM. |
-| 시크릿 | `HCP_API_KEY` 를 환경변수에 두면 `bash` 로 읽힌다. 에이전트에게서 숨겨야 한다면 격리 경계 밖 프록시가 키를 들어야 한다. |
+| 시크릿 | API 키를 환경변수에 두면 `bash` 로 읽힌다. 에이전트에게서 숨겨야 한다면 격리 경계 밖 프록시가 키를 들어야 한다. |
 | 비용 | 큰 모델은 `oracle` · `reviewer` 에만. `defaultModel` 은 Medium으로 둔다. |
 | 폴백 금지 | 자식 실행이 깨졌을 때 외부 CLI나 다른 실행 경로로 우회하지 않는다. 실패를 그대로 보고한다. |
 
@@ -187,8 +205,8 @@ worker 로 <작업>을 구현해줘. 끝나면 reviewer 를 띄워서 검증 명
 
 - `models.json` 스키마(최상위 `providers` 래퍼 필수)와 `--list-models` 동작은 pi 0.86.1 로 직접 확인했다.
 - thinking 레벨 클램프 동작은 pi 소스(`models.js` 의 `getSupportedThinkingLevels` / `clampThinkingLevel`)로 확인했다.
-- `smoke.sh` 는 `PI_CODING_AGENT_DIR` 로 정상 설정 환경을 흉내 내 **통과(ok 33)** 와 **변형 주입 시 검출(5/5)** 양방향을 확인했다.
-- `settings.snippet.json` / `subagent-config.snippet.json` 의 키는 설치된 `pi-subagents` 0.70.0 문서 기준이며, **사내 HCP 엔드포인트에 물려 실행 검증한 것은 아니다.** 첫 배선 때 `smoke.sh -l 3` 으로 확인한다.
+- `smoke.sh` 는 `PI_CODING_AGENT_DIR` 로 실제 2-provider·5-모델 구성을 흉내 내 **통과(ok 37)** 와 **변형 주입 시 검출(8/8)** 양방향을 확인했다.
+- `settings.snippet.json` / `subagent-config.snippet.json` 의 키는 설치된 `pi-subagents` 0.70.0 문서 기준이며, **사내 엔드포인트에 물려 실행 검증한 것은 아니다.** 첫 배선 때 `smoke.sh -l 3` 으로 확인한다.
 - 설계는 Codex(gpt-6-astra)로 3라운드 검증을 거쳤다. 지적 P1 14건을 반영했다.
 
 ## 두 가지 사용 모드
@@ -276,7 +294,6 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 ## 관련 문서
 
 - [세팅 점검 스크립트](./smoke.sh)
-- [사내 모델 등록 예시](./models.json.example)
 - [역할별 티어 배선](./settings.snippet.json) · [런타임 상한](./subagent-config.snippet.json)
 - [퇴근 원샷 프롬프트](./oneshot.md) · [결정 정책 템플릿](./decisions.example.md)
 - [작업 저장소 AGENTS.md 규칙](./agents-md.snippet.md)
