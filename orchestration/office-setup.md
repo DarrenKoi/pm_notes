@@ -75,6 +75,7 @@ itc-vlm/qwen3.8-27b
 - 먼저 settings.json 을 settings.json.bak 으로 복사해라.
 - 아래에 있는 키만 손대라. 기존의 다른 키(theme, packages 등)는 한 글자도 바꾸지 마라.
 - subagents 를 통째로 교체하지 마라. 그 안의 키만 합쳐라 (깊은 병합).
+- agentOverrides 안에 이미 있는 역할은 통째로 교체해도 된다. 단 교체 전에 원래 내용을 출력해라.
 - 값을 새로 지어내지 마라. 아래 있는 값을 그대로 써라.
 - 쓰기 전에 "추가한 키" 와 "덮어쓴 키(이전 -> 이후)" 를 전부 나열해서 나에게 보여줘라.
 - 쓴 다음 파일을 다시 읽어서 JSON 으로 파싱되는지 확인하고, subagents.agentOverrides 의
@@ -170,6 +171,15 @@ itc-vlm/qwen3.8-27b
 }
 ```
 ```
+
+**성공 판정** — `agentOverrides` 키가 **6개**로 나와야 한다.
+
+```text
+oracle, reviewer, worker, scout, researcher, evidence-auditor
+```
+
+기존에 있던 역할 하나만 남아 있으면 깊은 병합이 아니라 **교체**가 일어난 것이다.
+`settings.json.bak` 으로 되돌리고 다시 시도한다. `modelScope.enforce` 는 `true` 여야 한다.
 
 **보고할 것** — 추가/덮어쓴 키 목록, 그리고 마지막 확인 출력.
 특히 **덮어쓴 키** 에 `defaultModel` 이 있으면 이전 값이 무엇이었는지 꼭 확인한다.
