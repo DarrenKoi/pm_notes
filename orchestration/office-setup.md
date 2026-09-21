@@ -175,15 +175,9 @@ itc-vlm/qwen3.8-27b
       "main": {
         "model": "my-local-provider/HCP-Medium-Latest"
       },
-      "cadence": {
-        "everyNTools": 10
-      },
       "children": {
-        "enabled": true,
-        "model": "my-local-provider/HCP-Medium-Latest",
-        "cadence": {
-          "everyNTools": 10
-        }
+        "enabled": false,
+        "model": "my-local-provider/HCP-Medium-Latest"
       }
     }
   }
@@ -303,6 +297,8 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 14. C 의 globalConcurrencyLimit 값이 얼마인가. 없으면 기본 20 이다.
     RPM 한도가 50 이면 20 은 즉시 넘는다. 4 이하를 권장한다.
     parallel.concurrency 값도 함께 보여줘라(없으면 기본 4).
+    B 의 subagents.watchdog 에 cadence 가 설정돼 있으면 알려줘라. cadence 는 도구 N번마다
+    추가 모델 호출을 만들어 RPM 을 크게 먹는다. RPM 한도가 낮으면 경계 검토만 남기는 편이 낫다.
 
 마지막에 OK 개수 / FAIL 개수 / 확인불가 개수를 한 줄로 요약해라.
 ```

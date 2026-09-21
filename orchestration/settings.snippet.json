@@ -91,15 +91,9 @@
       "main": {
         "model": "my-local-provider/HCP-Medium-Latest"
       },
-      "cadence": {
-        "everyNTools": 10
-      },
       "children": {
-        "enabled": true,
-        "model": "my-local-provider/HCP-Medium-Latest",
-        "cadence": {
-          "everyNTools": 10
-        }
+        "enabled": false,
+        "model": "my-local-provider/HCP-Medium-Latest"
       }
     }
   }
