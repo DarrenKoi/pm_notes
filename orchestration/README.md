@@ -214,7 +214,10 @@ L0 이 실패하면 위 계층은 돌리지 않는다. 설정 오류로 낭비�
 L0 이 잡아내는 것 중 눈으로는 안 보이는 것들:
 
 - `models.json` 최상위 `providers` 래퍼 누락 → **파일 전체가 조용히 무시된다**
-- `thinking: "medium"` → GLM 계열은 미지원이라 오류 없이 `high` 로 올라가 비용이 늘어난다
+- `thinking` 레벨이 그 모델에서 미지원 → 오류 없이 다른 레벨로 바뀐다. 판정 규칙은 셋이다.
+  - `reasoning` 이 없거나 false → **`off` 하나만 지원**. 다른 값을 주면 thinking 이 통째로 꺼진 채 돈다
+  - `reasoning: true` 인데 `thinkingLevelMap` 이 **없으면** → `off`~`high` 지원, `xhigh`·`max` 만 미지원 (정상)
+  - `thinkingLevelMap` 이 있으면 → 값이 `null` 인 레벨이 미지원
 - `modelScope.agents.<역할>.allow` 가 그 역할의 배정 모델과 어긋남 → 그 역할이 **항상** 실패한다
 - `agentOverrides` 가 가리키는 모델이 `models.json` 에 없음 (오타·provider 혼동)
 - `tools` 를 `"read, grep, bash"` 같은 쉼표 문자열로 씀 → **빌트인 frontmatter 는 이 표기를 받지만 `settings.json` 은 배열만 받는다.** 같은 필드명이라도 담는 파일이 다르면 형식이 다르다

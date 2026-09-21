@@ -174,7 +174,8 @@ for label, mid, want in checks:
     if want in lv: say("OK", f"{label}: thinking '{want}' 지원됨")
     else:
         got = clamp_up(lv, want)
-        say("FAIL", f"{label}: '{want}' 는 {mid} 가 지원하지 않는다 → 조용히 '{got}' 로 올라간다 (지원: {','.join(lv)})")
+        direction = "올라간다" if ORDER.index(got) > ORDER.index(want) else "떨어진다"
+        say("FAIL", f"{label}: '{want}' 는 {mid} 가 지원하지 않는다 → 조용히 '{got}' 로 {direction} (지원: {','.join(lv)})")
 
 # --- override 필드의 형식 검사 ---
 # frontmatter(YAML)는 "read, grep" 같은 쉼표 문자열을 받지만 settings.json 은 배열만 받는다.

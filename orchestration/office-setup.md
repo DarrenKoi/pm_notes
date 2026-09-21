@@ -246,9 +246,19 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
    대소문자와 provider 접두사까지 본다.
 
 5. agentOverrides 의 각 thinking 값이 그 모델에서 지원되는가.
-   A 에서 그 모델의 thinkingLevelMap 을 보고, 해당 레벨의 값이 null 이면 지원하지 않는 것이다.
-   지원하지 않으면 pi 가 오류 없이 더 높은 레벨로 올려버려 비용이 계획보다 커진다.
-   FAIL 이면 그 모델이 실제로 지원하는 레벨 목록을 알려줘라.
+   A 에서 그 모델의 정의를 보고 아래 규칙으로 판정해라. 추측하지 말고 규칙만 적용해라.
+
+   (a) reasoning 필드가 없거나 false 다  -> 지원 레벨은 off 하나뿐이다.
+       이 경우 thinking 에 off 가 아닌 값을 준 것은 FAIL 이다. 조용히 off 로 떨어져
+       thinking 이 아예 꺼진 채로 돈다.
+   (b) reasoning 이 true 인데 thinkingLevelMap 필드가 아예 없다 -> 정상이다.
+       off, minimal, low, medium, high 가 지원되고 xhigh 와 max 만 지원되지 않는다.
+       thinking 이 이 다섯 중 하나면 OK 다. 이 경우 확인불가로 쓰지 마라.
+   (c) reasoning 이 true 이고 thinkingLevelMap 이 있다 -> 그 레벨의 값이 null 이면 미지원,
+       xhigh/max 는 맵에 키가 있어야만 지원이다. 미지원 레벨을 주면 pi 가 오류 없이
+       다른 레벨로 바꿔버려 의도한 비용·품질이 안 나온다.
+
+   FAIL 이면 그 모델이 실제로 지원하는 레벨 목록을 함께 알려줘라.
 
 6. researcher 와 evidence-auditor 가 disabled: true 인가. 값이 문자열 "true" 가 아니라
    불리언 true 여야 한다.
