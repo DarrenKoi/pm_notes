@@ -132,9 +132,32 @@ allowlist 는 **기본값을 정하는 장치**이지 경계가 아니다. 진�
 | `~/.pi/agent/settings.json` | `settings.snippet.json` 내용 — pi 코어의 `defaultModel`(**부모 세션 모델**), `httpIdleTimeoutMs`, 그리고 `subagents.defaultModel`(**자식 기본값**), `agentOverrides`, `modelScope`, `watchdog` |
 | `~/.pi/agent/extensions/subagent/config.json` | `subagent-config.snippet.json` 내용 — `timeoutMs`, `toolTimeoutMs`, `asyncByDefault` |
 
-저장소 단위로만 적용하려면 settings 쪽은 그 저장소의 `.pi/settings.json` 에 넣는다 (프로젝트 설정이 사용자 설정을 이긴다).
+손으로 합치지 말고 `merge-settings.py` 를 쓴다. 기존 키를 보존하면서 깊은 병합을 하고,
+**바뀔 값을 먼저 전부 보여준 뒤** `--apply` 를 줄 때만 기록한다. 대상 파일은 `.bak` 으로 백업된다.
 
-배선이 맞았는지는 역할을 하나 띄워 실제로 물린 모델로 확인한다.
+```bash
+# 1) 미리보기 - 무엇이 추가되고 무엇이 덮어써지는지만 본다
+python merge-settings.py settings.snippet.json ~/.pi/agent/settings.json
+python merge-settings.py subagent-config.snippet.json ~/.pi/agent/extensions/subagent/config.json
+
+# 2) 확인했으면 적용
+python merge-settings.py settings.snippet.json ~/.pi/agent/settings.json --apply
+python merge-settings.py subagent-config.snippet.json ~/.pi/agent/extensions/subagent/config.json --apply
+```
+
+PowerShell 에서도 그대로 쓴다 (`~` 대신 `$HOME`).
+
+```powershell
+python .\orchestration\merge-settings.py .\orchestration\settings.snippet.json $HOME\.pi\agent\settings.json
+python .\orchestration\merge-settings.py .\orchestration\subagent-config.snippet.json $HOME\.pi\agent\extensions\subagent\config.json
+```
+
+**덮어씀** 항목은 기존 값이 사라진다는 뜻이니 반드시 확인한다. 특히 `defaultModel` 을 이미
+다른 모델로 쓰고 있었다면 그 값이 바뀐다. 없는 디렉터리·파일은 알아서 만든다. 두 번 돌려도
+안전하고, 대상 파일이 깨진 JSON 이면 덮어쓰지 않고 멈춘다.
+
+저장소 단위로만 적용하려면 settings 쪽 대상 경로를 그 저장소의 `.pi/settings.json` 으로 바꾼다
+(프로젝트 설정이 사용자 설정을 이긴다).
 
 ### 2-1. 세팅 점검 (`smoke.sh`)
 
@@ -371,7 +394,7 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 
 ## 관련 문서
 
-- [세팅 점검 스크립트](./smoke.sh)
+- [세팅 점검 스크립트](./smoke.sh) · [설정 병합 스크립트](./merge-settings.py)
 - [역할별 티어 배선](./settings.snippet.json) · [런타임 상한](./subagent-config.snippet.json)
 - [퇴근 원샷 프롬프트](./oneshot.md) · [결정 정책 템플릿](./decisions.example.md)
 - [작업 저장소 AGENTS.md 규칙](./agents-md.snippet.md)
