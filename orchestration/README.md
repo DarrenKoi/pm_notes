@@ -422,9 +422,14 @@ RPM 50 이면 **혼자서도 거의 채운다.**
 
 - `models.json` 스키마(최상위 `providers` 래퍼 필수)와 `--list-models` 동작은 pi 0.86.1 로 직접 확인했다.
 - thinking 레벨 클램프 동작은 pi 소스(`models.js` 의 `getSupportedThinkingLevels` / `clampThinkingLevel`)로 확인했다.
-- `smoke.sh` 는 `PI_CODING_AGENT_DIR` 로 실제 2-provider·5-모델 구성을 흉내 내 **통과(ok 37)** 와 **변형 주입 시 검출(8/8)** 양방향을 확인했다.
-- `settings.snippet.json` / `subagent-config.snippet.json` 의 키는 설치된 `pi-subagents` 0.70.0 문서 기준이며, **사내 엔드포인트에 물려 실행 검증한 것은 아니다.** 첫 배선 때 `smoke.sh -l 3` 으로 확인한다.
-- 설계는 Codex(gpt-6-astra)로 3라운드 검증을 거쳤다. 지적 P1 14건을 반영했다.
+- `smoke.sh` 는 `PI_CODING_AGENT_DIR` 로 실제 2-provider·5-모델 구성을 흉내 내 **통과(ok 43)** 와 **변형 주입 시 검출** 양방향을 확인했다.
+- **사내 환경에서 `office-setup.md` 의 `PROMPT-1` ~ `PROMPT-7` 이 전부 통과했다 (2026-09-22).**
+  설정 검증 15항목, 역할 배선, 서브에이전트 왕복, 그리고 실제 저장소에서 한 바퀴 작업까지
+  확인됐다. 대화형 경로는 검증된 상태다.
+- **야간 스케줄러 경로(`night-setup.md`, `night-run.ps1`)는 아직 실행 검증 전이다.**
+  `night-run.ps1` 은 작성 환경에 pwsh 가 없어 문법 검증도 하지 못했다. `NIGHT-4` 의
+  1회 수동 실행으로 반드시 확인한다.
+- 설계는 Codex(gpt-6-astra)로 4라운드 검증을 거쳤다. 지적 P1 20건을 반영했다.
 
 ## 두 가지 사용 모드
 
