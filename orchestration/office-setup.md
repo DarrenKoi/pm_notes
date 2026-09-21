@@ -98,7 +98,16 @@ itc-vlm/qwen3.8-27b
       "reviewer": {
         "model": "my-local-provider/HCP-Big-Latest",
         "thinking": "high",
-        "tools": "read, grep, find, ls, bash, write, watchdog_diff, contact_supervisor",
+        "tools": [
+          "read",
+          "grep",
+          "find",
+          "ls",
+          "bash",
+          "write",
+          "watchdog_diff",
+          "contact_supervisor"
+        ],
         "description": "Verification gate (Big). Runs in a separate session from worker. Reads the diff directly and re-runs the verification commands instead of trusting the worker's report."
       },
       "worker": {

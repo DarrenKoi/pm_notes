@@ -202,6 +202,7 @@ L0 이 잡아내는 것 중 눈으로는 안 보이는 것들:
 - `thinking: "medium"` → GLM 계열은 미지원이라 오류 없이 `high` 로 올라가 비용이 늘어난다
 - `modelScope.agents.<역할>.allow` 가 그 역할의 배정 모델과 어긋남 → 그 역할이 **항상** 실패한다
 - `agentOverrides` 가 가리키는 모델이 `models.json` 에 없음 (오타·provider 혼동)
+- `tools` 를 `"read, grep, bash"` 같은 쉼표 문자열로 씀 → **빌트인 frontmatter 는 이 표기를 받지만 `settings.json` 은 배열만 받는다.** 같은 필드명이라도 담는 파일이 다르면 형식이 다르다
 - 에이전트별 `allow` 에 넣은 대안 모델이 **전역 `allow` 에 없음** → 에이전트 규칙은 전역을 완화하지 못하므로 쓰는 순간 거부된다
 - `timeoutMs` 를 `settings.json` 에 넣음 → 오류 없이 무시된다
 - `apiKey` 평문 하드코딩

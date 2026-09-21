@@ -176,6 +176,35 @@ for label, mid, want in checks:
         got = clamp_up(lv, want)
         say("FAIL", f"{label}: '{want}' 는 {mid} 가 지원하지 않는다 → 조용히 '{got}' 로 올라간다 (지원: {','.join(lv)})")
 
+# --- override 필드의 형식 검사 ---
+# frontmatter(YAML)는 "read, grep" 같은 쉼표 문자열을 받지만 settings.json 은 배열만 받는다.
+# 형식이 틀리면 pi 가 실행 시점에 거부한다. 여기서 먼저 잡는다.
+SHAPE = {
+    "tools":  ("배열 / \"inherit\" / false", lambda v: isinstance(v, list) and all(isinstance(x, str) for x in v) or v == "inherit" or v is False),
+    "skills": ("배열 / false", lambda v: isinstance(v, list) or v is False),
+    "model":  ("문자열", lambda v: isinstance(v, str)),
+    "thinking": ("문자열", lambda v: isinstance(v, str)),
+    "description": ("문자열", lambda v: isinstance(v, str)),
+    "disabled": ("true/false", lambda v: isinstance(v, bool)),
+    "inheritProjectContext": ("true/false", lambda v: isinstance(v, bool)),
+    "inheritSkills": ("true/false", lambda v: isinstance(v, bool)),
+}
+shape_bad = 0
+for role, cfg in ov.items():
+    if not isinstance(cfg, dict): continue
+    for k, v in cfg.items():
+        if k not in SHAPE: continue
+        want, okf = SHAPE[k]
+        try: good = okf(v)
+        except Exception: good = False
+        if not good:
+            shape_bad += 1
+            say("FAIL", f"agentOverrides.{role}.{k} 형식이 틀렸다 - {want} 여야 하는데 {type(v).__name__}: {json.dumps(v, ensure_ascii=False)[:60]}")
+            if k == "tools" and isinstance(v, str) and "," in v:
+                say("SKIP", f'  frontmatter 표기를 그대로 옮긴 것 같다. {json.dumps([t.strip() for t in v.split(",")], ensure_ascii=False)} 로 바꿔라')
+if ov and not shape_bad:
+    say("OK", "agentOverrides 필드 형식 정상")
+
 # --- 역할이 참조하는 모델이 실제로 정의돼 있나 ---
 for role, cfg in ov.items():
     mid = cfg.get("model") if isinstance(cfg, dict) else None
