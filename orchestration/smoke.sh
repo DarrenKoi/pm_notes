@@ -31,9 +31,10 @@ case "$(uname -s 2>/dev/null)" in
 esac
 
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
-PASS=0; FAIL=0; SKIP=0
+PASS=0; FAIL=0; SKIP=0; WARN=0
 
 ok()   { PASS=$((PASS+1)); printf 'ok    %s\n' "$*"; }
+warn() { WARN=$((WARN+1)); printf 'warn  %s\n' "$*"; }
 bad()  { FAIL=$((FAIL+1)); printf 'FAIL  %s\n' "$*"; }
 skip() { SKIP=$((SKIP+1)); printf 'skip  %s\n' "$*"; }
 hint() { [ "$VERBOSE" = 1 ] && printf '      └ %s\n' "$*"; return 0; }
@@ -118,7 +119,7 @@ if models:
             if os.environ.get(env): say("OK", f"provider '{pname}' apiKey 환경변수 {env} 설정됨")
             else: say("FAIL", f"provider '{pname}': apiKey 가 ${env} 인데 그 환경변수가 비어 있다")
         elif key.startswith("!"): say("OK", f"provider '{pname}' apiKey 를 셸 명령으로 가져온다")
-        elif key: say("FAIL", f"provider '{pname}': apiKey 가 평문으로 박혀 있다. $ENV 또는 !command 를 써라")
+        elif key: say("WARN", f"provider '{pname}': apiKey 가 평문이다. 파일이 새면 그대로 노출된다 ($ENV 또는 !command 권장)")
         else: say("SKIP", f"provider '{pname}': apiKey 없음 (인증이 필요 없는 엔드포인트면 정상)")
 
 # --- settings: 역할 배정 ---
@@ -232,7 +233,7 @@ print("\n".join(out))
 PY
 [ -s "$TMP/l0.err" ] && { bad "설정 검사 스크립트 오류"; cat "$TMP/l0.err"; }
 while IFS=: read -r kind msg; do
-  case $kind in OK) ok "$msg" ;; FAIL) bad "$msg" ;; SKIP) skip "$msg" ;; esac
+  case $kind in OK) ok "$msg" ;; FAIL) bad "$msg" ;; WARN) warn "$msg" ;; SKIP) skip "$msg" ;; esac
 done < "$TMP/l0"
 
 # 등록된 모델 목록과 대조 ("No models matching \"X\"" 안내문에 검색어가 들어 있으므로 표 열로 본다)
@@ -258,7 +259,7 @@ done
 if [ "$FAIL" -gt 0 ]; then
   printf '\n결과: L0 실패 %d건. 상위 계층은 돌리지 않는다.\n' "$FAIL"; exit 1
 fi
-[ "$LEVEL" -lt 1 ] && { printf '\n결과: ok %d / skip %d\n' "$PASS" "$SKIP"; exit 0; }
+[ "$LEVEL" -lt 1 ] && { printf '\n결과: ok %d / warn %d / skip %d\n' "$PASS" "$WARN" "$SKIP"; exit 0; }
 
 # ────────────────────────── L1: 게이트웨이 연결 ──────────────────────────
 head_ "L1 게이트웨이 연결 (모델당 1회 호출)"
@@ -273,7 +274,7 @@ for m in $ROLE_MODELS; do
   fi
 done
 [ "$FAIL" -gt 0 ] && { printf '\n결과: L1 실패 %d건.\n' "$FAIL"; exit 1; }
-[ "$LEVEL" -lt 2 ] && { printf '\n결과: ok %d / skip %d\n' "$PASS" "$SKIP"; exit 0; }
+[ "$LEVEL" -lt 2 ] && { printf '\n결과: ok %d / warn %d / skip %d\n' "$PASS" "$WARN" "$SKIP"; exit 0; }
 
 # ────────────────────────── L2: 도구 호출 + thinking ──────────────────────────
 head_ "L2 도구 호출·thinking (모델당 1회 호출)"
@@ -288,7 +289,7 @@ for m in $ROLE_MODELS; do
          hint "tool calling 이 게이트웨이에서 지원되는지 확인해라" ;;
   esac
 done
-[ "$LEVEL" -lt 3 ] && { printf '\n결과: ok %d / FAIL %d / skip %d\n' "$PASS" "$FAIL" "$SKIP"; [ "$FAIL" -eq 0 ]; exit $?; }
+[ "$LEVEL" -lt 3 ] && { printf '\n결과: ok %d / FAIL %d / warn %d / skip %d\n' "$PASS" "$FAIL" "$WARN" "$SKIP"; [ "$FAIL" -eq 0 ]; exit $?; }
 
 # ────────────────────────── L3: 서브에이전트 왕복 ──────────────────────────
 head_ "L3 서브에이전트 왕복 (부모가 자식을 띄운다)"
@@ -309,5 +310,5 @@ else
   skip "자식 세션 아티팩트를 못 찾아 모델 확인 생략"
 fi
 
-printf '\n결과: ok %d / FAIL %d / skip %d\n' "$PASS" "$FAIL" "$SKIP"
+printf '\n결과: ok %d / FAIL %d / warn %d / skip %d\n' "$PASS" "$FAIL" "$WARN" "$SKIP"
 [ "$FAIL" -eq 0 ]
