@@ -166,6 +166,15 @@ python .\orchestration\merge-settings.py .\orchestration\subagent-config.snippet
 저장소 단위로만 적용하려면 settings 쪽 대상 경로를 그 저장소의 `.pi/settings.json` 으로 바꾼다
 (프로젝트 설정이 사용자 설정을 이긴다).
 
+### 2-0. 스크립트를 못 돌리는 환경이면
+
+사내 PC 에서 bash·python 을 돌리기 번거로우면 [office-setup.md](./office-setup.md) 를 쓴다.
+같은 세팅을 **pi 에게 시키는 단계별 프롬프트**로 옮겨 놓은 것이다. 붙여넣을 JSON 이 문서에
+그대로 박혀 있어 pi 가 값을 지어낼 여지가 없고, 각 단계마다 확인할 출력이 정해져 있다.
+
+단 JSON 병합 자체는 결정적 변환이라 원래 스크립트 쪽이 안전하다. `merge-settings.py` 를
+돌릴 수 있으면 그쪽을 쓴다.
+
 ### 2-1. 세팅 점검 (`smoke.sh`)
 
 배선이 맞았는지는 눈으로 보지 말고 돌려서 확인한다. 계층이 올라갈수록 비싸므로 아래에서부터 쓴다.
@@ -401,6 +410,7 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 
 ## 관련 문서
 
+- [사내 PC 단계별 세팅](./office-setup.md)
 - [세팅 점검 스크립트](./smoke.sh) · [설정 병합 스크립트](./merge-settings.py)
 - [역할별 티어 배선](./settings.snippet.json) · [런타임 상한](./subagent-config.snippet.json)
 - [퇴근 원샷 프롬프트](./oneshot.md) · [결정 정책 템플릿](./decisions.example.md)

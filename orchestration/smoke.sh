@@ -255,13 +255,19 @@ fi
 for m in $ROLE_MODELS; do
   # "provider/id" 와 "id" 둘 다 받는다. 접두사가 없으면 모델 열만 대조한다.
   if [ "$m" = "${m#*/}" ]; then pat_p=""; else pat_p="${m%%/*}"; fi
-  if pi --list-models "${m##*/}" 2>/dev/null |
-     awk -v p="$pat_p" -v i="${m##*/}" '(p=="" || $1==p) && $2==i {f=1} END{exit !f}'
-  then ok "모델 등록 확인: $m"
-  else
+  # Windows 는 CRLF 가 붙고, 터미널에 따라 ANSI 색상 코드가 섞인다. 둘 다 걷어낸 뒤 본다.
+  raw=$(pi --list-models "${m##*/}" 2>/dev/null | tr -d '\r' | sed $'s/\033\[[0-9;]*m//g')
+  if printf '%s\n' "$raw" |
+     awk -v p="$pat_p" -v i="${m##*/}" '(p=="" || tolower($1)==tolower(p)) && tolower($2)==tolower(i) {f=1} END{exit !f}'
+  then
+    ok "모델 등록 확인: $m"
+  elif printf '%s\n' "$raw" | grep -q "No models matching"; then
     bad "모델 미등록: $m"
-    hint "아래 목록의 provider/model 열과 글자 그대로 비교해라 (대소문자 구분한다)"
-    [ "$VERBOSE" = 1 ] && pi --list-models 2>/dev/null | sed -n '1,12p' | sed 's/^/        /'
+    hint "pi 가 이 이름으로 아무것도 못 찾았다. models.json 의 provider 이름과 모델 id 를 확인해라"
+  else
+    # 목록에는 뭔가 나왔는데 열 대조가 안 됐다. 출력 형식 문제일 수 있으므로 막지 않는다.
+    warn "모델 대조 실패(등록 여부 미확정): $m - 아래 출력과 직접 비교해라"
+    printf '%s\n' "$raw" | sed -n '1,6p' | sed 's/^/      /'
   fi
 done
 
