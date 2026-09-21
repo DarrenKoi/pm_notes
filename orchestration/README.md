@@ -167,6 +167,38 @@ L0 이 잡아내는 것 중 눈으로는 안 보이는 것들:
 - `timeoutMs` 를 `settings.json` 에 넣음 → 오류 없이 무시된다
 - `apiKey` 평문 하드코딩
 
+#### Windows PowerShell 에서 돌릴 때
+
+`smoke.sh` 는 bash 스크립트라 PowerShell 에서 바로 실행되지 않는다. 셋 중 하나를 쓴다.
+
+```powershell
+# 1) Git for Windows 가 있으면 (가장 흔함)
+& "C:\Program Files\Git\bin\bash.exe" ./smoke.sh -l 0
+
+# 2) WSL 이 있으면
+wsl ./smoke.sh -l 0
+
+# 3) Git Bash 를 열어서 평소처럼
+./smoke.sh -l 0
+```
+
+`python3` 가 아니라 `python` 만 있는 환경이 흔해서, 스크립트가 `python3` → `python` → `py`
+순으로 찾아 **Python 3 인 것만** 쓰도록 해 뒀다. 셋 다 없으면 거기서 멈춘다.
+
+전체 벽시계 상한도 Windows 에서는 `timeout` 이 없으므로 PowerShell 로 건다.
+
+```powershell
+$prompt = Get-Content .\oneshot-prompt.txt -Raw
+$p = Start-Process pi -ArgumentList '-p', $prompt -PassThru -NoNewWindow
+Wait-Process -Id $p.Id -Timeout 28800 -ErrorAction SilentlyContinue   # 8시간
+if (-not $p.HasExited) { Stop-Process -Id $p.Id -Force }
+```
+
+그리고 Windows 에서 무인 실행을 할 거면 **`smoke.sh -l 3` 을 반드시 한 번 돌린다.**
+`pi-subagents` 의 백그라운드 자식 실행은 공식 검증 대상이 Linux x64 이고 Windows 는
+실험 단계로 표기돼 있다. npm 으로 설치한 pi 는 Node 러너를 쓰므로 일반 경로지만,
+검증 매트릭스에 없다는 사실은 그대로다. 포그라운드(`asyncByDefault: false`)로 쓰는 편이 안전하다.
+
 ### 3. 런북
 
 `pi-subagents` 는 부모 pi 세션이 오케스트레이터다. 자연어로 지시하면 부모가 `subagent` 도구를 호출한다.

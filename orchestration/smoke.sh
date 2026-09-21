@@ -37,7 +37,14 @@ head_() { printf '\n── %s ──\n' "$*"; }
 head_ "L0 설정 점검 (LLM 호출 0회)"
 
 command -v pi >/dev/null && ok "pi 설치됨 ($(pi --version 2>/dev/null))" || { bad "pi 가 PATH 에 없다"; exit 1; }
-command -v python3 >/dev/null && ok "python3 있음" || { bad "python3 없음 (이 스크립트가 JSON 검사에 쓴다)"; exit 1; }
+# Windows(Git Bash)에는 python3 가 없고 python 만 있는 경우가 흔하다.
+PY=""
+for c in python3 python py; do
+  if command -v "$c" >/dev/null && "$c" -c 'import sys;sys.exit(0 if sys.version_info[0]==3 else 1)' 2>/dev/null; then
+    PY=$c; break
+  fi
+done
+[ -n "$PY" ] && ok "python 3 있음 ($PY)" || { bad "python 3 이 없다 (JSON 검사에 쓴다)"; exit 1; }
 
 if pi list 2>/dev/null | grep -qi "subagents" || [ -d "$PI_DIR/npm/node_modules/pi-subagents" ]; then
   ok "pi-subagents 설치됨"
@@ -52,7 +59,7 @@ done
   || { skip "없음: ${SUBCFG/#$HOME/~} (timeoutMs 등 런타임 상한 미설정)"; }
 
 # JSON 정합성 + 교차 검증을 한 번에. 실패 라인마다 FAIL:/OK:/SKIP: 접두사로 낸다.
-python3 - "$MODELS" "$SETTINGS" "$SUBCFG" > "$TMP/l0" 2>"$TMP/l0.err" <<'PY'
+"$PY" - "$MODELS" "$SETTINGS" "$SUBCFG" > "$TMP/l0" 2>"$TMP/l0.err" <<'PY'
 import json, sys, os, fnmatch
 
 models_p, settings_p, subcfg_p = sys.argv[1:4]
@@ -223,7 +230,7 @@ while IFS=: read -r kind msg; do
 done < "$TMP/l0"
 
 # 등록된 모델 목록과 대조 ("No models matching \"X\"" 안내문에 검색어가 들어 있으므로 표 열로 본다)
-ROLE_MODELS=$(python3 -c '
+ROLE_MODELS=$("$PY" -c '
 import json,sys
 s=json.load(open(sys.argv[1]))
 ov=s.get("subagents",{}).get("agentOverrides",{})
