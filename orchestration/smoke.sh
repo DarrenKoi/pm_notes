@@ -137,8 +137,21 @@ for role in ("researcher", "evidence-auditor"):
     if ov.get(role, {}).get("disabled") is True: say("OK", f"{role} 비활성 (외부 네트워크 차단)")
     else: say("FAIL", f"{role} 가 켜져 있다. 사내에서는 disabled: true")
 
-if (settings or {}).get("defaultModel"): say("OK", f"부모 세션 모델: {settings['defaultModel']}")
-else: say("FAIL", "settings.defaultModel 없음 (오케스트레이터인 부모가 어느 모델인지 미정)")
+# 부모 모델은 최상위 defaultProvider + defaultModel(id 만) 조합으로 해석된다.
+# model-resolver.js 가 getModel(provider, id) 를 호출하므로 id 자리에 "provider/id" 를
+# 넣으면 조회가 실패하고 아무 모델로 폴백한다. subagents.defaultProvider 는 이를 대신하지 못한다.
+dp, dm = (settings or {}).get("defaultProvider"), (settings or {}).get("defaultModel")
+if not dm:
+    say("FAIL", "settings.defaultModel 없음 (부모가 어느 모델인지 미정)")
+elif "/" in dm:
+    say("FAIL", f"settings.defaultModel 에 provider 접두사가 들어 있다: {dm}")
+    say("SKIP", f'  defaultProvider: "{dm.split("/")[0]}" / defaultModel: "{dm.split("/",1)[1]}" 로 나눠라')
+elif not dp:
+    say("FAIL", f"settings.defaultProvider 가 없다. defaultModel={dm} 만으로는 조회가 안 되고 아무 모델로 폴백한다")
+elif mdefs and f"{dp}/{dm}" not in mdefs:
+    say("FAIL", f"부모 모델 {dp}/{dm} 이 models.json 에 없다")
+else:
+    say("OK", f"부모 세션 모델: {dp}/{dm}")
 
 # --- thinking 레벨 유효성: medium=null 함정을 여기서 잡는다 ---
 ORDER = ["off","minimal","low","medium","high","xhigh","max"]
@@ -247,6 +260,12 @@ else:
     say("OK", "watchdog 켜짐")
     if (wd.get("main") or {}).get("model"): say("OK", f"watchdog 모델 명시: {wd['main']['model']}")
     else: say("SKIP", "watchdog.main.model 미지정 → 부모 세션 모델을 상속한다 (독립 검토가 아니게 된다)")
+    # 스니펫에서 cadence 를 "빼는" 것은 기존 설정에서 지워지지 않는다. 생략은 삭제가 아니다.
+    for where, blk in (("watchdog", wd), ("watchdog.children", wd.get("children") or {})):
+        if blk.get("cadence"):
+            say("FAIL", f"{where}.cadence 가 남아 있다 ({blk['cadence']}) → 도구 N번마다 추가 호출이 발생한다. 키를 삭제해라")
+    if (wd.get("children") or {}).get("enabled"):
+        say("WARN", "watchdog.children 가 켜져 있다. 자식이 동시에 돌면 RPM 을 가장 크게 먹는다")
 
 # --- 런타임 상한 (config.json) ---
 if subcfg in (None, "ERR"): say("SKIP", "subagent config.json 없음 → timeoutMs 기본 30분")

@@ -178,7 +178,7 @@ python .\orchestration\merge-settings.py .\orchestration\subagent-config.snippet
 | `PROMPT-1` | 현재 설정 상태 확인 (읽기만) |
 | `PROMPT-2` | `settings.json` 병합 |
 | `PROMPT-3` | `extensions/subagent/config.json` 생성 |
-| `PROMPT-4` | **설정 검증 12항목** |
+| `PROMPT-4` | **설정 검증 15항목** |
 | `PROMPT-5` | 역할 배선 확인 |
 | `PROMPT-6` | 서브에이전트 왕복 |
 | `PROMPT-7` | 실제 작업 한 바퀴 |
@@ -494,7 +494,7 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 
 프롬프트 템플릿은 [oneshot.md](./oneshot.md), 정책 템플릿은 [decisions.example.md](./decisions.example.md).
 
-작업 스케줄러로 **매시간** 돌린다면 한 번에 전부 끝내는 프롬프트를 쓰면 안 된다. 회차가 겹치면 같은 워크트리를 두 에이전트가 고친다. `oneshot.md` 의 스케줄러 절과 [night-run.ps1](./night-run.ps1) 을 쓴다 — 회차당 한 단위, 이전 회차가 살아 있으면 건너뛰기, `.orch\STOP` 으로 종료.
+작업 스케줄러로 **매시간** 돌린다면 한 번에 전부 끝내는 프롬프트를 쓰면 안 된다. 회차가 겹치면 같은 워크트리를 두 에이전트가 고친다. [night-setup.md](./night-setup.md) 의 `NIGHT-1`~`NIGHT-5` 를 쓴다 — 회차당 한 단위, 스케줄러 등록, 이전 회차가 살아 있으면 건너뛰기, `.orch\STOP` 으로 종료.
 
 그리고 무인이든 아니든 `subagents.watchdog` 은 켜둔다. 턴 경계에서 다른 모델이 방금 한 일을 되짚어 범위 이탈·루프 위험·위험한 변경을 찾는다.
 
@@ -516,5 +516,5 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 - [세팅 점검 스크립트](./smoke.sh) · [설정 병합 스크립트](./merge-settings.py)
 - [역할별 티어 배선](./settings.snippet.json) · [런타임 상한](./subagent-config.snippet.json)
 - [퇴근 원샷 프롬프트](./oneshot.md) · [결정 정책 템플릿](./decisions.example.md)
-- [스케줄러 래퍼](./night-run.ps1) — Windows 작업 스케줄러용
+- [야간 무인 세팅 프롬프트 (NIGHT-1~5)](./night-setup.md) · [스케줄러 래퍼](./night-run.ps1)
 - [작업 저장소 AGENTS.md 규칙](./agents-md.snippet.md)

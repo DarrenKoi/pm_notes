@@ -23,7 +23,7 @@ last_updated: 2026-09-22
 | `PROMPT-1` | 현재 설정 상태 확인 (읽기만) | — |
 | `PROMPT-2` | `settings.json` 병합 | 1 |
 | `PROMPT-3` | `extensions/subagent/config.json` 생성 | 2 |
-| `PROMPT-4` | **설정 검증 14항목** | 3 |
+| `PROMPT-4` | **설정 검증 15항목** | 3 |
 | `PROMPT-5` | 역할 배선 확인 (`subagent list`) | 4 |
 | `PROMPT-6` | 서브에이전트 왕복 | 5 |
 | `PROMPT-7` | 실제 작업 한 바퀴 | 6 |
@@ -77,13 +77,20 @@ itc-vlm/qwen3.8-27b
 - agentOverrides 안에 이미 있는 역할은 통째로 교체해도 된다. 단 교체 전에 원래 내용을 출력해라.
 - 값을 새로 지어내지 마라. 아래 있는 값을 그대로 써라.
 - tools 는 반드시 JSON 배열로 써라. 쉼표로 이은 문자열은 pi 가 거부한다.
+- 아래 JSON 에 subagents.watchdog.cadence 와 subagents.watchdog.children.cadence 가
+  없는 것은 의도적이다. 기존 설정에 그 키가 있으면 "삭제" 해라. 생략은 삭제가 아니다.
+  cadence 는 도구 N번마다 추가 모델 호출을 만들어 RPM 을 크게 먹는다.
+- 기존 최상위 defaultModel 에 "provider/id" 형태가 들어 있으면 고쳐라. pi 는 최상위
+  defaultProvider 와 defaultModel(id 만) 을 따로 받는다. 접두사가 붙으면 조회가 실패하고
+  아무 모델로 폴백한다.
 - 쓰기 전에 "추가한 키" 와 "덮어쓴 키(이전 -> 이후)" 를 전부 나열해서 나에게 보여줘라.
 - 쓴 다음 파일을 다시 읽어서 JSON 으로 파싱되는지 확인하고, subagents.agentOverrides 의
   키 목록과 subagents.modelScope.enforce 값을 출력해라.
 
 ```json
 {
-  "defaultModel": "my-local-provider/HCP-Big-Latest",
+  "defaultProvider": "my-local-provider",
+  "defaultModel": "HCP-Big-Latest",
   "defaultThinkingLevel": "high",
   "httpIdleTimeoutMs": 900000,
   "retry": {
@@ -228,7 +235,7 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 
 ---
 
-## PROMPT-4 — 설정 검증 (14항목)
+## PROMPT-4 — 설정 검증 (15항목)
 
 **여기가 제일 중요하다.** 지금까지 실제로 발목을 잡은 함정이 전부 들어 있다.
 모두 **오류 없이 조용히 무시되거나 엉뚱하게 동작하는** 종류라 눈으로는 안 보인다.
@@ -242,6 +249,10 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
   A = ~/.pi/agent/models.json
   B = ~/.pi/agent/settings.json
   C = ~/.pi/agent/extensions/subagent/config.json
+
+0. B 의 최상위 defaultProvider 와 defaultModel 이 둘 다 있고, defaultModel 에
+   "/" 가 없는가. pi 는 getModel(provider, id) 로 조회하므로 defaultModel 에
+   "provider/id" 를 넣으면 실패하고 아무 모델로 폴백한다. FAIL 이면 둘로 나눈 값을 제시해라.
 
 1. A 의 최상위에 "providers" 키가 있는가.
    없으면 파일 전체가 무시된다. {"providers": {"<provider>": {...}}} 형태여야 한다.
@@ -297,7 +308,8 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 14. C 의 globalConcurrencyLimit 값이 얼마인가. 없으면 기본 20 이다.
     RPM 한도가 50 이면 20 은 즉시 넘는다. 4 이하를 권장한다.
     parallel.concurrency 값도 함께 보여줘라(없으면 기본 4).
-    B 의 subagents.watchdog 에 cadence 가 설정돼 있으면 알려줘라. cadence 는 도구 N번마다
+    B 의 subagents.watchdog 또는 watchdog.children 에 cadence 키가 남아 있으면 FAIL 이다.
+    스니펫에서 생략한 것은 기존 설정에서 자동으로 지워지지 않는다. cadence 는 도구 N번마다
     추가 모델 호출을 만들어 RPM 을 크게 먹는다. RPM 한도가 낮으면 경계 검토만 남기는 편이 낫다.
 
 마지막에 OK 개수 / FAIL 개수 / 확인불가 개수를 한 줄로 요약해라.
@@ -305,7 +317,7 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 
 **성공 판정** — FAIL 0건. `확인불가` 가 있으면 어느 항목인지 알려달라.
 
-**보고할 것** — 14개 항목의 판정과 마지막 요약 줄.
+**보고할 것** — 15개 항목의 판정과 마지막 요약 줄.
 
 ---
 

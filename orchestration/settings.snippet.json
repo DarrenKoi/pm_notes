@@ -1,5 +1,6 @@
 {
-  "defaultModel": "my-local-provider/HCP-Big-Latest",
+  "defaultProvider": "my-local-provider",
+  "defaultModel": "HCP-Big-Latest",
   "defaultThinkingLevel": "high",
   "httpIdleTimeoutMs": 900000,
   "retry": {
