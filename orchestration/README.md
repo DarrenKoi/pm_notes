@@ -52,14 +52,14 @@ last_updated: 2026-09-21
 | `scout` | `itc-vlm/qwen3.8-27b` | low | 읽기 + bash + write | 전수 검색, 선별, 목록화 |
 | `researcher` / `evidence-auditor` | — | — | — | **꺼둔다** (외부 네트워크) |
 
-사내에서 쓸 수 있는 모델은 다섯이다. 별칭 뒤의 실제 모델이 계열을 결정하므로 같이 적어 둔다.
+별칭은 다섯이지만 **실제 모델은 넷**이다. 별칭 뒤의 모델이 계열을 결정하므로 같이 적어 둔다.
 
 | 모델 | 실제 모델 | context / maxTokens | 이 구성에서의 자리 |
 |------|----------|--------------------|------------------|
 | `my-local-provider/HCP-Big-Latest` | GLM-5.3 | 1,048,574 / 1,048,574 | 판단(oracle) · 검증(reviewer) |
 | `my-local-provider/HCP-Medium-Latest` | GLM-5.3-flash | 1,048,574 / 1,048,574 | 구현(worker) · watchdog |
 | `my-local-provider/HCP-Small-Latest` | Qwen3.6-35B-A3B | 262,144 / 262,144 | 배정 없음. scout 의 **빠른 대안** |
-| `my-local-provider/HCP-Vision-Latest` | (이미지 입력) | 262,144 / 262,144 | 배정 없음. 스크린샷·캡처 문서용 |
+| `my-local-provider/HCP-Vision-Latest` | Qwen3.6-35B-A3B (이미지 입력) | 262,144 / 262,144 | 배정 없음. Small 과 **같은 모델** + 이미지 |
 | `itc-vlm/qwen3.8-27b` | Qwen3.8 27B | 262,144 / 32,768 | 정찰(scout) · reviewer 교차 검증 |
 
 **scout 에 `HCP-Small-Latest` 가 아니라 `qwen3.8-27b` 를 쓰는 이유.** `A3B` 는 총 35B 중
@@ -84,8 +84,19 @@ last_updated: 2026-09-21
 다만 27B 는 Big 보다 판단이 약하므로 **주 게이트가 아니라 2차 의견으로만** 쓴다. 출력 상한이
 32,768 로 다른 모델보다 낮은 것도 감안한다 — scout 의 긴 목록에는 충분하지만 장문 산출에는 좁다.
 
-`HCP-Vision-Latest` 는 코딩 오케스트레이션에서 상시로 쓸 일이 없어 역할에 배정하지 않았다.
-UI 버그 스크린샷이나 캡처한 문서를 읽혀야 할 때만 런당 모델로 지정한다.
+**`HCP-Small-Latest` 와 `HCP-Vision-Latest` 는 같은 모델이다.** Vision 쪽이 이미지 입력을 받는
+것뿐이라 텍스트 품질 차이는 없다. 그래서 스크린샷을 읽혀야 하면 **모델을 바꾸는 것이 아니라
+같은 모델의 이미지 입구를 쓰는 것**이고, 판단 품질이 달라지지 않는다.
+
+코딩 오케스트레이션에서 상시로 쓸 일은 없어 역할에 배정하지 않았다. UI 버그 스크린샷이나
+캡처한 문서를 읽혀야 할 때만 런당 지정한다. scout 의 `allow` 에 함께 넣어 뒀다.
+
+```text
+/run scout[model=my-local-provider/HCP-Vision-Latest] "이 스크린샷의 에러 메시지를 읽고 해당 코드를 찾아라"
+```
+
+다만 활성 파라미터가 3B 라는 점은 이미지에서도 같다. 캡처 문서 추출처럼 정확도가 중요한
+작업에 이 모델을 그대로 쓰는 것이 맞는지는 별도로 판단할 일이다.
 
 `worker` 만 `edit` 을 가진다. 나머지 역할은 allowlist 에서 `edit` 을 뺐다.
 

@@ -61,7 +61,8 @@
         "scout": {
           "allow": [
             "itc-vlm/qwen3.8-27b",
-            "my-local-provider/HCP-Small-Latest"
+            "my-local-provider/HCP-Small-Latest",
+            "my-local-provider/HCP-Vision-Latest"
           ]
         }
       }
