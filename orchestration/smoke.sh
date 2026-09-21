@@ -24,6 +24,12 @@ PI_DIR=${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}
 MODELS=$PI_DIR/models.json
 SETTINGS=$PI_DIR/settings.json
 SUBCFG=$PI_DIR/extensions/subagent/config.json
+# Windows 콘솔은 기본 코드페이지가 949(한국어)라 UTF-8 한글이 깨져 보인다.
+# Git Bash/MSYS 에서 실행 중이면 콘솔을 UTF-8(65001)로 올린다.
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) chcp.com 65001 >/dev/null 2>&1 || true ;;
+esac
+
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 PASS=0; FAIL=0; SKIP=0
 

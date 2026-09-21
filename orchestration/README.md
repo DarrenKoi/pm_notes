@@ -182,6 +182,26 @@ wsl ./smoke.sh -l 0
 ./smoke.sh -l 0
 ```
 
+**한글이 깨져 보이면 콘솔 코드페이지 문제다.** 스크립트 출력은 UTF-8 인데 Windows 콘솔은
+기본이 949(한국어)라 그대로 읽으면 깨진다. 스크립트가 Git Bash/MSYS 에서 실행되면 알아서
+`chcp 65001` 을 걸지만, PowerShell 에서 직접 돌리거나 그래도 깨지면 아래를 먼저 실행한다.
+
+```powershell
+chcp 65001
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+```
+
+매번 치기 싫으면 PowerShell 프로필에 넣는다.
+
+```powershell
+notepad $PROFILE      # 없으면: New-Item -Path $PROFILE -ItemType File -Force
+# 위 세 줄을 붙여넣고 저장, 새 창에서 적용
+```
+
+Git Bash 를 쓰는데도 깨지면 터미널 글꼴이 한글을 못 그리는 경우다. `D2Coding`, `Malgun Gothic`,
+`Cascadia Mono` 중 하나로 바꾼다 (Git Bash: 창 우클릭 → Options → Text → Font).
+
 `python3` 가 아니라 `python` 만 있는 환경이 흔해서, 스크립트가 `python3` → `python` → `py`
 순으로 찾아 **Python 3 인 것만** 쓰도록 해 뒀다. 셋 다 없으면 거기서 멈춘다.
 
