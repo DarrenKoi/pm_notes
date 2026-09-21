@@ -247,13 +247,22 @@ if s.get("defaultModel"): ms.append(s["defaultModel"])
 for cfg in (s.get("subagents",{}).get("modelScope",{}).get("agents") or {}).values():
     ms += [p for p in (cfg or {}).get("allow",[]) if p!="inherit" and "*" not in p]
 print("\n".join(sorted(set(ms))))' "$SETTINGS" 2>/dev/null)
+N_ROLE_MODELS=$(printf '%s\n' $ROLE_MODELS | grep -c . || true)
+if [ "$N_ROLE_MODELS" -le 1 ]; then
+  skip "대조할 모델이 $N_ROLE_MODELS 개뿐이다 - agentOverrides 가 비어 있어 defaultModel 만 봤다"
+  skip "나머지 모델은 '미등록'이 아니라 '검사 안 함'이다. settings 병합 후 다시 돌려라"
+fi
 for m in $ROLE_MODELS; do
   # "provider/id" 와 "id" 둘 다 받는다. 접두사가 없으면 모델 열만 대조한다.
   if [ "$m" = "${m#*/}" ]; then pat_p=""; else pat_p="${m%%/*}"; fi
   if pi --list-models "${m##*/}" 2>/dev/null |
      awk -v p="$pat_p" -v i="${m##*/}" '(p=="" || $1==p) && $2==i {f=1} END{exit !f}'
   then ok "모델 등록 확인: $m"
-  else bad "모델 미등록: $m"; hint "models.json 의 provider 이름과 모델 id 를 확인해라"; fi
+  else
+    bad "모델 미등록: $m"
+    hint "아래 목록의 provider/model 열과 글자 그대로 비교해라 (대소문자 구분한다)"
+    [ "$VERBOSE" = 1 ] && pi --list-models 2>/dev/null | sed -n '1,12p' | sed 's/^/        /'
+  fi
 done
 
 if [ "$FAIL" -gt 0 ]; then
