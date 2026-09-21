@@ -22,6 +22,7 @@
 | `dev-environment/` | 개발 환경·툴링 노트 (codex, pi, terminal, vlm) |
 | `my-task/` | 진행 중인 업무 산출물 (AIX_POC, 2026_report) — 자체 CLAUDE.md 있음 |
 | `RAG/` | RAG 관련 단발 분석 문서 |
+| `orchestration/` | pi 코딩 에이전트 기반 멀티 에이전트 오케스트레이션 (역할·모델 티어링, 사내 HCP) |
 | `docs/` | 에이전트 운영 문서 (issue-tracker, triage-labels, domain) |
 | `_workspace/` | 세션 임시 작업물 |
 

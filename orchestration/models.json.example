@@ -1,0 +1,92 @@
+{
+  "providers": {
+    "hcp": {
+      "name": "HCP (사내 OpenAI 호환 게이트웨이)",
+      "api": "openai-completions",
+      "baseUrl": "https://REPLACE-ME.internal/v1",
+      "apiKey": "$HCP_API_KEY",
+      "models": [
+        {
+          "id": "HCP-Big-Latest",
+          "name": "HCP Big (GLM-5.3)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 131072,
+          "compat": {
+            "supportsStore": false,
+            "supportsDeveloperRole": false,
+            "maxTokensField": "max_tokens"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          }
+        },
+        {
+          "id": "HCP-Medium-Latest",
+          "name": "HCP Medium (GLM-5.3-flash)",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 131072,
+          "compat": {
+            "supportsStore": false,
+            "supportsDeveloperRole": false,
+            "maxTokensField": "max_tokens"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          }
+        },
+        {
+          "id": "Qwen3.8-27b",
+          "name": "Qwen3.8 27B (정찰용)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 131072,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsStore": false,
+            "supportsDeveloperRole": false,
+            "maxTokensField": "max_tokens",
+            "thinkingFormat": "qwen",
+            "chatTemplateKwargs": {
+              "enable_thinking": {
+                "$var": "thinking.enabled",
+                "omitWhenOff": false
+              }
+            }
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": "low",
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "high",
+            "max": "high"
+          }
+        }
+      ]
+    }
+  }
+}

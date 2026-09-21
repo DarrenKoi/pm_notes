@@ -1,0 +1,5 @@
+{
+  "timeoutMs": 10800000,
+  "toolTimeoutMs": 900000,
+  "asyncByDefault": false
+}
