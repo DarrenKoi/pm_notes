@@ -23,7 +23,7 @@ last_updated: 2026-09-22
 | `PROMPT-1` | 현재 설정 상태 확인 (읽기만) | — |
 | `PROMPT-2` | `settings.json` 병합 | 1 |
 | `PROMPT-3` | `extensions/subagent/config.json` 생성 | 2 |
-| `PROMPT-4` | **설정 검증 12항목** | 3 |
+| `PROMPT-4` | **설정 검증 14항목** | 3 |
 | `PROMPT-5` | 역할 배선 확인 (`subagent list`) | 4 |
 | `PROMPT-6` | 서브에이전트 왕복 | 5 |
 | `PROMPT-7` | 실제 작업 한 바퀴 | 6 |
@@ -86,6 +86,16 @@ itc-vlm/qwen3.8-27b
   "defaultModel": "my-local-provider/HCP-Big-Latest",
   "defaultThinkingLevel": "high",
   "httpIdleTimeoutMs": 900000,
+  "retry": {
+    "enabled": true,
+    "maxRetries": 6,
+    "baseDelayMs": 8000,
+    "maxAgentDelayMs": 120000,
+    "provider": {
+      "maxRetries": 4,
+      "maxRetryDelayMs": 60000
+    }
+  },
   "subagents": {
     "defaultModel": "my-local-provider/HCP-Medium-Latest",
     "defaultProvider": "my-local-provider",
@@ -206,7 +216,14 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 {
   "timeoutMs": 10800000,
   "toolTimeoutMs": 900000,
-  "asyncByDefault": false
+  "asyncByDefault": false,
+  "globalConcurrencyLimit": 2,
+  "maxActiveAsyncRunsPerSession": 1,
+  "maxSubagentSpawnsPerRun": 12,
+  "parallel": {
+    "maxTasks": 4,
+    "concurrency": 2
+  }
 }
 ```
 
@@ -217,7 +234,7 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 
 ---
 
-## PROMPT-4 — 설정 검증 (12항목)
+## PROMPT-4 — 설정 검증 (14항목)
 
 **여기가 제일 중요하다.** 지금까지 실제로 발목을 잡은 함정이 전부 들어 있다.
 모두 **오류 없이 조용히 무시되거나 엉뚱하게 동작하는** 종류라 눈으로는 안 보인다.
@@ -279,12 +296,20 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 12. subagents.watchdog.enabled 가 true 이고 watchdog.main.model 이 명시돼 있는가.
     생략하면 부모 세션 모델을 상속해서 독립적인 검토가 되지 않는다.
 
+13. B 에 retry 가 있는가. retry.enabled 가 false 면 FAIL 이다.
+    사내 게이트웨이는 RPM 한도가 낮아 429 가 정상적으로 발생하는데, 재시도가 꺼져 있으면
+    429 한 번에 워커가 죽는다. maxRetries 와 baseDelayMs 값도 함께 보여줘라.
+
+14. C 의 globalConcurrencyLimit 값이 얼마인가. 없으면 기본 20 이다.
+    RPM 한도가 50 이면 20 은 즉시 넘는다. 4 이하를 권장한다.
+    parallel.concurrency 값도 함께 보여줘라(없으면 기본 4).
+
 마지막에 OK 개수 / FAIL 개수 / 확인불가 개수를 한 줄로 요약해라.
 ```
 
 **성공 판정** — FAIL 0건. `확인불가` 가 있으면 어느 항목인지 알려달라.
 
-**보고할 것** — 12개 항목의 판정과 마지막 요약 줄.
+**보고할 것** — 14개 항목의 판정과 마지막 요약 줄.
 
 ---
 

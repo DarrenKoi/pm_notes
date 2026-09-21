@@ -2,6 +2,16 @@
   "defaultModel": "my-local-provider/HCP-Big-Latest",
   "defaultThinkingLevel": "high",
   "httpIdleTimeoutMs": 900000,
+  "retry": {
+    "enabled": true,
+    "maxRetries": 6,
+    "baseDelayMs": 8000,
+    "maxAgentDelayMs": 120000,
+    "provider": {
+      "maxRetries": 4,
+      "maxRetryDelayMs": 60000
+    }
+  },
   "subagents": {
     "defaultModel": "my-local-provider/HCP-Medium-Latest",
     "defaultProvider": "my-local-provider",

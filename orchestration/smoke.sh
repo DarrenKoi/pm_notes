@@ -254,8 +254,25 @@ else:
     for k in ("timeoutMs", "toolTimeoutMs"):
         if subcfg.get(k): say("OK", f"config.json {k}={subcfg[k]}")
         else: say("SKIP", f"config.json 에 {k} 없음")
+    # 사내 게이트웨이는 RPM/TPM 한도가 낮다. 동시 실행을 기본값으로 두면 즉시 넘는다.
+    gcl = subcfg.get("globalConcurrencyLimit")
+    if gcl is None: say("WARN", "globalConcurrencyLimit 미설정 → 기본 20. RPM 한도가 낮으면 429 가 난다")
+    elif gcl > 4: say("WARN", f"globalConcurrencyLimit={gcl} 로 높다. RPM 한도를 확인해라")
+    else: say("OK", f"globalConcurrencyLimit={gcl}")
+    par = subcfg.get("parallel") or {}
+    if par.get("concurrency"): say("OK", f"parallel.concurrency={par['concurrency']}")
+    else: say("SKIP", "parallel.concurrency 미설정 → 기본 4")
     if "timeoutMs" in sub:
         say("FAIL", "settings.json 의 subagents.timeoutMs 는 무시된다. config.json 으로 옮겨라")
+# 재시도: 429 는 이 설정이 없으면 그대로 실패로 끝난다
+rt = (settings or {}).get("retry")
+if rt is None:
+    say("SKIP", "retry 미설정 → 기본 enabled, maxRetries 3, baseDelayMs 2000. RPM 한도가 낮으면 늘려라")
+elif rt.get("enabled") is False:
+    say("FAIL", "retry.enabled 가 false 다. 429 한 번에 워커가 죽는다")
+else:
+    say("OK", f"retry maxRetries={rt.get('maxRetries', 3)} baseDelayMs={rt.get('baseDelayMs', 2000)}")
+
 if (settings or {}).get("httpIdleTimeoutMs"): say("OK", f"httpIdleTimeoutMs={settings['httpIdleTimeoutMs']}")
 else: say("SKIP", "httpIdleTimeoutMs 미설정 → 기본 5분. 사내 게이트웨이가 큐잉하면 짧다")
 

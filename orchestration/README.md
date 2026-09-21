@@ -329,6 +329,33 @@ worker 로 <작업>을 구현해줘. 끝나면 reviewer 를 띄워서 검증 명
 | 비용 | 큰 모델은 `oracle` · `reviewer` 에만. `defaultModel` 은 Medium으로 둔다. |
 | 폴백 금지 | 자식 실행이 깨졌을 때 외부 CLI나 다른 실행 경로로 우회하지 않는다. 실패를 그대로 보고한다. |
 
+## 속도 제한 (RPM / TPM)
+
+사내 게이트웨이에 호출 한도가 걸려 있으면 **동시 실행이 곧바로 한도를 넘는다.** 예로
+`my-local-provider` 가 RPM 50 / TPM 500,000 이면 기본값으로는 감당이 안 된다.
+
+| 설정 | 파일 | 기본값 | 이 구성 | 왜 |
+|------|------|--------|---------|-----|
+| `globalConcurrencyLimit` | config.json | 20 | **2** | 한 실행 안에서 동시에 도는 자식 수. 20 이면 RPM 50 을 즉시 넘는다 |
+| `parallel.concurrency` | config.json | 4 | **2** | 병렬 그룹의 동시 실행 수 |
+| `maxActiveAsyncRunsPerSession` | config.json | 4 | **1** | 동시에 도는 최상위 비동기 실행 수 |
+| `maxSubagentSpawnsPerRun` | config.json | 64 | **12** | 한 실행에서 띄울 수 있는 자식 총량. 폭주 방지 |
+| `retry.maxRetries` | settings.json | 3 | **6** | 429 는 정상적으로 발생한다. 재시도로 넘긴다 |
+| `retry.baseDelayMs` | settings.json | 2000 | **8000** | 2초 후 재시도는 RPM 한도에서 다시 429 를 부른다 |
+| `retry.provider.maxRetries` | settings.json | — | **4** | SDK 계층 재시도. 에이전트 재시도와 별개로 먼저 동작한다 |
+
+**429 는 재시도하지 않으면 그대로 실패다.** `pi-subagents` 문서가 명시한다 — 속도 제한을
+포함한 provider 오류는 그 시도에서 그대로 반환되고, 다른 모델로 넘어가지 않는다. 자식이
+죽으면 그 작업 단위가 통째로 날아간다. 무인 야간 실행에서는 치명적이다.
+
+**TPM 이 더 빡빡할 수 있다.** 컨텍스트 100만짜리 모델에 긴 세션을 물리면 요청 하나가
+수십만 토큰이 된다. TPM 500,000 이면 그런 요청 몇 개로 분당 한도가 찬다. 대응은 설정이
+아니라 구조다 — 자식마다 fresh context 를 주고, 부모가 자식 전사를 흡수하지 않게 하고,
+보고를 파일로 받는 것이 전부 여기에 기여한다.
+
+한도를 모르면 `globalConcurrencyLimit: 1` 로 시작해서 올린다. 병렬을 포기하는 것이
+429 로 밤 작업을 날리는 것보다 싸다.
+
 ## 알아둘 동작
 
 - 모델 해석 우선순위: 런당 override → provider별 역할 override → `agentOverrides.<역할>.model` → 에이전트 frontmatter → `subagents.defaultModel` → 부모 세션 모델.

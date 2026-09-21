@@ -1,5 +1,12 @@
 {
   "timeoutMs": 10800000,
   "toolTimeoutMs": 900000,
-  "asyncByDefault": false
+  "asyncByDefault": false,
+  "globalConcurrencyLimit": 2,
+  "maxActiveAsyncRunsPerSession": 1,
+  "maxSubagentSpawnsPerRun": 12,
+  "parallel": {
+    "maxTasks": 4,
+    "concurrency": 2
+  }
 }
