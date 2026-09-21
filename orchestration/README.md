@@ -139,7 +139,8 @@ allowlist 는 **기본값을 정하는 장치**이지 경계가 아니다. 진�
 다른 모델로 바꿔라" 같은 문장은 사람이 읽을 내용인데, 모델 컨텍스트에 들어가면 모델이 스스로
 모델을 교체해야 한다고 읽을 수 있다. 역할 구분에 필요한 것만 남긴다.
 
-손으로 합치지 말고 `merge-settings.py` 를 쓴다. 기존 키를 보존하면서 깊은 병합을 하고,
+bash·python 을 돌릴 수 있으면 손으로 합치지 말고 `merge-settings.py` 를 쓴다.
+(사내 PC 처럼 스크립트 실행이 번거로우면 `office-setup.md` 의 `PROMPT-2` 로 한다.) 기존 키를 보존하면서 깊은 병합을 하고,
 **바뀔 값을 먼저 전부 보여준 뒤** `--apply` 를 줄 때만 기록한다. 대상 파일은 `.bak` 으로 백업된다.
 
 ```bash
@@ -166,16 +167,30 @@ python .\orchestration\merge-settings.py .\orchestration\subagent-config.snippet
 저장소 단위로만 적용하려면 settings 쪽 대상 경로를 그 저장소의 `.pi/settings.json` 으로 바꾼다
 (프로젝트 설정이 사용자 설정을 이긴다).
 
-### 2-0. 스크립트를 못 돌리는 환경이면
+### 2-0. 세팅은 `office-setup.md` 로 진행한다 (주 경로)
 
-사내 PC 에서 bash·python 을 돌리기 번거로우면 [office-setup.md](./office-setup.md) 를 쓴다.
-같은 세팅을 **pi 에게 시키는 단계별 프롬프트**로 옮겨 놓은 것이다. 붙여넣을 JSON 이 문서에
-그대로 박혀 있어 pi 가 값을 지어낼 여지가 없고, 각 단계마다 확인할 출력이 정해져 있다.
+사내 세팅은 [office-setup.md](./office-setup.md) 의 프롬프트를 pi 에게 시켜서 한다.
+각 프롬프트에 `PROMPT-1` ~ `PROMPT-7` 번호가 붙어 있어 **"office-setup.md 의 PROMPT-4 를
+실행해라"** 처럼 지시하면 된다.
 
-단 JSON 병합 자체는 결정적 변환이라 원래 스크립트 쪽이 안전하다. `merge-settings.py` 를
-돌릴 수 있으면 그쪽을 쓴다.
+| 번호 | 하는 일 |
+|------|---------|
+| `PROMPT-1` | 현재 설정 상태 확인 (읽기만) |
+| `PROMPT-2` | `settings.json` 병합 |
+| `PROMPT-3` | `extensions/subagent/config.json` 생성 |
+| `PROMPT-4` | **설정 검증 12항목** |
+| `PROMPT-5` | 역할 배선 확인 |
+| `PROMPT-6` | 서브에이전트 왕복 |
+| `PROMPT-7` | 실제 작업 한 바퀴 |
 
-### 2-1. 세팅 점검 (`smoke.sh`)
+붙여넣을 JSON 이 문서에 그대로 박혀 있어 모델이 값을 지어낼 여지가 없고, 단계마다 성공
+판정과 보고 항목이 정해져 있다. `PROMPT-4` 가 핵심이다 — 지금까지 실제로 발목을 잡은
+함정 12가지를 항목별로 검사한다. 전부 **오류 없이 조용히 무시되는** 종류라 눈으로는 안 보인다.
+
+`office-setup.md` 의 프롬프트와 이 폴더의 스니펫은 **같은 원본에서 생성한다.** 손으로 양쪽을
+고치면 반드시 어긋나므로, 스니펫을 고쳤으면 문서의 JSON 블록도 다시 생성한다.
+
+### 2-1. 스크립트로 검증할 수 있으면 (`smoke.sh`)
 
 배선이 맞았는지는 눈으로 보지 말고 돌려서 확인한다. 계층이 올라갈수록 비싸므로 아래에서부터 쓴다.
 
@@ -411,7 +426,7 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 
 ## 관련 문서
 
-- [사내 PC 단계별 세팅](./office-setup.md)
+- [사내 PC 세팅 프롬프트 (PROMPT-1~7)](./office-setup.md) — 주 경로
 - [세팅 점검 스크립트](./smoke.sh) · [설정 병합 스크립트](./merge-settings.py)
 - [역할별 티어 배선](./settings.snippet.json) · [런타임 상한](./subagent-config.snippet.json)
 - [퇴근 원샷 프롬프트](./oneshot.md) · [결정 정책 템플릿](./decisions.example.md)
