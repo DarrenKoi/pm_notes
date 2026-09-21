@@ -153,6 +153,20 @@ timeout 8h pi
 API 키를 환경변수에 두면 `bash` 로 읽을 수 있으므로, 키를 에이전트에게서 숨겨야 한다면
 격리 경계 밖 프록시가 키를 들고 있어야 한다.
 
+## 무인 실행용 값으로 바꾼다
+
+스니펫 기본값은 **업무 중(대화형)** 기준이다. 밤에 사람 없이 돌릴 때는 낮춘다.
+사람이 없으면 429 를 아무도 못 보기 때문이다.
+
+| 설정 | 파일 | 무인 실행 값 |
+|------|------|-------------|
+| `globalConcurrencyLimit` | config.json | `1` |
+| `parallel.concurrency` | config.json | `1` |
+| `retry.maxRetries` | settings.json | `8` |
+| `retry.baseDelayMs` | settings.json | `15000` |
+
+밤에는 급할 일이 없다. 직렬로 도는 대신 429 로 작업을 날리지 않는 쪽을 택한다.
+
 ## 확인할 것
 
 - `.orch/` 를 저장소 `.gitignore` 에 넣어 둔다.
