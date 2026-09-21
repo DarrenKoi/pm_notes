@@ -132,6 +132,13 @@ allowlist 는 **기본값을 정하는 장치**이지 경계가 아니다. 진�
 | `~/.pi/agent/settings.json` | `settings.snippet.json` 내용 — pi 코어의 `defaultModel`(**부모 세션 모델**), `httpIdleTimeoutMs`, 그리고 `subagents.defaultModel`(**자식 기본값**), `agentOverrides`, `modelScope`, `watchdog` |
 | `~/.pi/agent/extensions/subagent/config.json` | `subagent-config.snippet.json` 내용 — `timeoutMs`, `toolTimeoutMs`, `asyncByDefault` |
 
+`agentOverrides` 의 `description` 은 영어로 쓴다. 취향 문제가 아니라, 이 문자열이
+`subagent({ action: "list" })` 출력에 실려 **부모가 어떤 역할을 쓸지 판단할 때 읽는 텍스트**이기
+때문이다. 빌트인 역할 설명이 전부 영어라 한글을 섞으면 같은 목록에서 언어가 갈리고, Windows
+콘솔에서 깨질 여지도 생긴다. 같은 이유로 **운영자용 메모를 여기 쓰지 않는다** — "물량이 급하면
+다른 모델로 바꿔라" 같은 문장은 사람이 읽을 내용인데, 모델 컨텍스트에 들어가면 모델이 스스로
+모델을 교체해야 한다고 읽을 수 있다. 역할 구분에 필요한 것만 남긴다.
+
 손으로 합치지 말고 `merge-settings.py` 를 쓴다. 기존 키를 보존하면서 깊은 병합을 하고,
 **바뀔 값을 먼저 전부 보여준 뒤** `--apply` 를 줄 때만 기록한다. 대상 파일은 `.bak` 으로 백업된다.
 

@@ -9,23 +9,23 @@
       "oracle": {
         "model": "my-local-provider/HCP-Big-Latest",
         "thinking": "high",
-        "description": "설계·분해 티어 (Big). 판단과 계획만, 구현은 worker 로 넘긴다."
+        "description": "Planning tier (Big). Decomposition and judgment only. Hands implementation to worker."
       },
       "reviewer": {
         "model": "my-local-provider/HCP-Big-Latest",
         "thinking": "high",
         "tools": "read, grep, find, ls, bash, write, watchdog_diff, contact_supervisor",
-        "description": "검증 게이트 (Big). worker 와 다른 세션으로, 검증 명령을 직접 다시 돌린다. 영향이 큰 변경은 itc-vlm/qwen3.8-27b 로 교차 리뷰를 한 번 더 돌릴 수 있다."
+        "description": "Verification gate (Big). Runs in a separate session from worker. Reads the diff directly and re-runs the verification commands instead of trusting the worker's report."
       },
       "worker": {
         "model": "my-local-provider/HCP-Medium-Latest",
         "thinking": "high",
-        "description": "구현 티어 (Medium). 양산 작업."
+        "description": "Implementation tier (Medium). Edits code within an assigned, non-overlapping file scope."
       },
       "scout": {
         "model": "itc-vlm/qwen3.8-27b",
         "thinking": "low",
-        "description": "정찰 티어 (Qwen3.8-27b). 전수 검색·선별·목록화. 호출부 누락이 이 역할의 실패 모드라 속도보다 회수율을 택했다. 물량이 많아 속도가 급하면 my-local-provider/HCP-Small-Latest 로 런당 교체."
+        "description": "Recon tier. Exhaustive search, filtering and enumeration. Read-only reconnaissance; does not edit source."
       },
       "researcher": {
         "disabled": true
