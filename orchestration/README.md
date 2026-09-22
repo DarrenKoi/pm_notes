@@ -1,7 +1,7 @@
 ---
 tags: [orchestration, pi, pi-subagents, multi-agent, hcp, llm]
 level: intermediate
-last_updated: 2026-09-21
+last_updated: 2026-09-22
 ---
 
 # Pi 오케스트레이션
@@ -288,7 +288,7 @@ clarify → scout → worker → fresh reviewer → worker
 ```
 
 ```text
-scout 으로 이 저장소에서 <대상> 관련 파일을 찾아줘.
+scout 으로 <경로> 아래에서 <대상> 관련 파일을 찾아줘. 그 밖은 뒤지지 마.
 worker 로 <작업>을 구현해줘. 끝나면 reviewer 를 띄워서 검증 명령을 직접 다시 돌리게 하고, 지적이 있으면 worker 에게 되돌려줘.
 ```
 
@@ -455,7 +455,7 @@ pi                     # 부모 세션 = 오케스트레이터 (HCP-Big)
 **전형적인 하루 루프**
 
 ```text
-scout 으로 <증상/대상> 관련 파일과 호출 지점을 찾아줘. 고치지는 말고.
+scout 으로 <경로> 아래에서 <증상/대상> 관련 파일과 호출 지점을 찾아줘. 그 밖은 뒤지지 말고, 고치지도 말고.
 ```
 ```text
 worker 로 <작업>을 구현해줘. 범위는 <경로>로 한정하고, 끝나면 <검증 명령>을 돌려줘.

@@ -1,7 +1,7 @@
 ---
 tags: [orchestration, pi-subagents, agents-md]
 level: intermediate
-last_updated: 2026-09-21
+last_updated: 2026-09-22
 ---
 
 # 작업 저장소의 `AGENTS.md` 에 넣을 것
@@ -19,6 +19,13 @@ pm_notes 가 아니라 **에이전트가 일할 저장소**에 넣는다.
 - 배정받은 파일 밖은 수정하지 않는다. 밖을 고쳐야 하면 고치지 말고 보고에 적는다.
 - 요청하지 않은 리팩터링·추상화·설정 파일·의존성을 만들지 않는다.
 - 여러 에이전트가 동시에 일할 수 있다. 내 단위 밖의 변경을 되돌리거나 덮어쓰지 않는다.
+
+### 탐색 (scout 포함 모든 역할)
+- 탐색은 **지정받은 경로 아래로 한정**한다. `find /`, 저장소 루트에서의 `find .`·`grep -r` 을 하지 않는다.
+  루트 전체 탐색은 `node_modules`·`.git`·빌드 산출물까지 훑어 도구 타임아웃(`toolTimeoutMs`)을 그대로 태운다.
+- 경로를 지정받지 못했으면 먼저 `ls` 로 최상위 구조만 보고, 대상이 있을 법한 디렉터리를 고른 뒤 그 안에서만 찾는다.
+- `find`·`grep` 에는 항상 `.git`, `node_modules`, `venv`, `dist`, `build` 를 제외 조건으로 건다.
+  가능하면 `rg` 나 `git ls-files | grep` 을 쓴다 — 둘 다 `.gitignore` 대상을 자동으로 건너뛴다.
 
 ### Git
 - `git push`, `git reset --hard`, `git clean`, `git checkout .`, 브랜치 전환을 하지 않는다.
