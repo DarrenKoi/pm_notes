@@ -1,168 +1,221 @@
 ---
-tags: [pi, coding-agent, terminal, packages]
+tags: [pi, coding-agent, mcp, codemode, durable]
 level: intermediate
-last_updated: 2026-07-22
+last_updated: 2026-10-04
 ---
 
-# Pi 코딩 에이전트 실전 가이드
+# Pi 1.0.1 코딩 에이전트 활용 가이드
 
-> Pi가 이미 설치되어 있다고 가정하고, 로컬 PC에서 실제 개발 작업을 시작하는 방법과 추천 Pi 패키지를 정리한다. Pi 자체 설치 과정은 다루지 않는다.
+> 터미널에서 코딩하는 Pi와 장기 실행 서비스를 만드는 Pi Durable을 구분하고, 설치부터 실전 개발·확장·자동화까지 익힌다.
 
-## 이 가이드에서 얻을 것
+## 왜 필요한가? (Why)
 
-- Pi의 작은 코어와 확장 구조를 이해한다.
-- 모델 연결부터 코드 탐색, 수정, 검증, 세션 재개까지 한 흐름으로 익힌다.
-- 프로젝트 지침과 읽기 전용 도구 제한을 이용해 작업 범위를 제어한다.
-- 서드파티 패키지를 무조건 많이 설치하지 않고 필요한 기능만 안전하게 추가한다.
+Pi는 모델 요청, 도구 실행, 대화 컨텍스트, 세션 저장을 연결하는 확장 가능한 에이전트 하네스다. 개발자는 터미널에서 파일을 읽고 수정하고 테스트하게 할 수 있고, 프로그램에서는 CLI·RPC·SDK로 같은 작업 흐름을 제어할 수 있다. 작은 기본 구성에 프로젝트 지침, 재사용 프롬프트, 스킬, 확장을 더하는 방식이다. [실행 구조](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/how-pi-works.md)
 
-이 문서는 2026-07-22 기준 [Pi 공식 문서](https://pi.dev/docs/latest)와 [공식 패키지 카탈로그](https://pi.dev/packages)를 확인해 작성했다. Pi와 패키지는 변화가 빠르므로 실제 명령과 최신 버전은 링크된 문서에서 다시 확인한다.
+**추천:** 개인 개발은 Pi CLI로 시작한다. 반복 작업은 프롬프트 템플릿과 스킬로 정리하고, 시스템 연결은 내장 MCP를 이용한다. 프로세스 재시작 뒤에도 진행 중인 작업을 복구해야 하는 서비스를 직접 만들 때 Pi Durable을 검토한다.
 
-## 1. Pi를 이해하는 가장 짧은 방법
+### 조사 기준과 검증 범위
 
-Pi는 로컬 터미널에서 실행되는 **작은 코딩 에이전트 하네스**다. 기본 기능을 크게 만들기보다 필요한 기능을 확장, 스킬, 프롬프트 템플릿, 테마, 패키지로 추가하는 방향을 택한다.
+- 조사일: **2026-10-04, 한국 시간**.
+- 최신 안정 릴리스: **v1.0.1**. v1.0.0은 10월 1일, v1.0.1은 10월 3일 UTC에 공개됐다. [1.0.0](https://github.com/earendil-works/pi/releases/tag/v1.0.0), [1.0.1](https://github.com/earendil-works/pi/releases/tag/v1.0.1)
+- npm 패키지: `@earendil-works/pi-coding-agent@1.0.1` 및 `@earendil-works/pi-durable@1.0.1`. Rust 동명 프로젝트와 구분한다. [CLI manifest](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/package.json), [Durable manifest](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/package.json)
+- 이 PC의 `pi --version` 결과도 **1.0.1**이다. 전역 설정이나 인증 파일은 수정하지 않았다.
+- 공식 v1.0.1 소스와 문서를 확인했고, 별도 임시 설정 디렉터리에서 CLI 도움말을 확인했다. 유료 모델 호출, 사용자 프로젝트 수정, 실제 MCP 서버 연결은 수행하지 않았다.
+- Durable 저장·복구 예제의 실행 결과는 [별도 가이드](durable.md)에 기록한다.
 
-기본 도구는 다음 일곱 개다.
+## 핵심 개념 (What)
 
-| 도구 | 역할 |
-|------|------|
-| `read` | 파일 읽기 |
-| `bash` | 셸 명령 실행 |
-| `edit` | 기존 파일 수정 |
-| `write` | 파일 생성 또는 쓰기 |
-| `grep` | 파일 내용 검색 |
-| `find` | 파일 찾기 |
-| `ls` | 디렉터리 목록 확인 |
+### 모델과 하네스의 역할
 
-Pi 코어에는 MCP, 서브에이전트, 계획 모드, 권한 확인 팝업, 백그라운드 셸이 기본으로 포함되지 않는다. 필요한 기능만 패키지로 붙이는 것이 Pi의 사용 방식이다. 자세한 설계 원칙과 도구 목록은 [Using Pi](https://pi.dev/docs/latest/usage)를 참고한다.
+```text
+사용자 요청
+  → 지침 + 활성 세션 분기 + 도구 정의로 컨텍스트 구성
+  → 선택한 provider/model에 요청
+  → 모델의 응답·도구 호출
+  → 로컬 도구 실행 및 결과 저장
+  → 필요하면 다음 모델 요청
+  → 작업 종료 및 다음 사용자 입력 대기
+```
 
-### 확장 요소 구분
+모델이 추론하고, Pi가 실행 흐름을 관리한다. 모델을 바꿔도 저장소 지침·세션·도구를 이용하는 방식은 유지된다. `Enter`로 보낸 방향 수정은 현재 assistant turn과 그 도구 호출이 끝난 뒤 들어가고, `Alt+Enter` 후속 요청은 현재 작업이 끝난 뒤 들어간다. [Agent loop](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/how-pi-works.md)
 
-| 요소 | 무엇인가 | 추천 용도 |
-|------|----------|-----------|
-| 컨텍스트 파일 | `AGENTS.md`, `CLAUDE.md`에 저장한 지침 | 저장소 규칙, 검증 명령, 금지 작업 |
-| 프롬프트 템플릿 | 슬래시 명령처럼 재사용하는 프롬프트 | 반복 리뷰, 릴리스 점검 |
-| 스킬 | 필요할 때 불러오는 절차 지침 | 테스트, 조사, 특정 업무 표준화 |
-| 확장(Extension) | 도구, 명령, UI, 키 바인딩을 추가하는 TypeScript 코드 | Pi 동작 자체 확장 |
-| Pi 패키지 | 확장, 스킬, 프롬프트, 테마를 묶은 배포 단위 | 기능 묶음 공유와 설치 |
+### 기본 도구와 기본 활성 도구는 다르다
 
-스킬과 패키지의 세부 구조는 [Skills](https://pi.dev/docs/latest/skills)와 [Pi Packages](https://pi.dev/docs/latest/packages)에서 확인할 수 있다.
+| 도구 | 용도 | 기본 활성 |
+|---|---|---|
+| `read` | 텍스트·지원 이미지 읽기 | 예 |
+| `bash` | 셸 실행 | 예 |
+| `edit` | 기존 텍스트 정확히 치환 | 예 |
+| `write` | 파일 생성·덮어쓰기 | 예 |
+| `grep`, `find`, `ls` | 내용 검색·경로 검색·목록 | 아니오 |
+| `powershell` | Windows PowerShell 실행 | 아니오 |
+| `codemode` | JavaScript로 도구 호출·결과 가공 | 아니오, MCP 구성에 따라 자동 활성 |
+| `tool_search` | 지연 노출 도구 검색 | 아니오, MCP 구성에 따라 자동 활성 |
 
-## 2. 설치 후 첫 세션
+Pi 1.0.1에는 **내장 MCP 지원**이 있다. 서브에이전트와 계획 모드는 기본 기능으로 제공하지 않는다. 이 문서의 과거 버전에 있던 “MCP는 기본 기능이 아니다”와 `pi-mcp-adapter` 필수 설치 설명은 최신 기준에서 제거했다. [CLI 도구](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/cli.md#tools), [설계 방향](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/README.md)
 
-### 2.1 프로젝트 루트에서 시작한다
+### 커스터마이징 선택 기준
+
+| 필요한 것 | 사용할 수단 | 예 |
+|---|---|---|
+| 저장소 공통 규칙 | `AGENTS.md` | 작업 범위와 테스트 명령 |
+| 반복 요청 | Prompt template | `/review`, `/finish` |
+| 특정 업무 절차·자료 | Skill | 회귀 테스트, 데이터 분석 |
+| 외부 도구·데이터 연결 | MCP | 문서 검색, 이슈 시스템 |
+| 이벤트·도구·UI 변경 | TypeScript Extension | 작업 종료 알림, 도구 정책 |
+| 여러 리소스 공유 | Pi package | 팀의 프롬프트·스킬 묶음 |
+| 앱에서 코딩 에이전트 제어 | RPC 또는 Coding Agent SDK | IDE, 내부 웹 UI |
+| 지속적인 task·conversation 런타임 구축 | Pi Durable | 재시작 가능한 장기 작업 서비스 |
+
+단순 규칙에 실행 코드를 만들기보다 위 표의 가장 작은 수단부터 선택하는 것을 권한다. [Quickstart](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/quickstart.md#choose-how-to-customize-pi)
+
+## 어떻게 사용하는가? (How)
+
+## 1. 설치·업데이트
+
+이미 `pi --version`이 1.0.1이면 다시 설치할 필요가 없다.
+
+```bash
+pi --version
+```
+
+새 설치에는 공식 managed installer를 권한다. 의존성을 고정하고 `pi update`로 갱신한다.
+
+```bash
+# macOS / Linux
+curl -fsSL https://pi.dev/install.sh | sh
+
+# 설치 후 확인
+pi --version
+```
+
+Windows PowerShell에서는 다음을 사용한다.
+
+```powershell
+irm https://pi.dev/install.ps1 | iex
+pi --version
+```
+
+npm으로 **이번 조사 버전**을 지정하려면 다음과 같다. Node.js **22.19 이상**이 필요하다.
+
+```bash
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent@1.0.1
+```
+
+npm 최상위 패키지 버전만 지정해도 전이 의존성까지 고정되지는 않는다. v1.0.1에서 npm shrinkwrap이 제거됐으므로, 설치 재현성이 중요하면 managed installer 또는 앱의 lockfile을 사용한다. [설치](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/quickstart.md), [릴리스 변경](https://github.com/earendil-works/pi/releases/tag/v1.0.1)
+
+```bash
+pi update                 # Pi 본체
+pi update --extensions    # 설치한 Pi 패키지
+pi update --models        # 모델 카탈로그
+pi update --all           # 본체와 패키지
+```
+
+Nix 설치는 `nix profile upgrade pi`로 갱신한다. 일반 npm 설치의 `pi update`는 managed 설치로 이전할 것을 권한다. [업데이트 명령](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/cli.md#update-pi-or-packages)
+
+## 2. 첫 실행과 모델 선택
 
 ```bash
 cd /path/to/project
 pi
 ```
 
-Pi가 보는 기본 작업 범위는 시작한 현재 디렉터리다. 저장소 전체 작업이라면 저장소 루트에서, 특정 모듈만 다룬다면 해당 모듈에서 시작한다.
-
-화면에서 먼저 확인할 부분은 다음과 같다.
-
-- 상단: 로드된 컨텍스트 파일, 스킬, 프롬프트, 확장
-- 하단: 현재 디렉터리, 세션 이름, 토큰·캐시·비용, 컨텍스트 사용량, 모델
-
-### 2.2 로그인하고 모델을 고른다
-
-대화형 화면에서 다음 명령을 사용한다.
+Pi 안에서 순서대로 입력한다.
 
 ```text
 /login
 /model
-/scoped-models
+/thinking
+/name 첫-코드-탐색
 ```
 
-- `/login`: 구독 OAuth 또는 API 키 프로바이더 연결
-- `/model`: 현재 사용할 모델 선택
-- `/scoped-models`: 모델 순환 목록을 자주 쓰는 모델로 제한
+- `/login`: 지원 구독 또는 API 키 연결.
+- `/model`: 인증이 준비된 모델 선택. `Ctrl+S`로 새 세션 기본값 저장.
+- `/thinking`: 모델이 지원하는 추론 수준 선택. 높은 수준은 어려운 분석에 유용하지만 지연과 비용을 비교한다.
+- `/scoped-models`: `Ctrl+P`로 순환할 모델 범위를 제한.
 
-Pi가 지원하는 프로바이더와 인증 방식은 [Providers](https://pi.dev/docs/latest/providers)에서 확인한다. 모델 이름은 자주 바뀔 수 있으므로 문서에 고정된 추천 모델을 복사하기보다 `/model`의 현재 목록에서 고르는 편이 안전하다.
+모델 ID는 `/model` 또는 `pi --list-models`의 실제 목록에서 선택한다. 구독 인증 가능 여부와 과금 방식은 provider별로 다르므로 API 키와 같은 방식이라고 가정하지 않는다. 인증은 기본 `~/.pi/agent/auth.json`에 저장된다. [모델](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/models.md), [Providers](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/providers.md)
 
-인증 정보는 기본적으로 `~/.pi/agent/auth.json`에 저장된다. 이 파일이나 API 키를 저장소에 복사하거나 커밋하지 않는다.
+### 사내 또는 로컬 호환 API 연결
 
-### 2.3 세션에 바로 이름을 붙인다
+OpenAI Chat Completions 호환 endpoint라면 `~/.pi/agent/models.json`에 다음처럼 추가한다. 아래 provider/model/URL은 교체해야 하는 예시다.
+
+```json
+{
+  "providers": {
+    "my-compatible-server": {
+      "baseUrl": "http://127.0.0.1:8000/v1",
+      "api": "openai-completions",
+      "apiKey": "${LOCAL_MODEL_API_KEY}",
+      "models": [
+        { "id": "YOUR_SERVED_MODEL_ID" }
+      ]
+    }
+  }
+}
+```
+
+환경변수에 키를 설정하고 `/model`을 다시 열면 파일을 다시 읽는다. 인증이 없는 로컬 서버는 서버가 허용하는 dummy key를 쓸 수 있다. Responses API 서버라면 API 타입도 서버와 맞춰야 한다. 이름만 “OpenAI compatible”이라고 해서 tool calling, reasoning, streaming이 전부 같은 것은 아니다. [호환 endpoint 설정](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/models.md#configure-a-compatible-endpoint)
+
+## 3. 첫 실습: 탐색 → 수정 → 검증
+
+처음에는 작은 프로젝트에서 파일 수정 없이 흐름을 확인한다.
 
 ```text
-/name 로그인-오류-수정
+이 프로젝트의 AGENTS.md와 README를 읽어줘.
+실행 진입점, 핵심 모듈, 테스트 명령을 파일 근거와 함께 설명해줘.
+파일은 수정하지 말고 마지막에 작은 개선 후보 하나만 제안해줘.
 ```
 
-세션이 많아지면 이름 없는 기록을 찾기 어렵다. 작업을 시작할 때 기능이나 문제 이름으로 `/name`을 실행하면 `/resume`에서 다시 찾기 쉽다.
-
-## 3. 첫 번째 실전 작업
-
-Pi에는 내장 계획 모드나 “수정 전 승인” 모드가 없다. 필요한 작업 경계를 프롬프트에 직접 명시한다.
-
-### 3.1 좋은 첫 요청 구조
-
-```text
-목표: 로그인 API가 간헐적으로 500을 반환하는 원인을 찾아 수정해줘.
-
-범위:
-- backend/auth와 관련 테스트만 확인
-- 다른 모듈은 수정하지 않기
-
-진행:
-1. 현재 코드와 git 상태를 먼저 읽기
-2. 원인과 수정 계획을 설명하고 기다리기
-3. 내가 승인하면 구현하기
-
-검증:
-- pytest tests/auth
-- 변경 후 git diff 요약
-
-완료 시:
-- 변경 파일
-- 실행한 검증과 결과
-- 남은 위험을 보고하기
-```
-
-핵심은 `목표`, `범위`, `진행 방식`, `검증`, `완료 조건`을 한 번에 주는 것이다. 작업이 작다면 “계획 후 대기” 단계를 빼고 바로 구현하도록 요청해도 된다.
-
-### 3.2 읽기 전용 검토는 도구로 제한한다
-
-말로만 “수정하지 마”라고 요청하는 것보다 쓰기 도구를 아예 제외하는 편이 강하다.
+정적 탐색만 필요하면 도구도 제한한다.
 
 ```bash
 pi --tools read,grep,find,ls -p \
-  "이 저장소를 읽기 전용으로 검토하고 중요한 위험을 파일 근거와 함께 보고해줘."
+  "src와 tests를 읽기 전용으로 검토하고 실제 문제를 파일 근거와 함께 보고해줘."
 ```
 
-이 모드에는 `bash`, `edit`, `write`가 없으므로 정적 검토에 적합하다. 테스트 실행까지 허용하려면 `bash`가 필요하지만, 그 순간 셸을 통한 쓰기도 가능해진다는 점을 이해해야 한다.
+이 명령은 모델의 활성 도구 선택을 제한한다. 확장 자체의 실행 권한이나 OS 권한을 격리하지는 않는다. `bash`를 포함하면 셸을 통한 쓰기도 가능하므로, `edit`만 빼는 것은 읽기 전용 설정이 아니다. [도구 선택](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/cli.md#tools), [보안 경계](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/security.md)
 
-### 3.3 파일을 빠르게 컨텍스트에 넣는다
+수정 작업은 다음 형태가 실용적이다.
 
-대화 입력창에서 `@`를 입력하면 프로젝트 파일을 퍼지 검색할 수 있다.
+```text
+목표: 로그인 요청에서 만료된 세션을 정상적으로 거절하도록 수정.
+범위: auth 모듈과 직접 관련 테스트.
+완료 조건: 만료 세션 회귀 테스트 통과, 기존 인증 테스트 통과.
+제약: 다른 모듈 수정, 커밋, push는 하지 않기.
+진행: 먼저 원인과 수정 계획을 설명하고 기다리기.
+완료 보고: 변경 파일, 검증 명령과 결과, 남은 불확실성.
+```
+
+계획을 확인한 뒤 “그 범위로 구현하고 검증해줘”라고 이어간다. 작은 수정은 처음부터 구현을 요청해도 된다. 프롬프트의 대기 요청은 모델 지침이며 내장 승인 모드가 아니다.
+
+### 컨텍스트를 직접 선택한다
 
 ```text
 @src/auth/session.ts @tests/auth/session.test.ts
-두 파일의 세션 만료 처리 불일치를 찾아줘.
+이 두 파일의 만료 판정이 일치하는지 확인해줘.
 ```
 
-시작할 때 파일을 함께 넘길 수도 있다.
+CLI 시작 인자로도 파일을 넣을 수 있다.
 
 ```bash
-pi @src/auth/session.ts @tests/auth/session.test.ts \
-  "세션 만료 로직을 비교하고 문제를 설명해줘."
+pi @README.md "실행 방법을 설명해줘"
 ```
 
-### 3.4 에이전트가 일하는 동안 방향을 조정한다
+`@`는 파일 검색, `Tab`은 경로 완성, 이미지 붙여넣기는 지원 터미널에서 사용할 수 있다. [입력](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/usage.md#enter-a-prompt)
 
-| 입력 | 동작 |
-|------|------|
-| `Enter` | 현재 도구 호출이 끝난 뒤 전달할 방향 수정 메시지 큐잉 |
-| `Alt+Enter` | 전체 작업이 끝난 뒤 전달할 후속 메시지 큐잉 |
-| `Escape` | 현재 실행 중단, 큐의 메시지를 입력창으로 복원 |
-| `Alt+Up` | 큐에 넣은 메시지를 다시 편집기로 가져오기 |
-| `Ctrl+O` | 도구 출력 펼치기 또는 접기 |
+### 실행 중 제어
 
-예를 들어 예상보다 범위가 넓어질 때 다음과 같이 바로 조정한다.
-
-```text
-설정 파일은 수정하지 말고 원인 분석 범위를 auth 모듈로 제한해줘.
-```
-
-### 3.5 셸 결과를 보낼 때 비밀정보를 주의한다
+| 입력 | 의미 |
+|---|---|
+| `Enter` | 현재 assistant turn과 도구 실행 뒤 방향 수정 |
+| `Alt+Enter` | 현재 작업을 마친 뒤 후속 작업 |
+| `Escape` | 실행 중단, 큐 메시지를 편집기로 복원 |
+| `Alt+Up` | 큐 메시지를 편집기로 가져오기 |
+| `Ctrl+O` | 도구 출력 펼치기·접기 |
+| `Ctrl+T` | thinking 표시·숨김 |
+| `Ctrl+G` | 외부 편집기 |
+| `/hotkeys` | 현재 실제 단축키 확인 |
 
 ```text
 !git status --short
@@ -170,351 +223,316 @@ pi @src/auth/session.ts @tests/auth/session.test.ts \
 !!git status --short
 ```
 
-- `!command`: 명령을 실행하고 결과를 모델 컨텍스트에 포함
-- `!!command`: 명령을 실행하지만 결과를 모델에 보내지 않음
+`!`는 셸 결과를 모델 컨텍스트에 포함하고, `!!`는 모델에 보내지 않는다. 둘 다 실제 셸 명령을 실행한다. [실행 중 제어](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/usage.md)
 
-`!env`, 토큰이 포함된 로그, `.env` 내용처럼 비밀정보가 출력될 수 있는 명령은 사용하지 않는다.
+## 4. 저장소 지침과 설정
 
-## 4. 권장 일상 워크플로
-
-다음 흐름을 기본 루프로 사용하면 작업이 안정적이다.
-
-1. 저장소 루트에서 `git status`를 확인한다.
-2. `pi`를 시작하고 `/name`으로 작업 이름을 붙인다.
-3. 관련 파일과 프로젝트 지침을 읽게 한다.
-4. 큰 작업은 원인·계획을 먼저 설명하게 한다.
-5. 범위가 맞으면 구현을 승인한다.
-6. 저장소가 정한 lint, type-check, test, smoke test를 실행하게 한다.
-7. `git diff`를 직접 검토한다.
-8. `/session`으로 세션 정보와 사용량을 확인한다.
-9. 다음에 이어갈 작업이면 종료 후 `pi -c`로 재개한다.
-
-완료 요청 예시는 다음과 같다.
-
-```text
-변경을 마무리해줘.
-
-- 저장소의 기존 검증 명령을 찾아 실행
-- 실패하면 원인과 이번 변경의 관련 여부를 구분
-- git diff에서 의도하지 않은 파일이 없는지 확인
-- 변경 파일, 검증 결과, 남은 위험만 간결하게 보고
-```
-
-## 5. 프로젝트 지침을 `AGENTS.md`에 남긴다
-
-반복해서 설명하는 규칙은 프로젝트의 `AGENTS.md` 또는 `CLAUDE.md`에 기록한다. Pi는 전역 `~/.pi/agent/AGENTS.md`와 현재 디렉터리까지의 관련 컨텍스트 파일을 시작할 때 로드한다.
+프로젝트에 반복 적용할 규칙은 `AGENTS.md`에 적는다.
 
 ```markdown
 # Repository Guidelines
 
-## Scope
-
-- 작업 전 `git status --short`를 확인한다.
-- 사용자 변경을 덮어쓰지 않는다.
-- 요청받은 모듈 밖은 수정하지 않는다.
-
-## Validation
-
-- Python 변경: `pytest`
-- Frontend 변경: `npm run lint`, `npm run typecheck`
-- 완료 전 `git diff --check`
-
-## Safety
-
-- `.env`, 인증서, 개인 키를 읽거나 출력하지 않는다.
-- `git reset --hard`, `git clean`, 강제 push를 실행하지 않는다.
-- 삭제나 외부 전송은 먼저 승인을 받는다.
+- 시작 전에 git status --short를 확인한다.
+- 사용자가 변경한 파일을 덮어쓰지 않는다.
+- 요청한 모듈 안에서만 작업한다.
+- 변경과 관련된 lint, type-check, test를 실행한다.
+- 완료 시 변경 파일, 실행 결과, 미검증 사항을 보고한다.
+- 커밋과 push는 사용자가 요청했을 때만 한다.
 ```
 
-주의할 점이 있다. **프로젝트 신뢰를 거절해도 `AGENTS.md`와 `CLAUDE.md`는 기본적으로 로드될 수 있다.** 신뢰하지 않는 저장소라면 파일을 먼저 직접 확인하거나 `--no-context-files`를 사용한다. 자세한 동작은 [Security](https://pi.dev/docs/latest/security)에서 확인한다.
+Pi는 agent directory와 현재 디렉터리 및 부모 디렉터리의 컨텍스트 파일을 발견한다. 시작 시 하위 폴더 전체의 모든 지침을 자동 로드하는 것은 아니다. 하위 작업 지침은 해당 위치에서 시작하거나 직접 읽도록 요청한다. [컨텍스트 파일](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/configuration.md#context-files)
 
-## 6. 세션과 컨텍스트 관리
+| 위치 | 용도 |
+|---|---|
+| `~/.pi/agent/settings.json` | 전역 기본 설정 |
+| `.pi/settings.json` | 프로젝트 설정 |
+| `~/.pi/agent/models.json` | endpoint와 모델 |
+| `~/.pi/agent/auth.json` | 인증 정보 |
+| `.pi/prompts/`, `.pi/skills/`, `.pi/extensions/` | 프로젝트 리소스 |
+| `~/.pi/agent/mcp.json`, `.pi/mcp.json` | MCP 서버 |
 
-Pi 세션은 기본적으로 `~/.pi/agent/sessions/` 아래에 작업 디렉터리별 JSONL로 자동 저장된다.
-
-| 명령 | 용도 |
-|------|------|
-| `pi -c` | 가장 최근 세션 이어가기 |
-| `pi -r` 또는 `/resume` | 세션 목록에서 선택 |
-| `pi --no-session` | 저장하지 않는 임시 세션 |
-| `/session` | 현재 세션 파일, ID, 메시지·토큰·비용 확인 |
-| `/tree` | 같은 세션의 이전 지점으로 이동해 다른 분기 만들기 |
-| `/fork` | 이전 사용자 메시지부터 새 세션 생성 |
-| `/clone` | 현재 활성 분기를 새 세션으로 복제 |
-| `/compact [초점]` | 오래된 대화를 요약해 컨텍스트 확보 |
-
-사용 기준은 간단하다.
-
-- 같은 문제를 이어서 해결: `pi -c`
-- 이전 시도와 다른 방향을 시험: `/tree`
-- 기존 기록을 보존하고 별도 작업으로 분리: `/fork` 또는 `/clone`
-- 컨텍스트가 길어져 중요한 내용이 묻힘: `/compact 테스트 실패 원인과 현재 수정안 보존`
-
-세부 동작은 [Sessions](https://pi.dev/docs/latest/sessions)와 [Compaction](https://pi.dev/docs/latest/compaction)을 참고한다.
-
-## 7. 자주 쓰는 명령과 단축키
-
-| 입력 | 용도 |
-|------|------|
-| `/hotkeys` | 현재 적용된 전체 단축키 확인 |
-| `Ctrl+L` | 모델 선택기 |
-| `Ctrl+P` / `Shift+Ctrl+P` | 허용된 모델을 앞뒤로 순환 |
-| `Shift+Tab` | thinking level 순환 |
-| `Shift+Enter` 또는 `Ctrl+J` | 줄바꿈 |
-| `Ctrl+X` | 마지막 응답 복사 |
-| `Ctrl+G` | 외부 편집기 열기 |
-| `/settings` | 일반 실행 설정 |
-| `/name` | 세션 이름 지정 |
-| `/resume` | 저장된 세션 선택 |
-| `/compact` | 긴 컨텍스트 요약 |
-| `/reload` | 설정과 리소스 다시 로드 |
-| `/changelog` | 현재 버전 변경사항 확인 |
-
-단축키는 `~/.pi/agent/keybindings.json`에서 바꿀 수 있다. 터미널에 따라 `Shift+Enter`나 `Alt+Enter` 전달에 추가 설정이 필요할 수 있으므로 [Keybindings](https://pi.dev/docs/latest/keybindings)와 [Terminal Setup](https://pi.dev/docs/latest/terminal-setup)을 함께 확인한다.
-
-## 8. 최소 설정 예시
-
-전역 설정은 `~/.pi/agent/settings.json`, 프로젝트별 설정은 `.pi/settings.json`에 둔다. 프로젝트 설정이 전역 설정을 덮어쓰거나 병합한다.
+최소 설정은 다음 정도로 시작한다. `defaultProvider`와 `defaultModel`은 `/model`에서 저장하게 하는 편이 쉽다.
 
 ```json
 {
-  "defaultProvider": "YOUR_PROVIDER",
-  "defaultModel": "YOUR_MODEL",
   "defaultThinkingLevel": "medium",
-  "defaultProjectTrust": "ask",
-  "enabledModels": [
-    "YOUR_DAILY_MODEL_PATTERN",
-    "YOUR_HARD_TASK_MODEL_PATTERN"
-  ]
+  "defaultTools": ["+grep", "+find", "+ls"]
 }
 ```
 
-처음부터 설정을 많이 넣지 말고 `/settings`, `/model`, `/scoped-models`로 실제 사용 패턴을 찾은 뒤 고정하는 편이 좋다. 전체 설정 키는 [Settings](https://pi.dev/docs/latest/settings)를 기준으로 확인한다.
+`+name`은 기존 기본 도구에 추가한다. `["read", "grep"]`처럼 일반 이름을 넣으면 기본 선택을 교체한다. `defaultProjectTrust`는 **전역 설정에서만** 지정할 수 있다. 수동 변경 후 `/reload`를 사용하되 `defaultTools`에서 도구를 제거한 것이 reload만으로 즉시 비활성화되는 것은 아니다. 엄격한 도구 변경은 새 세션 프로세스에서 확인한다. [Settings](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/settings.md)
 
-## 9. 반드시 알아야 할 보안 경계
+프로젝트 trust는 프로젝트 리소스를 로드할지 결정한다. 도구 실행마다 승인을 받거나 작업 디렉터리 밖 접근을 막는 기능은 아니다. 컨텍스트 지침은 trust와 별개로 로드되며 `--no-context-files`로 끌 수 있다. [Project trust](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/security.md#understand-project-trust)
 
-### 프로젝트 신뢰는 샌드박스가 아니다
-
-프로젝트 신뢰는 `.pi/settings.json`, 프로젝트 확장, 스킬, 패키지 등을 로드할지 결정하는 입력 게이트다. Pi가 시작된 뒤 도구가 할 수 있는 작업을 제한하지는 않는다.
-
-### Pi는 현재 사용자 권한으로 실행된다
-
-Pi에는 기본 샌드박스와 권한 팝업이 없다. `bash`, 파일 도구, 확장은 Pi를 실행한 로컬 사용자와 같은 권한을 가진다.
-
-따라서 다음 원칙을 지킨다.
-
-- 정적 검토는 `--tools read,grep,find,ls`로 시작한다.
-- 비밀정보와 개인 키는 작업 디렉터리에 두지 않거나 접근을 분리한다.
-- 신뢰하지 않는 저장소, 무인 실행, 위험한 생성 코드는 컨테이너·VM·별도 샌드박스에서 실행한다.
-- 호스트 디렉터리를 컨테이너에 쓰기 가능으로 마운트하면 호스트 파일도 수정될 수 있음을 기억한다.
-- 에이전트 결과를 반영하기 전에 `git diff`와 검증 결과를 사람이 확인한다.
-
-공식 권장 격리 방식은 [Security](https://pi.dev/docs/latest/security)와 [Containerization](https://pi.dev/docs/latest/containerization)을 참고한다.
-
-## 10. PC 개발용 Pi 패키지 추천
-
-여기서 “패키지”는 운영체제 패키지가 아니라 **Pi package**를 뜻한다.
-
-### 먼저 결론
-
-모든 사용자에게 반드시 필요한 서드파티 Pi 패키지는 없다. 코어 도구만으로 파일 탐색, 검색, 수정, 셸 실행, 세션 관리가 가능하다. 아래 추천은 부족한 기능이 실제로 확인됐을 때 하나씩 추가하는 후보 목록이다.
-
-패키지 정보는 2026-07-22 스냅샷이다. [공식 패키지 문서](https://pi.dev/docs/latest/packages)는 모든 서드파티 패키지가 전체 시스템 권한으로 코드를 실행할 수 있으므로 설치 전 소스 검토를 요구한다. 패키지 카탈로그 노출이나 다운로드 수는 공식 보증을 의미하지 않는다.
-
-### 우선 검토할 세 가지
-
-| 패키지 | 스냅샷 버전 | 추천 대상 | 판단 |
-|--------|---------------|-----------|------|
-| [`cc-safety-net`](https://pi.dev/packages/cc-safety-net) | `1.0.6` | 파괴적인 Git·파일시스템 명령을 한 번 더 막고 싶은 사용자 | 소스 검토 후 기본 안전 보조로 고려 |
-| [`pi-notify`](https://pi.dev/packages/pi-notify) | `1.4.0` | Pi가 작업하는 동안 다른 창을 사용하는 사용자 | 지원 터미널이라면 편의성이 높음 |
-| [`pi-web-access`](https://pi.dev/packages/pi-web-access) | `0.13.0` | 최신 문서, URL, PDF, GitHub 조사가 잦은 사용자 | 네트워크 조사 작업이 있을 때만 추가 |
-
-#### `cc-safety-net`
-
-- 파괴적인 Git·파일시스템 명령을 실행 전에 분석하고 차단하는 보조 방어선이다.
-- Pi에 기본 권한 팝업이 없다는 약점을 일부 보완한다.
-- OS 수준 샌드박스가 아니며 파일, 자격 증명, 네트워크 접근을 격리하지 않는다.
-- 차단 규칙이 모든 위험한 셸 표현을 완벽히 이해한다고 가정하면 안 된다.
-
-#### `pi-notify`
-
-- 에이전트가 작업을 마치고 입력을 기다릴 때 데스크톱 알림을 보낸다.
-- Ghostty, iTerm2, WezTerm, Kitty, Windows Terminal 등을 지원한다.
-- macOS Terminal.app과 Alacritty는 현재 패키지 문서상 지원하지 않는다.
-- tmux에서는 `allow-passthrough` 설정이 필요하다.
-
-#### `pi-web-access`
-
-- 웹 검색, URL 내용 추출, PDF, GitHub 저장소, 영상 분석 기능을 추가한다.
-- 검색 질의와 가져온 내용이 외부 서비스로 전송될 수 있다.
-- API 키와 브라우저 쿠키 사용 범위를 확인하고, 사내 코드나 비밀정보를 검색 질의에 넣지 않는다.
-
-### 필요가 명확할 때만 설치할 패키지
-
-| 패키지 | 스냅샷 버전 | 설치할 때 | 주요 비용과 위험 |
-|--------|---------------|-----------|------------------|
-| [`pi-mcp-adapter`](https://pi.dev/packages/pi-mcp-adapter) | `2.11.0` | 이미 MCP 서버를 운영하고 있을 때 | 서버 프로세스, 자격 증명, 네트워크 경계가 추가됨 |
-| [`pi-lens`](https://pi.dev/packages/pi-lens) | `3.8.71` | 대형·다중 언어 저장소에서 LSP, lint, type-check 피드백이 필요할 때 | 도구 자동 실행·포매팅 가능성, 큰 의존성 표면 |
-| [`pi-subagents`](https://pi.dev/packages/pi-subagents) | `0.35.1` | 병렬 조사, 다각도 리뷰, 역할별 에이전트가 필요한 복잡한 작업 | 모델 호출 비용, 동시 파일 작업, 오케스트레이션 복잡도 증가 |
-| [`@gotgenes/pi-permission-system`](https://pi.dev/packages/%40gotgenes/pi-permission-system) | `20.10.0` | 명령·경로별 `allow`/`ask`/`deny` 정책 UI가 꼭 필요할 때 | 보안 핵심 설정의 복잡도와 빠른 버전 변화 |
-
-이 패키지들도 샌드박스를 대신하지 않는다. 특히 권한 시스템 확장은 Pi 프로세스 안에서 동작하는 가드레일이며, 신뢰하지 않는 작업에는 별도 OS 격리가 필요하다.
-
-### 추천 구성 프로필
-
-#### 일반 로컬 코딩
-
-- 패키지 없이 Pi 코어로 시작
-- 프로젝트 `AGENTS.md`
-- 저장소 자체 lint, type-check, test
-
-#### 안전 보조 + 장시간 작업
-
-- `cc-safety-net`
-- 지원 터미널이라면 `pi-notify`
-- 정적 검토에는 여전히 `--tools read,grep,find,ls` 사용
-
-#### 문서 조사 중심
-
-- 위 기본 구성
-- `pi-web-access`
-
-#### 기존 MCP 사용자
-
-- 위 기본 구성
-- `pi-mcp-adapter`
-- 실제 필요한 MCP 서버만 연결
-
-#### 대규모 코드베이스 또는 고급 오케스트레이션
-
-- 언어 피드백이 부족할 때 `pi-lens`
-- 병렬 리뷰가 실제로 필요할 때 `pi-subagents`
-- 처음부터 두 패키지를 동시에 넣지 말고 각각 효과와 비용을 확인
-
-## 11. 패키지를 안전하게 시험하고 고정한다
-
-### 11.1 영구 설치 전에 한 세션만 시험한다
+## 5. 세션·분기·컨텍스트 관리
 
 ```bash
-pi -e npm:cc-safety-net@1.0.6
-pi -e npm:pi-notify@1.4.0
-pi -e npm:pi-web-access@0.13.0
+pi -c                         # 현재 폴더의 최근 세션
+pi -r                         # 선택기
+pi --session-id auth-fix       # 같은 ID 열기 또는 생성
+pi --session SESSION_ID       # 기존 세션 열기
+pi --no-session               # 기록을 남기지 않는 실행
 ```
 
-`-e` 또는 `--extension`은 패키지를 임시 디렉터리에 받아 현재 실행에서만 로드한다.
+`--session-id`는 `--continue`, `--resume`, `--session`과 함께 사용하지 않는다. [세션 CLI](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/cli.md#sessions)
 
-### 11.2 검토가 끝나면 버전을 고정한다
+| 명령 | 효과 | 권장 상황 |
+|---|---|---|
+| `/name` | 세션 이름 | 시작할 때 |
+| `/session` | 파일·ID·토큰·비용 | 비용과 기록 확인 |
+| `/tree` | 같은 파일에서 이전 지점으로 이동·분기 | 다른 접근 시험 |
+| `/fork` | 이전 사용자 메시지에서 새 세션 | 별도 실험 |
+| `/clone` | 활성 분기를 새 세션으로 복사 | 현재 상태 복제 |
+| `/compact 초점` | 오래된 컨텍스트 요약 | 긴 작업 |
+| `/new` | 새 세션 | 독립 과제 |
 
-```bash
-pi install npm:cc-safety-net@1.0.6
-pi install npm:pi-notify@1.4.0
-pi install npm:pi-web-access@0.13.0
+중요한 구분: **대화 분기는 Git 상태나 작업 파일을 되돌리지 않는다.** 세션 트리는 대화 이력이다. 다른 코드를 안전하게 비교하려면 Git branch/worktree 또는 별도 복사본을 사용한다. 저장된 원본 이력과 모델에 보내는 요약 컨텍스트도 다르다. [세션](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/sessions.md), [포맷](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/session-format.md)
+
+```text
+/compact 완료한 변경, 실패한 테스트, 다음 할 일, 수정 금지 범위를 보존해줘
 ```
 
-특정 프로젝트에서만 필요하면 프로젝트 로컬 설정에 기록한다.
+컨텍스트가 길어지면 자동 compaction이 가능하지만 provider 문제가 있으면 요약도 실패할 수 있다. 세션을 재개할 때는 “현재 git 상태와 마지막 검증 결과를 다시 확인하고 이어가줘”라고 요청하는 것을 권한다. [Compaction](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/compaction.md)
 
-```bash
-pi install npm:pi-lens@3.8.71 -l
+## 6. 반복 작업을 프롬프트·스킬로 만든다
+
+### 프롬프트 템플릿
+
+프로젝트 `.pi/prompts/review.md`에 저장한다.
+
+```markdown
+---
+description: 변경사항을 근거 중심으로 검토
+argument-hint: "[검토 범위]"
+---
+${1:-현재 변경사항}을 읽고 실제 결함만 검토해줘.
+파일은 수정하지 말고 파일 위치, 실패 조건, 영향, 수정 방향을 보고해줘.
+문제가 없으면 발견 없음이라고 말해줘.
 ```
 
-버전을 고정한 npm 패키지는 일반 패키지 업데이트에서 자동으로 최신 버전으로 올라가지 않는다. 새 버전은 변경사항과 소스를 다시 확인한 뒤 고정 버전을 직접 바꾼다.
+```text
+/reload
+/review "auth 모듈의 현재 변경사항"
+```
 
-### 11.3 설치한 리소스를 관리한다
+템플릿은 입력 텍스트를 확장하는 기능이다. 도구 제한이나 승인 정책을 강제하지 않는다. [Prompt templates](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/prompt-templates.md)
+
+### 스킬
+
+`.pi/skills/verify-change/SKILL.md`를 만든다.
+
+```markdown
+---
+name: verify-change
+description: 코드 변경을 마무리하고 저장소의 검증 결과를 보고할 때 사용한다.
+---
+
+# 변경 검증
+
+1. 변경 범위와 기존 사용자 변경을 확인한다.
+2. 저장소 문서에서 해당 모듈의 검증 명령을 찾는다.
+3. 관련 lint, type-check, test를 실행한다.
+4. 실패를 이번 변경과 기존 문제로 구분한다.
+5. git diff --check를 실행한다.
+6. 변경 파일, 실행 명령, 실제 결과, 미검증 영역을 보고한다.
+```
+
+```text
+/reload
+/skill:verify-change 이번 auth 수정의 검증을 마무리해줘
+```
+
+시작 때는 이름·설명·경로만 컨텍스트에 들어가고, 본문은 필요할 때 읽는다. 모델이 자동으로 선택하지 않으면 `/skill:name`으로 명시한다. `~/.agents/skills`와 프로젝트 `.agents/skills`도 지원한다. [Skills](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/skills.md)
+
+## 7. 내장 MCP 사용
+
+최신 Pi에서는 MCP adapter를 먼저 설치할 필요가 없다.
+
+공식 문서의 filesystem 예제로 연결 흐름을 확인할 수 있다. 이 명령은 서버 패키지를 내려받고 실행한다.
 
 ```bash
+pi mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem .
+pi mcp list
+pi
+```
+
+프로젝트 전용 설정은 `pi mcp add -l ...`로 추가한다. 진행 중인 세션에서는 `/mcp`로 상태·도구·로그인·노출 방식을 확인하고, 밖에서 설정을 바꿨으면 `/reload`한다. [MCP 사용법](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/mcp.md)
+
+HTTP 서버 설정 예시는 다음과 같다. URL은 실제 서버로 교체하고, 토큰은 환경변수에서 주입한다.
+
+```json
+{
+  "mcpServers": {
+    "docs": {
+      "url": "https://example.com/mcp",
+      "headers": { "Authorization": "Bearer ${DOCS_TOKEN}" },
+      "exposure": "codemode",
+      "description": "문서 검색과 읽기"
+    }
+  }
+}
+```
+
+stdio와 streamable HTTP를 지원하며 legacy SSE는 지원하지 않는다. OAuth가 필요하면 `/mcp login docs` 또는 `pi mcp login docs`를 사용한다. [전송·인증](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/mcp.md#authenticate-with-oauth)
+
+### 도구 노출 방식
+
+| exposure | 동작 |
+|---|---|
+| `codemode` | 기본값. JavaScript에서 도구를 찾고 호출 |
+| `deferred` | `tool_search`로 발견한 뒤 모델에 직접 선언 |
+| `direct` | 모델에 처음부터 도구 정의 제공 |
+| `hidden` | 등록하지만 호출 불가 |
+
+많은 도구가 있는 서버는 검색 후 필요한 것만 쓰게 할 수 있다. 소수 도구를 자주 사용하면 `direct`가 단순하다. v1.0.1에서는 프로젝트 `.pi/mcp.json`의 `{ "enabled": false }` 같은 entry로 전역 서버를 해당 프로젝트에서 끄거나 노출 방식을 바꿀 수 있다. [Exposure 및 project overrides](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/mcp.md)
+
+### codemode는 여러 도구를 한 스크립트로 조합한다
+
+MCP 없이 사용하려면 다음처럼 활성화한다.
+
+```json
+{ "defaultTools": ["+codemode"] }
+```
+
+모델이 생성할 수 있는 스크립트 예:
+
+```javascript
+const results = await Promise.allSettled([
+  tools.bash({ command: "git status --short" }),
+  tools.bash({ command: "git diff --stat" })
+]);
+for (let i = 0; i < results.length; i++) {
+  const result = results[i];
+  text({ index: i, ...result });
+}
+```
+
+JavaScript 자체는 QuickJS 안에서 실행되고 Node·파일시스템·네트워크 API가 없다. 외부 작업은 `tools`를 통해 수행한다. **도구 호출의 부작용은 스크립트 실패 시 자동 rollback되지 않는다.** 독립적인 읽기 작업은 병렬화하고, 의존하는 수정 작업은 순서대로 처리한다. [Codemode](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/codemode.md)
+
+## 8. 확장과 Pi 패키지
+
+이벤트나 UI를 바꿔야 할 때만 TypeScript 확장을 만든다. Pi는 jiti로 로컬 TypeScript를 로드한다. 확장의 `pi.registerCommand`, `pi.registerTool`, `pi.on`이 각각 명령·도구·이벤트를 등록한다. 단순 반복 지침은 템플릿·스킬로 충분하다. [Extensions](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/extensions.md)
+
+```bash
+pi -e ./my-extension.ts             # 이번 프로세스에서 시험
+pi install ./my-pi-package -l       # 프로젝트 패키지
 pi list
 pi config
 pi update --extensions
-pi remove npm:pi-web-access
+pi remove ./my-pi-package -l
 ```
 
-- `pi list`: 설정에 기록된 패키지 확인
-- `pi config`: 패키지 안의 불필요한 확장·스킬·프롬프트·테마 비활성화
-- `pi update --extensions`: 고정되지 않은 패키지 업데이트
-- `pi remove`: 패키지 제거
+npm package는 `pi install npm:<이름>@<검토한-버전>`으로 고정한다. `-e npm:...`는 설정에 영구 기록하지 않고 시험한다. Pi package는 스킬·프롬프트·확장·테마를 배포하는 단위이고, 일반 앱 라이브러리를 모두 Pi plugin으로 설치하는 것은 아니다. **Pi Durable은 앱에서 npm 의존성으로 사용하는 SDK**다. [Packages](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/packages.md), [Durable](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/README.md)
 
-### 설치 전 체크리스트
+처음부터 서드파티 기능을 많이 설치할 필요는 없다. 내장 MCP·세션·도구로 부족한 부분을 확인한 뒤 별도 계획 모드나 서브에이전트 패키지를 검토한다. 이 가이드는 과거 패키지 버전 목록을 최신 추천으로 재사용하지 않는다.
 
-1. Pi 패키지 페이지에서 소유자와 연결된 저장소를 확인한다.
-2. 최근 커밋, 릴리스, 라이선스, 이슈 상태를 본다.
-3. `package.json`의 Pi manifest, 의존성, lifecycle script를 확인한다.
-4. 파일·명령·네트워크·API 키·설정 경로 접근 범위를 파악한다.
-5. 폐기 가능한 저장소에서 `pi -e npm:<package>@<version>`으로 시험한다.
-6. 한 프로젝트에만 필요하면 `-l`을 사용한다.
-7. 검토한 버전을 고정한다.
-8. 업데이트 전 다시 검토한다.
+## 9. CLI·JSON·RPC·SDK 자동화
 
-## 12. 자주 생기는 문제
+| 방식 | 적합한 용도 | 완료 판정 |
+|---|---|---|
+| `pi -p` | 한 번 실행·텍스트 결과 | 프로세스 결과와 작업 자체 검증 |
+| `pi --mode json` | 이벤트·도구 호출 수집 | 최종 이벤트·stopReason·도구 결과 |
+| `pi --mode rpc` | 외부 앱에서 지속 제어 | 명령 응답 후 `agent_settled` |
+| Coding Agent SDK | Node/TypeScript 앱 내 제어 | `session.prompt()` 및 실제 결과 |
+| Pi Durable | 영속 task·conversation 서비스 | runtime·task 상태와 결과 |
 
-| 증상 | 먼저 확인할 것 |
-|------|----------------|
-| 모델이 보이지 않음 | `/login`, `/model`, 프로바이더 인증 상태, `pi --list-models` |
-| 이전 작업을 찾기 어려움 | 시작할 때 `/name`, 이후 `/resume` 또는 `pi -r` |
-| 컨텍스트가 너무 길어짐 | `/compact`에 보존할 초점을 함께 전달 |
-| `Shift+Enter` 또는 `Alt+Enter`가 안 됨 | `/hotkeys`, 터미널별 [Terminal Setup](https://pi.dev/docs/latest/terminal-setup) |
-| 프로젝트 확장이 로드되지 않음 | 프로젝트 trust 상태와 `.pi/settings.json` 확인 |
-| 설정을 바꿨지만 반영되지 않음 | `/reload` 실행 |
-| 패키지 설치 후 동작이 이상함 | `pi list`, `pi config`, 패키지 버전과 소스 확인 후 제거·재시험 |
-| 안전하게 읽기만 하고 싶음 | `pi --tools read,grep,find,ls -p "..."` |
+```bash
+git diff -- src/auth | pi --tools read,grep,find,ls -p \
+  "이 diff의 실제 결함을 검토하고 파일 근거를 보고해줘."
 
-## 13. 한 장 치트시트
-
-```text
-# 시작
-cd /path/to/project
-pi
-
-# 첫 설정
-/login
-/model
-/name <작업명>
-
-# 작업 중
-@파일명          관련 파일 첨부
-Enter            방향 수정 메시지 큐
-Alt+Enter        작업 완료 후 후속 메시지 큐
-Escape           현재 실행 중단
-Ctrl+O           도구 출력 펼치기/접기
-
-# 세션
-/session
-/resume
-/tree
-/fork
-/clone
-/compact <보존할 초점>
-
-# 재개
-pi -c
-
-# 읽기 전용 검토
-pi --tools read,grep,find,ls -p "이 저장소를 읽기 전용으로 검토해줘"
-
-# 패키지
-pi -e npm:<package>@<version>       한 세션 시험
-pi install npm:<package>@<version>  전역 고정 설치
-pi install npm:<package>@<version> -l  프로젝트 로컬 설치
-pi list
-pi config
-pi remove npm:<package>
+pi --tools read,grep,find,ls --mode json \
+  "README를 읽고 실행 절차를 설명해줘" > events.jsonl
 ```
 
-## 참고 자료
+주의할 완료 판정:
 
-- [Pi 공식 문서](https://pi.dev/docs/latest)
-- [Using Pi](https://pi.dev/docs/latest/usage)
-- [Providers](https://pi.dev/docs/latest/providers)
-- [Settings](https://pi.dev/docs/latest/settings)
-- [Keybindings](https://pi.dev/docs/latest/keybindings)
-- [Sessions](https://pi.dev/docs/latest/sessions)
-- [Compaction](https://pi.dev/docs/latest/compaction)
-- [Security](https://pi.dev/docs/latest/security)
-- [Containerization](https://pi.dev/docs/latest/containerization)
-- [Pi Packages](https://pi.dev/docs/latest/packages)
-- [Package Catalog](https://pi.dev/packages)
-- [Pi 공식 저장소](https://github.com/earendil-works/pi)
+- print mode는 마지막 assistant의 `error`/`aborted`에 nonzero exit를 반환한다.
+- JSON mode는 실패·중단 assistant 응답이 있어도 그 사실만으로 nonzero exit가 되지는 않는다. 이벤트를 검사해야 한다.
+- RPC의 `success: true`는 명령 수락·처리를 의미한다. 코드 수정이나 테스트 성공을 뜻하지 않는다.
+- `agent_end` 뒤에도 retry·compaction·queued work가 이어질 수 있다. 자동 작업 종료는 `agent_settled`로 확인한다.
+
+따라서 배치 성공은 “프로세스 종료 + 에이전트 오류 확인 + 원하는 산출물/테스트 통과”를 함께 확인한다. [CLI integration](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/cli-integration.md), [RPC](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/rpc.md)
+
+앱에 넣는 Coding Agent SDK의 최소 구조는 다음과 같다. 실제 실행은 provider 인증이 필요하며 이번 조사에서 모델 호출은 실행하지 않았다.
+
+```bash
+npm install --save-exact --ignore-scripts @earendil-works/pi-coding-agent@1.0.1
+```
+
+```javascript
+// agent.mjs
+import { createAgentSession } from "@earendil-works/pi-coding-agent";
+
+const { session } = await createAgentSession();
+try {
+  await session.prompt("이 프로젝트의 실행 방법을 파일 근거와 함께 설명해줘.");
+  console.log(session.getLastAssistantText());
+} finally {
+  session.dispose();
+}
+```
+
+```bash
+node agent.mjs
+```
+
+기본 SDK session은 현재 폴더의 리소스와 설정·인증을 사용한다. CLI와 달리 SDK factory가 MCP/codemode 내장 확장을 자동 추가하지는 않으므로, 필요하면 resource loader에 명시적으로 추가한다. [SDK](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/sdk.md#codemode-mcp)
+
+## 10. Pi Durable은 언제 필요한가?
+
+일반 Pi는 사람이 터미널에서 작업하고, 중단 후 세션을 열어 이어가는 흐름에 적합하다. Durable은 영속 conversation·task·document 상태를 앱에서 관리하고 복구하는 별도 런타임이다. v1.0.1 번호를 쓰지만 **공식적으로 experimental이며 API 안정성을 보장하지 않는다.** [공식 발표](https://earendil.com/posts/pi-durable/), [v1.0.1 README](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/README.md)
+
+| 원하는 결과 | 선택 |
+|---|---|
+| PC에서 개발하고 다음 날 같은 대화를 이어가기 | `pi -c` |
+| 외부 UI에서 기존 코딩 에이전트를 제어하기 | RPC 또는 Coding Agent SDK |
+| 장기 task와 대화를 저장하고 프로세스 재시작 후 복구하기 | Pi Durable |
+| 실패한 외부 작업의 중복 실행까지 방지하기 | Durable 설계에 더해 작업별 멱등성·결과 확인 |
+
+설치, 저장소 선택, `Harness` lifecycle, task 복구, 도구 재실행 한계와 실행 예제는 [Pi Durable 상세 가이드](durable.md)를 따른다.
+
+## 11. 추천 학습 순서와 문제 해결
+
+### 추천 학습 순서
+
+1. **첫 세션:** `/login`, `/model`, `/name`, 읽기 전용 코드 탐색.
+2. **작은 수정:** 범위·회귀 테스트·완료 조건을 지정해 수정하고 diff 확인.
+3. **작업 재개:** `pi -c`, `/tree`, `/compact` 사용.
+4. **반복 작업:** `.pi/prompts/review.md`와 검증 스킬 작성.
+5. **도구 연결:** 필요한 MCP 서버 하나만 연결하고 `/mcp`에서 확인.
+6. **자동화:** print/JSON으로 시작하고 지속 제어가 필요하면 RPC/SDK.
+7. **Durable 실습:** 모델 호출 없이 저장·재시작부터 확인한 뒤 LLM task 연결.
+
+### 문제 해결
+
+| 증상 | 확인 |
+|---|---|
+| 모델이 없음 | `/login`, `/model`, `pi --list-models`, endpoint 인증 |
+| 프로젝트 설정이 무시됨 | `/trust`; 비대화형 실행의 `--approve`/`--no-approve` |
+| MCP 도구가 안 보임 | `pi mcp list`, `/mcp`, enabled·exposure·연결 오류 |
+| 검색 도구가 기본으로 안 보임 | `defaultTools`에 `+grep`, `+find`, `+ls` |
+| 설정 제거가 즉시 반영 안 됨 | `/reload`의 도구 제거 제한 확인 후 프로세스 재시작 |
+| 모델 컨텍스트가 길어짐 | `/compact`에 보존할 사실·남은 작업 지정 |
+| 자동화가 너무 일찍 완료됨 | `agent_end` 대신 `agent_settled`, 마지막 stopReason 확인 |
+| 세션 분기 뒤 파일은 예전 상태가 아님 | 대화 분기와 Git 파일 상태를 별도로 관리 |
+| durable 재시작 시 데이터가 없음 | MemoryStorage 대신 영속 storage와 같은 경로 사용 |
+
+모델 오류는 코드 검증 실패와 분리한다. 이 가이드의 소스 확인과 로컬 예제는 실제 provider·사내 endpoint·장비에서의 동작 검증을 대신하지 않는다.
+
+## 참고 자료 (References)
+
+최신 문서는 변경될 수 있으므로 위 설명의 근거는 v1.0.1 태그로 고정했다.
+
+- [Pi v1.0.1 릴리스](https://github.com/earendil-works/pi/releases/tag/v1.0.1)
+- [공식 문서 최신판](https://pi.dev/docs/latest)
+- [v1.0.1 전체 문서](https://github.com/earendil-works/pi/tree/v1.0.1/packages/coding-agent/docs)
+- [CLI](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/cli.md)
+- [MCP](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/mcp.md)
+- [보안·trust](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/security.md)
+- [Pi Durable 소스와 README](https://github.com/earendil-works/pi/tree/v1.0.1/packages/durable)
 
 ## 관련 문서
 
+- [Pi Durable 상세 가이드](durable.md)
 - [Codex CLI 실전 가이드](../codex/README.md)
 - [개발 환경 인덱스](../README.md)
