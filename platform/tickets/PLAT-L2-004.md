@@ -1,4 +1,14 @@
+---
+tags: [platform]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: implementation_ticket
+---
+
 # PLAT-L2-004 소유권 관계 튜플과 인가 판정을 구현한다
+
+> [!warning] 2026-10-04 검토와 기록 구분
+> 별도 구현 저장소의 티켓·기록이다. 원문 완료 보고는 이번 정리에서 실행한 결과가 아니다. [현재 검토](../review-notes.md)와 [문서별 정리 결과](../organization-log.md)를 확인한다. 사내 구현·외부 서비스 검증은 미완료다.
 
 ## 식별
 

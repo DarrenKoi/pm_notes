@@ -1,4 +1,14 @@
+---
+tags: [platform]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: implementation_ticket
+---
+
 # PLAT-L6B-001 Endpoint Broker 계약을 확정한다
+
+> [!warning] 2026-10-04 검토와 기록 구분
+> 별도 구현 저장소의 티켓·기록이다. 원문 완료 보고는 이번 정리에서 실행한 결과가 아니다. [현재 검토](../review-notes.md)와 [문서별 정리 결과](../organization-log.md)를 확인한다. 사내 구현·외부 서비스 검증은 미완료다.
 
 ## 식별
 
@@ -48,7 +58,7 @@
 
 - 수정 금지 파일: `src/registry/catalog/**`, `src/registry/auth/**`, `src/registry/telemetry/**`
 - 변경 금지 인터페이스: 카탈로그 `remotes[]`, 관계 튜플과 OIDC 검증 계약
-- 동시 작업 소유 경로: `PLAT-L2-004: src/registry/catalog/ownership.py, PLAT-L5-001: src/registry/auth/**`
+- 동시 작업 소유 경로: `PLAT-L2-004: src/registry/auth/tuples.py, src/registry/auth/decide.py, PLAT-L5-001: src/registry/auth/**`
 
 ## 참고 규약
 

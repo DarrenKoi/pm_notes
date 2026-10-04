@@ -1,4 +1,14 @@
+---
+tags: [platform]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: specification
+---
+
 # 사내 AI Agent·Skill 공유 관리 플랫폼 요구사항 정의서
+
+> [!info] 2026-10-04 검토 범위
+> 설계·양식 또는 별도 구현 저장소의 티켓이다. 현재 구현·사내 운영 증거로 간주하지 않는다. [현재 검토와 적용 조건](./review-notes.md)을 먼저 확인한다. 과거 완료 보고와 승인 전제는 당시 기록으로 유지하며, 이번 검증은 [정리 기록](./organization-log.md)에 구분한다.
 
 > 사업부 구성원이 AI Agent와 Skill을 안전하게 게시·검색·설치·실행하고 활용성이 검증된 자산을 전사 플랫폼으로 승격할 수 있게 한다.
 

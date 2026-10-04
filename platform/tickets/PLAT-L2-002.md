@@ -1,4 +1,14 @@
+---
+tags: [platform]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: implementation_ticket
+---
+
 # PLAT-L2-002 카탈로그 저장소 인터페이스와 MongoDB 구현을 만든다
+
+> [!info] 2026-10-04 검토 범위
+> 설계·양식 또는 별도 구현 저장소의 티켓이다. 현재 구현·사내 운영 증거로 간주하지 않는다. [현재 검토와 적용 조건](../review-notes.md)을 먼저 확인한다. 과거 완료 보고와 승인 전제는 당시 기록으로 유지하며, 이번 검증은 [정리 기록](../organization-log.md)에 구분한다.
 
 ## 식별
 
@@ -67,3 +77,7 @@
 - 검증: <실행한 명령> → <실제 결과>
 - 남은 일: 없음
 - 범위 밖 발견: <없음 | 기록>
+
+
+> [!warning] 신규 구현 전 드라이버 선택 재검토
+> Motor는 2026-05-14 신규 사용 비권장(deprecated) 단계에 들어갔다. 위 Motor 선택은 기존 설계 기록이다. 신규 구현에는 PyMongo Async 전환을 검토하되 의존성·호환 계약 변경은 아직 승인하지 않았다. [현재 근거와 보류 이유 · MongoDB 드라이버 절](../review-notes.md)를 확인한다.

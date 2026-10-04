@@ -2,9 +2,15 @@
 tags: [platform, plan, estimation, staffing]
 level: intermediate
 last_updated: 2026-09-03
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: specification
 ---
 
 # 구축 계획 — 인력·기간 산정
+
+> [!info] 2026-10-04 검토 범위
+> 설계·양식 또는 별도 구현 저장소의 티켓이다. 현재 구현·사내 운영 증거로 간주하지 않는다. [현재 검토와 적용 조건](./review-notes.md)을 먼저 확인한다. 과거 완료 보고와 승인 전제는 당시 기록으로 유지하며, 이번 검증은 [정리 기록](./organization-log.md)에 구분한다.
 
 > 사업부 1차 플랫폼을 실제로 구축하는 데 필요한 인원 구성, 단계별 범위, 기간 추정.
 
@@ -32,7 +38,7 @@ last_updated: 2026-09-03
 | # | 전제 | 깨지면 |
 |---|---|---|
 | A1 | 사내에 공통 OIDC IdP 가 이미 있고 신규 RP 등록이 가능하다 | Auth 단계 +4주, SAML 브릿지 필요 시 +6주 |
-| A1b | **subject identifier 는 public, 사원 마스터 단일 테이블 존재** (확정됨) | — 이 전제가 확정되어 크로스-인스턴스 신원 리스크가 제거됨 |
+| A1b | **subject identifier 는 public, 사원 마스터 단일 테이블 존재** (확정됨) | — 같은 issuer의 public sub가 클라이언트 간 일치한다는 조건이다. issuer 검증과 사번 매핑 계약은 별도로 확인한다 |
 | A2 | MongoDB / Redis / OpenSearch / MinIO 는 사내 관리형으로 제공받는다 (직접 운영 아님) | Infra 1.0 FTE 상시 추가 |
 | A3 | 지원 런타임을 **P1 에서는 2개까지**로 제한한다 (Q13) | 3개째부터 어댑터당 +2주 |
 | A3b | hosted agent 를 **P1 범위에 포함**한다 | 제외하면 P1 -4주, 대신 팀 서버 운영형 자산을 초기에 못 받는다 |
@@ -174,7 +180,7 @@ last_updated: 2026-09-03
 | 지원 런타임이 계속 늘어남 (Q13) | 어댑터가 무한 증식 | 어댑터 인터페이스를 P0 에 규격화. 3호부터는 제안 팀이 직접 기여하게 |
 | **사원 마스터 API 계약이 예상과 다름** | Org Sync 전체가 밀림 | P0 에서 계약 확인. 팀 정보가 부실하면 최초 발행자 자동 등록으로 폴백 |
 | GitLab 실측 결과가 늦게 나옴 | L1 구현 대상 미정 | `ArtifactStore` seam 으로 MinIO 구현부터 진행. 결정 시 구현체 교체 |
-| hosted agent 제공 팀의 서버가 자주 죽음 | 사용자 신뢰 붕괴 | 헬스체크 연속 실패 시 자동 강등(§8). 제재 규칙은 Q14 |
+| hosted agent 제공 팀의 서버가 자주 죽음 | 사용자 신뢰 붕괴 | 헬스체크 연속 실패 시 자동으로 `degraded` 전환·신규 접근 차단. tier는 유지하며 강등은 사람 심사(02 §8, 03 운영 절차). 제재 규칙은 Q14 |
 
 ---
 

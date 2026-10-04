@@ -2,9 +2,15 @@
 tags: [platform, gitlab, registry, distribution, research]
 level: advanced
 last_updated: 2026-09-03
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: research_record
 ---
 
 # GitLab을 배포 백엔드로 쓸 수 있는가 — 1차 출처 조사
+
+> [!warning] 2026-10-04 검토와 기록 구분
+> 2026-09-03 조사 기록이다. 당시 본문·인용·결정은 보존했다. 변동 가능한 기능·수치·플래그 전체를 현재 재검증한 것은 아니며 현행 도입 근거로는 미확인이다. Object Lock·일관성·RBAC·규격 버전 등 잘못 일반화된 결론은 [현재 검토](../review-notes.md)로 정정한다. [조사 목차](./README.md)에서 적용 조건과 읽는 순서를 확인한다.
 
 > 사내에 GitLab(self-managed)이 제공된다는 전제에서 [02-architecture.md](../02-architecture.md) 의 L1~L10·L6b 중 어디까지를 GitLab이 실제로 대체하는지 docs.gitlab.com 기준으로 확인한 결과. 결론부터: 아티팩트 저장·인증·발행 게이트는 **대체 가능**, 카탈로그·검색·텔레메트리·연합·Endpoint Broker 는 **대체 불가**.
 

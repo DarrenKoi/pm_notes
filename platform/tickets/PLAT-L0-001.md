@@ -1,4 +1,14 @@
+---
+tags: [platform]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: implementation_ticket
+---
+
 # PLAT-L0-001 구현 저장소 스켈레톤과 CI 를 세운다
+
+> [!info] 2026-10-04 검토 범위
+> 설계·양식 또는 별도 구현 저장소의 티켓이다. 현재 구현·사내 운영 증거로 간주하지 않는다. [현재 검토와 적용 조건](../review-notes.md)을 먼저 확인한다. 과거 완료 보고와 승인 전제는 당시 기록으로 유지하며, 이번 검증은 [정리 기록](../organization-log.md)에 구분한다.
 
 ## 식별
 
@@ -37,7 +47,7 @@
 
 - [ ] AC-1: `pytest tests/unit` 이 종료 코드 0 으로 끝나고 최소 1개 테스트가 통과한다
 - [ ] AC-2: `ruff check src tests` 가 종료 코드 0 으로 끝난다
-- [ ] AC-3: `pytest` 기본 실행이 `tests/integration` 을 **수집하지 않는다** (마커로 제외)
+- [ ] AC-3: `pytest` 기본 실행이 `tests/integration` 을 **실행 대상으로 선택하지 않는다** (등록된 integration 마커를 `-m "not integration"` 기본 옵션으로 제외)
 - [ ] AC-4: `CONVENTIONS.md` 에 나열된 모든 패키지 디렉터리가 존재하고 import 가능하다
 - [ ] AC-5: `docker compose config` 가 종료 코드 0 으로 끝나고 4개 서비스를 출력한다
 
@@ -47,7 +57,7 @@
 |---|---|---|
 | AC-1 | `pytest tests/unit -q` | 종료 코드 0, `1 passed` 이상 |
 | AC-2 | `ruff check src tests` | 종료 코드 0 |
-| AC-3 | `pytest --collect-only -q \| grep -c integration` | 0 |
+| AC-3 | `pytest --collect-only -q` 및 `pytest -q` | 기본 설정에서 integration은 deselected, 실행은 단위 테스트만. grep 출력 개수와 종료 코드를 혼동하지 않는다 |
 | AC-4 | `pytest tests/unit/test_skeleton.py -q` | 모든 패키지 import 성공 |
 | AC-5 | `docker compose config --services` | `mongodb`, `redis`, `opensearch`, `minio` 출력 |
 
@@ -67,3 +77,6 @@
 - 검증: <실행한 명령> → <실제 결과>
 - 남은 일: 없음
 - 범위 밖 발견: <없음 | 기록>
+
+
+마커 필터는 수집된 테스트를 선택 해제한다. 테스트 모듈 import 자체를 피해야 한다면 수집 경로·`--ignore` 등을 별도로 설계한다. 외부 서비스 연결을 모듈 import 시 실행하지 않는다. [pytest 공식 마커 설명](https://docs.pytest.org/en/stable/example/markers.html) 확인일: 2026-10-04.

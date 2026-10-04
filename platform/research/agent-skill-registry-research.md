@@ -2,9 +2,15 @@
 tags: [platform, registry, agent-skills, mcp, oci, otel, supply-chain]
 level: advanced
 last_updated: 2026-09-03
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: research_record
 ---
 
 # 사내 Agent/Skill 레지스트리 - 1차 자료 조사
+
+> [!warning] 2026-10-04 검토와 기록 구분
+> 2026-09-03 조사 기록이다. 당시 본문·인용·결정은 보존했다. 변동 가능한 기능·수치·플래그 전체를 현재 재검증한 것은 아니며 현행 도입 근거로는 미확인이다. Object Lock·일관성·RBAC·규격 버전 등 잘못 일반화된 결론은 [현재 검토](../review-notes.md)로 정정한다. [조사 목차](./README.md)에서 적용 조건과 읽는 순서를 확인한다.
 
 > Biz마다 별도 인스턴스로 각각 배포되는 1-tier 레지스트리 N개 + 그 위의 전사 2-tier 레지스트리 구조를 설계하기 전에 패키징 포맷·네임스페이스 소유권·연합(federation)·인스턴스 경계 인증·텔레메트리·공급망 안전을 각 규격 원문에서 확인한 결과.
 

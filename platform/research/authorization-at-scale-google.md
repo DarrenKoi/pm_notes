@@ -2,9 +2,15 @@
 tags: [platform, authorization, zanzibar, iam, rebac, scim]
 level: advanced
 last_updated: 2026-09-03
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: research_record
 ---
 
 # 대규모 인가(Authorization) 1차 자료 조사 — Google 은 어떻게 수만 명에게 권한을 주는가
+
+> [!warning] 2026-10-04 검토와 기록 구분
+> 2026-09-03 조사 기록이다. 당시 본문·인용·결정은 보존했다. 변동 가능한 기능·수치·플래그 전체를 현재 재검증한 것은 아니며 현행 도입 근거로는 미확인이다. Object Lock·일관성·RBAC·규격 버전 등 잘못 일반화된 결론은 [현재 검토](../review-notes.md)로 정정한다. [조사 목차](./README.md)에서 적용 조건과 읽는 순서를 확인한다. §4.4·§6.2 JSONC 블록은 여러 객체의 설명이며, §5.2 병합 예제의 +/- 줄은 변경 전후 표기다. 단일 JSON 파일로 그대로 실행하지 않는다.
 
 > Zanzibar 논문과 Google Cloud IAM 공식 문서를 1차 출처로 삼아 "팀명이 매년 바뀌고 불변 조직 코드가 있는지조차 확인 불가"인 우리 레지스트리의 인가 모델을 결정하기 위한 근거를 정리한다.
 
