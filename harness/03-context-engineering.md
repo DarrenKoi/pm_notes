@@ -2,21 +2,31 @@
 tags: [harness-engineering, context-engineering, compaction, kv-cache]
 level: intermediate
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 03. 컨텍스트 엔지니어링 (Context Engineering)
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 컨텍스트 윈도우는 유한한 주의력 예산(attention budget)이다. 매 턴 "원하는
 > 행동을 끌어낼 가능성이 가장 높은 최소한의 토큰"을 넣는 것이 목표다.
 
 ## 왜 필요한가? (Why)
 
-- **길수록 나빠진다.** Chroma의 *Context Rot* 연구는 18개 모델을 테스트했는데,
-  모든 모델이 입력이 길어질수록 단순한 검색·복사 과제에서도 성능이 떨어졌다.
+- **긴 입력의 효과를 측정한다.** Chroma의 *Context Rot* 연구는 18개 모델을 테스트했는데,
+  해당 연구의 과제·설정에서 길이에 따른 성능 저하를 보고했다. 모든 업무에서
+  길이 증가가 항상 성능 저하를 일으킨다는 법칙으로 일반화하지 않는다.
   윈도우가 100만 토큰이라고 해서 100만 토큰을 잘 쓴다는 뜻은 아니다.
 - **에이전트는 입력이 압도적으로 많다.** Manus는 입력과 출력의 토큰 비율이 평균
   약 100:1이라고 밝혔다. 컨텍스트는 매 턴 누적되는데 출력은 짧은 도구 호출
-  하나뿐이기 때문이다. 비용과 지연 시간은 대부분 입력 토큰에서 나온다.
+  하나인 작업이 많았기 때문이다. 이 비율은 Manus 사례이며 비용·지연의 병목은
+  모델, 캐시, 추론 출력 길이와 도구 실행 시간에 따라 다시 측정한다.
 - **긴 작업은 결국 윈도우를 넘는다.** 몇 시간짜리 작업은 한 윈도우에 담기지
   않는다. 세션을 넘어 이어갈 방법이 필요하다.
 
@@ -43,8 +53,9 @@ last_updated: 2026-09-12
 ### 3. KV 캐시를 깨지 않는 설계
 
 Manus는 "KV 캐시 적중률이 프로덕션 에이전트에서 가장 중요한 단일 지표"라고 했다.
-앞부분(prefix)이 바이트 단위로 같아야 캐시가 적중하고, 적중하면 첫 토큰
-지연(TTFT)과 비용이 크게 줄어든다. 사내에서 직접 서빙하는 모델도 vLLM 같은
+앞부분(prefix)을 안정적으로 유지하면 캐시 재사용에 유리하다. 실제 키는
+토큰화·블록·모델·서버 구현에 달려 있으며, 같은 문자열만으로 적중이 보장되지는 않는다.
+적중하면 첫 토큰 지연(TTFT)과 계산 비용을 줄일 수 있다. 사내에서 직접 서빙하는 모델도 vLLM 같은
 엔진의 prefix caching이 같은 원리로 동작한다.
 
 - 시스템 프롬프트 맨 앞에 초 단위 타임스탬프 같은 매번 바뀌는 값을 넣지 않는다
@@ -89,8 +100,11 @@ CLEARED = "[cleared: call the tool again if you need this]"
 def clear_old_tool_results(messages: list[dict],
                            keep_last: int = 6) -> list[dict]:
     """최근 keep_last개를 뺀 tool 결과를 짧은 안내문으로 바꾼다."""
+    if type(keep_last) is not int or keep_last < 0:
+        raise ValueError("keep_last must be a non-negative integer")
     tool_idx = [i for i, m in enumerate(messages) if m["role"] == "tool"]
-    for i in tool_idx[:-keep_last]:
+    old_idx = tool_idx if keep_last == 0 else tool_idx[:-keep_last]
+    for i in old_idx:
         messages[i] = {**messages[i], "content": CLEARED}
     return messages
 ```

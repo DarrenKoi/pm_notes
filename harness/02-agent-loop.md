@@ -2,9 +2,17 @@
 tags: [harness-engineering, agent-loop, tool-calling, python]
 level: intermediate
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 02. 에이전트 루프 (Agent Loop)
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 모든 하네스의 뼈대는 `모델 호출 → 도구 실행 → 결과를 컨텍스트에 추가`를
 > 반복하는 while 루프다. 프로덕션 품질은 이 루프가 언제, 어떻게 멈추느냐에서
@@ -202,7 +210,7 @@ def run_agent(client, model: str, task: str) -> tuple[str, list[dict]]:
 if __name__ == "__main__":
     from openai import OpenAI
 
-    # 429/5xx 재시도는 SDK 내장 기능(max_retries)으로 충분하다
+    # SDK 재시도를 사용한다. 전체 예산·멱등성 보장은 별도 설계한다
     client = OpenAI(base_url=os.environ["LLM_BASE_URL"],
                     api_key=os.environ.get("LLM_API_KEY", "none"),
                     max_retries=5, timeout=120)

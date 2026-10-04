@@ -2,9 +2,17 @@
 tags: [harness-engineering, observability, tracing, opentelemetry, cost]
 level: intermediate
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 08. 관측과 비용 (Observability & Cost)
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 비결정적인 다단계 시스템은 로그 몇 줄로 디버깅할 수 없다. 실행 하나를 처음부터
 > 끝까지 재생할 수 있는 트레이스와, 성공 1건당 비용을 보여주는 지표가 필요하다.

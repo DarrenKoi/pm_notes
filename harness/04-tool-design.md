@@ -2,9 +2,17 @@
 tags: [harness-engineering, tool-design, mcp, aci]
 level: intermediate
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 04. 도구 설계 (Tool Design)
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 도구는 사람이 쓰는 API가 아니라 모델이 읽는 프롬프트다. 도구 이름, 설명,
 > 반환값, 에러 메시지가 모두 컨텍스트에 들어간다.
@@ -110,8 +118,8 @@ LOGS_SEARCH_SPEC = {"type": "function", "function": {
         "service": {"type": "string",
                     "description": "Service name, e.g. 'recipe-api'"},
         "since_minutes": {"type": "integer", "default": 60},
-        "limit": {"type": "integer", "default": 20, "maximum": 100},
-        "cursor": {"type": "integer", "default": 0},
+        "limit": {"type": "integer", "default": 20, "minimum": 1, "maximum": 100},
+        "cursor": {"type": "integer", "default": 0, "minimum": 0},
         "response_format": {"type": "string", "default": "concise",
                             "enum": ["concise", "detailed"]},
     }, "required": ["query"]},
@@ -123,8 +131,14 @@ LOGS_SEARCH_SPEC = {"type": "function", "function": {
 ```python
 def format_page(rows: list, cursor: int, limit: int, render) -> str:
     """결과 한 페이지를 문자열로 만들고, 다음 행동 안내를 붙인다."""
+    if type(cursor) is not int or cursor < 0:
+        raise ValueError("cursor must be a non-negative integer")
+    if type(limit) is not int or not 1 <= limit <= 100:
+        raise ValueError("limit must be an integer in 1..100")
     if not rows:
         return "No results. Try broader keywords or a larger since_minutes."
+    if cursor >= len(rows):
+        return "No more results. Reset cursor=0 for a new query."
     page = rows[cursor:cursor + limit]
     lines = [render(r) for r in page]
     nxt = cursor + limit

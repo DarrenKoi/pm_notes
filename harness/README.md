@@ -2,9 +2,17 @@
 tags: [harness-engineering, ai-agent, llmops, production]
 level: intermediate
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # Harness Engineering 학습 노트
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > Agent = Model + Harness. 하네스 엔지니어링은 모델을 뺀 나머지 전부를 설계해
 > 에이전트를 운영할 수 있는 수준으로 끌어올리는 일이다. 루프, 도구, 컨텍스트,
@@ -20,7 +28,15 @@ last_updated: 2026-09-12
 실패 원인을 모델 능력만으로 설명하지 말고, 컨텍스트·검증·권한·관측까지 함께
 진단해야 한다. 하네스가 모델의 모든 한계를 해결하는 것은 아니다.
 
-## 최신 내용부터 읽기
+## 검토 결과부터 읽기
+
+1. [2026-10-04 적용 조건](./review-notes.md): 확인된 변경과 실습 범위를 먼저 읽는다.
+2. 아래 01~11을 개념 → 루프 → 운영 순서로 읽는다.
+3. 특정 모델 적용은 [Qwen3.8 검토 보충](./qwen3.8/review-notes.md) 이후
+   [원래 Qwen 학습 노트](./qwen3.8/README.md)를 읽는다. 사용자 작성 중인 원문은 보존했다.
+4. [정리 기록](./organization-log.md)에서 문서별 검토와 남은 미확인을 확인한다.
+
+## 2026-09-12 보충 내용
 
 **2026-09-12 공개 1차 자료 확인 기준**으로 보강했다. 최신 발표와 적용 판단은
 [11. 최신 동향과 적용 판단](./11-current-trends.md)에 모았다.

@@ -2,9 +2,17 @@
 tags: [harness-engineering, multi-agent, subagent, orchestration]
 level: advanced
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 09. 멀티 에이전트 (Multi-Agent)
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 에이전트를 여러 개로 나누는 이유는 역할극이 아니라 컨텍스트 격리와 병렬화다.
 > 둘 다 필요 없다면 단일 에이전트가 거의 항상 낫다.

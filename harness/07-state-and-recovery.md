@@ -2,9 +2,17 @@
 tags: [harness-engineering, durable-execution, checkpoint, idempotency]
 level: intermediate
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 07. 상태와 복구 (State & Recovery)
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 긴 작업은 반드시 중간에 멈춘다. 모델 API 타임아웃, 배포 재시작, 사람 승인
 > 대기가 원인이다. 멈춘 지점에서 안전하게 이어가는 것이 프로덕션 하네스의 기본
@@ -64,8 +72,10 @@ key = run_id : turn : tool_call_id
 | 논리 실패 | 같은 행동 반복, 진전 없음 | 반복 감지 후 중단하거나 전략 변경을 지시 |
 | 프로세스 중단 | 배포, OOM, 노드 장애 | 체크포인트에서 재개 |
 
-모델 API 호출의 일시적 오류는 OpenAI SDK의 내장 재시도(`max_retries`)로
-충분하다. 직접 재시도 코드를 짜야 하는 곳은 사내 API 같은 **도구 호출** 쪽이다.
+모델 API 호출은 SDK 내장 재시도(`max_retries`)부터 검토한다. 지원 오류 유형,
+`Retry-After`, 요청 타임아웃과 전체 예산을 해당 SDK 버전에서 확인한다. SDK의
+재시도만으로 업무 멱등성과 총 실행 시간이 보장되지는 않는다. 사내 **도구 호출**은
+서버 계약에 맞춘 별도 정책이 필요할 수 있다.
 
 ### 5. 사람 개입 = 일시정지 + 재개
 
@@ -136,6 +146,10 @@ import time
 def retry(fn, transient=(TimeoutError, ConnectionError),
           attempts: int = 5, cap: float = 60):
     """일시적 오류만 지수 백오프로 재시도한다. 영구 오류는 바로 올린다."""
+    if type(attempts) is not int or attempts < 1:
+        raise ValueError("attempts must be a positive integer")
+    if cap < 0:
+        raise ValueError("cap must be non-negative")
     for attempt in range(1, attempts + 1):
         try:
             return fn()

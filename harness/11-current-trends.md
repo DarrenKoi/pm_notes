@@ -2,9 +2,17 @@
 tags: [harness-engineering, trends, mcp, context-fork, evals]
 level: advanced
 last_updated: 2026-09-12
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 11. 최신 동향과 적용 판단 — 2026-09-12 확인
+
+> [!info] 검토 범위 — 2026-10-04
+> 개념·고유 예제는 보존했다. 확인한 사양과 로컬 실습의 범위는
+> [현재 적용 조건](./review-notes.md), 문서별 결과는 [정리 기록](./organization-log.md)에 있다.
+> 인용된 과거 성능과 미실행 운영 예제를 현재 보장으로 해석하지 않는다.
 
 > 최근 하네스 설계는 컨텍스트 전달 방식, 실행 환경의 수명, 프로토콜 버전,
 > 하네스 자체의 개선 루프까지 다룬다. 새 기능의 존재와 내 환경에서의 효과는 별개다.
@@ -88,7 +96,9 @@ Tasks 확장은 2025의 `tasks/result`, `tasks/list` 흐름과 다르며,
 공식 저장소는 **`2026-07-28`을 Stable, `draft`를 Development**로 구분한다.
 안정 버전이 있다는 사실을 모든 SDK의 지원으로 해석하지 않는다.
 [공식 확장 버전 목록](https://github.com/modelcontextprotocol/ext-tasks)
-확장 문서와 SDK의 지원 버전도 별도로 확인한다.
+2026-10-04 재확인한 공식 저장소는 TypeScript 패키지의 requester가 세대 독립적이며,
+receiver 지원은 `2025-11-25`라고 설명한다. 안정 스키마가 곧 같은 버전의
+receiver 구현 완료를 뜻하지 않는다. 확장 문서와 SDK 지원을 따로 확인한다.
 [Tasks 확장 명세](https://tasks.extensions.modelcontextprotocol.io/specification/2026-07-28/tasks)
 
 8월 로드맵의 에이전트 신원·위임, 이벤트 전달, 전송 방식 통합은 후속 작업의
