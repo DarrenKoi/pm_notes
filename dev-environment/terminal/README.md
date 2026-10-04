@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [terminal, zsh, macos, cli]
 level: beginner
 last_updated: 2026-02-09
 ---
 
 # Mac 터미널(zsh) 필수 명령어
+
+> [!info] 2026-10-04 검토 범위
+> macOS 로컬 매뉴얼과 임시 파일 실습으로 핵심 명령의 조건을 확인했다. BSD/GNU 옵션과 설치 도구 버전은 각각의 `man`·`--help`를 확인한다. 운영 파일 삭제·권한 변경은 실행하지 않았다.
 
 > macOS 터미널에서 자주 사용하는 기본 명령어를 체계적으로 정리한 시리즈
 
@@ -49,4 +55,3 @@ man -k search # "search" 키워드로 관련 매뉴얼 검색
 ## 관련 문서
 
 - [개발 환경 인덱스](../README.md)
-- [루트 README](../../README.md)

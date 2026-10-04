@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, cli, exec, review, automation]
 level: intermediate
 last_updated: 2026-03-07
 ---
 
 # 비대화형 실행과 리뷰 (Exec & Review)
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](./current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > 반복 가능한 작업은 `codex exec`, 변경 검토는 `codex review`로 분리하는 편이 좋다.
 
@@ -124,11 +130,13 @@ codex review --uncommitted \
   "동작 회귀, 예외 처리 누락, 테스트 공백 위주로 리뷰해줘."
 ```
 
-### 결과를 PR 메모로 저장
+### 리뷰 표시 제목 지정
 
 ```bash
 codex review --base main --title "Scheduler retry fix"
 ```
+
+`--title`은 리뷰 표시 제목이다. PR을 만들거나 메모 파일을 저장하지 않는다. 사용자 프롬프트와 `--base`/`--uncommitted`의 조합은 버전별 제약을 확인한다.
 
 ## 실무 팁
 

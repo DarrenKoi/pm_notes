@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [terminal, zsh, navigation, ls, cd, pwd]
 level: beginner
 last_updated: 2026-02-09
 ---
 
 # 파일 시스템 탐색 (Navigation & Listing)
+
+> [!info] 2026-10-04 검토 범위
+> macOS 로컬 매뉴얼과 임시 파일 실습으로 핵심 명령의 조건을 확인했다. BSD/GNU 옵션과 설치 도구 버전은 각각의 `man`·`--help`를 확인한다. 운영 파일 삭제·권한 변경은 실행하지 않았다.
 
 > 터미널에서 현재 위치를 확인하고, 디렉토리를 이동하고, 파일 목록을 조회하는 기본 명령어
 
@@ -118,7 +124,7 @@ drwxr-xr-x  5 daeyoung staff  160 Feb  9 10:30 src
 
 ```bash
 ls -lt | head -10    # 최근 수정된 파일 상위 10개
-ls -la .*            # 숨김 파일만 보기
+ls -lad .[^.]*       # 숨김 항목 자체 보기; .. 제외 (일치 없음은 zsh에서 오류)
 ls -lhS *.log        # 로그 파일을 크기순으로 보기
 ```
 
@@ -146,6 +152,8 @@ tree -L 3 -I 'node_modules|.git|__pycache__|.venv'
 ```
 
 ### `which` — 명령어 위치 확인
+
+셸 builtin·함수·alias까지 구분하려면 `type -a 명령어` 또는 zsh의 `whence -a 명령어`를 함께 사용한다. 표시 경로 예시는 이 PC의 현재 설치를 보장하지 않는다.
 
 ```bash
 which python

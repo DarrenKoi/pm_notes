@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, cli, resume, mcp, advanced]
 level: advanced
 last_updated: 2026-03-07
 ---
 
 # 세션 재사용, MCP, 고급 기능 (Sessions, MCP, Advanced)
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](./current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > 익숙해지면 Codex는 "한 번 쓰고 끝나는 챗봇"보다 "작업 이력과 도구를 가진 CLI 에이전트"에 가깝다.
 
@@ -64,13 +70,9 @@ codex mcp logout <name>
 
 실무에서는 이 기능으로 이슈 트래커, 문서 저장소, 내부 도구 API를 연결하는 경우가 많다.
 
-## Codex를 MCP 서버로 사용
+## 과거의 MCP 서버 실행 예제
 
-```bash
-codex mcp-server
-```
-
-다른 MCP 클라이언트에서 Codex를 stdio 서버처럼 붙이는 용도다. 단독 사용보다 도구 체인 일부로 쓸 때 의미가 있다.
+이전 문서는 `codex mcp-server`로 stdio 서버를 시작한다고 설명했다. 로컬 0.160.0의 명령 목록에는 없다. 현재 버전에서 같은 기능의 제공 경로는 미확인으로 남긴다. `codex mcp ...`로 외부 서버를 연결하는 기능과 구분한다.
 
 ## 패치 적용
 

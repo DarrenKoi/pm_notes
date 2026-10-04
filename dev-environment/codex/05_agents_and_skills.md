@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, cli, agents, skills, instructions]
 level: intermediate
 last_updated: 2026-03-07
 ---
 
 # 에이전트와 스킬 (Agents & Skills)
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](./current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > Codex를 잘 쓰려면 "프롬프트만 잘 쓰는 법"보다 "Codex가 어떤 규칙으로 움직이는지"를 이해해야 한다.
 
@@ -40,7 +46,7 @@ Codex CLI에서 작업하는 주체가 에이전트다. 단순히 답만 만드�
 
 `AGENTS.md`는 특정 저장소에서 Codex가 따라야 하는 로컬 작업 규칙이다.
 
-이 저장소에도 실제로 상위 경로에 [../AGENTS.md](/Users/daeyoung/Codes/pm_notes/AGENTS.md)가 있고, 예를 들어 이런 내용을 담고 있다:
+이 저장소에도 실제로 상위 경로에 `AGENTS.md`가 있고, 예를 들어 이런 내용을 담고 있다:
 
 - 프로젝트 구조 설명
 - 모듈별 실행 명령

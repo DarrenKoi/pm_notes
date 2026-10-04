@@ -1,4 +1,7 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [vlm, ui-grounding, gui-agent, models]
 level: beginner
 last_updated: 2026-03-10
@@ -6,9 +9,12 @@ last_updated: 2026-03-10
 
 # UI 특화 VLM 모델 메모
 
+> [!info] 2026-10-04 검토 범위
+> UI grounding과 문서 OCR의 용도를 구분했다. 공개 모델 카드의 지원 경로 확인과 사내 GPU 실측은 다르다. 아래 모델별 품질 우열·GPU 수·메모리 설정은 미실측 가설이며 고정 버전 환경과 샘플로 평가해야 한다.
+
 > cloud terminal에서 바로 실험할 모델만 짧게 정리한다.
 
-## 가장 먼저 볼 모델
+## 초기 실험 후보 (성능 순위 미검증)
 
 | 모델 | Repo ID | GPU 가이드 | 추천도 | 메모 |
 |---|---|---|---|---|
@@ -68,3 +74,10 @@ cloud에서는 repo id보다 짧은 폴더 이름이 편하다.
 
 - [VLM Cloud Notes](./README.md)
 - [Private Cloud에서 `vLLM` 시작](./private-cloud-vllm-next-steps.md)
+
+## 2026-10-04 확인한 지원 조건
+
+`UI-Venus-1.5-8B`와 `MAI-UI-8B` 개발자 모델 카드는 vLLM **0.11.0 이상**, Transformers **4.57.0 이상**의 서빙 예제를 제공한다. 버전 하한을 충족해도 드라이버·CUDA·template·메모리 조합의 성공은 별도 확인한다. 다른 후보의 현재 호환성과 추천도는 미확인이다. GPU 장수는 파라미터 수만으로 정해지지 않는다.
+
+- [UI-Venus 개발자 모델 카드](https://huggingface.co/inclusionAI/UI-Venus-1.5-8B)
+- [MAI-UI 개발자 모델 카드](https://huggingface.co/Tongyi-MAI/MAI-UI-8B)

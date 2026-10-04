@@ -1,4 +1,14 @@
+---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
+tags: [dev-environment]
+---
+
 # Galaxy Tab 클라이언트 설정 가이드
+
+> [!info] 2026-10-04 검토 범위
+> 구성 예제이며 실제 Mac Mini·Galaxy Tab 연결은 미검증이다. `0.0.0.0`은 전체 인터페이스에서 대기하므로 Tailscale만 노출된다고 가정하지 않는다. 버전·기기 요구사항과 운영 경계는 [목차](./README.md)를 먼저 확인한다.
 
 이 문서는 Galaxy Tab에서 `Termius`와 브라우저 기반 `code-server`를 사용하는 전제로 작성되었습니다.
 
@@ -15,6 +25,8 @@
 ---
 
 ## 사전 요구사항
+
+아래 S7/Android 13은 기존 구성의 권장 가정이며 각 앱의 현재 필수 최소 버전은 미확인입니다. 메뉴 위치와 SFTP·동기화 기능의 요금제 조건도 설치한 앱에서 확인합니다.
 
 - Galaxy Tab S7 이상 권장
 - Android 13 이상
@@ -175,7 +187,7 @@ uv run pytest
 이유:
 
 - 주소를 다시 입력할 필요가 없음
-- 로그인 세션이 안정적임
+- 로그인 세션 유지 여부는 브라우저·쿠키·서버 정책에 따라 달라짐
 - 전체 화면 작업이 쉬움
 
 ---

@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [vlm, vllm, requests, local-client]
 level: beginner
 last_updated: 2026-03-10
 ---
 
 # 로컬 PC에서 `requests`로 이미지 보내기
+
+> [!info] 2026-10-04 검토 범위
+> UI grounding과 문서 OCR의 용도를 구분했다. 공개 모델 카드의 지원 경로 확인과 사내 GPU 실측은 다르다. 아래 모델별 품질 우열·GPU 수·메모리 설정은 미실측 가설이며 고정 버전 환경과 샘플로 평가해야 한다.
 
 > 상황: cloud의 `vLLM`은 이미 실행 중이고, 로컬 PC에서 스크린샷을 보내고 싶다.
 
@@ -105,7 +111,7 @@ print(response.json()["choices"][0]["message"]["content"])
 
 ### 인증서 문제가 있을 때
 
-임시로 `--insecure`를 붙여 테스트할 수 있다.
+`--insecure`는 TLS 인증서 검증을 끈다. 실제 서버를 확인한 제한된 진단 뒤 제거하고, 정상 운영은 신뢰할 CA·hostname을 설정한다. HTTP 예제는 암호화가 없으므로 외부 노출 주소로 그대로 쓰지 않는다.
 
 ```bash
 python3 dev-environment/vlm/send_image_to_vllm.py \

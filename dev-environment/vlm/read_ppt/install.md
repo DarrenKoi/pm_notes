@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [vlm, ocr, install, private-cloud, huggingface, vllm, transformers]
 level: intermediate
 last_updated: 2026-03-11
 ---
 
 # Private Cloud 설치 가이드: PaddleOCR-VL-1.5 + GOT-OCR-2.0-hf
+
+> [!info] 2026-10-04 검토 범위
+> UI grounding과 문서 OCR의 용도를 구분했다. 공개 모델 카드의 지원 경로 확인과 사내 GPU 실측은 다르다. 아래 모델별 품질 우열·GPU 수·메모리 설정은 미실측 가설이며 고정 버전 환경과 샘플로 평가해야 한다.
 
 기준 문서: [vlm-for-ppt-pdf-extraction.md](./vlm-for-ppt-pdf-extraction.md)
 
@@ -19,14 +25,14 @@ last_updated: 2026-03-11
 
 ## 먼저 고를 2개
 
-초기 설치 대상으로는 아래 2개가 가장 낫다.
+초기 설치 후보는 아래 2개다. 현재 우열·운영 성공은 미검증이다.
 
 1. `PaddlePaddle/PaddleOCR-VL-1.5`
 2. `stepfun-ai/GOT-OCR-2.0-hf`
 
 선정 이유는 단순하다.
 
-- `PaddleOCR-VL-1.5` 는 현재 가장 강한 기본 1차 문서 파서다.
+- `PaddleOCR-VL-1.5` 는 이 설치 예제의 1차 파서 후보다. 현재 최고라는 비교 근거는 없다.
 - `GOT-OCR-2.0-hf` 는 설치가 단순하고, crop OCR / 작은 글씨 재인식 / 특정 bbox OCR 에 강하다.
 - 둘 다 Apache-2.0 이라 사내 도입 시 법무 부담이 상대적으로 낮다.
 - 둘 다 7B+ 급 대형 VLM보다 훨씬 가볍다.
@@ -76,18 +82,18 @@ page image
 인터넷이 되는 승인된 머신에서만 수행한다.
 
 ```bash
-python -m pip install -U "huggingface_hub[cli]" hf_xet
+python -m pip install -U huggingface_hub hf_xet
 
 export HF_HOME="$PWD/.hf_home"
 mkdir -p ./artifacts
 
-huggingface-cli download PaddlePaddle/PaddleOCR-VL-1.5 \
+hf download PaddlePaddle/PaddleOCR-VL-1.5 \
   --local-dir ./artifacts/PaddleOCR-VL-1.5
 
-huggingface-cli download PaddlePaddle/PP-DocLayoutV3 \
+hf download PaddlePaddle/PP-DocLayoutV3 \
   --local-dir ./artifacts/PP-DocLayoutV3
 
-huggingface-cli download stepfun-ai/GOT-OCR-2.0-hf \
+hf download stepfun-ai/GOT-OCR-2.0-hf \
   --local-dir ./artifacts/GOT-OCR-2.0-hf
 
 tar -C ./artifacts -czf ocr-model-bundle-20260311.tar.gz \
@@ -103,7 +109,11 @@ mkdir -p /srv/ocr/models
 tar -C /srv/ocr/models -xzf ocr-model-bundle-20260311.tar.gz
 ```
 
+`hf download`의 기본 main은 변한다. 반입 모델마다 승인한 commit hash를 `--revision`으로 지정하고 hash·license·파일 checksum을 기록한다.
+
 ## 2. 패키지까지 완전 오프라인으로 가져와야 할 때
+
+`pip download`는 기본적으로 다운로드 머신의 플랫폼을 따른다. Linux H200 서버와 다른 OS·Python에서 만든 wheelhouse는 호환되지 않을 수 있다. 대상 OS·Python·architecture 및 CUDA wheel 조합을 맞추고 의존성 lock과 설치 smoke test를 별도로 남긴다. 아래 범위 조건은 재현 가능한 lockfile이 아니다.
 
 private cloud 에서 public PyPI 접근도 막혀 있으면 wheelhouse 를 같이 만든다.
 
@@ -392,7 +402,7 @@ inputs = processor(
 - `PaddleOCR-VL-1.5` 를 메인 문서 파서
 - `GOT-OCR-2.0-hf` 를 재인식 전용 worker
 
-로 두는 것이 가장 안전하고, no-Docker + offline + shared H200 조건에도 잘 맞는다.
+로 두는 것이 후보로 평가한다. no-Docker + offline + shared H200 조건의 실제 성공은 미검증이다.
 
 ## Sources
 

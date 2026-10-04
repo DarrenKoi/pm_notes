@@ -1,4 +1,7 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: research
 tags: [hermes, agent, harness, local-llm, openai-compatible, claude-code, nous-research]
 level: intermediate
 last_updated: 2026-07-01
@@ -6,7 +9,10 @@ last_updated: 2026-07-01
 
 # Hermes Agent — 설명, 사용법, 사내 LLM/Claude Code 연동
 
-> Nous Research가 만든 오픈소스(MIT) 자율 에이전트 런타임. "세션이 끝나면 잊는" 일반 프레임워크와 달리, **메모리·학습된 스킬을 디스크에 남겨 쓸수록 똑똑해지는** 상주형 에이전트다. OpenAI 호환 엔드포인트만 있으면 어떤 모델로도 돌릴 수 있어 **사내 LLM(local API)와 구조적으로 연결 가능**하다.
+> [!info] 2026-10-04 검토 범위
+> 2026-07-01 리서치의 도입 가설을 보존한다. 2026-10-04 공식 저장소의 custom endpoint 안내는 확인했지만 사내 모델·게이트웨이와 연동한 결과는 없다. 상세 설정, 최소 컨텍스트 수치, 출시일·도구 수·데이터 전부 로컬·텔레메트리 없음 주장은 미확인이다.
+
+> Nous Research가 만든 오픈소스(MIT) 자율 에이전트 런타임. "세션이 끝나면 잊는" 일반 프레임워크와 달리, **메모리·학습된 스킬을 디스크에 남겨 쓸수록 똑똑해지는** 상주형 에이전트다. OpenAI 호환 endpoint를 연결할 수 있지만 tool calling 등 모델·서버 계약을 확인해야 하므로 **사내 LLM(local API)와 구조적으로 연결 가능**하다.
 
 > ⚠️ 이 폴더(`harness/`)는 원래 Codex 하네스 가이드다. Hermes는 repo 내부 코드가 아니라 **외부 도구**이며, 이 문서는 사내 환경(외부 LLM API 차단·DRM 문서·로컬 OpenAI 호환 엔드포인트) 기준으로 평가/사용법을 정리한 리서치 노트다. 모든 사실은 2026-07-01 기준 [공식 저장소·문서](https://github.com/NousResearch/hermes-agent)에서 확인했다.
 
@@ -15,7 +21,7 @@ last_updated: 2026-07-01
 ## 왜 보는가? (Why)
 
 - 우리 [하네스 가이드](./README.md)의 관점(컨텍스트·권한·도구·검증·관측성)에서 보면, Hermes는 그 자체가 **하나의 완결된 하네스 + 런타임**이다. Codex/Claude Code가 "IDE 옆 대화형 개발자"라면, Hermes는 "서버에 상주하며 메신저로 호출되는 자율 작업자"에 가깝다.
-- 핵심 차별점은 **상태(state)의 영속화**: 작업 결과를 평가해 재사용 가능한 추론 패턴을 **named skill**로 추출하고, 다음 작업에서 검색해 다시 쓴다. 즉 "프롬프트 엔지니어링"이 아니라 "경험 축적"으로 품질이 오른다.
+- 핵심 차별점은 **상태(state)의 영속화**: 작업 결과를 평가해 재사용 가능한 추론 패턴을 **named skill**로 추출하고, 다음 작업에서 검색해 다시 쓴다. 절차를 저장하고 재사용하는 설계다. 품질 향상은 자동으로 보장되지 않으며 별도 평가가 필요하다.
 - 우리에게 중요한 이유: **모델을 바꿔 끼울 수 있다.** Anthropic/OpenAI 같은 외부 API가 막힌 사내 환경에서도, OpenAI 호환 사내 엔드포인트(Kimi-K2.5 / Qwen3-VL / BGE-M3)를 그대로 연결할 수 있는지가 도입 가능성의 전부다 → 결론은 "가능, 단 조건부".
 
 ---
@@ -81,7 +87,7 @@ model:
   provider: custom
   base_url: http://<사내-LLM-host>:<port>/v1   # OpenAI 호환 엔드포인트
   api_key: ${CORP_API_KEY}      # 키 없으면 비워두거나 더미값
-  context_length: 65536         # 자동 감지 실패 시 명시(최소 64K 필요)
+  context_length: 65536         # 자동 감지 실패 시 명시(기존 제안값; 현재 버전의 최소 요구량은 미확인)
 ```
 
 또는 인터랙티브로:
@@ -108,7 +114,7 @@ custom_providers:
 ```
 
 ### 반드시 만족해야 할 2가지 조건 (도입 가능/불가의 분기점)
-1. **컨텍스트 ≥ 64K 토큰.** Hermes는 멀티스텝 tool-calling 동안 working memory를 유지하느라 최소 64,000 토큰을 요구한다. 사내 모델 서빙이 이보다 작게 잘려 있으면 **에이전트가 제대로 작동하지 않는다.** (참고: Ollama는 기본 4K → `OLLAMA_CONTEXT_LENGTH=64000 ollama serve`로 서버 측에서 올려야 함)
+1. **컨텍스트 ≥ 64K 토큰.** 64K는 기존 조사에서 제안한 값이며 현재 필수 최소값은 확인하지 못했다. 서버가 실제로 허용하는 컨텍스트와 긴 tool-call 흐름의 성공을 측정한다. (참고: Ollama는 기본 4K → `OLLAMA_CONTEXT_LENGTH=64000 ollama serve`로 서버 측에서 올려야 함)
 2. **Tool calling(function calling) 지원.** Hermes는 도구 호출로 동작한다. 사내 엔드포인트가 OpenAI 호환 `tools`/`tool_calls`를 지원해야 한다. Kimi-K2 계열은 에이전트형 도구 호출에 강하고 Qwen3 계열도 function calling을 지원하므로 가능성이 높지만, **사내 서빙(vLLM 등)이 tool-call 파서를 켜고 떴는지**가 관건이다.
    - vLLM 직접 서빙이라면: `--enable-auto-tool-choice --tool-call-parser hermes`(또는 모델군에 맞는 파서)
    - 이미 사내 플랫폼이 게이트웨이로 감싸 제공한다면, 그 게이트웨이가 tool_calls를 패스스루하는지 확인.
@@ -116,7 +122,7 @@ custom_providers:
 ### 임베딩(BGE-M3)
 Hermes의 메모리 회상은 기본적으로 FTS5(전문 검색) + LLM 요약 기반이다. 별도 벡터 임베딩이 필수는 아니지만, 사내 BGE-M3가 OpenAI 호환 임베딩 API로 서빙된다면 향후 메모리/RAG 보강에 끌어 쓸 여지가 있다(공식 필수 항목은 아님).
 
-> **요약 판단**: 사내 LLM이 "OpenAI 호환 + 64K 컨텍스트 + tool calling" 세 가지를 만족하면 **Hermes는 사내 모델만으로 완전 로컬 구동 가능**하다. 외부 API 한 줄도 안 쓴다. 막히는 건 모델이 아니라 (a) 설치 도메인 접근, (b) 사내 서빙의 tool-call/컨텍스트 설정 두 군데다.
+> **요약 판단**: 사내 LLM이 "OpenAI 호환 + 64K 컨텍스트 + tool calling" 세 가지를 만족하면 **주 추론 모델을 사내 endpoint로 연결하는 후보 구성**이다. 비전·웹·메모리 보조 provider와 메신저·설치·업데이트의 외부 통신까지 따로 확인해야 하며, 외부 API 0은 미검증이다. 막히는 건 모델이 아니라 (a) 설치 도메인 접근, (b) 사내 서빙의 tool-call/컨텍스트 설정 두 군데다.
 
 ---
 
@@ -139,7 +145,7 @@ Hermes의 메모리 회상은 기본적으로 FTS5(전문 검색) + LLM 요약 �
 → **개발/리뷰는 Claude Code, 상시 자동화·알림·반복 작업은 Hermes**로 나누면 충돌 없이 보완된다.
 
 ### 3) 같은 사내 LLM 백엔드 공유
-둘 다 결국 "OpenAI 호환 사내 엔드포인트"를 백엔드로 쓸 수 있으므로, **모델 인프라를 공유**하고 프런트(대화형 vs 상주형)만 다르게 가져갈 수 있다.
+Hermes의 custom endpoint 지원과 별개로 Claude Code가 임의 OpenAI 호환 endpoint를 직접 지원한다고 가정하면 안 된다. Claude Code의 provider 계약·허용된 gateway 변환은 미확인이다. 지원을 검증한 경우에만 **모델 인프라 공유**를 검토하고 프런트(대화형 vs 상주형)만 다르게 가져갈 수 있다.
 
 > **주의**: Hermes를 *Claude 모델*로 돌리려면 `provider: anthropic`(또는 Bedrock)을 쓰는데, 이는 **외부 Anthropic API 호출**이라 우리 사내 방화벽 정책상 막힌다. 따라서 "Hermes를 Claude로 구동"은 사내선 불가, **"Hermes를 사내 LLM으로 구동 + Claude Code는 별도 도구로 병행"**이 맞는 그림이다.
 
@@ -162,7 +168,7 @@ Hermes의 메모리 회상은 기본적으로 FTS5(전문 검색) + LLM 요약 �
 
 ## 한 줄 결론
 
-> **사내 LLM 활용**: OpenAI 호환 + 64K 컨텍스트 + tool calling 충족 시 **완전 로컬 구동 가능**(외부 API 0). 막히는 건 모델이 아니라 설치 경로와 사내 서빙 설정.
+> **사내 LLM 활용**: OpenAI 호환 + 64K 컨텍스트 + tool calling 충족 시 **사내 추론 endpoint 연결 후보**(전체 외부 통신 0은 미검증). 막히는 건 모델이 아니라 설치 경로와 사내 서빙 설정.
 > **Claude Code 조합**: 한 몸으로 합치는 게 아니라, **스킬 표준(agentskills.io) 공유 + 역할 분담(대화형 개발=Claude Code / 상주 자동화=Hermes) + 사내 LLM 백엔드 공유**의 형태로 보완 가능.
 
 ---
@@ -171,7 +177,6 @@ Hermes의 메모리 회상은 기본적으로 FTS5(전문 검색) + LLM 요약 �
 - [하네스 가이드 개요](./README.md)
 - [하네스 설정 맵](./01_harness_settings.md)
 - [에이전트와 스킬](../05_agents_and_skills.md)
-- [Harness Engineering for LLM](../../../ai-dt/mcp/harness-engineering-llm.md)
 
 ## 참고 자료 (References)
 - [NousResearch/hermes-agent (GitHub)](https://github.com/NousResearch/hermes-agent)

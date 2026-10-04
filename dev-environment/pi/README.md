@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [pi, coding-agent, mcp, codemode, durable]
 level: intermediate
 last_updated: 2026-10-04
 ---
 
 # Pi 1.0.1 코딩 에이전트 활용 가이드
+
+> [!info] 2026-10-04 검토 범위
+> v1.0.1에 고정된 학습 가이드다. 공식 해당 릴리스의 존재와 문서 링크를 확인했다. 본문의 기존 실행 기록은 당시 기록으로 보존했으며 이번 정리의 재실행 결과와 구분한다. 실제 provider·MCP·장애 복구 검증은 미실행이다.
 
 > 터미널에서 코딩하는 Pi와 장기 실행 서비스를 만드는 Pi Durable을 구분하고, 설치부터 실전 개발·확장·자동화까지 익힌다.
 
@@ -17,7 +23,7 @@ Pi는 모델 요청, 도구 실행, 대화 컨텍스트, 세션 저장을 연결
 ### 조사 기준과 검증 범위
 
 - 조사일: **2026-10-04, 한국 시간**.
-- 최신 안정 릴리스: **v1.0.1**. v1.0.0은 10월 1일, v1.0.1은 10월 3일 UTC에 공개됐다. [1.0.0](https://github.com/earendil-works/pi/releases/tag/v1.0.0), [1.0.1](https://github.com/earendil-works/pi/releases/tag/v1.0.1)
+- 이 문서의 기준 릴리스: **v1.0.1** (확인일의 전체 최신성은 이번 정리에서 별도로 입증하지 않음). v1.0.0은 10월 1일, v1.0.1은 10월 3일 UTC에 공개됐다. [1.0.0](https://github.com/earendil-works/pi/releases/tag/v1.0.0), [1.0.1](https://github.com/earendil-works/pi/releases/tag/v1.0.1)
 - npm 패키지: `@earendil-works/pi-coding-agent@1.0.1` 및 `@earendil-works/pi-durable@1.0.1`. Rust 동명 프로젝트와 구분한다. [CLI manifest](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/package.json), [Durable manifest](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/package.json)
 - 이 PC의 `pi --version` 결과도 **1.0.1**이다. 전역 설정이나 인증 파일은 수정하지 않았다.
 - 공식 v1.0.1 소스와 문서를 확인했고, 별도 임시 설정 디렉터리에서 CLI 도움말을 확인했다. 유료 모델 호출, 사용자 프로젝트 수정, 실제 MCP 서버 연결은 수행하지 않았다.

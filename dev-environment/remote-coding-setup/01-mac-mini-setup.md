@@ -1,4 +1,14 @@
+---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
+tags: [dev-environment]
+---
+
 # Mac Mini 서버 설정 가이드
+
+> [!info] 2026-10-04 검토 범위
+> 구성 예제이며 실제 Mac Mini·Galaxy Tab 연결은 미검증이다. `0.0.0.0`은 전체 인터페이스에서 대기하므로 Tailscale만 노출된다고 가정하지 않는다. 버전·기기 요구사항과 운영 경계는 [목차](./README.md)를 먼저 확인한다.
 
 이 문서는 Mac Mini를 `Termius SSH + code-server` 전용 원격 개발 서버로 정리하는 방법을 설명합니다.
 
@@ -67,7 +77,7 @@ Tailscale 관리 콘솔에서 `MagicDNS`를 켜 두면 `mac-mini` 이름으로 �
 tailscale netcheck
 ```
 
-`direct` 경로가 잡히면 가장 좋고, `relay`만 잡히면 속도가 느릴 수 있습니다.
+`netcheck`는 이 기기의 네트워크 상태를 점검합니다. 특정 peer 경로는 해당 peer를 대상으로 `tailscale ping <peer>`와 `tailscale status`를 확인합니다. direct/relay별 실제 지연은 측정해야 합니다.
 
 ---
 
@@ -102,6 +112,8 @@ echo "ssh-ed25519 AAAA... galaxy-tab-termius" >> ~/.ssh/authorized_keys
 ```
 
 ### 2.3 선택: SSH 서버 안정화 옵션
+
+기존 연결을 유지한 채 다른 창에서 등록한 공개키로 로그인 성공을 먼저 확인합니다. `sshd -t`로 구문을 검사하고 실패하면 적용하지 않습니다. `PasswordAuthentication no`만으로 모든 다른 인증 방식이 비활성화되는 것은 아닙니다. launchctl 재시작 방식·Remote Login 권한은 macOS 버전에 맞게 확인해야 하며 이번 검토에서는 실행하지 않았습니다.
 
 `/etc/ssh/sshd_config`에 아래 항목을 검토합니다.
 
@@ -233,11 +245,11 @@ EOF
 설정 포인트:
 
 - `bind-addr: 0.0.0.0:8080`
-  Tailscale 네트워크에서 Galaxy Tab이 접속할 수 있게 합니다.
+  전체 인터페이스에서 대기합니다. LAN에서도 접근될 수 있으므로 Tailscale 전용 제한은 별도 bind 또는 firewall 정책이 필요합니다.
 - `auth: password`
   브라우저에서 비밀번호를 요구하게 합니다.
 - `cert: false`
-  Tailscale 내부망에서 간단히 운영할 때 흔히 쓰는 설정입니다.
+  서비스 자체 TLS가 없습니다. Tailscale 경로 암호화와 브라우저 HTTPS는 서로 다르며 외부 인터페이스 접속의 보호를 보장하지 않습니다.
 
 ### 4.3 서비스 시작
 
@@ -293,11 +305,13 @@ code-server .
 
 ## 5. Claude Code 및 개발 도구
 
-### 5.1 Node.js 설치
+### 5.1 npm 설치 경로의 Node.js 조건
+
+2026-10-04 [Claude Code 공식 설치 문서](https://code.claude.com/docs/en/setup)는 npm 경로에 Node.js 22 이상을 명시한다. 독립 native 설치는 별도 경로다. 아래 `/opt/homebrew`는 Apple Silicon 기본 Homebrew 경로이며 Intel Mac은 `brew --prefix node@22` 결과로 교체한다. 설치·자동 갱신은 이번 검토에서 실행하지 않았다.
 
 ```bash
-brew install node@20
-echo 'export PATH="/opt/homebrew/opt/node@20/bin:$PATH"' >> ~/.zshrc
+brew install node@22
+echo 'export PATH="/opt/homebrew/opt/node@22/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 node --version
 npm --version
@@ -313,14 +327,15 @@ claude --version
 ### 5.3 인증
 
 ```bash
-claude login
+claude auth login
 ```
 
 또는 API 키를 쓸 경우:
 
 ```bash
-echo 'export ANTHROPIC_API_KEY="your-api-key"' >> ~/.zshrc
-source ~/.zshrc
+# 키를 셸 설정 파일에 기록하지 않고 현재 세션에만 입력 (zsh)
+read -rs 'ANTHROPIC_API_KEY?API key: '
+export ANTHROPIC_API_KEY
 ```
 
 ### 5.4 Python/uv 환경 확인
@@ -389,7 +404,7 @@ open -a Tailscale
 ```bash
 ps aux | grep -v grep | grep code-server
 ps aux | grep -v grep | grep tailscale
-cat ~/.config/code-server/config.yaml
+grep -E '^(bind-addr|auth|cert):' ~/.config/code-server/config.yaml
 curl -v http://127.0.0.1:8080/healthz
 ```
 

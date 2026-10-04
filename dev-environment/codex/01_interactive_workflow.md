@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, cli, interactive, workflow]
 level: intermediate
 last_updated: 2026-03-07
 ---
 
 # 대화형 작업 흐름 (Interactive Workflow)
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](./current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > Codex를 가장 잘 쓰는 방법은 "질문"이 아니라 "작업"을 맡기는 것이다.
 

@@ -1,4 +1,7 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [vlm, ocr, ppt, pdf, document-extraction, structured-output, company-api]
 level: intermediate
 last_updated: 2026-03-11
@@ -6,9 +9,14 @@ last_updated: 2026-03-11
 
 # PPT/PDF 슬라이드 이미지 -> 구조화 텍스트 추출을 위한 OCR-first 파이프라인
 
+> [!info] 2026-10-04 검토 범위
+> UI grounding과 문서 OCR의 용도를 구분했다. 공개 모델 카드의 지원 경로 확인과 사내 GPU 실측은 다르다. 아래 모델별 품질 우열·GPU 수·메모리 설정은 미실측 가설이며 고정 버전 환경과 샘플로 평가해야 한다.
+
 > 전제: 대형 모델은 사내 API로만 사용하고, 로컬 GPU에는 OCR/문서 특화 모델과 필요 시 중형 모델만 둔다. 목표는 DRM 때문에 이미지로 캡처한 슬라이드에서 텍스트, 표, 레이아웃, 다이어그램 단서를 최대한 손실 없이 뽑아낸 뒤 사내 API 모델이 최종 JSON을 정리하게 하는 것이다.
 
-## 왜 이 구성이 맞는가?
+## 이 구성을 검토하는 이유
+
+아래 성능·비용 우열은 사내 샘플 측정 전의 설계 가설이다. 같은 입력에서 단일 VLM과 OCR-first 후보를 비교하기 전에는 어느 쪽이 더 정확하거나 저렴하다고 단정하지 않는다.
 
 - **이미지 기반 추출에서는 OCR이 1차 병목**이다. 대형 VLM이 강한 것은 의미 해석과 정리이지, 작은 글씨/표 셀/읽기 순서 복원 자체가 아니다.
 - **슬라이드는 일반 문서보다 난도가 높다**. 텍스트 박스, 표, 차트, 도형, 캡션, 화살표, 작은 주석이 섞여 있어서 단일 범용 VLM에만 맡기면 누락이 생기기 쉽다.
@@ -187,9 +195,11 @@ PaddleOCR-VL-1.5
 2. 1차 OCR block JSON
 3. hotspot 재인식 결과
 
-이렇게 해야 큰 모델이 "이미지 직접 보기"와 "OCR 증거"를 함께 사용해 더 안정적으로 정리한다.
+원문과 OCR 증거를 함께 제공하는 설계다. 실제 정확도 향상은 평가해야 하며 OCR 결과도 오류가 있을 수 있다.
 
-## 최종 JSON 스키마 예시
+confidence는 backend가 제공하고 의미가 확인된 경우에만 저장한다. 미제공이면 `null` 또는 `unknown`으로 두며 모든 모델의 점수를 같은 확률로 해석하지 않는다.
+
+## 최종 JSON 형태 예시
 
 ```json
 {
@@ -223,7 +233,7 @@ PaddleOCR-VL-1.5
 
 ## 오케스트레이션 예시
 
-아래 코드는 특정 OCR 라이브러리에 종속되지 않는 파이프라인 골격이다.
+아래는 미구현 함수를 포함한 파이프라인 골격이며 그대로 실행하면 `NotImplementedError`가 난다. endpoint의 image/JSON-mode 지원도 별도 확인한다. `json.loads`는 문법만 검사하므로 필수 필드·타입·bbox와 원문 일치 검증을 추가한다.
 
 ```python
 import json
@@ -305,7 +315,7 @@ def finalize_with_company_api(image_b64: str, ocr_result: dict, hotspot_result: 
 - 영문 인쇄 PDF OCR 특화 보강은: **olmOCR-2-7B-1025**
 - 초경량 구조화 보조는: **granite-docling-258M**
 
-당신의 조건에서는 **"OCR specialist + crop OCR + company API large model"**이 가장 강한 설계다.
+**"OCR specialist + crop OCR + company API large model"**을 후보 설계로 평가한다. 사내 입력의 정확도·지연·비용 비교는 미확인이다.
 
 ## 참고 링크
 
@@ -329,7 +339,6 @@ def finalize_with_company_api(image_b64: str, ocr_result: dict, hotspot_result: 
 
 ## 관련 문서
 
-- [스크린샷 + VLM 기반 추출 파이프라인](../../../ai-dt/rag/token_strategy/when_drm/screenshot-vlm-pipeline.md)
 - [VLM Cloud Notes (README)](../README.md)
 - [Private Cloud에서 vLLM 시작](../private-cloud-vllm-next-steps.md)
 - [로컬 PC에서 이미지 전송](../local-pc-vllm-image-guide.md)

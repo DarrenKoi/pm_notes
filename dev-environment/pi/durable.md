@@ -1,4 +1,7 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [pi, durable, agent, typescript]
 level: intermediate
 last_updated: 2026-10-04
@@ -6,13 +9,16 @@ last_updated: 2026-10-04
 
 # Pi Durable 1.0.1 사용 가이드
 
+> [!info] 2026-10-04 검토 범위
+> v1.0.1에 고정된 학습 가이드다. 공식 해당 릴리스의 존재와 문서 링크를 확인했다. 본문의 기존 실행 기록은 당시 기록으로 보존했으며 이번 정리의 재실행 결과와 구분한다. 실제 provider·MCP·장애 복구 검증은 미실행이다.
+
 > 대화 기록과 실행 체크포인트를 함께 저장하는 TypeScript 라이브러리. 개인 터미널 작업은 Pi CLI로 시작하고, 재시작 후 자동으로 작업을 이어가는 앱이 필요할 때 Durable을 사용한다.
 
 ## 왜 필요한가? (Why)
 
 2026-10-01 발표된 Pi Durable은 Pi coding agent를 대체하는 CLI가 아니다. 여러 대화, 여러 사용자, 여러 접속 화면을 가진 에이전트 애플리케이션을 만들기 위한 실행 기반(harness)이다. 예를 들어 웹에서 제출한 조사 작업이 서버 재배포 후에도 이어지고, 다른 브라우저가 현재 진행 상태에 다시 접속하게 만들 수 있다. 공식 발표는 별도 실험 패키지임을 명시한다. [공식 발표](https://earendil.com/posts/pi-durable/)
 
-이 문서는 확인일 기준 최신 안정 릴리스 태그 **v1.0.1**의 패키지와 소스를 기준으로 작성했다. Pi 전체의 1.0 버전과 별개로 Durable API는 여전히 experimental이며 릴리스 사이 예고 없이 바뀔 수 있다. 실습에서는 직접 의존성을 1.0.1로 고정하고 lockfile도 보관한다. [릴리스](https://github.com/earendil-works/pi/releases/tag/v1.0.1), [패키지](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/package.json), [README](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/README.md)
+이 문서는 이 가이드의 기준 릴리스 태그 **v1.0.1**의 패키지와 소스를 기준으로 작성했다. Pi 전체의 1.0 버전과 별개로 Durable API는 여전히 experimental이며 릴리스 사이 예고 없이 바뀔 수 있다. 실습에서는 직접 의존성을 1.0.1로 고정하고 lockfile도 보관한다. [릴리스](https://github.com/earendil-works/pi/releases/tag/v1.0.1), [패키지](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/package.json), [README](https://github.com/earendil-works/pi/blob/v1.0.1/packages/durable/README.md)
 
 ## 핵심 개념 (What)
 

@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, cli, sandbox, approval, profiles, config]
 level: intermediate
 last_updated: 2026-03-07
 ---
 
 # 컨텍스트, 샌드박스, 프로필 (Context, Sandbox, Profiles)
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](./current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > Codex 품질은 모델보다도 `무엇을 볼 수 있는지`, `무엇을 실행할 수 있는지` 설정에 크게 좌우된다.
 
@@ -48,7 +54,6 @@ codex -s workspace-write "테스트 실패를 고치고 검증해줘."
 
 | 정책 | 의미 | 추천 상황 |
 |------|------|-----------|
-| `untrusted` | 신뢰된 명령만 자동 허용 | 보수적으로 시작할 때 |
 | `on-request` | 필요 시 모델이 승인 요청 | 대화형 작업 기본값 |
 | `never` | 승인 없이 진행, 실패를 바로 모델에 반환 | 비대화형/자동화 |
 
@@ -56,7 +61,7 @@ codex -s workspace-write "테스트 실패를 고치고 검증해줘."
 
 ```bash
 codex -a on-request
-codex exec -a never "pytest 실패 원인을 찾고 가능한 범위만 수정해줘."
+codex exec -c approval_policy=never "pytest 실패 원인을 찾고 가능한 범위만 수정해줘."
 ```
 
 ## 빠른 조합
@@ -64,10 +69,10 @@ codex exec -a never "pytest 실패 원인을 찾고 가능한 범위만 수정�
 ### 일반적인 실무 기본값
 
 ```bash
-codex --full-auto
+codex -s workspace-write -a on-request
 ```
 
-`--full-auto`는 `-a on-request` + `--sandbox workspace-write` 조합이다.
+과거 `--full-auto`가 표현하던 조합이다. 현재 로컬 도움말에는 해당 단축 옵션이 없다.
 
 ### 위험하지만 강한 모드
 
@@ -82,6 +87,8 @@ codex --dangerously-bypass-approvals-and-sandbox
 Codex는 `~/.codex/config.toml` 설정을 읽고, 실행 시 `-p`와 `-c`로 덮어쓸 수 있다.
 
 ### 프로필 사용
+
+0.160.0은 `$CODEX_HOME/<이름>.config.toml` 파일을 읽는다. 파일 예제는 [버전별 계약](./current-cli-contract.md)을 따른다.
 
 ```bash
 codex -p work
@@ -130,9 +137,9 @@ codex --search \
 
 ## 추천 설정 원칙
 
-1. 기본은 `workspace-write` + `on-request` 또는 `--full-auto`
-2. 큰 저장소에서는 항상 `-C`로 범위를 줄인다
-3. 자동화는 `exec` + `-a never` 쪽이 일관성이 좋다
+1. 기본은 `workspace-write` + `on-request` 조합
+2. 큰 저장소에서는 `-C`로 작업 위치를 좁히고 프롬프트로 대상 파일을 지정한다. 파일 읽기 격리는 별도 권한 정책이 필요하다
+3. 자동화는 `exec` + `-c approval_policy=never` 쪽이 일관성이 좋다
 4. 위험한 모드는 편의보다 추적 가능성과 안전성을 먼저 따진다
 
 ## 관련 문서

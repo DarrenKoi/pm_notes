@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [terminal, zsh, cat, head, tail, less, pipe, redirect]
 level: beginner
 last_updated: 2026-02-09
 ---
 
 # 파일 내용 조회 (File Content)
+
+> [!info] 2026-10-04 검토 범위
+> macOS 로컬 매뉴얼과 임시 파일 실습으로 핵심 명령의 조건을 확인했다. BSD/GNU 옵션과 설치 도구 버전은 각각의 `man`·`--help`를 확인한다. 운영 파일 삭제·권한 변경은 실행하지 않았다.
 
 > 파일 내용을 확인하고, 정렬/필터링하고, 비교하는 명령어
 
@@ -123,8 +129,10 @@ wc -l *.py                   # 각 Python 파일의 줄 수
 **실무 예제**: 코드 라인 수 확인
 
 ```bash
-find . -name "*.py" | xargs wc -l | tail -1    # Python 코드 총 라인 수
+find . -type f -name "*.py" -print0 | xargs -0 wc -l    # 공백/줄바꿈 파일명 보존; 배치별 합계일 수 있음
 ```
+
+`wc -l`은 줄바꿈 문자 수를 센다. 마지막 줄에 줄바꿈이 없으면 사람이 보는 마지막 행과 다를 수 있다. `sort`·`cut`의 쉼표 필드 예제는 따옴표 안 쉼표와 여러 줄 필드가 없는 단순 데이터에만 적용한다. 일반 CSV는 Python 표준 `csv` 같은 parser를 사용한다.
 
 ### `sort` — 정렬
 
@@ -140,12 +148,12 @@ sort -u file.txt             # 정렬 + 중복 제거
 ### `uniq` — 연속 중복 제거
 
 ```bash
-sort file.txt | uniq          # 정렬 후 중복 제거 (sort 필수)
+sort file.txt | uniq          # 정렬 후 중복 제거 (이미 중복이 인접하면 sort 불필요)
 sort file.txt | uniq -c       # 중복 횟수 카운트
 sort file.txt | uniq -d       # 중복된 줄만 출력
 ```
 
-> `uniq`은 **연속된** 중복만 제거하므로, 반드시 `sort`와 함께 사용해야 전체 중복을 제거할 수 있다.
+> `uniq`은 **연속된** 중복만 제거하므로, 전체 중복 제거에는 동일한 줄이 인접하도록 묶어야 한다. 정렬은 그 방법 중 하나이며 원래 순서를 바꾼다.
 
 ### `diff` — 파일 비교
 

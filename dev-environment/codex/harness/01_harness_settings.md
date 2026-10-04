@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, harness, settings, sandbox, mcp]
 level: intermediate
 last_updated: 2026-04-28
 ---
 
 # 하네스 설정 맵
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](../current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > 하네스 설정은 "모델 답변 스타일"이 아니라 "모델이 작업하는 환경"을 정하는 값이다.
 
@@ -19,7 +25,7 @@ codex -C web-development/python/flask/job-scheduler
 | 설정 | 하네스 역할 | 권장 기준 |
 |------|-------------|-----------|
 | `-C`, `--cd` | 모델이 작업할 루트 지정 | 저장소 루트보다 모듈 폴더 우선 |
-| `--add-dir` | 추가 읽기/쓰기 경로 허용 | 산출물 폴더처럼 필요한 경로만 추가 |
+| `--add-dir` | 추가 쓰기 경로 허용 | 산출물 폴더처럼 필요한 경로만 추가 |
 | `project_root_markers` | 프로젝트 루트 탐지 기준 | monorepo에서 루트 오인 방지 |
 | `project_doc_max_bytes` | 프로젝트 지침 최대 로딩 크기 | 핵심 규칙이 잘리지 않게 조정 |
 | `project_doc_fallback_filenames` | `AGENTS.md` 외 지침 파일명 | 팀 가이드 파일을 Codex 지침으로 연결 |
@@ -58,8 +64,7 @@ codex -C web-development/python/flask/job-scheduler
 | `sandbox_mode` | `workspace-write` | 작업 폴더 안 수정 허용. 일반 개발 기본값 |
 | `sandbox_mode` | `danger-full-access` | 제한 없음. 격리 환경이 아니면 피함 |
 | `approval_policy` | `on-request` | 필요할 때 승인 요청. 대화형 기본값 |
-| `approval_policy` | `untrusted` | 신뢰되지 않은 명령 승인 요청. 보수적 설정 |
-| `approval_policy` | `never` | 승인 없이 진행. 읽기 전용 자동화에만 적합 |
+| `approval_policy` | `never` | 승인 질문 생략. 샌드박스 밖 작업은 실패하며 쓰기 가능 여부는 sandbox 정책으로 결정 |
 
 `workspace-write`를 쓸 때는 쓰기 범위를 명시적으로 관리한다.
 
@@ -97,7 +102,7 @@ writable_roots = ["/tmp"]
 | `mcp_servers.<id>.required` | 초기화 실패 처리 | 필수 도구만 `true` |
 | app tool approval | 앱/커넥터 승인 정책 | destructive/open-world tool은 prompt 우선 |
 
-예시:
+실제 서버의 URL·인증·도구 이름을 확인해서 바꿔야 하는 개념 예시다. 아래 도구 이름과 연결 성공은 미확인이다.
 
 ```toml
 [mcp_servers.github]
@@ -121,29 +126,24 @@ tool_timeout_sec = 30
 
 ## 8. 추천 프로필 예시
 
+0.160.0은 프로필마다 파일을 따로 둔다. 아래 주석의 경로별 내용을 별도 파일로 저장한다.
+
 ```toml
-# ~/.codex/config.toml
-
-[profiles.vibe-research]
+# ~/.codex/vibe-research.config.toml
 sandbox_mode = "read-only"
 approval_policy = "on-request"
 model_reasoning_effort = "medium"
-
-[profiles.vibe-code]
-sandbox_mode = "workspace-write"
-approval_policy = "on-request"
-model_reasoning_effort = "medium"
-
-[profiles.vibe-deep-fix]
-sandbox_mode = "workspace-write"
-approval_policy = "on-request"
-model_reasoning_effort = "high"
-
-[profiles.vibe-ci-readonly]
-sandbox_mode = "read-only"
-approval_policy = "never"
-model_reasoning_effort = "low"
 ```
+
+```toml
+# ~/.codex/vibe-code.config.toml
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+model_reasoning_effort = "medium"
+```
+
+깊은 분석용 `vibe-deep-fix.config.toml`은 code 예제에서 지원되는 추론 수준을 `high`로 조정한다. CI 읽기 전용 `vibe-ci-readonly.config.toml`은 research 예제에서 `approval_policy = "never"`와 지원되는 추론 수준 `low`를 사용한다. 각 값의 모델 지원 여부는 별도 확인한다.
+
 
 사용 예:
 

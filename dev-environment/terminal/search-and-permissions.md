@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [terminal, zsh, grep, find, chmod, chown, xargs, permissions]
 level: beginner
 last_updated: 2026-02-09
 ---
 
 # 검색과 권한 (Search & Permissions)
+
+> [!info] 2026-10-04 검토 범위
+> macOS 로컬 매뉴얼과 임시 파일 실습으로 핵심 명령의 조건을 확인했다. BSD/GNU 옵션과 설치 도구 버전은 각각의 `man`·`--help`를 확인한다. 운영 파일 삭제·권한 변경은 실행하지 않았다.
 
 > 파일/텍스트 검색, 파일 권한 관리, 명령어 조합을 위한 고급 명령어
 
@@ -48,7 +54,7 @@ Unix/Linux 파일 시스템의 권한은 세 그룹으로 나뉜다:
 
 ### 정규 표현식 기초 메타문자
 
-`grep`과 `find`에서 사용하는 기본 정규 표현식:
+`grep`의 기본 정규식(BRE)과 `grep -E`의 확장 정규식(ERE)을 구분한다. 아래 `+`는 ERE에서 반복을 뜻한다. `find -name`은 정규식이 아니라 셸 wildcard(`*`, `?`, `[]`)를 사용한다. `find -regex`의 문법은 구현별 매뉴얼을 따른다:
 
 | 메타문자 | 의미 | 예시 |
 |----------|------|------|
@@ -79,7 +85,7 @@ grep "pattern" *.log             # 여러 파일에서 검색
 | `-n` | 줄 번호 표시 | `grep -n "error" app.log` |
 | `-i` | 대소문자 무시 | `grep -i "error" app.log` |
 | `-l` | 매칭된 파일 이름만 출력 | `grep -rl "import" ./src` |
-| `-c` | 매칭 횟수만 출력 | `grep -c "ERROR" app.log` |
+| `-c` | 선택된 줄 수 출력 (한 줄의 여러 매치는 한 번) | `grep -c "ERROR" app.log` |
 | `-v` | 매칭되지 않는 줄 출력 (반전) | `grep -v "^#" config.txt` |
 | `-A n` | 매칭 후 n줄 함께 출력 (After) | `grep -A 3 "ERROR" app.log` |
 | `-B n` | 매칭 전 n줄 함께 출력 (Before) | `grep -B 2 "ERROR" app.log` |
@@ -93,7 +99,7 @@ grep "pattern" *.log             # 여러 파일에서 검색
 grep -rn --include="*.py" "def " ./src
 
 # TODO 주석 찾기 (대소문자 무시)
-grep -rni "todo\|fixme\|hack" ./src
+grep -rniE "todo|fixme|hack" ./src
 
 # 주석이 아닌 줄에서 특정 import 찾기
 grep -rn --include="*.py" "^from fastapi" ./src
@@ -120,7 +126,7 @@ find . -type d -name "src"       # 디렉토리만 찾기
 | `-iname` | 파일명 매칭 (대소문자 무시) | `-iname "readme*"` |
 | `-type f` | 일반 파일만 | `-type f` |
 | `-type d` | 디렉토리만 | `-type d` |
-| `-size +10M` | 10MB 초과 파일 | `-size +10M` |
+| `-size +10M` | 10MiB 단위 기준 초과 파일 | `-size +10M` |
 | `-size -1k` | 1KB 미만 파일 | `-size -1k` |
 | `-mtime -7` | 7일 이내 수정된 파일 | `-mtime -7` |
 | `-mtime +30` | 30일 이전 수정된 파일 | `-mtime +30` |
@@ -133,7 +139,7 @@ find . -type d -name "src"       # 디렉토리만 찾기
 # 최근 24시간 내 수정된 Python 파일
 find . -name "*.py" -mtime -1
 
-# 10MB 이상의 큰 파일 찾기
+# 10MiB 단위로 올림한 크기가 10보다 큰 파일 찾기
 find . -type f -size +10M
 
 # 빈 디렉토리 찾기
@@ -143,9 +149,13 @@ find . -type d -empty
 find . -name "*.js" -not -path "*/node_modules/*"
 
 # 찾은 파일에 대해 명령 실행 (-exec)
-find . -name "*.tmp" -exec rm {} \;
+find . -type f -name "*.tmp" -print
+# 위 목록 확인 후 삭제 전 질문
+find . -type f -name "*.tmp" -exec rm -i {} +
 find . -name "*.py" -exec grep -l "import os" {} \;
 ```
+
+`-mtime`은 24시간 단위의 경계·반올림 규칙을 구현별로 확인한다. 파일 이름의 공백 안전성과 작업 도중 파일 교체에 대한 안전성은 다르다. `-exec`·NUL 구분을 써도 적대적으로 바뀌는 디렉터리의 삭제 작업을 안전하다고 보장하지 않는다.
 
 ### `chmod` — 파일 권한 변경 (Change Mode)
 
@@ -159,7 +169,7 @@ chmod 600 ~/.ssh/id_rsa          # rw------- (SSH 키, 소유자만)
 chmod +x script.sh               # 실행 권한 추가
 chmod u+w file.txt               # 소유자에게 쓰기 권한 추가
 chmod go-w file.txt              # 그룹과 기타에서 쓰기 권한 제거
-chmod -R 755 directory/          # 재귀적으로 권한 변경
+chmod -R 755 directory/          # 모든 파일에도 실행 권한 부여; 일반 문서에는 부적합
 ```
 
 기호 표기법 문법: `[ugoa][+-=][rwx]`
@@ -199,21 +209,23 @@ chown -R user:group directory/   # 재귀적으로 변경
 
 ```bash
 명령어1 | xargs 명령어2
-# 명령어1의 출력 각 줄을 명령어2의 인자로 전달
+# 기본은 공백·탭·줄바꿈 분리 및 따옴표/역슬래시 해석; 한 줄=한 인자가 아님
 ```
 
 ```bash
 # 찾은 파일 삭제
-find . -name "*.tmp" | xargs rm
+find . -type f -name "*.tmp" -print
+# 목록 확인 후에만 실행 (각 파일 삭제 전 질문)
+find . -type f -name "*.tmp" -exec rm -i {} +
 
 # 파일 목록에 대해 grep 실행
-find . -name "*.py" | xargs grep "import os"
+find . -type f -name "*.py" -exec grep "import os" {} +
 
 # 파일명에 공백이 있을 때 안전하게 처리
 find . -name "*.txt" -print0 | xargs -0 wc -l
 
 # 한 번에 하나씩 실행 (-I로 위치 지정)
-find . -name "*.bak" | xargs -I {} mv {} {}.old
+find . -type f -name "*.bak" -print0 | xargs -0 -I {} mv -i {} {}.old
 ```
 
 #### 주요 옵션
@@ -229,16 +241,18 @@ find . -name "*.bak" | xargs -I {} mv {} {}.old
 
 ```bash
 # 프로젝트에서 Python 파일의 총 라인 수
-find . -name "*.py" -not -path "./.venv/*" | xargs wc -l
+find . -type f -name "*.py" -not -path "./.venv/*" -exec wc -l {} +
 
 # 특정 패턴을 포함하는 파일 목록을 찾아 편집기로 열기
-grep -rl "deprecated" ./src | xargs code
+find ./src -type f -exec grep -lZ "deprecated" {} + | xargs -0 code
 
 # Git에서 추적하지 않는 파일 삭제
-git ls-files --others --exclude-standard | xargs rm
+git ls-files --others --exclude-standard
+# 먼저 목록 확인. -z는 공백/줄바꿈 파일명을 보존하며 -i는 삭제 전 확인
+git ls-files -z --others --exclude-standard | xargs -0 rm -i
 
 # 여러 파일의 첫 줄(헤더) 확인
-find . -name "*.csv" | xargs -I {} head -1 {}
+find . -type f -name "*.csv" -exec head -n 1 {} +
 ```
 
 ## macOS(BSD) vs Linux(GNU) 차이점
@@ -252,7 +266,7 @@ macOS의 명령어는 BSD 계열이고, 대부분의 Linux는 GNU 계열이다. 
 | `find` | `-delete` 옵션 위치 중요 | 동일 |
 | `xargs` | `-I` 뒤에 replace-str 필수 | 동일 |
 | `date` | `date -v+1d` (상대 날짜) | `date -d "+1 day"` |
-| `readlink` | `readlink` (절대 경로 미지원) | `readlink -f` |
+| `readlink` | 현재 로컬 매뉴얼은 `readlink -f` 지원; 구버전은 확인 필요 | `readlink -f` |
 
 GNU 버전이 필요하면 Homebrew로 설치할 수 있다:
 

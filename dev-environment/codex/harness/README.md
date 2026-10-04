@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [codex, harness, vibe-coding, governance]
 level: intermediate
 last_updated: 2026-04-28
 ---
 
 # 바이브 코딩 하네스 가이드
+
+> [!info] 2026-10-04 검토 범위
+> 초기 작성 시점과 예제를 보존하면서 확인 가능한 옵션을 수정했다. 현재 로컬 0.160.0과 과거 0.111.0의 차이는 [버전별 계약](../current-cli-contract.md)을 먼저 읽는다. 실제 모델·MCP 호출은 미실행이다.
 
 > 바이브 코딩을 빠르게 하되, 모델이 볼 수 있는 것과 실행할 수 있는 것, 검증해야 하는 것을 명시적으로 제한하는 운영 가이드.
 
@@ -57,4 +63,3 @@ LLM/에이전트 환경에서 하네스(harness)는 모델 주변의 제어 레�
 - [컨텍스트, 샌드박스, 프로필](../03_context_sandbox_profiles.md)
 - [세션 재사용, MCP, 고급 기능](../04_sessions_mcp_advanced.md)
 - [에이전트와 스킬](../05_agents_and_skills.md)
-- [Harness Engineering for LLM](../../../ai-dt/mcp/harness-engineering-llm.md)

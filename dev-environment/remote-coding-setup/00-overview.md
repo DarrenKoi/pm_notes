@@ -1,4 +1,14 @@
+---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
+tags: [dev-environment]
+---
+
 # 원격 코딩 환경 가이드
+
+> [!info] 2026-10-04 검토 범위
+> 구성 예제이며 실제 Mac Mini·Galaxy Tab 연결은 미검증이다. `0.0.0.0`은 전체 인터페이스에서 대기하므로 Tailscale만 노출된다고 가정하지 않는다. 버전·기기 요구사항과 운영 경계는 [목차](./README.md)를 먼저 확인한다.
 
 이 디렉터리는 이제 `Tailscale + Termius + code-server` 조합만 다룹니다. 실제로 계속 사용할 두 가지 접근 방식에 집중하고, 그 외 대안 경로는 문서 범위에서 제외합니다.
 

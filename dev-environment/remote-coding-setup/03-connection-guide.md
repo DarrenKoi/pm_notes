@@ -1,4 +1,14 @@
+---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
+tags: [dev-environment]
+---
+
 # 연결 테스트 및 트러블슈팅 가이드
+
+> [!info] 2026-10-04 검토 범위
+> 구성 예제이며 실제 Mac Mini·Galaxy Tab 연결은 미검증이다. `0.0.0.0`은 전체 인터페이스에서 대기하므로 Tailscale만 노출된다고 가정하지 않는다. 버전·기기 요구사항과 운영 경계는 [목차](./README.md)를 먼저 확인한다.
 
 이 문서는 `Tailscale + Termius + code-server` 환경을 빠르게 점검하고, 자주 생기는 문제를 바로 복구하기 위한 운영용 문서입니다.
 
@@ -120,7 +130,7 @@ brew services list | grep code-server
 ps aux | grep -v grep | grep code-server
 lsof -nP -iTCP:8080 -sTCP:LISTEN
 curl -v http://127.0.0.1:8080/healthz
-cat ~/.config/code-server/config.yaml
+grep -E '^(bind-addr|auth|cert):' ~/.config/code-server/config.yaml
 ```
 
 ### 절전 상태
@@ -199,8 +209,8 @@ chmod 600 ~/.ssh/authorized_keys
 
 해결:
 
-- Termius의 Known Hosts에서 해당 항목 삭제
-- Mac Mini에 재접속해서 새 호스트 키를 다시 신뢰
+- 기존 host key와 다른 이유를 먼저 조사합니다. trusted 로컬 콘솔에서 `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`로 fingerprint를 확인합니다.
+- 재설치 등 변경 이유와 새 fingerprint가 일치할 때만 Termius의 해당 Known Hosts 항목을 갱신합니다. 불일치하면 연결을 중단합니다.
 
 ### 문제: SSH는 되는데 자꾸 끊김
 
@@ -248,7 +258,7 @@ code-server
 확인:
 
 ```bash
-cat ~/.config/code-server/config.yaml
+grep -E '^(bind-addr|auth|cert):' ~/.config/code-server/config.yaml
 ```
 
 비밀번호를 새로 정한 뒤 다시 시작합니다.
@@ -271,7 +281,7 @@ brew services restart code-server
 
 - 브라우저에서 데스크톱 사이트 사용
 - Galaxy Tab 배터리 절약 모드 해제
-- Tailscale `netcheck` 결과 확인
+- `tailscale netcheck`로 네트워크 점검 후 `tailscale ping <peer>`·`status`로 해당 peer 경로 확인
 - code-server 탭을 너무 많이 띄우지 않기
 
 ### 문제: 8080 포트가 이미 사용 중임

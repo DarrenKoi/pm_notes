@@ -1,10 +1,16 @@
 ---
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 tags: [vlm, vllm, private-cloud, h200, requests]
 level: beginner
 last_updated: 2026-03-10
 ---
 
 # Private Cloud에서 `vLLM` 시작
+
+> [!info] 2026-10-04 검토 범위
+> UI grounding과 문서 OCR의 용도를 구분했다. 공개 모델 카드의 지원 경로 확인과 사내 GPU 실측은 다르다. 아래 모델별 품질 우열·GPU 수·메모리 설정은 미실측 가설이며 고정 버전 환경과 샘플로 평가해야 한다.
 
 > 상황: 모델 폴더가 이미 cloud에 있고, H200 GPU를 할당받았다.
 
@@ -85,6 +91,8 @@ export VLLM_API_KEY='change-this-internal-key'
 - `bash`, `zsh` 모두 같은 방식으로 동작한다.
 
 ## Step 4. 첫 모델 실행
+
+모델 카드의 최소 버전은 [대표 모델 문서](./ui-vlm-models.md)를 따른다. 예제의 `0.90`은 GPU 공유 환경의 검증값이 아니다. 시작 시 메모리 확보 실패면 값을 낮출 수 있지만 모델 weight가 들어가지 않는 문제는 이 설정만으로 해결하지 못한다. `0.0.0.0` 노출은 네트워크 정책·TLS를 별도 확인한다. `HF_HUB_OFFLINE`은 Hub 접근 제어이며 프로세스 전체의 네트워크 차단은 아니다. `--trust-remote-code`는 model repo 코드를 실행할 수 있으므로 반입 revision과 코드를 검토한다.
 
 아래 두 명령은 같은 포트 `8000`을 쓰지만, 동시에 실행하는 예시가 아니다.
 
@@ -312,7 +320,7 @@ nvidia-smi --query-gpu=index,name,memory.total,memory.used,utilization.gpu --for
 
 - 모델 폴더에 shard가 모두 있는지 본다.
 - `transformers`가 너무 낮지 않은지 본다.
-- `--trust-remote-code`가 빠지지 않았는지 본다.
+- 모델 카드가 custom code를 요구하는지 확인한다. 오류 원인을 확인하지 않고 `--trust-remote-code`를 켜지는 않는다.
 
 ### 메모리가 빠듯할 때
 
