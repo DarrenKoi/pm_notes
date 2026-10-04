@@ -2,9 +2,17 @@
 tags: [orchestration, pi-subagents, agents-md]
 level: intermediate
 last_updated: 2026-09-22
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: template
 ---
 
 # 작업 저장소의 `AGENTS.md` 에 넣을 것
+
+> [!info] 적용 조건 — 2026-10-04
+> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
+> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
+> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
 
 > 빌트인 역할 4종은 모두 `inheritProjectContext: true` 다. **작업 대상 저장소**의 `AGENTS.md`
 > (또는 `CLAUDE.md`)는 모든 자식 세션에 그대로 전달된다. 역할별 프롬프트를 따로 관리하는 것보다
@@ -25,12 +33,13 @@ pm_notes 가 아니라 **에이전트가 일할 저장소**에 넣는다.
   루트 전체 탐색은 `node_modules`·`.git`·빌드 산출물까지 훑어 도구 타임아웃(`toolTimeoutMs`)을 그대로 태운다.
 - 경로를 지정받지 못했으면 먼저 `ls` 로 최상위 구조만 보고, 대상이 있을 법한 디렉터리를 고른 뒤 그 안에서만 찾는다.
 - `find`·`grep` 에는 항상 `.git`, `node_modules`, `venv`, `dist`, `build` 를 제외 조건으로 건다.
-  가능하면 `rg` 나 `git ls-files | grep` 을 쓴다 — 둘 다 `.gitignore` 대상을 자동으로 건너뛴다.
+  가능하면 `rg` 나 `git ls-files | grep` 을 쓴다 — `rg`는 기본 ignore 규칙을 적용하고 `git ls-files`는 추적 파일을 나열한다.
+  이미 추적된 파일은 나중에 .gitignore에 들어가도 목록에 남는다.
 
 ### Git
 - `git push`, `git reset --hard`, `git clean`, `git checkout .`, 브랜치 전환을 하지 않는다.
 - 커밋할 때 `git add -A` 를 쓰지 않는다. 내 단위의 경로만 명시해서 올린다.
-- 변경 확인은 `git add -A -N && git diff` 로 한다. 그냥 `git diff` 는 새 파일을 보여주지 않는다.
+- 변경 확인은 `git add -N -- <배정 경로> && git diff -- <배정 경로>` 로 한다. 그냥 `git diff` 는 새 파일을 보여주지 않는다.
 
 ### 검증
 - 검증 명령: <이 저장소의 실제 명령. 예: pytest, npm run typecheck, npm test>

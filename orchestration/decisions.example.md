@@ -2,9 +2,17 @@
 tags: [orchestration, oneshot, decision-policy]
 level: intermediate
 last_updated: 2026-09-21
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: template
 ---
 
 # 결정 정책 (사전 승인)
+
+> [!info] 적용 조건 — 2026-10-04
+> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
+> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
+> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
 
 > 저장소 **바깥**(예: `~/.orch-policy/<저장소>.md`)에 두고 읽기 전용으로 준다. 무인 실행 중 워커가
 > 결정 앞에서 멈추는 대신, 부모 세션이 **이 파일을 근거로** 답한다.

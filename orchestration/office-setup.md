@@ -2,9 +2,17 @@
 tags: [orchestration, setup, office, pi-subagents]
 level: intermediate
 last_updated: 2026-09-22
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: template
 ---
 
 # 사내 PC 세팅 — 프롬프트 모음
+
+> [!info] 적용 조건 — 2026-10-04
+> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
+> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
+> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
 
 > 각 프롬프트에 `PROMPT-N` 번호가 붙어 있다. pi 에게 **"office-setup.md 의 PROMPT-N 을 실행해라"**
 > 라고 지시하면 된다. 스크립트를 돌리지 않고 전부 pi 로 진행하는 경로다.
@@ -67,7 +75,7 @@ itc-vlm/qwen3.8-27b
 
 `agentOverrides`·`modelScope`·`watchdog` 이 들어간다.
 
-```text
+````text
 ~/.pi/agent/settings.json 에 아래 JSON 을 병합해라.
 
 규칙:
@@ -190,7 +198,7 @@ itc-vlm/qwen3.8-27b
   }
 }
 ```
-```
+````
 
 **성공 판정** — `agentOverrides` 키가 **6개**로 나와야 한다.
 
@@ -205,11 +213,12 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 
 ---
 
+
 ## PROMPT-3 — subagent config.json 생성
 
 `timeoutMs` 는 `settings.json` 이 아니라 **이 파일**에 있어야 한다. 자리를 틀리면 오류 없이 무시된다.
 
-```text
+````text
 ~/.pi/agent/extensions/subagent/config.json 을 만들어라.
 디렉터리가 없으면 만들고, 파일이 이미 있으면 .bak 으로 백업한 뒤 아래 키만 병합해라.
 
@@ -229,11 +238,12 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 ```
 
 쓴 다음 파일 내용을 그대로 출력해라.
-```
+````
 
 **보고할 것** — 최종 파일 내용.
 
 ---
+
 
 ## PROMPT-4 — 설정 검증 (15항목)
 
