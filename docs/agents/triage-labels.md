@@ -1,15 +1,35 @@
-# Triage Labels
+---
+title: 이슈 분류 라벨과 판단 기준
+tags: [agents, triage, workflow]
+aliases: [Triage Labels]
+document_type: operations
+reviewed_on: 2026-10-04
+verification_status: local-convention
+---
 
-The skills speak in terms of five canonical triage roles. This file maps those roles to the actual label strings used in this repo's issue tracker.
+# 이슈 분류 라벨과 판단 기준
 
-| Label in mattpocock/skills | Label in our tracker | Meaning                                  |
-| -------------------------- | -------------------- | ---------------------------------------- |
-| `needs-triage`             | `needs-triage`       | Maintainer needs to evaluate this issue  |
-| `needs-info`               | `needs-info`         | Waiting on reporter for more information |
-| `ready-for-agent`          | `ready-for-agent`    | Fully specified, ready for an AFK agent  |
-| `ready-for-human`          | `ready-for-human`    | Requires human implementation            |
-| `wontfix`                  | `wontfix`            | Will not be actioned                     |
+> 라벨은 다음 작업의 준비 상태를 표현한다. 저장소의 기존 규칙을 한국어로 정리한 것으로 GitHub 전체의 표준 라벨은 아니다.
 
-When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the corresponding label string from this table.
+## 왜 필요한가?
 
-Edit the right-hand column to match whatever vocabulary you actually use.
+문제를 보고받았다는 사실과 구현에 필요한 정보가 갖춰졌다는 사실을 구분한다. 자동 작업자에게 넘기기 전에 범위·재현·완료 기준을 확인하고 사람이 결정해야 할 조건을 남긴다.
+
+## 라벨의 의미
+
+| 스킬의 역할 이름 | 저장소 라벨 | 판단 기준 |
+|---|---|---|
+| 최초 검토 대기 | `needs-triage` | 관리자가 보고의 범위·재현 가능성을 판단해야 함 |
+| 추가 정보 대기 | `needs-info` | 보고자에게 필요한 정보가 남아 있음 |
+| 에이전트 작업 준비 | `ready-for-agent` | 범위와 완료 조건이 충분히 정의되어 자율 작업에 넘길 수 있음 |
+| 사람 작업 필요 | `ready-for-human` | 사람이 구현하거나 현장에서 수행해야 함 |
+| 조치하지 않음 | `wontfix` | 수행하지 않기로 판단한 항목; 이유를 본문·댓글에 남김 |
+
+## 어떻게 사용하는가?
+
+1. 이슈 본문과 재현 근거를 읽는다.
+2. 정보가 부족하면 필요한 항목을 구체적으로 기록한다.
+3. 범위·의존 조건·완료 기준이 갖춰졌을 때 다음 담당에 맞는 라벨을 선택한다.
+4. 라벨 변경 이유를 기록해 후속 작업자가 판단을 재구성할 수 있게 한다.
+
+기존 안내가 정의한 다섯 이름은 유지했다. 자동 전이, 라벨의 상호 배타성, 원격 저장소에 실제 등록된 상태는 미확인이다. `ready-for-agent`만으로 외부 게시·배포·권한 변경이 승인되지는 않는다. 명령 예제는 [이슈 추적 안내](issue-tracker.md)를 읽는다.

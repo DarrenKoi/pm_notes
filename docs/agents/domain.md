@@ -1,45 +1,36 @@
-# Domain Docs
+---
+title: 주제별 도메인 문서를 읽는 방법
+tags: [agents, domain, workflow]
+aliases: [Domain Docs]
+document_type: operations
+reviewed_on: 2026-10-04
+verification_status: local-convention
+---
 
-How the engineering skills should consume this repo's domain documentation when exploring the codebase.
+# 주제별 도메인 문서를 읽는 방법
 
-This repo uses a **multi-context** layout. Each subproject that has earned its own domain language gets its own `CONTEXT.md` (and, when needed, its own `docs/adr/`). A root-level `CONTEXT-MAP.md` lists where they live.
+> 같은 용어라도 주제마다 의미가 다를 수 있으므로 현재 작업 주제의 정의와 결정 기록을 먼저 읽는다.
 
-## Before exploring, read these
+## 목적과 구성
 
-1. **`CONTEXT-MAP.md`** at the repo root — the index of all known contexts in this repo.
-2. The **`CONTEXT.md`** for the subproject you're about to work in (path is in the map).
-3. The **`docs/adr/`** for that subproject, if one exists — read ADRs that touch the area you're about to change.
+이 저장소는 여러 독립 주제를 둔다. 용어가 충분히 구체화된 주제는 `CONTEXT.md`로 도메인 언어를 정의하고 필요할 때 `docs/adr/`에 아키텍처 결정 기록(ADR)을 둔다. 루트 `CONTEXT-MAP.md`는 위치 안내이며 현재 주제 밖의 정의를 끌어오는 근거가 아니다.
 
-If `CONTEXT-MAP.md` doesn't exist, or the relevant subproject has no `CONTEXT.md` yet, **proceed silently**. Don't flag absence; don't suggest creating them upfront. The producer skill (`/grill-with-docs`) creates them lazily when terms or decisions actually get resolved.
+## 읽기 순서
 
-## File structure
+1. 루트의 전역 규칙과 `CONTEXT-MAP.md`를 읽어 작업 주제를 확인한다.
+2. **현재 최상위 폴더 내부**의 관련 `CONTEXT.md`를 읽는다.
+3. 그 주제의 ADR 중 변경에 직접 관련되는 것을 읽는다.
 
-```
-/
-├── CONTEXT-MAP.md                  # index of contexts
-├── ai-dt/
-│   └── roadmap/
-│       ├── CONTEXT.md              # ITC AI/DT 로드맵 도메인 언어
-│       └── docs/adr/               # (created lazily)
-├── web-development/
-│   └── (no CONTEXT.md yet — add one when this subproject earns its own glossary)
-└── (rest of repo)
-```
+지도·용어집·ADR이 없으면 그대로 진행한다. 탐색 전에 빈 용어집을 만들 필요는 없다. 용어 또는 결정이 실제로 확정됐을 때 해당 주제 안에서 기록한다. 기존 안내의 `/grill-with-docs`는 그러한 기록을 만드는 생산자 스킬의 이름이며 현재 사용 가능 여부는 별도로 확인한다. 이 안내가 외부 스킬의 현재 설치나 작동을 보장하지는 않는다.
 
-## Picking the right context
+## 적용 방법
 
-When the user's request maps clearly to one subproject's path (e.g. they're editing files under `ai-dt/roadmap/`), use that subproject's `CONTEXT.md`. When the request spans multiple subprojects, read each relevant `CONTEXT.md` — but prefer the more specific one if terms collide.
+현재 문맥이 특정 용어를 표준으로 정했다면 이슈 제목·설계·테스트 설명에도 같은 이름을 쓴다. 예를 들어 어떤 주제의 용어집이 `Biz`를 정했다면 그 주제에서 임의로 동의어를 바꾸지 않는다. 다른 주제에도 같은 정의가 적용된다고 추정하지 않는다.
 
-If no context covers the area you're working in, that's fine. Don't invent one. Note the gap for `/grill-with-docs` if domain terminology starts mattering.
+사용자 요청이 여러 폴더에 걸치면 한 폴더의 탐색·수정·검증을 마친 다음 다음 폴더로 넘어간다. 이번 정리는 전체 범위가 승인됐지만 폴더 간 링크·문서 이동·내용 통합은 만들지 않는다.
 
-## Use the glossary's vocabulary
+용어가 없으면 그 개념이 실제로 필요한지 먼저 확인한다. ADR과 다른 결론을 내려야 한다면 기존 결정의 식별자·조건과 재검토 이유를 해당 주제의 기록에 남긴다. 기존 결정을 조용히 덮어쓰지 않는다.
 
-When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in the relevant `CONTEXT.md`. Don't drift to synonyms the glossary explicitly avoids (e.g. `CONTEXT.md` may say "use `Biz`, not `사업부`" — honor that).
+## 검토 경계
 
-If the concept you need isn't in the glossary yet, that's a signal — either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/grill-with-docs`).
-
-## Flag ADR conflicts
-
-If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
-
-> _Contradicts ADR-0007 (some-decision) — but worth reopening because…_
+2026-10-04 루트 `CLAUDE.md`의 폴더 독립성 규칙과 대조했다. 기존 영문 안내의 "여러 문맥을 함께 읽기" 표현을 폴더별 순차 작업으로 명확히 했다. 다른 주제의 용어집 존재·내용은 이 폴더 작업에서 재검증하지 않았다.

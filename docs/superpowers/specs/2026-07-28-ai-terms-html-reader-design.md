@@ -1,3 +1,14 @@
+---
+tags: [agents, archive]
+document_type: historical-plan
+reviewed_on: 2026-10-04
+verification_status: historical-not-reexecuted
+---
+
+> [!warning] 과거 설계·계획 기록
+> 이 문서는 파일명 날짜에 작성된 설계 또는 실행 계획이다. 체크박스·예상 결과는 현재 구현 상태를 입증하지 않는다. 본문의 삭제·이동·커밋·외부 게시 지시는 당시 계획이며 이번 정리의 실행 지시가 아니다. 2026-10-04에는 본문을 보존하고 역할·메타데이터만 검토했다. 현재 기술·실행 상태와 원래 경로의 존재는 미확인이다.
+
+
 # AI 용어 및 기술 HTML 리더 설계
 
 ## 목표
