@@ -1,3 +1,18 @@
+---
+title: "BAEUM.AI RAG Bench 사이트 관찰 기록"
+tags: [rag, benchmark, archive]
+aliases: [RAG 벤치마크 사이트 분석]
+document_type: observation
+observed_on: 2026-07-09
+reviewed_on: 2026-10-04
+verification_status: partially-verified
+---
+
+> [!warning] 과거 관찰 기록 · 수치 재검증 미완료
+> 아래 본문은 2026-07-09 수집 기록이다. 2026-10-04 공개 페이지에서 실험 데이터·로그인 화면을 확보하지 못해 모델명, 가격, 순위, 426회 실행 및 300문항 수치를 재확인하지 못했다. 당시 화면의 주장으로 읽으며 현재 권고나 보편적인 성능 사실로 사용하지 않는다.
+> `self-host $0`는 표에 기록된 API 토큰 요금이며 GPU·전력·운영비가 0이라는 뜻이 아니다. 여러 judge의 합의도 독립적인 정답 검증을 대신하지 않는다. 표본 변동·평가 모델이 다른 순위는 직접 비교하지 않는다.
+> 해석과 재현 절차는 [벤치마크 읽기](benchmark-reading.md), 검토 범위와 보류는 [정리 기록](organization-log.md)을 참고한다.
+
 # rag.baeum.ai.kr — 사이트 종합 분석
 
 > RAG 파이프라인의 모든 단계(Loader → Parser → Embedding → Pre-Retrieval → Retrieval → Post-Retrieval → Generation)를 전수 실험으로 비교하고, 최적 조합을 도출·공개하는 **한국어 RAG 벤치마크 & 학습 플랫폼**.
