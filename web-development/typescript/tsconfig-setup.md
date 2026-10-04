@@ -2,6 +2,9 @@
 tags: [typescript, tsconfig, eslint, prettier, project-setup]
 level: beginner
 last_updated: 2026-02-01
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # TypeScript 프로젝트 설정 가이드
@@ -33,7 +36,7 @@ last_updated: 2026-02-01
 | `outDir` | 컴파일 결과물 출력 폴더 | `./dist` |
 | `rootDir` | 소스 파일 루트 폴더 | `./src` |
 | `paths` | 경로 별칭(alias) 설정 | `{"@/*": ["./src/*"]}` |
-| `baseUrl` | paths의 기준 경로 | `.` |
+| `baseUrl` | TypeScript 6.0 deprecated | 새 예제에서 생략; paths는 tsconfig 상대 경로 |
 
 ### 모듈 시스템 선택 가이드
 
@@ -41,7 +44,7 @@ last_updated: 2026-02-01
 |------|--------|------------------|------|
 | Node.js 백엔드 | `NodeNext` | `NodeNext` | Node.js의 ESM/CJS 듀얼 지원 |
 | Vite/번들러 프론트엔드 | `ESNext` | `Bundler` | 번들러가 모듈 해석 담당 |
-| 라이브러리 배포 | `NodeNext` | `NodeNext` | 가장 넓은 호환성 |
+| Node 대상 라이브러리 | `NodeNext` | `NodeNext` | 실제 지원 Node·exports·소비자 환경에 맞춰 검증 |
 
 > **핵심**: `NodeNext`는 `package.json`의 `"type": "module"` 여부에 따라 ESM/CJS를 자동 결정한다.
 
@@ -99,7 +102,6 @@ npx tsc --init
     "sourceMap": true,
 
     // 경로 별칭
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -150,18 +152,20 @@ node_modules
 ### 4단계: ESLint (Flat Config)
 
 ```bash
-npm install -D eslint @eslint/js typescript-eslint eslint-config-prettier
+npm install -D eslint @eslint/js typescript-eslint eslint-config-prettier globals
 ```
 
-```typescript
+```javascript
 // eslint.config.mjs
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
+import globals from 'globals';
 
 export default tseslint.config(
   // 무시할 경로
   { ignores: ['dist/', 'node_modules/'] },
+  { languageOptions: { globals: globals.node } },
 
   // JavaScript 기본 추천 규칙
   js.configs.recommended,
@@ -205,7 +209,13 @@ trim_trailing_whitespace = true
 ```text
 # .gitattributes
 * text=auto eol=lf
-*.{png,jpg,jpeg,gif,webp,ico,svg} binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+# SVG는 텍스트이므로 별도 의도가 없으면 위 text 규칙을 적용
 ```
 
 ### 6단계: VS Code 설정
@@ -306,6 +316,12 @@ npm run build
 
 ## 관련 문서
 
-- [TypeScript 기본 문법](./typescript-basics.md)
+- TypeScript 기본 문법 노트는 계획·미작성이다.
 - [Vite 기초](./vite-basics.md)
-- [코드 품질 도구](./code-quality.md)
+- 코드 품질 심화 노트는 계획·미작성이다.
+
+## 버전·적용 조건 검토
+
+확인일 **2026-10-04**. [TypeScript 6.0](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html#deprecated---baseurl)은 baseUrl을 deprecated로 안내한다. [paths](https://www.typescriptlang.org/docs/handbook/modules/reference.html#paths)는 출력 import를 다시 쓰지 않는다. Node가 `@/…`를 자동 해석한다고 가정하지 말고 상대 `.js` import 또는 실제 지원하는 package imports 정책을 사용한다. 위 paths는 타입 해석 설정의 예이며 런타임 구현은 생략됐다. NodeNext의 기본 모듈·지원 기능은 컴파일러 버전에 따라 달라진다.
+
+[typescript-eslint 공식 설정](https://typescript-eslint.io/getting-started/)과 [Git attributes](https://git-scm.com/docs/gitattributes)를 확인했다. Git 패턴은 셸의 중괄호 확장이 아니므로 확장자를 각 행에 썼다. ESLint 예제는 Node 프로젝트용 globals이며 브라우저용은 별도 설정이다. 이 폴더에는 tsc·Vue compiler 및 node_modules가 없어 컴파일·lint 실행은 미확인이다. 설치 명령은 버전을 고정하지 않으므로 실제 lock의 TypeScript/ESLint/plugin 조합을 확인한다.

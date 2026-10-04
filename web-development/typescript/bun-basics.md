@@ -2,6 +2,9 @@
 tags: [bun, typescript, runtime, package-manager, test-runner]
 level: beginner
 last_updated: 2026-04-04
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # Bun 시작 가이드
@@ -57,7 +60,7 @@ Bun은 이 중 여러 역할을 한 바이너리에서 처리한다.
 ### 5. 내장 테스트 러너와 셸 기능
 
 - `bun test`로 별도 테스트 러너 없이 빠르게 테스트를 돌릴 수 있다.
-- `bunx`로 설치 없이 CLI를 실행할 수 있다.
+- `bunx`는 로컬 CLI를 찾고 없으면 npm에서 설치·캐시하여 실행할 수 있다.
 - Bun Shell을 쓰면 크로스 플랫폼 스크립트를 JavaScript/TypeScript 안에서 작성하기 쉬워진다.
 
 ## 언제 Bun이 특히 잘 맞나? (When)
@@ -133,7 +136,7 @@ bun run dev
 
 실행 가능한 예제는 아래 폴더에 두었다.
 
-- [`web-development/typescript/bun/example-task-api/README.md`](/C:/Code/pm_notes/web-development/typescript/bun/example-task-api/README.md)
+- [Task API 실행 안내](./bun/example-task-api/README.md)
 
 이 예제는 아래 세 가지를 동시에 보여준다.
 
@@ -187,9 +190,9 @@ Bun.serve({
 
 ## 예제 파일 읽는 순서
 
-1. [`app.ts`](/C:/Code/pm_notes/web-development/typescript/bun/example-task-api/src/app.ts): 라우팅과 JSON 응답 로직
-2. [`server.ts`](/C:/Code/pm_notes/web-development/typescript/bun/example-task-api/src/server.ts): Bun 서버 시작점
-3. [`app.test.ts`](/C:/Code/pm_notes/web-development/typescript/bun/example-task-api/src/app.test.ts): Bun 테스트 러너 사용 예시
+1. [`app.ts`](./bun/example-task-api/src/app.ts): 라우팅과 JSON 응답 로직
+2. [`server.ts`](./bun/example-task-api/src/server.ts): Bun 서버 시작점
+3. [`app.test.ts`](./bun/example-task-api/src/app.test.ts): Bun 테스트 러너 사용 예시
 
 ## npm에서 Bun으로 바꿀 때 기억할 것
 
@@ -262,7 +265,7 @@ Node 프로젝트는 종종 `rimraf`, `cross-env` 같은 보조 패키지를 많
 
 ### 5. 호환성 검증은 초반에 짧게 끝내라
 
-도입 초기에 아래만 빠르게 확인하면 된다.
+아래는 도입의 최소 확인 항목이다. 실제 배포·네이티브 모듈·부하·보안 요구는 추가 검증한다.
 
 - 설치가 정상적으로 끝나는가
 - 개발 서버가 뜨는가
@@ -282,3 +285,9 @@ Node 프로젝트는 종종 `rimraf`, `cross-env` 같은 보조 패키지를 많
 ## 한 줄 요약
 
 Bun의 핵심은 "npm의 대체재"에 그치지 않고, **TypeScript 개발에 필요한 실행기와 주변 도구를 하나로 압축해 개발 루프를 짧게 만드는 것**이다.
+
+## 검토한 조건과 한계
+
+확인일 **2026-10-04**, 로컬 Bun은 **1.3.6**이다. [파일 변환](https://bun.com/docs/runtime/file-types)·[TypeScript 설정](https://bun.com/docs/runtime/typescript)과 [bunx](https://bun.com/docs/pm/bunx)를 확인했다. TypeScript 실행 성공은 정적 타입 검사 통과가 아니다. 설치된 typescript로 `tsc --noEmit`를 별도로 실행한다. bunx는 기본적으로 shebang을 존중하여 Node로 실행할 수도 있으므로 실행 런타임을 구분한다. [lifecycle](https://bun.com/docs/pm/lifecycle)은 의존성 script의 trustedDependencies 조건을 설명한다. 설치 결과·네이티브 빌드·lock 차이를 비교하고 npm의 모든 script와 호환된다고 가정하지 않는다.
+
+예제는 메모리 저장이며 재시작하면 데이터가 초기화된다. HTTP handler 기존 테스트 4개는 Bun 1.3.6에서 통과했다. 실제 서버·외부 네트워크·배포·타입 검사는 실행하지 않았다. 본문 성능·생산성 설명은 도입 동기이며 이 저장소의 비교 실측은 아니다.

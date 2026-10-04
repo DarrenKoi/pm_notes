@@ -2,6 +2,9 @@
 tags: [unit-test, testing, pytest, vitest, jest, tdd]
 level: beginner
 last_updated: 2026-02-19
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # Unit Testing (단위 테스트) 기초
@@ -19,7 +22,7 @@ last_updated: 2026-02-19
 
 **1. 버그를 가장 저렴한 시점에 잡는다**
 
-버그를 발견하는 시점에 따라 수정 비용이 기하급수적으로 증가한다:
+늦게 발견하면 배포·사용자 대응 비용이 추가될 수 있다. 아래 배수는 설명용 가정이며 실측·일반 법칙이 아니다:
 
 ```
 개발 중 발견  → 비용 1x    (방금 짠 코드, 맥락이 생생함)
@@ -30,7 +33,7 @@ last_updated: 2026-02-19
 **2. 리팩토링을 두려움 없이 할 수 있다**
 
 테스트가 없으면 코드를 수정할 때마다 "혹시 다른 기능이 깨지지 않을까?" 불안하다.
-테스트가 있으면 수정 후 `pytest` 한 번으로 전체 검증이 끝난다.
+테스트가 있으면 `pytest`로 명시한 계약의 회귀를 빠르게 확인한다. 누락된 시나리오·외부 환경까지 전체 검증이 끝나는 것은 아니다.
 
 **3. 코드가 스스로 문서가 된다**
 
@@ -45,7 +48,7 @@ last_updated: 2026-02-19
 **5. 협업 시 안전망**
 
 다른 사람이 내 코드를 수정할 때, 내가 기대하는 동작이 깨지면 테스트가 알려준다.
-"작동하는 척하는 코드"가 아닌 "실제로 작동하는 코드"를 보장한다.
+검증한 입력과 조건에서 기대 동작이 유지되는지 확인한다.
 
 ---
 
@@ -239,7 +242,7 @@ npm install -D vitest
 `vite.config.ts`에 추가:
 
 ```typescript
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -254,11 +257,11 @@ export default defineConfig({
 
 ```typescript
 export function isValidEmail(email: string): boolean {
-  return email.includes('@') && email.split('@')[1]?.includes('.')
+  return email.includes('@') && (email.split('@')[1]?.includes('.') ?? false)
 }
 
 export function formatPrice(price: number, currency = 'KRW'): string {
-  return `${price.toLocaleString()} ${currency}`
+  return `${price.toLocaleString('en-US')} ${currency}`
 }
 
 export function clamp(value: number, min: number, max: number): number {
@@ -359,14 +362,14 @@ def test_new_user_is_active_by_default():
 
 ```python
 # ❌ 모호한 이름
-def test_email():
-def test_1():
-def test_validate():
+def test_email(): pass
+def test_1(): pass
+def test_validate(): pass
 
 # ✓ 명확한 이름
-def test_is_valid_email_returns_false_for_empty_string():
-def test_divide_raises_value_error_when_divisor_is_zero():
-def test_get_user_returns_none_when_user_not_found():
+def test_is_valid_email_returns_false_for_empty_string(): pass
+def test_divide_raises_value_error_when_divisor_is_zero(): pass
+def test_get_user_returns_none_when_user_not_found(): pass
 ```
 
 #### 3. Edge Case(경계값)를 빼놓지 않는다
@@ -453,6 +456,12 @@ def is_valid_password(password: str) -> bool:
 - [Python unittest.mock 공식 문서](https://docs.python.org/3/library/unittest.mock.html)
 
 ## 관련 문서
-- [FastAPI 개발](../python/fastapi/)
+- FastAPI 전용 학습 문서는 계획·미작성이다.
 - [Vue 3 with TypeScript](../typescript/vue/vue3-with-typescript.md)
 - [Vite 기초](../typescript/vite-basics.md)
+
+## 현재 검토와 예제의 범위
+
+확인일 **2026-10-04**, 로컬 pytest **9.0.2**. 순수 calculator/테스트는 임시 폴더에서 실행해 확인한다. 이메일·비밀번호 함수는 학습용 최소 정책이며 실제 주소·계정 보안 validator가 아니다. TDD 블록은 단계별 대안으로 분리하여 읽고 마지막 함수로 앞 단계의 기대가 계속 성립한다고 가정하지 않는다. 테스트는 assertion 하나로 제한할 필요 없이 한 행동 계약에 필요한 결과를 함께 확인할 수 있다.
+
+[Vitest 설정](https://vitest.dev/config/)의 test 타입을 위해 defineConfig를 vitest/config에서 가져온다. [UI](https://vitest.dev/config/ui.html)와 [coverage](https://vitest.dev/guide/coverage.html)는 각각 @vitest/ui와 선택 provider(예: @vitest/coverage-v8)를 호환 버전으로 준비해야 한다. [mock patch 위치](https://docs.python.org/3/library/unittest.mock.html#where-to-patch)는 원 정의보다 코드가 이름을 조회하는 모듈을 기준으로 한다. my_service·DB·create_user 등 생략된 의존성과 Vitest 실행·정적 typecheck는 미확인이다.

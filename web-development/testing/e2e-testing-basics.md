@@ -2,6 +2,9 @@
 tags: [e2e, testing, playwright, cypress, automation]
 level: beginner
 last_updated: 2026-02-19
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # End-to-End Testing (E2E 테스트) 기초
@@ -82,9 +85,9 @@ Integration Test 통과 ✓
 |------|------|------------|
 | **Playwright** | Microsoft 개발, 빠름, 다양한 브라우저 지원, Python/TS 모두 지원 | 신규 프로젝트 권장 |
 | **Cypress** | JS/TS 전용, 디버깅 UI 뛰어남, 레코딩 기능 | 프론트엔드 팀 친화적 |
-| **Selenium** | 오래된 표준, 모든 언어 지원 | 레거시 환경 유지보수 |
+| **Selenium** | 오래된 표준, 여러 언어 binding 지원 | 레거시 환경 유지보수 |
 
-> 현재 업계 트렌드: **Playwright** 가 빠르게 표준이 되고 있음
+> 이 문서는 Python·TypeScript 예제를 위해 Playwright를 사용한다. 도구의 현재 시장 점유율·성능 우열을 검증한 것은 아니다.
 
 ### 핵심 개념 용어
 
@@ -117,6 +120,7 @@ pip install pytest-playwright
 
 ```python
 # test_google.py
+import re
 from playwright.sync_api import Page, expect
 
 
@@ -125,10 +129,10 @@ def test_google_search(page: Page):
     page.goto("https://www.google.com")
 
     # 2. 검색창에 입력
-    page.get_by_name("q").fill("playwright python")
+    page.locator('[name="q"]').fill("playwright python")
 
     # 3. 엔터 또는 버튼 클릭
-    page.get_by_name("q").press("Enter")
+    page.locator('[name="q"]').press("Enter")
 
     # 4. 결과 페이지 검증
     expect(page).to_have_title(re.compile("playwright python"))
@@ -187,7 +191,7 @@ def test_login_fails_with_wrong_password(page: Page):
 ```python
 # conftest.py
 import pytest
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 
 @pytest.fixture
@@ -236,11 +240,17 @@ with sync_playwright() as p:
 
 ```python
 # conftest.py - 저장된 상태로 브라우저 시작
+import pytest
+
 @pytest.fixture
 def authenticated_context(browser):
     context = browser.new_context(storage_state="auth_state.json")
     yield context
     context.close()
+
+@pytest.fixture
+def authenticated_page(authenticated_context):
+    return authenticated_context.new_page()
 ```
 
 ---
@@ -261,15 +271,17 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  baseURL: 'http://localhost:5173',  // Vite dev server
+  retries: process.env.CI ? 2 : 0,
+  reporter: 'html',
   use: {
+    baseURL: 'http://localhost:5173',  // context 옵션
     trace: 'on-first-retry',         // 실패 시 trace 자동 저장
     screenshot: 'only-on-failure',   // 실패 시 스크린샷
   },
   webServer: {
     command: 'npm run dev',          // 테스트 전 자동으로 dev server 실행
     url: 'http://localhost:5173',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
   },
 })
 ```
@@ -360,7 +372,7 @@ npx playwright codegen http://localhost:3000
 └─────────────────┴──────────────┴──────────────────┴─────────────────────┘
 ```
 
-**실무 권장 비율 (테스트 피라미드):**
+**비율을 생각하기 위한 예시 (일반 권장값이나 검증된 최적 비율 아님):**
 - Unit Test: 70%
 - Integration Test: 20%
 - E2E Test: 10%
@@ -397,7 +409,7 @@ E2E 대신 Unit/Integration으로 하면 충분한 것:
     CI: true
 
 # Playwright HTML 리포트 아티팩트로 저장
-- uses: actions/upload-artifact@v3
+- uses: actions/upload-artifact@v7
   if: always()
   with:
     name: playwright-report
@@ -426,3 +438,11 @@ E2E 대신 Unit/Integration으로 하면 충분한 것:
 - [Unit Testing 기초](./unit-testing-basics.md)
 - [Vue 3 with TypeScript](../typescript/vue/vue3-with-typescript.md)
 - [Vite 기초](../typescript/vite-basics.md)
+
+## 적용 조건·현재 검토
+
+확인일 **2026-10-04**. Playwright는 로컬에 없어 실제 브라우저·Google·로그인·Actions 실행은 미확인이다. [Python locator](https://playwright.dev/python/docs/locators)·[Page API](https://playwright.dev/python/docs/api/class-page)에는 get_by_name이 없으므로 검색 input의 CSS name 속성을 사용한다. Google DOM·동의 화면은 지역·시점별로 달라 이 예제가 안정적인 통합 fixture는 아니다. 고유 검색 예제는 보존하되 실제 앱 검증을 대신하지 않는다.
+
+[설정](https://playwright.dev/docs/test-configuration)의 baseURL은 use 안에 둔다. on-first-retry trace는 실제 retry가 발생해야 기록된다. [인증 상태](https://playwright.dev/python/docs/auth)는 민감한 쿠키 등을 포함하므로 auth_state.json을 Git·artifact에서 제외하고 만료·계정별 갱신을 관리한다. 위 authenticated_context를 만들기만 해서는 기본 page fixture가 인증되지 않는다. authenticated_page를 인자로 받아 실제 로그인 이후 URL로 이동해야 한다. sessionStorage·서버 측 상태의 전체 복원은 별도다.
+
+[upload-artifact 공식 README](https://github.com/actions/upload-artifact)의 현재 사용 예는 v7이다. 기존 v3 일반 예제를 바꿨으며 GHES에는 v4+가 지원되지 않는 별도 조건이 있다. 사내 GitHub 배포 방식과 runner 호환 버전은 미확인이다. CI 조각은 checkout·Node·의존성·브라우저 설치를 생략한 workflow 일부다. 존재하지 않는 로그인 앱·handler·정확 행 수를 직접 준비해야 하고 trace/report에는 민감 데이터가 포함될 수 있어 보관·공유 범위를 정한다.

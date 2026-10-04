@@ -2,6 +2,9 @@
 tags: [vite, bundler, typescript, frontend, build-tool]
 level: beginner
 last_updated: 2026-02-01
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # Vite 기초 가이드
@@ -10,19 +13,19 @@ last_updated: 2026-02-01
 
 ## 왜 필요한가? (Why)
 
-- **Webpack의 한계**: 프로젝트가 커질수록 개발 서버 시작과 HMR이 느려짐 (모든 파일을 번들링 후 서빙)
-- **ESM 네이티브**: Vite는 브라우저의 ES Modules를 직접 활용 → 번들링 없이 즉시 서빙
-- **HMR 속도**: 파일 수에 관계없이 거의 일정한 HMR 속도 (변경된 모듈만 교체)
+- **개발 방식의 차이**: 번들 중심 서버와 ESM 모듈 제공 서버의 시작·변경 비용을 비교한다. 실제 속도는 설정·플러그인·모듈 그래프에 따라 다르다.
+- **ESM 네이티브**: Vite는 브라우저의 ES Modules를 직접 활용 → 필요한 소스를 변환하여 서빙; 의존성 사전 번들링은 별도
+- **HMR 속도**: 변경된 모듈과 영향받는 의존 그래프를 갱신; 일정한 지연을 보증하지 않음
 - **Vue/React/Svelte 공식 지원**: 프레임워크 팀이 Vite를 공식 빌드 도구로 채택
 
 ### Webpack vs Vite 비교
 
 | 항목 | Webpack | Vite |
 |------|---------|------|
-| Dev Server 시작 | 전체 번들링 후 서빙 (느림) | ESM 직접 서빙 (즉시) |
-| HMR 속도 | 프로젝트 크기에 비례 | 거의 일정 |
+| Dev Server 시작 | 번들·캐시·설정에 따라 다름 | 소스 ESM 제공 + 의존성 최적화 |
+| HMR 속도 | 모듈 그래프·설정에 따라 다름 | 영향받는 모듈·플러그인에 따라 다름 |
 | 설정 복잡도 | 높음 (loader, plugin 체인) | 낮음 (합리적 기본값) |
-| 프로덕션 빌드 | Webpack 자체 | Rollup 기반 |
+| 프로덕션 빌드 | Webpack 자체 | Vite 8: Rolldown (7 이하는 Rollup) |
 | 생태계 성숙도 | 매우 넓음 | 빠르게 확대 중 |
 
 ## 핵심 개념 (What)
@@ -31,24 +34,24 @@ last_updated: 2026-02-01
 
 ```
 [개발 모드]
-브라우저 → HTTP 요청 → Vite Dev Server → esbuild로 변환 → ESM 직접 반환
+브라우저 → HTTP 요청 → Vite Dev Server → Vite 8 Oxc로 변환 → ESM 직접 반환
                                           (TypeScript, JSX 등을 JS로)
 
 [프로덕션 빌드]
-소스 코드 → Rollup → 최적화된 정적 파일 (tree-shaking, code-splitting, minify)
+소스 코드 → Vite 8 Rolldown → 최적화된 정적 파일 (tree-shaking, code-splitting, minify)
 ```
 
-- **Dev Server**: esbuild로 파일을 개별 변환하여 브라우저에 ESM으로 서빙. 번들링하지 않음.
-- **Build**: Rollup을 사용하여 최적화된 번들 생성. tree-shaking, code-splitting 자동 적용.
+- **Dev Server**: Vite 8은 Oxc로 소스를 변환하여 ESM으로 제공하고 의존성을 별도로 최적화한다.
+- **Build**: Vite 8은 Rolldown으로 번들을 생성한다. tree-shaking, code-splitting 자동 적용.
 - **HMR (Hot Module Replacement)**: 파일 변경 시 해당 모듈만 교체. 전체 페이지 새로고침 불필요.
 
 ### Pre-bundling (사전 번들링)
 
-Vite는 `node_modules`의 의존성을 esbuild로 사전 번들링한다:
+Vite 8은 Rolldown으로 의존성을 사전 번들링한다. 기존 esbuild 설명은 Vite 7 이하에 해당한다:
 
 - CommonJS → ESM 변환
 - 수백 개의 내부 모듈을 하나로 합침 (예: `lodash-es`의 600+ 모듈)
-- `.vite` 폴더에 캐시 → 두 번째 시작부터 즉시 로드
+- `.vite` 폴더에 캐시 → lock·설정·소스 등의 변경에 따라 무효화될 수 있음
 
 ## 어떻게 사용하는가? (How)
 
@@ -106,7 +109,7 @@ npx vite preview
 // vite.config.ts
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   // 플러그인
@@ -115,7 +118,7 @@ export default defineConfig({
   // 경로 별칭
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 
@@ -136,12 +139,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         // 벤더 청크 분리
-        manualChunks: {
-          vendor: ['vue', 'vue-router', 'pinia'],
-        },
+        // Vite 8은 객체 manualChunks를 지원하지 않는다.
+        // 커스텀 청크는 Rolldown codeSplitting 정책을 별도 검증한다.
       },
     },
   },
@@ -167,7 +169,6 @@ Vite에서 TypeScript는 **변환만** 하고 **타입 체크는 하지 않는�
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -211,7 +212,7 @@ VITE_API_URL=https://api.example.com
 ```
 
 ```typescript
-// 사용법 — 반드시 VITE_ 접두사 필요
+// 기본 envPrefix는 VITE_; 내장 변수와 prefix 커스텀 설정은 별도
 console.log(import.meta.env.VITE_APP_TITLE);
 console.log(import.meta.env.VITE_API_URL);
 
@@ -238,7 +239,7 @@ interface ImportMeta {
 }
 ```
 
-> **보안**: `VITE_` 접두사가 없는 변수는 클라이언트에 노출되지 않는다. 비밀키는 절대 `VITE_` 접두사를 사용하지 말 것.
+> **보안**: 기본 envPrefix에서는 사용자 변수를 VITE_로 선택한다. envPrefix/define/클라이언트 코드의 다른 노출 경로도 검토한다. 비밀키는 절대 `VITE_` 접두사를 사용하지 말 것.
 
 ### 자주 쓰는 플러그인
 
@@ -246,7 +247,7 @@ interface ImportMeta {
 # Vue
 npm install -D @vitejs/plugin-vue
 
-# React (SWC 기반 — 더 빠름)
+# React (SWC 기반; 상대 속도는 실제 프로젝트에서 측정)
 npm install -D @vitejs/plugin-react-swc
 
 # 레거시 브라우저 지원
@@ -317,5 +318,23 @@ my-vue-app/
 ## 관련 문서
 
 - [tsconfig와 프로젝트 설정](./tsconfig-setup.md)
-- [패키지 관리와 빌드](./package-and-build.md)
-- [Vue 3 기초](./vue/vue3-basics.md)
+- 패키지 관리 심화 문서는 계획·미작성이다.
+- [Vue 3 + TypeScript](./vue/vue3-with-typescript.md)
+
+## 현재 적용 조건과 근거
+
+확인일 **2026-10-04**, 본문의 도구 설명은 **Vite 8** 기준이다. [시작 가이드](https://vite.dev/guide/)의 Node 조건은 20.19+ 또는 22.12+이며 일부 템플릿은 더 높다. [7→8 변경](https://vite.dev/guide/migration)은 Oxc/Rolldown 및 객체 manualChunks 제거·rollupOptions 이름 변경을 안내한다. 기존 vendor 청크 의도는 주석으로 보존했으며 동일한 산출물 분할을 검증한 것은 아니다. [의존성 최적화](https://vite.dev/guide/dep-pre-bundling)와 [환경 변수](https://vite.dev/guide/env-and-mode)를 대조했다. 새 프로젝트의 파일 트리는 템플릿 버전에 따라 다르고 preview는 운영 서버 대체가 아니다. 생성·설치·실제 build·typecheck는 미실행이다. 타입 선언은 환경 변수 존재나 값의 런타임 유효성을 보증하지 않는다.
+
+### 이전 버전의 고유 청크 예제 보존
+
+다음은 원 문서의 **Vite 7 이하 Rollup** 청크 정책 조각이다. Vite 8 설정과 합치지 않는다. Vue·Router·Pinia를 vendor로 묶으려던 의도를 보존하며 설치 의존성과 실제 chunk 영향을 확인한다.
+
+```typescript
+const legacyBuildExample = {
+  rollupOptions: {
+    output: {
+      manualChunks: { vendor: ['vue', 'vue-router', 'pinia'] },
+    },
+  },
+}
+```

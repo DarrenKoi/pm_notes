@@ -2,6 +2,9 @@
 tags: [python, uv, pip, migration, troubleshooting]
 level: intermediate
 last_updated: 2026-01-31
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # pip에서 uv로 마이그레이션 가이드
@@ -11,7 +14,7 @@ last_updated: 2026-01-31
 ## 왜 필요한가? (Why)
 
 - 기존 프로젝트의 의존성 관리를 더 빠르고 재현 가능하게 개선
-- `requirements.txt` → `pyproject.toml` + `uv.lock` 전환으로 의존성 충돌 방지
+- `requirements.txt` → `pyproject.toml` + `uv.lock`으로 선언과 해결 결과를 분리; 충돌을 자동으로 없애지는 않음
 - 팀원 간 환경 불일치 문제 해결
 - pip를 당장 버릴 필요 없이 **점진적 전환** 가능
 
@@ -60,10 +63,10 @@ my-project/
 
 ```bash
 # 기존 프로젝트 디렉토리에서 실행
-uv init
+uv init --bare --vcs none --no-workspace
 ```
 
-이렇게 하면 기본 `pyproject.toml`이 생성된다. 기존 파일은 건드리지 않는다.
+기존 파일을 백업하고 diff를 확인한다. 이 명령은 최소 pyproject.toml을 생성하는 용도다. 기존 setup.py/setup.cfg의 패키지·entry point·빌드 옵션을 자동 이전하지 않는다.
 
 **경우 B: 이미 pyproject.toml이 있는 프로젝트 (setuptools/flit 등)**
 
@@ -76,21 +79,22 @@ uv lock
 
 ### Step 4: 의존성 옮기기
 
-**방법 1: requirements.txt에서 한 번에 추가**
+**방법 1: requirements 파일을 파서로 가져오기**
 
 ```bash
-# requirements.txt의 패키지를 pyproject.toml에 추가
-uv add $(grep -v '^\s*#\|^\s*$' requirements.txt | sed 's/==.*//g' | tr '\n' ' ')
+uv add -r requirements.txt
 ```
 
-> 주의: `==` 버전 고정을 제거하고 추가하는 방식. uv.lock이 정확한 버전을 잠그므로 pyproject.toml에는 유연한 버전 범위가 낫다.
+기존 핀·extras·환경 마커를 보존하며 시작한다. 셸 공백 분할이나 `sed`로 `==`를 제거하지 않는다. 인덱스·constraints·editable·로컬 경로 옵션은 이전 후 pyproject.toml과 lock의 실제 반영을 검토한다.
 
-**방법 2: 정확한 버전을 유지하고 싶다면**
+**방법 2: 의도적으로 버전 정책을 바꾸기**
 
 ```bash
-# 버전 고정 그대로 추가
-uv add $(grep -v '^\s*#\|^\s*$' requirements.txt | tr '\n' ' ')
+# 해당 패키지의 호환성 검증을 한 뒤 명시적으로 범위를 바꾸는 예
+uv add "httpx>=0.27,<1"
 ```
+
+lockfile은 새 해결 결과를 고정한다. 기존 핀을 제거했을 때의 호환성을 대신 보증하지 않는다. 모든 프로젝트에 유연한 범위가 더 낫다고 일반화하지 않는다.
 
 **방법 3: 수동으로 pyproject.toml 편집**
 
@@ -133,14 +137,12 @@ uv add --dev pytest ruff mypy httpx
 ### Step 6: 가상환경 전환
 
 ```bash
-# 기존 venv 삭제 (선택사항, 나중에 해도 됨)
-rm -rf venv/    # 또는 .venv/
-
-# uv가 자동으로 .venv를 생성하고 관리
+# 기존 환경은 비교가 끝날 때까지 보존
+# 프로젝트의 .venv를 생성/동기화
 uv sync
 ```
 
-`uv sync` 실행 시 `.venv/`가 없으면 자동 생성된다.
+`uv sync` 실행 시 `.venv/`가 없으면 생성한다. 기존 `.venv`를 사용하면 기본 exact sync로 lock에 없는 패키지가 제거될 수 있다. 기존 환경 경로를 먼저 확인한다.
 
 ### Step 7: 실행 방식 변경
 
@@ -169,8 +171,8 @@ uv run pytest
 
 # After
 - uses: astral-sh/setup-uv@v5
-- run: uv sync
-- run: uv run pytest
+- run: uv sync --locked
+- run: uv run --locked pytest
 ```
 
 **Docker 예시**
@@ -181,14 +183,17 @@ FROM python:3.12-slim
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# After
+# After: 앱 예시 (패키지 빌드용 소스까지 복사한 뒤 sync)
 FROM python:3.12-slim
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
+COPY --from=ghcr.io/astral-sh/uv:0.12.13 /uv /bin/uv
+WORKDIR /app
+ENV UV_PYTHON_DOWNLOADS=never
 COPY . .
-CMD ["uv", "run", "python", "main.py"]
+RUN uv sync --locked --no-dev
+CMD ["/app/.venv/bin/python", "main.py"]
 ```
+
+`.dockerignore`에는 `.venv/`를 넣어 호스트 환경을 이미지에 복사하지 않는다. uv 버전은 로컬 확인 버전 예시이며 이미지 pull/build는 미실행이다. 재현성 요구에 따라 Python·uv 이미지 digest도 고정한다. 의존성만 먼저 설치하는 별도 캐시 단계가 필요하면 `--no-install-project`를 쓰고 소스를 복사한 뒤 최종 sync를 한다. 런타임의 uv run 재동기화로 dev 의존성이 다시 설치되지 않도록 환경의 Python을 직접 실행한다.
 
 ### Step 9: Git 설정 업데이트
 
@@ -208,17 +213,7 @@ uv.lock           # 정확한 버전 잠금 (반드시 커밋)
 
 ### Step 10: 기존 파일 정리
 
-전환이 완료되고 안정적으로 동작하면:
-
-```bash
-# 더 이상 필요 없는 파일 제거
-rm requirements.txt
-rm requirements-dev.txt
-rm setup.py          # pyproject.toml로 대체된 경우
-rm setup.cfg         # pyproject.toml로 대체된 경우
-```
-
-> 팀 프로젝트라면 모든 팀원이 uv로 전환될 때까지 requirements.txt를 유지하는 것도 방법이다.
+전환·빌드·테스트·팀 CI 검증을 마친 뒤 역할별로 정리한다. requirements는 외부 소비자가 필요하면 export로 유지하고, setup.py/setup.cfg의 패키징·entry point·도구 설정이 이전되었는지 확인한다. 파일명만 보고 일괄 삭제하지 않는다. 이번 문서 정리는 기존 프로젝트 파일을 삭제하지 않았다.
 
 ---
 
@@ -243,7 +238,11 @@ uv tree
 # 특정 패키지 버전을 명시적으로 지정
 uv add "numpy>=1.24,<2.0"
 
-# 또는 override로 강제 지정 (pyproject.toml)
+```
+
+override는 상위 패키지의 선언을 덮어쓰므로 실행 호환성 검증이 필요하다. 다음은 **pyproject.toml** 조각이다.
+
+```toml
 [tool.uv]
 override-dependencies = ["numpy==1.26.4"]
 ```
@@ -255,17 +254,19 @@ override-dependencies = ["numpy==1.26.4"]
 **해결:** `pyproject.toml`에 인덱스 추가:
 
 ```toml
-[tool.uv]
-index-url = "https://pypi.company.com/simple/"
-extra-index-url = ["https://pypi.org/simple/"]
+[[tool.uv.index]]
+name = "internal"
+url = "https://packages.example.invalid/simple/"
+default = true
 ```
 
 또는 환경변수:
 
 ```bash
-export UV_INDEX_URL="https://pypi.company.com/simple/"
-export UV_EXTRA_INDEX_URL="https://pypi.org/simple/"
+export UV_DEFAULT_INDEX="https://packages.example.invalid/simple/"
 ```
+
+위 주소는 교체가 필요한 비밀 없는 예시다. default=true는 기본 PyPI를 대체한다. 공용 fallback이 필요하면 허용 정책과 패키지별 source를 정하고 인덱스를 추가한다. 기본 first-index는 패키지 이름이 발견된 첫 인덱스에서 후보를 선택한다. pip의 설정·동작과 완전히 같지 않다. 자격증명은 문서·URL·Git에 넣지 않는다.
 
 ### 3. 시스템 의존성이 필요한 패키지 (빌드 실패)
 
@@ -304,7 +305,7 @@ uv python install 3.12
 
 # 프로젝트의 requires-python 확인/수정
 # pyproject.toml에서:
-requires-python = ">=3.10"    # 범위를 넓히거나
+requires-python = ">=3.12"    # 실제 코드가 요구하는 범위; 오류 우회로 낮추지 않음
 
 # 프로젝트에 버전 고정
 uv python pin 3.12
@@ -316,8 +317,8 @@ uv python pin 3.12
 
 **해결:**
 ```bash
-# uv.lock 충돌 시 어느 한쪽을 선택한 뒤 재생성
-git checkout --theirs uv.lock    # 또는 --ours
+# pyproject.toml·sources의 양쪽 의도를 먼저 병합하고 백업
+# 충돌 표식 없는 유효 lock을 바탕으로 재해결한 뒤 버전 diff 확인
 uv lock
 ```
 
@@ -329,8 +330,8 @@ uv lock
 
 **해결:**
 ```bash
-# uv는 프로젝트를 자동으로 editable로 설치
-uv sync    # 현재 프로젝트가 editable로 설치됨
+# build-system이 선언된 패키지 프로젝트를 기본 editable로 설치
+uv sync
 
 # 로컬 경로의 다른 패키지 추가
 uv add --editable ../my-local-lib
@@ -354,14 +355,19 @@ dependencies = [
 
 **원인:** 기존 venv에 editable로 설치했던 것이 새 .venv에는 없음
 
-**해결:**
-```bash
+**해결:** 빌드 설정은 프로젝트의 실제 패키지 이름·레이아웃에 맞춰 검토한다.
+
+```toml
 # src layout인 경우 pyproject.toml에 빌드 시스템 설정 확인
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-# 그 후 uv sync하면 자동으로 editable 설치됨
+```
+
+빌드 시스템을 선언한 뒤:
+
+```bash
 uv sync
 ```
 
@@ -378,7 +384,7 @@ Phase 1: uv를 pip 대용으로만 사용
 
 Phase 2: pyproject.toml 도입, uv lock 사용
          requirements.txt는 uv로부터 자동 생성하여 병행
-         uv export > requirements.txt
+         uv export --format requirements-txt --no-dev --no-emit-project -o requirements.txt
 
 Phase 3: 완전 전환
          requirements.txt 제거
@@ -388,9 +394,13 @@ Phase 3: 완전 전환
 
 ## 참고 자료
 
-- [uv 공식 마이그레이션 가이드](https://docs.astral.sh/uv/guides/projects/)
+- [uv 공식 마이그레이션 가이드](https://docs.astral.sh/uv/guides/migration/pip-to-project/)
 - [uv pip 호환 인터페이스](https://docs.astral.sh/uv/pip/compatibility/)
 
 ## 관련 문서
 
 - [uv 패키지 매니저 개요](./uv-package-manager.md)
+
+## 현재 검토 근거와 한계
+
+확인일 **2026-10-04**, 로컬 CLI **uv 0.12.13**. [pip → project 공식 절차](https://docs.astral.sh/uv/guides/migration/pip-to-project/), [인덱스 선택](https://docs.astral.sh/uv/concepts/indexes/), [editable·exact sync](https://docs.astral.sh/uv/concepts/projects/sync/), [Docker의 소스 복사·실행 조건](https://docs.astral.sh/uv/guides/integration/docker/)를 대조했다. 실제 사내 인덱스·패키지의 빌드 및 Docker·Actions 실행은 미확인이다. 두 uv 문서는 역할이 다르다. 개요는 새 작업과 명령 개념을, 이 문서는 기존 환경의 보존·전환·회귀 검증을 담당한다. 공통 기본 설치 설명의 완전 통합은 Claude 협의 부재로 보류했다.

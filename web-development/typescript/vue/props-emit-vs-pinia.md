@@ -2,6 +2,9 @@
 tags: [vue, state-management, props, emit, pinia]
 level: intermediate
 last_updated: 2026-02-01
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # Props/Emit vs Pinia: Vue 상태 관리 패턴 선택 가이드
@@ -25,7 +28,7 @@ Vue 앱이 커지면 "이 상태를 어디서 관리할까?"라는 질문이 반
 
 ### 1. Props (부모 → 자식 데이터 전달)
 
-부모가 자식에게 데이터를 내려주는 **단방향 바인딩**. 자식은 props를 직접 수정할 수 없다.
+부모가 자식에게 데이터를 내려주는 **단방향 바인딩**. 자식은 props 바인딩을 재할당하지 않는다. 객체·배열의 중첩 값은 참조를 통해 변경할 수 있으므로 부모에 이벤트로 변경을 요청하는 원칙을 지킨다.
 
 ```vue
 <!-- Parent.vue -->
@@ -163,7 +166,7 @@ defineProps<{ user: User }>()
 </template>
 ```
 
-**장점**: `UserList`와 `UserDetail`은 **어떤 데이터든** 받아서 표시할 수 있다. 재사용 가능.
+**장점**: `UserList`와 `UserDetail`은 정의한 User 계약의 데이터를 받아서 표시할 수 있다. 재사용 가능.
 
 #### Pinia로 구현 (이 경우 비권장)
 
@@ -197,11 +200,11 @@ const store = useUserSelectionStore()
 ```
 
 **문제점**:
-- `UserList`가 `useUserSelectionStore`에 **하드코딩 의존** → 다른 곳에서 재사용 불가
+- `UserList`가 `useUserSelectionStore`에 **하드코딩 의존** → 같은 store 계약 밖에서 재사용하려면 결합을 바꾸어야 함
 - 부모-자식 사이의 단순한 데이터 흐름을 전역 store로 우회 → 불필요한 복잡성
-- 테스트 시 store mocking 필요
+- 테스트 시 실제 테스트용 Pinia 또는 mock 준비가 필요
 
-### Pinia를 써야 하는 경우
+### Pinia를 고려할 경우
 
 | 상황 | 예시 |
 |------|------|
@@ -210,7 +213,7 @@ const store = useUserSelectionStore()
 | 여러 페이지에서 공유하는 데이터 | 장바구니, 알림 목록 |
 | 캐싱이 필요한 API 응답 | 자주 참조하는 마스터 데이터 |
 
-### Pinia를 쓰면 안 되는 경우
+### 로컬 상태를 먼저 고려할 경우
 
 | 상황 | 대안 |
 |------|------|
@@ -252,3 +255,9 @@ export const useModalStore = defineStore('modal', () => {
 ## 관련 문서
 
 - [Vue README](./README.md)
+
+## 적용 조건과 검토
+
+확인일 **2026-10-04**. [props의 중첩 참조](https://vuejs.org/guide/components/props.html#mutating-object-array-props)와 [Pinia store](https://pinia.vuejs.org/core-concepts/)를 대조했다. 위 예제는 의존성 생략 조각이다. 일반 Vue에서 defineStore는 pinia, ref/computed는 vue에서 import한다. User·Credentials·api·useUserSelectionStore 및 UserList/UserDetail 컴포넌트도 각 모듈에 정의/import해야 하며 Nuxt 자동 import를 일반 Vue의 기본으로 읽지 않는다. 여러 파일의 User는 공유 타입 모듈로 전달해야 한다.
+
+단계 수 2~3은 경험적 출발점이며 Pinia 금지 규칙은 아니다. 여러 라우트에서 같은 모달을 제어하거나 폼 초안을 공유하면 공통 store가 적절할 수 있다. SSR에서는 요청별 store 격리·hydration·민감 토큰 저장 정책을 확인한다. 컴파일·Pinia 실사용은 미확인이고 고유 비교 예제는 보존했다.

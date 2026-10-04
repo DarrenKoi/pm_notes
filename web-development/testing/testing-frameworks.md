@@ -2,6 +2,9 @@
 tags: [pytest, unittest, jest, vitest, mocha, testing-framework]
 level: beginner
 last_updated: 2026-02-19
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 테스트 프레임워크 비교 및 사용법
@@ -23,10 +26,10 @@ last_updated: 2026-02-19
 
 | 프레임워크 | 특징 | 추천 상황 |
 |-----------|------|----------|
-| **pytest** | 가장 많이 쓰임, 간결한 문법, 풍부한 플러그인 | 대부분의 Python 프로젝트 (사실상 표준) |
+| **pytest** | 간결한 assert 문법, fixture와 플러그인 | fixture·parametrize를 활용하는 Python 프로젝트 |
 | **unittest** | Python 표준 라이브러리 내장, 별도 설치 불필요 | 의존성 최소화가 필요한 경우, 레거시 코드베이스 |
 
-> 현재 업계 표준: **pytest**. 새 프로젝트라면 pytest를 선택하면 된다.
+> fixture·parametrize가 필요하면 pytest를 고려한다. 의존성을 최소화하거나 기존 unittest를 유지할 목적도 함께 본다. 시장 점유율을 검증한 결론은 아니다.
 
 ---
 
@@ -294,8 +297,8 @@ def test_raises(self):
 
 | 프레임워크 | 특징 | 추천 상황 |
 |-----------|------|----------|
-| **Vitest** | Vite 기반, 초고속, Jest와 API 호환 | Vue/Vite/Nuxt 프로젝트 (최신 표준) |
-| **Jest** | 오랜 업계 표준, 풍부한 생태계, React 기본 포함 | React, CRA, Next.js, 레거시 프로젝트 |
+| **Vitest** | Vite 설정 활용, Jest와 유사한 API | Vite 설정·플러그인을 함께 쓰는 프로젝트 |
+| **Jest** | 기존 Jest 테스트·플러그인 생태계 활용 | React, CRA, Next.js, 레거시 프로젝트 |
 | **Mocha + Chai** | 유연하고 가볍지만 설정 필요 | Node.js 백엔드, 커스터마이징이 필요한 경우 |
 
 ---
@@ -305,12 +308,12 @@ def test_raises(self):
 #### 설치
 
 ```bash
-npm install -D vitest
+npm install -D vitest jsdom
 ```
 
 `vite.config.ts`:
 ```typescript
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -371,7 +374,7 @@ describe('clamp 함수', () => {
 
 ```typescript
 // 동등 비교
-expect(result).toBe(5)                  // 값과 타입이 정확히 같음 (===)
+expect(result).toBe(5)                  // Object.is 비교 (NaN·-0의 === 차이 주의)
 expect(result).toEqual({ a: 1 })        // 객체/배열 깊은 비교
 
 // 진리값
@@ -405,20 +408,22 @@ expect(arr).not.toContain('wrong')
 #### Mock (vi 객체 사용)
 
 ```typescript
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 
 describe('API 호출 테스트', () => {
   beforeEach(() => {
-    vi.clearAllMocks()  // 각 테스트 전에 mock 초기화
+    vi.clearAllMocks()  // 호출 기록 초기화; 원래 구현/전역 값 복원과 다름
   })
+
+  afterEach(() => { vi.unstubAllGlobals() })
 
   it('API 호출 성공 시 데이터를 반환한다', async () => {
     // fetch를 mock으로 대체
-    global.fetch = vi.fn().mockResolvedValue({
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ id: 1, name: 'Daeyoung' }),
-    })
+    }))
 
     const user = await fetchUser(1)
 
@@ -428,10 +433,10 @@ describe('API 호출 테스트', () => {
   })
 
   it('API 실패 시 에러를 던진다', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
-    })
+    }))
 
     await expect(fetchUser(999)).rejects.toThrow('User not found')
   })
@@ -441,7 +446,7 @@ describe('API 호출 테스트', () => {
 #### setup/teardown hooks
 
 ```typescript
-import { beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
+import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest'
 
 beforeAll(() => {
   // 이 describe 블록의 모든 테스트 시작 전 1번만 실행
@@ -528,8 +533,7 @@ React + CRA / Next.js                      → Jest
 기존 Jest 코드베이스 유지보수               → Jest 유지
 ```
 
-> **팁:** Vitest는 Jest API를 거의 동일하게 지원하므로,
-> 기존 Jest 테스트를 `jest` → `vi`로 바꾸는 것만으로 대부분 마이그레이션 가능.
+> API 이름이 비슷해도 mock module factory·호이스팅·globals·snapshot·환경의 차이를 확인한다. jest→vi 치환만으로 전체 마이그레이션이 완료되지 않는다.
 
 ---
 
@@ -581,7 +585,7 @@ Python 프로젝트
 ├── 새 프로젝트              → pytest
 ├── 의존성 없이 내장만       → unittest
 └── FastAPI/Django           → pytest + pytest-asyncio (FastAPI)
-                               또는 pytest + django-pytest (Django)
+                               또는 pytest + pytest-django (Django)
 
 JavaScript/TypeScript 프로젝트
 ├── Vue + Vite/Nuxt          → Vitest
@@ -606,3 +610,9 @@ JavaScript/TypeScript 프로젝트
 - [Unit Testing 기초](./unit-testing-basics.md)
 - [E2E Testing 기초](./e2e-testing-basics.md)
 - [Vite 기초](../typescript/vite-basics.md)
+
+## 버전·설정·실행 검토
+
+확인일 **2026-10-04**, 설치된 pytest **9.0.2**이며 Vitest/Jest/Mocha/Playwright 버전은 이 폴더에 설치되어 있지 않아 실행 미확인이다. [Vitest 설정](https://vitest.dev/config/)·[환경](https://vitest.dev/guide/environment.html)·[vi 전역 복원](https://vitest.dev/api/vi.html#vi-unstuballglobals)을 대조했다. jsdom은 실제 브라우저가 아니고 설치가 필요하다. clearAllMocks는 기록, reset은 구현, restore/unstub은 변경 대상 복원으로 구분한다. [Jest 이전 안내](https://vitest.dev/guide/migration.html)에서 버전별 차이를 확인하며 현재 열람 문서는 Vitest 5.0의 Node >=22.12.0·Vite >=6.4.0 조건을 명시한다. 이 문서는 특정 조합 설치 성공을 주장하지 않는다.
+
+[pytest-django](https://pytest-django.readthedocs.io/en/latest/)가 올바른 플러그인 이름이다. FastAPI의 동기 TestClient 테스트에 pytest-asyncio가 항상 필요한 것은 아니다. async 함수를 직접 테스트할 때 runner와 event-loop fixture 정책을 정한다. @vitest/ui·coverage provider·Jest jsdom 환경·TS config loader·Mocha의 TS 실행 경로는 별도 준비해야 한다. 위 my_service/DB/get_weather/fetchUser·math 등 예시 구현과 import는 생략됐다. 시장 표준·상대 속도·모든 React 프로젝트의 기본 포함은 확인한 사실로 취급하지 않는다.

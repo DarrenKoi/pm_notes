@@ -2,6 +2,9 @@
 tags: [python, uv, package-manager, tooling]
 level: beginner
 last_updated: 2026-01-31
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # uv - 차세대 Python 패키지 매니저
@@ -17,7 +20,7 @@ last_updated: 2026-01-31
 - **환경 관리 번거로움**: venv 생성 → activate → pip install 의 반복적 워크플로우
 - **재현성 부족**: `requirements.txt`만으로는 완벽한 재현이 어려움
 
-uv는 이 모든 문제를 **하나의 바이너리**로 해결하며, pip 대비 **10~100배 빠른 속도**를 제공한다.
+uv는 설치·해결·환경·프로젝트 작업을 한 도구에서 제공한다. 속도는 캐시·패키지·네트워크·빌드 조건에 따라 달라지므로 배수는 이 저장소의 실측 결과가 아니다.
 
 ## 핵심 개념 (What)
 
@@ -26,7 +29,7 @@ uv는 이 모든 문제를 **하나의 바이너리**로 해결하며, pip 대�
 | 기존 도구 | 역할 | uv 대체 명령어 |
 |-----------|------|----------------|
 | pip | 패키지 설치 | `uv pip install` |
-| pip-tools | 의존성 잠금 | `uv lock` |
+| pip-tools | 의존성 잠금 | `uv pip compile` / 프로젝트의 `uv lock` |
 | virtualenv | 가상환경 생성 | `uv venv` |
 | pyenv | Python 버전 관리 | `uv python install` |
 | pipx | CLI 도구 실행 | `uvx` / `uv tool` |
@@ -37,7 +40,7 @@ uv는 이 모든 문제를 **하나의 바이너리**로 해결하며, pip 대�
 
 - **Rust 기반**: 네이티브 바이너리로 Python 런타임 불필요
 - **글로벌 캐시**: 패키지를 한 번만 다운로드하고 프로젝트 간 링크로 공유 (디스크 절약)
-- **유니버설 락파일**: 플랫폼 독립적인 `uv.lock` 파일로 재현 가능한 빌드
+- **유니버설 락파일**: 지원 Python·플랫폼의 해결 결과를 함께 표현하는 `uv.lock`; 시스템 라이브러리·런타임까지 고정하는 것은 아님
 - **pip 호환 인터페이스**: 기존 pip 명령어와 유사한 인터페이스 제공
 
 ## 어떻게 사용하는가? (How)
@@ -101,7 +104,7 @@ my-project/
 ### 4. 스크립트 실행
 
 ```bash
-# 프로젝트 내 스크립트 실행 (자동으로 venv 활성화)
+# 프로젝트 환경을 준비하고 그 환경에서 실행 (현재 셸의 activate 상태를 바꾸지 않음)
 uv run python main.py
 uv run pytest
 uv run uvicorn app:app --reload
@@ -146,13 +149,13 @@ uv tool install httpie
 기존 프로젝트에서 점진적으로 전환할 때 유용:
 
 ```bash
-# 기존 pip 명령어와 동일한 인터페이스
+# 공통 pip 작업과 유사한 인터페이스; pip.conf/PIP_INDEX_URL은 읽지 않음
+uv venv
 uv pip install flask
 uv pip install -r requirements.txt
-uv pip freeze > requirements.txt
+uv pip freeze > requirements-freeze.txt
 
-# 가상환경 생성
-uv venv
+# activate는 직접 python을 실행할 때 선택적으로 사용
 source .venv/bin/activate
 ```
 
@@ -195,7 +198,7 @@ dev = [
 ```bash
 uv init my-api
 cd my-api
-uv add fastapi uvicorn[standard] sqlalchemy
+uv add fastapi "uvicorn[standard]" sqlalchemy
 uv add --dev pytest httpx ruff
 uv run uvicorn app:app --reload
 ```
@@ -206,7 +209,7 @@ uv run uvicorn app:app --reload
 # 기존 requirements.txt가 있는 프로젝트에서
 cd existing-project
 uv init
-uv add $(cat requirements.txt | grep -v '^#' | tr '\n' ' ')
+uv add -r requirements.txt
 # 이후 uv.lock과 pyproject.toml로 관리
 ```
 
@@ -215,15 +218,15 @@ uv add $(cat requirements.txt | grep -v '^#' | tr '\n' ' ')
 ```yaml
 # GitHub Actions 예시
 - uses: astral-sh/setup-uv@v5
-- run: uv sync
-- run: uv run pytest
+- run: uv sync --locked
+- run: uv run --locked pytest
 ```
 
 ## 다른 도구와 비교
 
 | 비교 항목 | pip | poetry | uv |
 |-----------|-----|--------|-----|
-| 속도 | 느림 | 보통 | 매우 빠름 (10-100x) |
+| 속도 | 느림 | 보통 | 조건별 측정 필요 |
 | Python 버전 관리 | X | X | O |
 | 락파일 | X | O | O |
 | 가상환경 자동 관리 | X | O | O |
@@ -239,4 +242,8 @@ uv add $(cat requirements.txt | grep -v '^#' | tr '\n' ' ')
 
 ## 관련 문서
 
-- [FastAPI 관련 문서](./fastapi/) (uv로 프로젝트 셋업 시 활용)
+- [pip에서 uv로 마이그레이션](./pip-to-uv-migration.md): 기존 의존성·빌드·CI를 보존하며 전환하는 절차
+
+## 검토 범위와 근거
+
+확인일 **2026-10-04**, 로컬 CLI **uv 0.12.13**. [의존성 가져오기](https://docs.astral.sh/uv/concepts/projects/dependencies/#importing-dependencies-from-requirements-files), [pip 호환 차이](https://docs.astral.sh/uv/pip/compatibility/), [lock/sync](https://docs.astral.sh/uv/concepts/projects/sync/)와 `uv add/init --help`를 대조했다. `uv add`는 프로젝트 선언과 lock/environment를 갱신하고 `uv pip install`은 환경에 설치한다. 둘은 같은 작업이 아니다. CI의 setup-uv@v5는 기존 예시 버전이며 현재 추천 버전·전체 Actions 실행은 미확인이다. FastAPI 명령은 별도 app.py가 있어야 실행된다. 설치·외부 패키지·API 호출 예제는 이번 정리에서 실행하지 않았다.

@@ -2,6 +2,9 @@
 tags: [vue, typescript, frontend, composition-api]
 level: beginner
 last_updated: 2026-01-31
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # Vue 3 + TypeScript 시작하기
@@ -12,7 +15,7 @@ last_updated: 2026-01-31
 
 - Vue 3는 TypeScript로 재작성되어 **1급 TypeScript 지원** 제공
 - props, emit, ref 등에 타입을 지정하면 **IDE 자동 완성과 컴파일 타임 에러 검출** 가능
-- Flask 백엔드의 API 응답 타입을 프론트엔드에서 그대로 사용하면 **풀스택 타입 일관성** 확보
+- Flask 응답 구조와 프론트엔드 타입을 함께 정의해 계약을 표현; 실제 JSON은 런타임 검증이 별도로 필요
 - Composition API + TypeScript 조합이 현재 Vue 생태계의 표준
 
 ## 프로젝트 셋업 (How)
@@ -106,10 +109,14 @@ const loading = ref(false)
 
 async function fetchUsers() {
   loading.value = true
-  const res = await fetch('/api/users')
-  const json: ApiResponse<User[]> = await res.json()
-  users.value = json.data
-  loading.value = false
+  try {
+    const res = await fetch('/api/users')
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json: ApiResponse<User[]> = await res.json()
+    users.value = json.data // 정적 선언; 실제 JSON 검증은 생략
+  } finally {
+    loading.value = false
+  }
 }
 
 onMounted(fetchUsers)
@@ -137,11 +144,18 @@ const props = defineProps<{
   status: 'active' | 'inactive'
 }>()
 
-// 방법 2: 기본값이 필요한 경우 withDefaults 사용
-const props2 = withDefaults(defineProps<{
+</script>
+```
+
+방법 2는 **별도의 컴포넌트 대안**이다. 같은 SFC에 두 defineProps를 합치지 않는다.
+
+```vue
+<script setup lang="ts">
+// 기본값이 필요한 경우 withDefaults 사용
+const props = withDefaults(defineProps<{
   title: string
-  count: number
-  variant: 'primary' | 'secondary'
+  count?: number
+  variant?: 'primary' | 'secondary'
 }>(), {
   count: 0,
   variant: 'primary'
@@ -154,7 +168,7 @@ const props2 = withDefaults(defineProps<{
 </template>
 ```
 
-부모 컴포넌트에서 사용 시 잘못된 타입을 넘기면 **빌드 타임에 에러**가 발생한다:
+아래 부모 사용 예는 **방법 1의 props 계약**을 대상으로 한다. 부모 컴포넌트에서 사용 시 vue-tsc 같은 타입 검사를 실행하면 잘못된 타입을 발견할 수 있다. Vite 변환만 실행하는 build는 타입 검사가 아니다:
 
 ```vue
 <!-- 부모 컴포넌트 -->
@@ -178,8 +192,18 @@ const emit = defineEmits<{
   (e: 'search', query: string): void
 }>()
 
+function handleClick(id: number) {
+  emit('update', id)
+}
+</script>
+```
+
+아래는 **Vue 3.3 이상에서 별도로 선택할 대안**이다. 두 defineEmits를 같은 SFC에 넣지 않는다.
+
+```vue
+<script setup lang="ts">
 // Vue 3.3+ 간결한 문법
-const emit2 = defineEmits<{
+const emit = defineEmits<{
   update: [id: number]
   delete: [id: number]
   search: [query: string]
@@ -286,12 +310,13 @@ export function useApi<T>(url: string): UseApiReturn<T> {
 
 ```vue
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useApi } from '@/composables/useApi'
-import type { User } from '@/types'
+import type { User, ApiResponse } from '@/types'
 
-// T가 User[]로 추론 → data는 Ref<User[] | null>
-const { data: users, loading, error, execute } = useApi<User[]>('/api/users')
+// 아래 Flask 예제는 data를 가진 응답 envelope를 반환한다.
+const { data: response, loading, error, execute } = useApi<ApiResponse<User[]>>('/api/users')
+const users = computed(() => response.value?.data ?? null)
 
 onMounted(execute)
 </script>
@@ -313,6 +338,10 @@ Flask API의 응답 구조에 맞춰 프론트엔드 타입을 정의하면 풀�
 
 ```python
 # Flask 백엔드 (app.py)
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
 @app.route('/api/users')
 def get_users():
     return jsonify({
@@ -389,7 +418,7 @@ state.name = 'Lee'
 
 ```typescript
 // ❌ as로 강제 캐스팅하면 타입 안전성 깨짐
-const user = {} as User
+const unsafeUser = {} as User
 
 // ✅ 올바른 초기값 또는 null 사용
 const user = ref<User | null>(null)
@@ -406,4 +435,8 @@ const user = ref<User | null>(null)
 ## 관련 문서
 
 - [TypeScript 웹 개발 로드맵](../README.md)
-- [Flask 관련 문서](../../python/flask/) (백엔드 연동)
+- [상태 관리 선택](./props-emit-vs-pinia.md)
+
+## 현재 검토와 예제 경계
+
+확인일 **2026-10-04**. [Vue SFC macro](https://vuejs.org/api/sfc-script-setup.html), [Composition API 타입](https://vuejs.org/guide/typescript/composition-api.html), [타입 검사 도구](https://vuejs.org/guide/typescript/overview.html)를 확인했다. withDefaults의 입력 optional과 출력 기본값을 구분하며 Vue 3.5의 reactive destructure와 이전 버전의 조건이 다르다. 예제의 aliases·User/MyComponent 파일은 직접 준비해야 한다. props/emit 대안은 각각 별도 SFC다. useApi<T>의 T와 타입 단언은 JSON validator가 아니며 외부 응답을 신뢰하는 간략 예제다. 동시 execute 응답 순서·취소·재요청 stale 값 정책은 미구현이다. 학습용 Vite proxy는 개발 서버에만 적용되며 운영 경로는 별도다. 실제 Vue 컴파일·브라우저·Flask 실행은 미확인이다.
