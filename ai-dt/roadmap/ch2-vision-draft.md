@@ -4,11 +4,17 @@ level: drafting
 last_updated: 2026-05-15
 version: 0.1
 related: [./itc-aix-roadmap-outline.md, ./CONTEXT.md, ./docs/adr/0001-aix-tf-ax-part-boundary.md]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # Ch.2 Vision & Positioning — 슬라이드 드래프트 (v0.1)
 
-> [Outline §Ch.2](./itc-aix-roadmap-outline.md#chapter-2-itc-aix-vision--positioning-2p) 본문 드래프트. 2슬라이드 분량.
+> [!info] 2026-10-04 검토 — 비전·조직 차별 주장 초안
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
+
+> [Outline §Ch.2](./itc-aix-roadmap-outline.md#Chapter%202.%20ITC%20AIX%20Vision%20%26%20Positioning%20%282p%29) 본문 드래프트. 2슬라이드 분량.
 > 작성 원칙: 본문 팀명·도메인 라벨 ✕ (완전 추상화). 5 stream만 노출.
 
 ---

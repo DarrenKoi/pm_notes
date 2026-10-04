@@ -1,24 +1,34 @@
+---
+tags: [llmops, evaluation]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: index
+---
+
+> [!info] 검토 범위 — 2026-10-04
+> 공식·일차 근거와 로컬 검증은 [공통 적용 조건](./verified-conditions.md), 변경·미확인은 [정리 기록](./organization-log.md)에 있다. 실제 사내 접속·모델 품질·운영 승인과 Claude 협의는 미확인이다. 원래17개를 개별 검토했다. 실제 운영·읽기 화면 검증은 미완료다.
+
+
 # LLMOps & 평가(Evaluation) 학습 노트
 
-> LLM 애플리케이션을 **운영 가능한 시스템**으로 만들기 위한 LLMOps와, 그 품질을 **숫자로 증명**하는 평가(Evaluation)를 `study_list.txt` 커리큘럼(기초 → 평가 기초 → 심화 평가 → 안전·운영 → Mini Project → 거버넌스·사고대응)을 따라 단계별로 정리한 실습 노트입니다.
+> LLM 애플리케이션을 **운영 가능한 시스템**으로 만들기 위한 LLMOps와, 그 품질을 **정해진 조건에서 측정**하는 평가(Evaluation)를 `study_list.txt` 커리큘럼(기초 → 평가 기초 → 심화 평가 → 안전·운영 → Mini Project → 거버넌스·사고대응)을 따라 단계별로 정리한 실습 노트입니다.
 
 ---
 
 ## 🎯 이 노트의 방향
 
 - **언어**: 한국어 (기술 용어는 영어 병기)
-- **코드**: 실행 가능한 완전한 예제. 모든 LLM/임베딩 호출은 **공개 OpenAI API**와 **사내 OpenAI 호환 엔드포인트**(Kimi-K2.5 / Qwen3-VL / BGE-M3)를 **병기**합니다.
+- **코드**: 학습용 함수와 조립 예제. 선행 블록·입력 파일·승인된 endpoint가 필요합니다. 01~15의 로컬 fixture 검증과 실제 모델 실행은 구분합니다. 접속·판본·출처는 [공통 적용 조건](./verified-conditions.md)에서 확인합니다.
 - **깊이**: 커리큘럼의 각 라인을 별도 문서로 다루고 실무에서 바로 쓰는 기법(LLM-as-a-Judge rubric·편향 보정, RAG 검색/생성 지표, RAGAS 계열 지표를 사내 판정 모델로 계산, agent trajectory 평가, CI regression gate, production 모니터링·드리프트, release manifest, incident postmortem)을 포함합니다.
 
-> ⚠️ **사내 환경 주의**
-> - 외부 LLM API(OpenAI/Anthropic/Google)는 방화벽으로 **차단**됩니다. 평가에서 흔히 쓰는 프레임워크(RAGAS, DeepEval 등)는 기본값이 OpenAI 판정 모델이므로 **반드시 사내 엔드포인트로 판정/임베딩 모델을 교체**해야 합니다.
-> - **DB(OpenSearch/Elasticsearch)와 실제 트래픽은 로컬 개발 환경에 없습니다.** 로컬에서는 import·문법·소규모 오프라인 평가까지만 검증하고, 온라인/모니터링 코드는 구조만 확인합니다.
-> - 사내 문서 99%는 DRM 보호 → 평가 데이터셋도 **스크린샷 + VLM(Qwen3-VL) 파이프라인**으로 만든 텍스트를 기준으로 구성합니다.
+> [!warning] 사례와 실제 환경을 구분
+> 기존 노트의 외부 API 차단·DRM 99%·Phoenix 사내 채택·Kimi/Qwen/BGE 서빙 이름은 확인되지 않은 시나리오다. 승인된 데이터·export 방식·접속 정책을 확인한 환경에서만 실습한다. 호환 endpoint라도 JSON mode·vision·embedding·usage 지원은 따로 확인한다.
+> 실제 DB·트래픽·회사 권한은 이번 로컬 검증에 포함하지 않았다.
 
 ## LLMOps vs MLOps 한 줄 메모
 
-- MLOps는 **모델 학습·배포·재학습** 중심. LLMOps는 대개 모델을 직접 학습하지 않고 **프롬프트·검색·도구·평가·가드레일**을 반복 개선하는 것이 핵심입니다.
-- 그래서 LLMOps의 심장은 **평가(Evaluation) 루프**입니다. "바꿨더니 좋아졌는가"를 매번 숫자로 답할 수 있어야 운영이 성립합니다. → [04. 평가 개요](./04-llm-evaluation-overview.md)
+- MLOps는 모델·데이터의 개발과 운영을 포괄합니다. 이 노트의 LLMOps는 프롬프트·검색·도구·평가·가드레일을 중심으로 설명하지만 fine-tuning·모델 배포도 포함할 수 있습니다.
+- 그래서 LLMOps의 심장은 **평가(Evaluation) 루프**입니다. "바꿨더니 좋아졌는가"를 같은 조건의 지표·사람 검토·운영 결과로 판단합니다. 수치만으로 모든 품질을 증명할 수는 없습니다. → [04. 평가 개요](./04-llm-evaluation-overview.md)
 
 ---
 
@@ -69,44 +79,50 @@
 ## 🧰 공통 개발 환경
 
 ```bash
-# 핵심 패키지 (버전은 예시, 실제로는 사내 미러/프록시 사용)
-pip install openai                        # 사내 OpenAI 호환 클라이언트
-pip install pandas numpy scikit-learn     # 데이터셋·지표 계산
-pip install evaluate rouge-score          # BLEU/ROUGE 등 참조 기반 지표
-pip install arize-phoenix openinference-instrumentation-openai  # LLM 관측성 (트레이싱·모니터링)
-# 선택: 평가 프레임워크 (판정/임베딩 모델은 반드시 사내 엔드포인트로 교체)
-pip install ragas deepeval
+# 별도 실습 환경의 확인 판본. 전체 의존성/OS 호환 lock은 아님.
+python -m pip install openai==3.24.0 numpy==2.5.3 rouge-score==0.1.2 sacrebleu==2.6.0 jsonschema==4.26.0
+python -m pip install arize-phoenix-otel==0.17.2 openinference-instrumentation-openai==0.1.63
+python -m pip install arize-phoenix-client==3.5.0 pandas==3.0.6
+# 08의 Ragas는 별도 Python3.12 legacy 환경: 공통 적용 조건 참고.
+# Phoenix server·실제 운영·DeepEval은 별도 검증 대상.
 ```
 
 ### LLM(판정) / 임베딩 클라이언트 — 모든 문서 공통 보일러플레이트
 
-평가에서 LLM은 두 역할로 쓰입니다. ① **평가 대상(under test)** 시스템, ② **판정자(judge)**. 둘 다 같은 사내 엔드포인트를 쓰되 모델/온도만 다르게 둡니다.
+평가에서 LLM은 두 역할로 쓰입니다. ① **평가 대상(under test)** 시스템, ② **판정자(judge)**. 두 역할의 모델·권한·서빙 설정을 별도로 기록합니다. 같은 gateway를 사용할 수도 있지만 독립된 judge가 항상 보장되는 것은 아닙니다.
 
 ```python
-# ── 공개 OpenAI API (커리큘럼 표준, 사내에서는 차단됨) ─────────────────
+import os
+import numpy as np
 from openai import OpenAI
-client = OpenAI()                                   # OPENAI_API_KEY 사용
-# judge_model = "gpt-4o"; embed_model = "text-embedding-3-small"
 
-# ── 사내 OpenAI 호환 엔드포인트 (실제 사용) ──────────────────────────
-from openai import OpenAI
-client = OpenAI(base_url="http://llm-gateway.internal/v1", api_key="EMPTY")
+# 승인된 gateway 값을 환경변수로 설정한다. 공개 API 사용 시 해당 정책을 확인한다.
+client = OpenAI(base_url=os.environ["LLM_BASE_URL"], api_key=os.environ["LLM_API_KEY"])
+JUDGE_MODEL = os.environ["JUDGE_MODEL"]
+TARGET_MODEL = os.environ["LLM_MODEL"]
+VLM_MODEL = os.environ["VLM_MODEL"]
+EMBED_MODEL = os.environ["EMBEDDING_MODEL"]
 
-JUDGE_MODEL = "Kimi-K2.5"          # 판정용 텍스트 LLM (온도 0 권장)
-TARGET_MODEL = "Kimi-K2.5"         # 평가 대상 (실제 서비스가 쓰는 모델)
-VLM_MODEL = "Qwen3-VL-30B"         # DRM 문서/이미지 정답 추출용
-EMBED_MODEL = "BGE-M3"             # 임베딩 유사도 지표용
-
-def chat(model, messages, temperature=0.0):
+def chat(model: str, messages: list[dict], temperature: float = 0.0) -> str:
     r = client.chat.completions.create(model=model, messages=messages, temperature=temperature)
+    if not r.choices or not isinstance(r.choices[0].message.content, str):
+        raise ValueError("텍스트 응답 없음: 거부/tool/서빙 계약을 별도로 확인")
     return r.choices[0].message.content
 
-def embed(texts, model=EMBED_MODEL):
-    r = client.embeddings.create(model=model, input=texts)
-    return [d.embedding for d in r.data]
+def embed(texts: list[str], model: str = EMBED_MODEL) -> list[list[float]]:
+    if not texts or any(not isinstance(t, str) or not t.strip() for t in texts):
+        raise ValueError("비어 있지 않은 문자열 목록 필요")
+    r = client.embeddings.create(model=model, input=texts, encoding_format="float")
+    data = sorted(r.data, key=lambda d: d.index)
+    if [d.index for d in data] != list(range(len(texts))):
+        raise ValueError("임베딩 누락/중복 index")
+    a = np.asarray([d.embedding for d in data], dtype=float)
+    if a.ndim != 2 or a.shape[1] == 0 or not np.isfinite(a).all():
+        raise ValueError("임베딩 차원/유한값 확인 실패")
+    return a.tolist()
 ```
 
-> `base_url`/`model`만 바꾸면 공개 예제 코드와 사내 코드가 **동일**합니다. 평가 프레임워크(RAGAS/DeepEval)도 내부적으로 이 클라이언트를 주입해 판정 모델을 사내 모델로 강제합니다. → [07. LLM-as-a-Judge](./07-llm-as-a-judge.md)
+> 같은 API 형태는 인증·출력 schema·tool/vision/usage의 동일한 지원을 보장하지 않는다. 프레임워크마다 별도 adapter와 판본 검증이 필요하다. 온도 0도 서버의 완전한 결정성을 보장하지 않는다. → [07. LLM-as-a-Judge](./07-llm-as-a-judge.md)
 
 ### 평가 데이터 표준 포맷 (`eval_set.jsonl`)
 
@@ -114,15 +130,15 @@ def embed(texts, model=EMBED_MODEL):
 {"id": "q001", "question": "...", "reference": "...", "contexts": ["..."], "meta": {"category": "recipe"}}
 ```
 
-한 줄 = 한 케이스. 전 문서가 이 포맷을 공유합니다. → [05. 평가 데이터셋 구축](./05-eval-dataset-construction.md)
+한 줄 = 한 케이스. `contexts`는 해당 실행에서 실제 검색한 문맥이며 정답 근거는 별도 `meta.gold_contexts`/`gold_ids`로 보관합니다. 13은 실제 검색과 gold를 분리하고, 15의 사고 후보는 사람 검수 전 평가 정답으로 사용하지 않습니다. → [05. 평가 데이터셋 구축](./05-eval-dataset-construction.md)
 
 ---
 
 ## 📖 참고 자료 (References)
-- OpenAI 호환 클라이언트: `OpenAI(base_url=..., api_key=..., model=...)`
+- OpenAI 호환 클라이언트: `OpenAI(base_url=..., api_key=...)` + 호출 시 `model=...`
 - RAGAS (RAG 평가 지표): https://docs.ragas.io/
 - DeepEval (LLM 평가 프레임워크): https://docs.confident-ai.com/
-- Arize Phoenix(사내 사용 LLM observability): https://docs.arize.com/phoenix
+- Arize Phoenix(자체 호스팅 후보, 사내 사용 미확인): https://docs.arize.com/phoenix
 - OpenAI Evals(개념 참고): https://github.com/openai/evals
 - OpenTelemetry GenAI Semantic Conventions: https://github.com/open-telemetry/semantic-conventions-genai
 - OWASP Top 10 for LLM Applications 2025: https://genai.owasp.org/llm-top-10/

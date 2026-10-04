@@ -4,11 +4,17 @@ level: execution
 last_updated: 2026-05-15
 version: 0.1
 related: [./itc-aix-roadmap-outline.md, ./CONTEXT.md, ./docs/adr/0001-aix-tf-ax-part-boundary.md]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # Quick Win 5선 상세 카드 (v0.1 드래프트)
 
-> ITC AIX 로드맵 [Ch.7](./itc-aix-roadmap-outline.md#chapter-7-1년차-quick-win-5선-12p) 본문 backing 문서.
+> [!info] 2026-10-04 검토 — PoC 카드와 당시 졸업 조건
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
+
+> ITC AIX 로드맵 [Ch.7](./itc-aix-roadmap-outline.md#Chapter%207.%201%EB%85%84%EC%B0%A8%20Quick%20Win%205%EC%84%A0%20%281~2p%29) 본문 backing 문서.
 > 본문 슬라이드는 표 1장 + 핵심 메시지 1장으로 압축. 카드 상세는 Appendix B 또는 사내 비공개 문서로 격리.
 
 ## 공통 규칙 (Recap)

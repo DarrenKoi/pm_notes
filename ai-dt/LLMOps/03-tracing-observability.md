@@ -2,7 +2,14 @@
 tags: [llmops, tracing, observability, cost, latency]
 level: intermediate
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
+
+> [!info] 검토 범위 — 2026-10-04
+> 공식·일차 근거와 로컬 검증은 [공통 적용 조건](./verified-conditions.md), 변경·미확인은 [정리 기록](./organization-log.md)에 있다. 실제 사내 접속·모델 품질·운영 승인과 Claude 협의는 미확인이다. 원래17개를 개별 검토했다. 실제 운영·읽기 화면 검증은 미완료다.
+
 
 # 03. 트레이싱 및 관측성 (Observability)
 
@@ -11,7 +18,7 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - LLM 파이프라인은 여러 단계(검색 → 프롬프트 조립 → LLM 호출 → 후처리)를 거친다. 답이 이상할 때 **어느 단계에서 틀어졌는지** 로그 없이는 알 수 없다.
-- 평가 점수가 떨어졌을 때 trace가 있으면 **실패 케이스를 그대로 재현**해 원인(검색 실패 vs 생성 실패)을 가른다. → [08](./08-rag-evaluation.md), [09](./09-agent-tool-evaluation.md)
+- 평가 점수가 떨어졌을 때 trace에 입력·버전·실행 조건이 충분하면 실패 케이스를 조사해 원인(검색 실패 vs 생성 실패)을 가른다. → [08](./08-rag-evaluation.md), [09](./09-agent-tool-evaluation.md)
 - 품질만 보면 함정에 빠진다. **토큰·비용·지연**을 같이 기록해야 "품질 +2%, 비용 +200%" 같은 나쁜 거래를 걸러낸다.
 
 ## 핵심 개념 (What)
@@ -32,22 +39,20 @@ last_updated: 2026-07-06
 | 피드백 | `user_feedback`(👍/👎), `eval_score`(사후 채점) |
 
 ### 3) 사내 관측성 도구 — Arize Phoenix
-LangSmith/Langfuse 같은 SaaS는 외부망이라 막힌다. 우리 회사는 **Arize Phoenix**를 self-host하여 LLM 관측성을 확보한다.
+Phoenix는 자체 호스팅 가능한 관측성 후보다. 원래 노트의 “우리 회사가 채택했다”는 주장과 실제 OpenSearch 병행 운영은 미확인이다.
 
-- **Arize Phoenix**: 오픈소스 LLM observability 플랫폼. **OpenTelemetry 기반** 트레이싱, 평가, 모니터링을 하나의 UI로 제공한다.
-- **self-host 가능**: Docker/pip로 사내 서버에 설치하므로 외부망 차단 환경에서도 사용 가능.
-- **OpenTelemetry 네이티브**: OTel GenAI Semantic Conventions을 기본 지원하므로 위 4)에서 맞춰둔 필드와 바로 연결된다.
-- **주요 기능**: trace 시각화(워터폴 뷰), span 상세 조회, 평가 결과 연동, 대시보드·드리프트 모니터링.
-- 표준 로깅(JSON → OpenSearch)은 **백업·장기 보관 채널**로 병행 유지한다.
+- SDK 계측·collector 전송·서버 저장/UI는 서로 다른 단계다. 패키지 설치만으로 운영 환경이 구성되지는 않는다.
+- OpenInference의 OTel span과 OTel GenAI convention은 판본·설정에 따라 속성이 다를 수 있다. 실제 수집 필드와 UI 집계를 확인해야 한다.
+- trace 워터폴·평가 연결을 조사할 수 있지만 기본 화면/드리프트 기능의 위치와 실제 수집 성공은 이번에 검증하지 않았다.
 
 ### 4) OpenTelemetry GenAI 관점으로 맞춰두기
-OpenTelemetry는 GenAI 전용 semantic conventions를 별도 저장소로 관리한다. 지금 당장 OTel collector를 붙이지 않더라도 필드명을 아래처럼 맞춰두면 나중에 표준 트레이싱으로 옮기기 쉽다.
+OpenTelemetry는 GenAI 전용 semantic conventions를 별도 저장소로 관리한다. 지금 당장 OTel collector를 붙이지 않더라도 필드명을 아래처럼 맞춰두면 키 대응을 기록할 수 있다. 2026-10-04 공식 main의 GenAI span 명세는 Development 상태이므로 고정 판본·실제 계측 결과와 따로 대조해야 한다.
 
 | 내부 필드 | OTel GenAI 대응 | 메모 |
 |---|---|---|
 | `span="llm_call"` | `gen_ai.operation.name=chat` | chat/completion/embedding/retrieval 등 작업명 |
 | `model` | `gen_ai.request.model`, `gen_ai.response.model` | 요청 모델과 실제 응답 모델이 다를 수 있음 |
-| `prompt_version` | `gen_ai.prompt.version` | [14](./14-artifact-lineage-governance.md)의 manifest와 연결 |
+| `prompt_version` | `gen_ai.prompt.version` | prompt name도 기록. [14](./14-artifact-lineage-governance.md)의 manifest와 연결 |
 | `prompt_tokens` | `gen_ai.usage.input_tokens` | 캐시 토큰 포함 여부를 일관되게 정의 |
 | `completion_tokens` | `gen_ai.usage.output_tokens` | reasoning token이 있으면 별도 보관 |
 | `streaming` | `gen_ai.request.stream` | streaming이면 time-to-first-token도 기록 |
@@ -60,58 +65,69 @@ OpenTelemetry는 GenAI 전용 semantic conventions를 별도 저장소로 관리
 
 ```bash
 # Phoenix 설치 (사내 미러/프록시 사용)
-pip install arize-phoenix openinference-instrumentation-openai
+pip install arize-phoenix-otel==0.17.2 openinference-instrumentation-openai==0.1.63
 ```
 
 ```python
-# ── Phoenix 서버 시작 (개발 환경에서 로컬 실행) ──────────────────
-import phoenix as px
-session = px.launch_app()   # http://localhost:6006 에서 UI 접근
-
-# ── 사내 서버에 띄운 Phoenix에 연결하는 경우 ─────────────────────
 import os
-os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://phoenix.internal:6006"
-
-# ── OpenAI 클라이언트 자동 계측 (한 줄) ──────────────────────────
+from openinference.instrumentation import TraceConfig
 from openinference.instrumentation.openai import OpenAIInstrumentor
 from phoenix.otel import register
-tracer_provider = register()                       # Phoenix에 trace 전송
-OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
-# 이제 client.chat.completions.create() 호출이 자동으로 Phoenix에 span으로 기록된다
+
+# 승인된 collector endpoint를 설정한다. Phoenix server는 별도로 설치/구성한다.
+tracer_provider = register(
+    endpoint=os.environ["PHOENIX_COLLECTOR_ENDPOINT"],
+    project_name="llmops-learning", batch=True, auto_instrument=False, verbose=False,
+)
+# 수집 전에 원문·도구 schema·embedding을 숨긴다. 자체 attribute/예외도 별도 검토한다.
+privacy = TraceConfig(
+    hide_inputs=True, hide_outputs=True, hide_llm_invocation_parameters=True,
+    hide_llm_tools=True, hide_embedding_vectors=True, hide_embeddings_text=True,
+)
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider, config=privacy)
+# 앱 종료 시 tracer_provider.shutdown()으로 flush/종료한다.
 ```
 
-> Phoenix UI(`http://localhost:6006`)에서 trace 워터폴, 토큰 사용량, 지연 분포를 바로 확인할 수 있다.
+> 서버 접속·수집 인증·retention을 구성한 뒤 UI에서 수신 여부를 확인한다. 이 전송/UI 경로는 미검증이며, 로컬 검증은 InMemorySpanExporter로 실제 SDK 계측 속성만 확인했다.
 
 ### 데코레이터 기반 경량 트레이서 (대안)
-Phoenix 없이 span을 기록하는 최소 구현. `usage`에서 토큰을 뽑아 비용까지 남긴다. Phoenix가 있으면 위 자동 계측을 우선 사용하고, 커스텀 span이 필요할 때 아래를 보조로 쓴다.
+다음은 JSON 타이머 로그이며 OTel span/parent-child 트리를 만들지 않는다. OTel 계측의 보조 기록으로 사용할 수 있다. 로그 ID와 실제 OTel trace ID를 혼동하지 않는다.
 
 ```python
 import time, json, uuid, functools
 from contextvars import ContextVar
+from contextlib import contextmanager
+from datetime import datetime, timezone
 
-_trace_id = ContextVar("trace_id", default=None)
+_trace_id = ContextVar("log_trace_id", default=None)
 
+@contextmanager
 def new_trace():
-    _trace_id.set(uuid.uuid4().hex[:12])
-    return _trace_id.get()
+    token = _trace_id.set(uuid.uuid4().hex)
+    try:
+        yield _trace_id.get()
+    finally:
+        _trace_id.reset(token)  # 요청 종료 후 이전 ContextVar 복원
 
 def log_span(record: dict):
-    record = {"trace_id": _trace_id.get(), **record}
-    # 로컬: 파일에 append / 사내: OpenSearch 인덱스로 bulk 적재
-    print(json.dumps(record, ensure_ascii=False))   # 데모용
+    record = {**record, "log_trace_id": _trace_id.get(),
+              "timestamp": datetime.now(timezone.utc).isoformat()}
+    print(json.dumps(record, ensure_ascii=False, allow_nan=False))
 
 def span(name):
     def deco(fn):
         @functools.wraps(fn)
-        def wrap(*a, **kw):
-            t0 = time.time()
-            err = None
+        def wrap(*args, **kwargs):
+            started = time.perf_counter()
+            error = None
             try:
-                return fn(*a, **kw)
-            except Exception as e:
-                err = repr(e); raise
+                return fn(*args, **kwargs)
+            except Exception as exc:
+                error = type(exc).__name__  # 예외 원문에는 민감한 입력이 있을 수 있음
+                raise
             finally:
-                log_span({"span": name, "latency_ms": int((time.time()-t0)*1000), "error": err})
+                log_span({"span": name, "latency_ms": (time.perf_counter()-started)*1000,
+                          "error": error})
         return wrap
     return deco
 ```
@@ -119,53 +135,68 @@ def span(name):
 ### LLM 호출 span에서 토큰·비용 기록
 
 ```python
+import os
 from openai import OpenAI
-client = OpenAI(base_url="http://llm-gateway.internal/v1", api_key="EMPTY")
+client = OpenAI(base_url=os.environ["LLM_BASE_URL"], api_key=os.environ["LLM_API_KEY"])
+TARGET_MODEL = os.environ["LLM_MODEL"]
+import math
 
-# 사내 단가는 예시(요금이 아닌 GPU-시간 환산일 수 있음). 상대 비교용으로만.
-PRICE = {"Kimi-K2.5": {"in": 0.0, "out": 0.0}}   # 사내: 실제 단가/쿼터로 대체
+# 승인된 같은 단위의 입력/출력 100만 토큰 단가를 넣는다. 미설정은 무료가 아닌 미확인.
+PRICE = {}
 
 @span("llm_call")
-def traced_chat(model, messages, prompt_version="v4", release_id="rag-photo-2026-07-06-01", temperature=0):
+def traced_chat(model, messages, prompt_version="v4", release_id="learning-example", temperature=0):
     r = client.chat.completions.create(model=model, messages=messages, temperature=temperature)
-    u = r.usage
-    log_span({
-        "span": "llm_call.usage", "release_id": release_id,
-        "model": model, "prompt_version": prompt_version,
-        "gen_ai.operation.name": "chat",
-        "gen_ai.request.model": model,
-        "prompt_tokens": u.prompt_tokens, "completion_tokens": u.completion_tokens,
-        "gen_ai.usage.input_tokens": u.prompt_tokens,
-        "gen_ai.usage.output_tokens": u.completion_tokens,
-    })
+    usage = r.usage
+    input_tokens = None if usage is None else usage.prompt_tokens
+    output_tokens = None if usage is None else usage.completion_tokens
+    if any(value is not None and (type(value) is not int or value < 0)
+           for value in (input_tokens, output_tokens)):
+        raise ValueError("토큰 사용량 계약 오류")
+    rates = PRICE.get(model)
+    cost = None
+    if rates is not None and input_tokens is not None and output_tokens is not None:
+        if any(not math.isfinite(v) or v < 0 for v in rates.values()):
+            raise ValueError("단가 입력 오류")
+        cost = (input_tokens*rates["in"] + output_tokens*rates["out"]) / 1_000_000
+    log_span({"span": "llm_call.usage", "release_id": release_id,
+              "requested_model": model, "response_model": r.model,
+              "prompt_version": prompt_version,
+              "prompt_tokens": input_tokens, "completion_tokens": output_tokens,
+              "est_cost": cost})
+    if not r.choices or not isinstance(r.choices[0].message.content, str):
+        raise ValueError("텍스트 응답 없음")
     return r.choices[0].message.content
 ```
 
 ### RAG 파이프라인 전체를 하나의 trace로
 
-Phoenix 자동 계측이 활성화되어 있으면 LLM 호출은 자동으로 span이 생긴다. 검색 등 커스텀 단계를 묶으려면 `using_span`을 사용한다.
+Phoenix 자동 계측이 활성화되어 있으면 LLM 호출은 자동으로 span이 생긴다. 검색 등 커스텀 단계는 실제 `start_as_current_span`으로 묶는다. 아래 retrieve_fn/build_prompt_fn은 호출자가 전달하는 함수다.
 
 ```python
 from opentelemetry import trace
-
 tracer = trace.get_tracer(__name__)
 
-def rag_answer(question):
-    with tracer.start_as_current_span("rag_pipeline"):       # 최상위 span
-        ctx = traced_retrieve(question)                       # @span("retrieve") 또는 커스텀 span
-        msgs = build_prompt(question, ctx)
-        ans = traced_chat("Kimi-K2.5", msgs)                  # Phoenix가 LLM span 자동 기록
-        return ans
-# → Phoenix UI에서 rag_pipeline > retrieve > llm_call 워터폴을 바로 확인
+def rag_answer(question, retrieve_fn, build_prompt_fn):
+    with new_trace(), tracer.start_as_current_span("rag_pipeline") as pipeline:
+        pipeline.set_attribute("app.release_id", "learning-example")
+        pipeline.set_attribute("app.prompt_version", "v4")
+        with tracer.start_as_current_span("retrieve"):
+            contexts = retrieve_fn(question)
+        messages = build_prompt_fn(question, contexts)
+        return traced_chat(TARGET_MODEL, messages)
+# JSON 데코레이터는 OTel span이 아니다. SDK 자동 계측이 LLM child span을 만든다.
 ```
 
 ### Phoenix에서 보는 4가지
-1. **품질 추이** — 일별 평균 eval_score(사후 채점) / 👎 비율. Phoenix Evaluations 탭에서 평가 결과를 trace에 연결해 확인.
-2. **비용** — 요청당 평균 토큰, 프롬프트 버전별 비교. Phoenix가 `gen_ai.usage.*` 필드를 자동 집계.
-3. **지연** — p50/p95 latency, 단계별(retrieve vs llm) 분해. Phoenix 워터폴 뷰에서 병목 구간을 시각적으로 파악.
-4. **실패 로그** — error가 있는 span, 낮은 점수 케이스 상위 N개(개선 후보). Phoenix에서 status=ERROR 필터링.
 
-> 로컬에서는 `px.launch_app()`으로 Phoenix를 띄워 trace를 바로 확인할 수 있다. production에서는 사내 Phoenix 서버(`http://phoenix.internal:6006`)에 집계하고, OpenSearch에 장기 보관용 로그를 병행 적재한다. → [12. 모니터링](./12-monitoring-drift.md)
+다음은 관측 요구사항이다. 해당 server/UI 판본의 필드 매핑과 대시보드 구성은 실제 확인해야 한다.
+1. **품질 추이** — 일별 평균 eval_score(사후 채점) / 👎 비율. Phoenix의 평가 기능에서 평가 결과를 trace에 연결해 확인.
+2. **비용** — 요청당 평균 토큰, 프롬프트 버전별 비교. 실제 계측의 token 속성과 미수집 비율을 대조한다.
+3. **지연** — p50/p95 latency, 단계별(retrieve vs llm) 분해. Phoenix 워터폴 뷰에서 병목 구간을 시각적으로 파악.
+4. **실패 로그** — error가 있는 span, 낮은 점수 케이스 상위 N개(개선 후보). 수집된 status=ERROR와 애플리케이션 실패 정의를 대조한다.
+
+> `arize-phoenix` server 패키지의 `px.launch_app()`은 별도 로컬 서버 시작 방식이며 이 client 계측 예제와 다르다. 실제 회사 collector·OpenSearch·대시보드 운영은 미확인이다. → [12. 모니터링](./12-monitoring-drift.md)
 
 ## 관련 문서
 - [02. 프롬프트 버전 관리](./02-prompt-management-versioning.md) — 각 span에 `prompt_version`을 남기는 이유
@@ -174,7 +205,7 @@ def rag_answer(question):
 - [14. 아티팩트 계보와 거버넌스](./14-artifact-lineage-governance.md) — trace와 release manifest 연결
 
 ## 참고 자료 (References)
-- Arize Phoenix(사내 사용 LLM observability): https://docs.arize.com/phoenix
+- Arize Phoenix(자체 호스팅 후보): https://docs.arize.com/phoenix
 - OpenTelemetry(트레이싱 개념 원류): https://opentelemetry.io/docs/concepts/
 - OpenTelemetry GenAI Semantic Conventions: https://github.com/open-telemetry/semantic-conventions-genai
 - OpenInference(Phoenix의 OTel 계측 라이브러리): https://github.com/Arize-ai/openinference

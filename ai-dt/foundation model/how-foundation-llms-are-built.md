@@ -2,15 +2,21 @@
 tags: [foundation-model, llm, pretraining, scaling, alignment, rlhf]
 level: intermediate
 last_updated: 2026-03-14
+reviewed_on: 2026-10-04
+review_status: partial
+type: learning
 ---
 
 # Foundation LLM은 어떻게 만들어지는가?
 
 > Foundation LLM은 단순히 "매우 큰 모델"이 아니라, broad data 위에서 자기지도 사전학습을 수행하고 다양한 작업에 적응할 수 있도록 만든 기반 모델이다.
 
+> [!info] 검토 범위 · 2026-10-04
+> 공개 원 논문에 근거한 학습 문서다. 논문의 발표·개정 연도와 오늘의 제품 구현은 구분한다. 최신 제품의 구조·학습 공정·시장 점유율은 미확인이다. [정리 기록](./organization-log.md)에 근거와 검증 한계를 남겼다.
+
 ## 먼저 용어부터
 
-Bommasani et al. (2021)은 foundation model을 **broad data로 대규모 자기지도 학습을 거쳐, 다양한 downstream task의 기반이 되는 모델**이라는 관점으로 정리했다.
+Bommasani et al. (2021)은 foundation model을 **광범위한 데이터로 대규모 학습하여 다양한 downstream task에 적응 가능한 모델**이라는 관점으로 정리했다.
 
 중요한 구분:
 
@@ -47,7 +53,7 @@ Bommasani et al. (2021)은 foundation model을 **broad data로 대규모 자기�
 - **decoder-only**: 생성, 대화, 코드, agent
 - **encoder-decoder**: 번역, 요약, text-to-text 변환
 
-현재 범용 chat LLM은 대부분 decoder-only를 선택한다. 이유는 next-token prediction이 생성 제품 형태와 직접 연결되기 때문이다.
+GPT-3는 decoder-only 자동회귀 언어모델의 공개 사례다. next-token prediction은 생성 인터페이스와 연결된다. 현재 제품들의 구조 비중은 이 문서에서 검증하지 않았다.
 
 ## 2. 데이터 수집과 정제가 가장 큰 공정 중 하나다
 
@@ -77,11 +83,11 @@ Foundation LLM은 broad data를 사용한다. 예시는 다음과 같다.
 - 포맷 정규화
 - 데이터 mixture 비율 조정
 
-대형 모델에서 성능 차이는 종종 "아키텍처"보다 "데이터 품질과 mixture"에서 크게 난다.
+데이터와 아키텍처의 기여도를 항상 같은 순위로 놓을 수는 없다. 품질·mixture를 바꿀 때는 다른 조건을 통제한 목표 평가로 효과를 확인한다.
 
 ## 3. 토크나이저를 만든다
 
-모델은 문자를 직접 읽지 않고 토큰을 읽는다. 그래서 텍스트를 subword 단위 등으로 쪼개는 tokenizer가 필요하다.
+텍스트를 모델의 vocabulary ID로 변환하는 tokenizer가 필요하다. 단위는 subword, 문자, byte 등 설계에 따라 다르다. 기존 checkpoint를 이어 학습할 때는 그 tokenizer와 special token 규약을 먼저 확인한다. 새 tokenizer를 만들면 임베딩 크기·ID 대응까지 함께 맞춰야 한다.
 
 토크나이저가 중요한 이유:
 
@@ -131,7 +137,7 @@ Foundation LLM은 broad data를 사용한다. 예시는 다음과 같다.
 - 같은 compute budget 안에서도 더 좋은 배분이 있다
 - 모델 크기, 학습 토큰 수, 연산량은 함께 설계해야 한다
 
-즉 foundation LLM 제작은 단순한 scale-up이 아니라 **compute budget 최적화 문제**이기도 하다.
+Chinchilla (2022, v1)는 고정된 **학습 compute budget**과 논문 실험 범위에서 크기·토큰 배분을 분석했다. 특정 비율을 모든 데이터·배포 비용의 최적값으로 일반화하지 않는다. 추론 지연·메모리·사용량까지 고려하는 제품 목표는 별도로 정한다.
 
 ## 7. 평가와 체크포인트 선택
 
@@ -182,7 +188,7 @@ InstructGPT의 대표 흐름은 다음과 같다.
 3. 인간 선호 데이터를 모아 reward model 학습
 4. RL 기반으로 응답 정책을 더 선호 방향으로 조정
 
-오늘날은 RLHF뿐 아니라 DPO류의 직접 최적화도 많이 쓰이지만, 큰 방향은 같다. **사람이 원하는 응답 행동으로 모델을 정렬한다**는 것이다.
+[DPO (2023, arXiv v3)](https://arxiv.org/abs/2305.18290v3)는 선호 쌍을 이용해 정책을 직접 최적화하는 대안이다. InstructGPT의 별도 reward model 학습과 PPO 절차를 그대로 수행하는 방법은 아니다. 선택한 방법·선호 데이터·평가 조건을 구분한다. 확인 2026-10-04.
 
 ## 9. 안전성, 정책, 제품화
 
@@ -200,7 +206,7 @@ InstructGPT의 대표 흐름은 다음과 같다.
 
 | 항목 | Base model | Chat / Instruct model |
 |------|------------|-----------------------|
-| 주된 학습 | broad data pretraining | SFT + preference tuning + safety tuning |
+| 주된 학습 | broad data pretraining | SFT, 선호 최적화, 안전성 조정 등 선택한 후처리 |
 | 기본 행동 | 텍스트 계속 쓰기 | 지시 따르기, 대화하기 |
 | 출력 경향 | completion 중심 | assistant 답변 중심 |
 | 장점 | 범용성, 재학습 재료 | 사용자 경험, 제어 가능성 |
@@ -216,11 +222,11 @@ Foundation LLM 제작의 핵심은 아래 네 축이다.
 - **Scale**: compute budget 안에서 얼마나 균형 있게 키울 것인가
 - **Alignment**: 사람 기대에 맞게 어떻게 다듬을 것인가
 
-이 중 하나만 좋아도 충분하지 않다. 현대 LLM 경쟁력은 보통 네 축의 합으로 결정된다.
+앞의 세 축은 기반 모델 제작을, alignment는 지시·대화 목적의 추가 조정을 살피는 관점이다. 사용 목적에 맞는 평가 없이 경쟁력을 보장하는 공식으로 쓰지 않는다.
 
 ## 한 줄 결론
 
-Foundation LLM은 "큰 Transformer"가 아니라, **대규모 broad data + 자기지도 사전학습 + 적절한 scaling + post-training alignment**를 체계적으로 결합해 만든 범용 기반 모델이다.
+Foundation model의 정의는 광범위한 데이터의 대규모 학습과 여러 작업으로의 적응 가능성에 있다. 이 문서의 자기지도 언어모델 파이프라인은 대표 사례이며, **post-training alignment는 foundation model의 필수 정의 조건이 아니다**. assistant를 만들 목적이라면 추가 학습과 행동 평가를 설계한다.
 
 ## 참고 자료 (Primary Sources)
 
@@ -230,3 +236,5 @@ Foundation LLM은 "큰 Transformer"가 아니라, **대규모 broad data + 자�
 - Bommasani et al., *On the Opportunities and Risks of Foundation Models* (2021): <https://arxiv.org/abs/2108.07258>
 - Hoffmann et al., *Training Compute-Optimal Large Language Models* (Chinchilla, 2022): <https://arxiv.org/abs/2203.15556>
 - Ouyang et al., *Training language models to follow instructions with human feedback* (InstructGPT, 2022): <https://arxiv.org/abs/2203.02155>
+
+- Rafailov et al., *Direct Preference Optimization* (2023; arXiv v3, 2024): <https://arxiv.org/abs/2305.18290v3>

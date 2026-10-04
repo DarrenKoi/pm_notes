@@ -2,7 +2,14 @@
 tags: [evaluation, online, ab-test, canary, ci, regression-gate]
 level: advanced
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
+
+> [!info] 검토 범위 — 2026-10-04
+> [공통 적용 조건](./verified-conditions.md)과 [정리 기록](./organization-log.md)에 판본·출처·로컬 검증을 남겼다. 실제 judge 품질·사내 접속·운영 승인·Claude 협의·Obsidian 읽기 화면은 미확인이다.
+
 
 # 11. 온라인 평가 및 배포
 
@@ -25,7 +32,7 @@ last_updated: 2026-07-06
 | **Full rollout / rollback** | 운영 | 좋으면 확대, 나쁘면 되돌림 |
 
 ### 2) CI Regression Gate
-PR마다 `eval_set.jsonl`을 돌려 **핵심 지표가 baseline 이하로 떨어지면 머지 차단**. 안전 지표([10](./10-safety-hallucination-guardrails.md))는 하드 컷(무조건 통과 요구). 이게 LLMOps Level 2의 핵심. → [01](./01-llmops-overview-lifecycle.md)
+PR마다 `eval_set.jsonl`을 돌려 **핵심 지표가 승인된 허용 하락폭을 넘으면 실패 상태를 반환**. 안전 지표([10](./10-safety-hallucination-guardrails.md))는 하드 컷(무조건 통과 요구). 실제 머지 차단에는 CI 실행과 필수 status check/보호 규칙 설정이 필요하다. Level 2는 이 노트의 학습용 분류다. → [01](./01-llmops-overview-lifecycle.md)
 
 배포 단위는 코드 커밋이 아니라 [14](./14-artifact-lineage-governance.md)의 **release manifest**다. gate는 `prompt/model/index/tool/eval/rubric/guardrail` 버전 조합을 입력으로 받아야 한다.
 
@@ -40,30 +47,29 @@ PR마다 `eval_set.jsonl`을 돌려 **핵심 지표가 baseline 이하로 떨어
 ### CI Regression Gate (배포 전 자동 채점)
 
 ```python
-# ci_eval.py — CI에서 실행, 실패하면 exit(1)로 머지 차단
-import json, sys, statistics
+import json, math
+THRESH = {"correctness": -0.02, "faithfulness": -0.02}  # 제안 허용 하락폭
 
-BASELINE = json.load(open("baseline_scores.json"))   # 직전 승인 버전 점수
-MANIFEST = json.load(open("release_manifest.json"))  # 14번 문서의 manifest
-THRESH = {"correctness": -0.02, "faithfulness": -0.02}  # 허용 하락폭
-
-def gate(current: dict) -> bool:
-    ok = True
-    for k, min_delta in THRESH.items():
-        delta = current[k] - BASELINE[k]
-        status = "OK" if delta >= min_delta else "REGRESSION"
-        print(f"{k}: {current[k]:.3f} (Δ{delta:+.3f}) {status}")
-        ok &= delta >= min_delta
-    # 안전은 하드 컷 (10번 safety_gate)
-    ok &= current["safety_pass"]
-    print("release:", MANIFEST["release_id"], "prompt:", MANIFEST["artifacts"]["prompt"])
-    return ok
-
-if __name__ == "__main__":
-    rows = run_eval(system_v_new, scorers, load_set())   # 04번 하네스
-    current = {k: statistics.mean(r[k] for r in rows) for k in scorers}
-    current["safety_pass"] = safety_gate(safety_report())
-    sys.exit(0 if gate(current) else 1)
+def gate(current: dict, baseline: dict, manifest: dict) -> bool:
+    if not manifest.get("release_id") or not all(manifest.get("artifacts", {}).get(k)
+        for k in ("prompt", "model", "index", "tool", "eval", "rubric", "guardrail")):
+        raise ValueError("release 아티팩트 조합 미확인")
+    if current.get("safety_pass") is not True:
+        return False
+    for key, min_delta in THRESH.items():
+        for report in (current, baseline):
+            value = report.get(key)
+            if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= 1:
+                raise ValueError(f"{key} 점수 미확인/계약 오류")
+        delta = current[key] - baseline[key]
+        if delta < min_delta and not math.isclose(delta, min_delta, rel_tol=0, abs_tol=1e-12):
+            return False  # 경계의 부동소수점 오차만 허용
+    return True
+# 같은 eval/rubric/judge 판본·coverage로 baseline/current를 계산해야 비교 가능.
+# 이 함수는 품질 회귀 gate다. immutable snapshot/서명된 승인·운영 배포 권한 검증은 별도.
+# baseline/manifest JSON 파일은 context manager로 읽고 system_fn·scorers·데이터를 준비한다.
+# run_eval은 04, safety_gate는 10에서 가져온다. False/None/예외는 실패 종료로 연결한다.
+# 아래 workflow는 개념 fragment이며 이 문서만으로 실행 CI가 완성되지는 않는다.
 ```
 
 ```yaml
@@ -71,7 +77,7 @@ if __name__ == "__main__":
 jobs:
   llm-eval:
     steps:
-      - run: python ci_eval.py     # REGRESSION이면 비정상 종료 → 머지 차단
+      - run: python ci_eval.py     # 실제 스크립트의 실패 종료와 required status check 설정 필요
 ```
 
 ### Canary 라우팅 (트래픽 일부만 신버전)
@@ -79,29 +85,40 @@ jobs:
 ```python
 import hashlib
 def route(user_id: str, canary_pct: int = 5) -> str:
+    if not isinstance(user_id, str) or not user_id or type(canary_pct) is not int or not 0 <= canary_pct <= 100:
+        raise ValueError("사용자 id/0~100 비율 필요")
     # 사용자 단위로 안정적 분배(같은 유저는 항상 같은 버전 → 경험 일관성)
-    bucket = int(hashlib.md5(user_id.encode()).hexdigest(), 16) % 100
+    bucket = int(hashlib.sha256(user_id.encode()).hexdigest(), 16) % 100
     return "v_new" if bucket < canary_pct else "v_stable"
 ```
 
 ### A/B 지표 수집 & 검정
 
 ```python
-from math import sqrt
+from math import sqrt, erfc
+
 def ab_compare(fb_a: list[int], fb_b: list[int]) -> dict:
-    """fb: 각 응답의 👍=1/👎=0 리스트"""
-    pa, pb = sum(fb_a)/len(fb_a), sum(fb_b)/len(fb_b)
-    # 두 비율 차이의 z-검정(근사)
-    p = (sum(fb_a)+sum(fb_b))/(len(fb_a)+len(fb_b))
-    se = sqrt(p*(1-p)*(1/len(fb_a)+1/len(fb_b))) or 1e-9
-    z = (pb - pa) / se
-    return {"p_stable": round(pa,3), "p_new": round(pb,3), "z": round(z,2),
-            "significant": abs(z) > 1.96}   # 95% 신뢰
+    """독립 사용자 단위의 사전 정의된 binary 지표. 반복 응답은 독립 표본이 아님."""
+    if not fb_a or not fb_b or any(type(v) is not int or v not in (0,1) for v in fb_a+fb_b):
+        raise ValueError("각 그룹에 binary 관측치 필요")
+    na, nb = len(fb_a), len(fb_b)
+    pa, pb = sum(fb_a)/na, sum(fb_b)/nb
+    pooled = (sum(fb_a)+sum(fb_b))/(na+nb)
+    result = {"p_stable": pa, "p_new": pb, "delta": pb-pa,
+              "n_stable": na, "n_new": nb, "z": None, "p_value": None, "significant": None}
+    # 근사 적합성의 시작 검사. 독립성/랜덤화/편향·검정력까지 보장하지 않음.
+    if min(na*pooled, na*(1-pooled), nb*pooled, nb*(1-pooled)) < 5:
+        return {**result, "reason": "normal_approximation_unconfirmed"}
+    se = sqrt(pooled*(1-pooled)*(1/na+1/nb))
+    z = (pb-pa)/se
+    p_value = erfc(abs(z)/sqrt(2))
+    return {**result, "z": z, "p_value": p_value, "significant": p_value < 0.05}
+# 양측 alpha=0.05 차이 검정. 유의하지 않음은 동등/비열등·안전의 증거가 아니다.
 ```
 
 ### 배포 결정 규칙
-- canary 지표(피드백·안전·latency)가 stable 대비 **유의하게 나쁘지 않으면** 확대.
-- 안전 트리거 급증 or 👎 유의 상승 → **즉시 롤백**(프롬프트 버전 되돌리기 — [02](./02-prompt-management-versioning.md)).
+- canary 확대에는 사전 정의한 비열등 허용폭·표본/검정력·안전/지연 기준이 필요하다. 차이 검정의 p≥0.05만으로 “나쁘지 않음”을 입증하거나 확대하지 않는다.
+- 안전 트리거 급증 or 👎 유의 상승 → **즉시 롤백**(승인된 전체 release 조합 복원; 프롬프트 변경만이 원인이 아닐 수 있음. 프롬프트 관리 — [02](./02-prompt-management-versioning.md)).
 - SEV-1/SEV-2 사고가 의심되면 canary 확대가 아니라 [15. Incident Response](./15-incident-response-postmortem.md)로 전환.
 
 > 로컬엔 실트래픽이 없으므로 **regression gate 로직까지만** 검증하고 canary/A/B는 사내 서빙에서 붙인다.
@@ -115,4 +132,5 @@ def ab_compare(fb_a: list[int], fb_b: list[int]) -> dict:
 
 ## 참고 자료 (References)
 - Canary release(개념): https://martinfowler.com/bliki/CanaryRelease.html
-- A/B 검정 기초: 두 비율 z-검정
+- [NIST 두 비율 검정](https://www.itl.nist.gov/div898/handbook/prc/section3/prc33.htm) — 2026-10-04, 독립 표본·정규 근사 조건.
+- [GitHub protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) — required status check와 bypass 조건; 실제 저장소 정책 미확인.

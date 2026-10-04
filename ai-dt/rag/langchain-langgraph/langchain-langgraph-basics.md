@@ -1,4 +1,15 @@
+---
+tags: [rag, langchain, langgraph]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
+---
+
 # LangChain + LangGraph 기초 사용법
+
+> [!info] 검토 — 2026-10-04
+> 공식 근거·설치 판본·검증 결과는 [RAG 정리 기록](../organization-log.md)에 있다. 실제 모델·서버·회사 권한은 미확인이다. 함수/객체를 명시적으로 조립하는 학습 예제이며 자동 API 접속은 하지 않는다.
+
 
 ## 1) LangChain vs LangGraph
 
@@ -6,7 +17,7 @@
 
 - PromptTemplate, OutputParser, Retriever, Tool 같은 **구성 요소(component)** 조합
 - LLM 호출을 파이프라인 형태로 빠르게 작성
-- 표준화된 인터페이스로 provider 교체가 쉬움
+- 공통 인터페이스로 provider 교체를 돕지만 tool/JSON/vision/usage·인증 지원은 별도 확인
 
 ### LangGraph가 잘하는 것
 
@@ -24,7 +35,9 @@
 ## 2) 최소 설치
 
 ```bash
-pip install -U langchain langgraph langchain-openai langchain-community faiss-cpu
+# 검증한 실습 판본; 최신/운영 lock 또는 전체 OS 호환성 보장이 아님.
+python -m pip install langchain==1.4.3 langgraph==1.2.12 langchain-openai==1.6.7
+python -m pip install langchain-community==0.4.2 langchain-text-splitters==1.1.3 faiss-cpu==1.15.1
 ```
 
 ---
@@ -32,51 +45,69 @@ pip install -U langchain langgraph langchain-openai langchain-community faiss-cp
 ## 3) LangChain 최소 예제 (Chain)
 
 ```python
+import os
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "너는 친절한 기술 튜터다."),
-    ("human", "{question}")
-])
+def make_llm():
+    # 명시 호출할 때 객체 생성; invoke는 실습자가 승인된 환경에서 실행한다.
+    return ChatOpenAI(model=os.environ["LLM_MODEL"], temperature=0)
 
-chain = prompt | llm
-result = chain.invoke({"question": "RAG가 뭔지 3줄로 설명해줘"})
-print(result.content)
+def build_chain(llm):
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "너는 친절한 기술 튜터다."), ("human", "{question}")
+    ])
+    return prompt | llm | StrOutputParser()
+
+def ask_chain(chain, question: str) -> str:
+    if not isinstance(question, str) or not question.strip():
+        raise ValueError("비어 있지 않은 question 필요")
+    answer = chain.invoke({"question": question})
+    if not isinstance(answer, str) or not answer.strip():
+        raise ValueError("텍스트 답변 없음")
+    return answer
+
+# chain = build_chain(make_llm())
+# print(ask_chain(chain, "RAG가 뭔지 3줄로 설명해줘"))
 ```
 
-핵심은 `prompt | llm`처럼 LCEL로 체인을 선언형으로 연결하는 점이다.
+핵심은 `prompt | llm | parser`처럼 LCEL로 구성 요소를 연결하는 점이다. temperature=0은 완전한 재현성을 보장하지 않는다. 판본/모델 alias·응답 반복 분산을 따로 기록한다.
 
 ---
 
 ## 4) LangGraph 최소 예제 (Graph)
 
 ```python
-from typing import TypedDict
+from typing import TypedDict, Required
 from langgraph.graph import StateGraph, START, END
-from langchain_openai import ChatOpenAI
 
-class MyState(TypedDict):
-    question: str
+class MyState(TypedDict, total=False):
+    question: Required[str]
     answer: str
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+def build_graph(llm):
+    def answer_node(state: MyState):
+        question = state.get("question")
+        if not isinstance(question, str) or not question.strip():
+            raise ValueError("비어 있지 않은 question 필요")
+        response = llm.invoke(f"질문에 간단히 답해줘: {question}")
+        if not isinstance(response.content, str) or not response.content.strip():
+            raise ValueError("텍스트 답변 없음; tool/refusal 계약은 별도")
+        return {"answer": response.content}  # 노드는 변경한 key만 반환할 수 있음
+    builder = StateGraph(MyState)
+    builder.add_node("answer", answer_node)
+    builder.add_edge(START, "answer")
+    builder.add_edge("answer", END)
+    return builder.compile()
 
-def answer_node(state: MyState) -> MyState:
-    response = llm.invoke(f"질문에 간단히 답해줘: {state['question']}")
-    return {**state, "answer": response.content}
-
-builder = StateGraph(MyState)
-builder.add_node("answer", answer_node)
-builder.add_edge(START, "answer")
-builder.add_edge("answer", END)
-
-app = builder.compile()
-print(app.invoke({"question": "LangGraph의 장점은?"})["answer"])
+# app = build_graph(make_llm())
+# print(app.invoke({"question": "LangGraph의 장점은?"})["answer"])
 ```
 
 ---
+
+위 최소 그래프는 한 번 답하고 종료한다. 체크포인터·도구·검색·승인·재시도·관측 설정은 제공하지 않는다. TypedDict는 런타임 입력 검증을 대신하지 않는다. 아래는 확장 후보이며 구현 완료가 아니다.
 
 ## 5) 어떤 기능까지 확장 가능한가?
 

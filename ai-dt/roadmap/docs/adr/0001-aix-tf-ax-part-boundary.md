@@ -5,9 +5,15 @@ status: Accepted
 date: 2026-05-15
 related: [../../CONTEXT.md, ../../itc-aix-roadmap-outline.md]
 tags: [governance, organization, itc, aix]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # ADR-0001. AIX TF ↔ ITC AX Part ↔ ITC AI 실행 TF 역할 경계
+
+> [!info] 2026-10-04 검토 — 당시 Accepted 조직 경계 ADR
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](../../README.md)와 [검토 안내](../../review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
 
 ## Status
 

@@ -2,11 +2,17 @@
 tags: [transformer, llm, foundation-model, bert, gpt, t5]
 level: beginner-to-advanced
 last_updated: 2026-03-14
+reviewed_on: 2026-10-04
+review_status: partial
+type: learning
 ---
 
 # Transformer가 어떻게 LLM으로 이어졌는가?
 
-> LLM은 갑자기 등장한 별도 기술이 아니라, attention 기반 Transformer가 대규모 자기지도 사전학습과 결합되면서 발전한 결과다.
+> 여기서는 Transformer 기반 언어모델의 발전 경로를 살펴본다. 모든 LLM의 아키텍처나 모든 foundation model의 역사를 하나의 직선 계보로 정의하지 않는다.
+
+> [!info] 검토 범위 · 2026-10-04
+> 공개 원 논문에 근거한 학습 문서다. 논문의 발표·개정 연도와 오늘의 제품 구현은 구분한다. 최신 제품의 구조·학습 공정·시장 점유율은 미확인이다. [정리 기록](./organization-log.md)에 근거와 검증 한계를 남겼다.
 
 ## 큰 흐름 먼저 보기
 
@@ -101,7 +107,7 @@ GPT 계열은 decoder-only Transformer를 autoregressive next-token prediction�
 - 생성 태스크와 구조가 자연스럽게 맞는다
 - prompt만 바꿔 다양한 작업을 시킬 수 있다
 
-GPT-3는 이 계열이 충분히 커지면 **few-shot / zero-shot 능력**이 emergent하게 나타날 수 있음을 크게 보여줬다.
+GPT-3 (2020)는 가중치를 갱신하지 않고 프롬프트에 지시·예시를 넣는 few-shot 등의 성능을 평가했다. 성능 개선과 한계가 모두 보고되었다. 이를 모든 과제에서 갑작스러운 능력 출현이 보장된다는 뜻으로 읽지 않는다.
 
 ### T5: text-to-text 통합
 
@@ -140,7 +146,7 @@ Transformer 자체는 아키텍처다. 여기에 다음 요소가 결합될 때 
 
 ### 3. 대규모 파라미터와 compute
 
-모델이 커질수록 더 많은 패턴을 압축할 수 있고, 충분한 토큰과 연산량이 함께 주어질 때 성능이 크게 올라간다.
+모델 크기, 데이터와 연산량은 함께 고려한다. 규모만으로 모든 과제의 성능 개선이 보장되지 않으므로 목표 평가로 확인한다.
 
 ### 4. 범용 전이 가능성
 
@@ -150,14 +156,14 @@ Transformer 자체는 아키텍처다. 여기에 다음 요소가 결합될 때 
 
 ## 6. 왜 decoder-only LLM이 특히 강해졌나?
 
-오늘날 chat LLM 대부분은 decoder-only 계열이다. 이유는 비교적 명확하다.
+GPT 계열의 decoder-only 구조는 다음 토큰 생성 인터페이스와 직접 연결된다. 다음은 적용상 장점이며 2026년 시장 점유율을 확인한 통계는 아니다.
 
 - next-token prediction이 웹 규모 텍스트 학습과 매우 잘 맞는다
 - 생성 인터페이스 자체가 제품 형태(chat, completion, code generation)와 바로 연결된다
 - instruction tuning, RLHF/DPO 같은 post-training을 붙이기 쉽다
 - 긴 context에서 연속 생성하는 사용 패턴과 궁합이 좋다
 
-즉 "Transformer -> LLM" 경로에서 가장 산업적으로 크게 확장된 가지가 decoder-only였다.
+실제 모델을 선택할 때에는 공개된 구조와 학습 목표를 확인한다. “LLM” 또는 “chat”이라는 이름만으로 decoder-only라고 확정하지 않는다.
 
 ## 7. Foundation model에서 assistant로
 
@@ -168,7 +174,7 @@ Transformer 자체는 아키텍처다. 여기에 다음 요소가 결합될 때 
 
 InstructGPT는 여기에 대표적이다.
 
-일반적인 흐름:
+가능한 후처리 흐름(모든 단계가 필수인 것은 아니다):
 
 1. base LM pretraining
 2. supervised fine-tuning
@@ -180,7 +186,7 @@ InstructGPT는 여기에 대표적이다.
 
 ## 8. 한 줄 결론
 
-Transformer가 LLM으로 이어진 이유는 단순히 attention이 좋아서가 아니다. **attention 기반 구조가 대규모 병렬 사전학습, 범용 전이, 그리고 후속 정렬(alignment) 단계와 결합되기에 가장 적합했기 때문**이다.
+Transformer가 LLM으로 이어진 이유는 단순히 attention이 좋아서가 아니다. **attention 기반 구조가 대규모 병렬 사전학습, 범용 전이, 그리고 후속 정렬(alignment) 단계와 함께 사용되어 여러 공개 모델에서 효과가 입증되었기 때문**이다.
 
 ## 참고 자료 (Primary Sources)
 
@@ -190,3 +196,5 @@ Transformer가 LLM으로 이어진 이유는 단순히 attention이 좋아서가
 - Brown et al., *Language Models are Few-Shot Learners* (GPT-3, 2020): <https://arxiv.org/abs/2005.14165>
 - Bommasani et al., *On the Opportunities and Risks of Foundation Models* (2021): <https://arxiv.org/abs/2108.07258>
 - Ouyang et al., *Training language models to follow instructions with human feedback* (InstructGPT, 2022): <https://arxiv.org/abs/2203.02155>
+
+- Rafailov et al., *Direct Preference Optimization* (2023; arXiv v3, 2024): <https://arxiv.org/abs/2305.18290v3>

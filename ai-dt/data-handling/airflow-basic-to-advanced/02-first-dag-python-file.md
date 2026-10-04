@@ -2,9 +2,18 @@
 tags: [airflow, bashoperator, pythonoperator, first-dag]
 level: beginner
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 02. 첫 번째 DAG 만들기
+
+> [!info] 판본·검증 범위 — 2026-10-04
+> 예제는 **Airflow 2.10.5** 학습용이다. 3.x public API는 `airflow.sdk`와 별도 provider 경로를 확인한다. 확인 당시 공식 3.x 페이지는 3.3.2를 표시했으며 회사 설치 버전이나 최신 보증이 아니다. 사내 Git Sync·권한·executor 조건은 확인되지 않은 시나리오다. 실행 예제의 로컬 구문/파싱 검증과 실제 scheduler·worker·업무 서버 검증을 구분한다.
+
+> 이 장의 `FTPClient`는 정의되지 않은 설명용 이름이고 URI를 replace하는 TaskFlow 코드는 데이터 처리 구현이 아니다. 작은 CLI 예제와 DAG 정의 예제, 외부 접속 의사코드를 구분한다.
+
 
 ## 목표
 
@@ -108,9 +117,9 @@ with DAG(
     )
 ```
 
-`schedule=None`은 자동 스케줄 없이 수동 실행만 하겠다는 뜻이다. 처음 테스트할 때는 이 설정이 안전하다.
+`schedule=None`은 자동 스케줄을 만들지 않고 UI/CLI/API 등 외부 trigger로 실행하는 DAG라는 뜻이다. 처음 테스트할 때는 이 설정이 안전하다.
 
-`{{ ds }}`는 Airflow가 실행 날짜를 `YYYY-MM-DD` 형식으로 넣어주는 Jinja template이다. daily 작업에는 이 정도로 충분할 수 있다.
+`{{ ds }}`는 Airflow가 logical date를 `YYYY-MM-DD` 형식으로 넣어주는 Jinja template이다. daily 작업에는 이 정도로 충분할 수 있다.
 
 매시간 실행하는 파일이면 날짜만 넘기지 말고 시간 구간을 넘긴다.
 
@@ -150,7 +159,7 @@ if __name__ == "__main__":
 각 옵션의 의미:
 
 - `set`: 현재 shell 실행 옵션을 바꾼다.
-- `-e`: command가 실패하면 즉시 shell을 종료한다.
+- `-e`: 실패 시 shell을 종료하도록 하지만 조건문·AND/OR list 등 예외가 있다. 모든 실패를 잡는 기능은 아니다.
 - `-u`: 정의되지 않은 변수를 사용하면 에러로 처리한다.
 - `-o pipefail`: pipe로 연결된 command 중 하나라도 실패하면 전체 command를 실패로 처리한다.
 
@@ -412,7 +421,7 @@ report(clean)
 
 ## Bitbucket Git Sync 후 확인할 것
 
-현재 사내 환경에서는 DAG 파일을 서버에 직접 업로드하지 않고 Bitbucket repository에 push한다. Airflow는 지정된 repository와 branch를 Git Sync로 읽는다.
+원문이 가정한 사내 시나리오는 Bitbucket repository를 통한 DAG 배포다. 현재 실제 배포 경로/branch/주기는 미확인이다. Airflow는 지정된 repository와 branch를 Git Sync로 읽는다.
 
 배포 흐름:
 
@@ -484,7 +493,7 @@ with DAG(
 1. Scheduler와 Worker가 같은 파일을 볼 수 있어야 한다.
 2. Airflow의 Python import path에서 해당 module을 찾을 수 있어야 한다.
 
-`같은 git root에 있다`는 사실만으로 항상 충분하지는 않다. Airflow 설정에서 실제 `dags_folder`가 repository root 전체인지, `repo/dags` 같은 하위 폴더인지 확인해야 한다. 안전하게 시작하려면 DAG 파일과 helper module을 같은 `dags/` 아래에 두고 package처럼 구성한다.
+`같은 git root에 있다`는 사실만으로 항상 충분하지는 않다. Airflow 설정에서 실제 `dags_folder`가 repository root 전체인지, `repo/dags` 같은 하위 폴더인지 확인해야 한다. helper module을 실제 import path에서 찾게 하고 조직/프로젝트별 고유 package 이름을 사용한다. 아래 `jobs`는 개념 예시이며 범용 이름 충돌을 확인한다. DAG processor와 실행 worker 모두 필요한 파일·패키지에 접근해야 한다.
 
 ```text
 dags/
@@ -593,7 +602,7 @@ airflow tasks test hello_job_dag run_hello 2026-05-02
 - 처음부터 매일 자동 스케줄을 켜지 않는다.
 - 여러 파일을 한 번에 모두 연결하지 않는다.
 - 패키지 설치까지 동시에 해결하려고 하지 않는다.
-- secret을 여러 코드 파일에 흩뿌리지 않는다. 현재 환경에서는 `secrets.py`에 모으고 로그에 찍지 않는다.
+- secret을 source에 넣어 배포하지 않고 승인된 env/backend 주입을 확인한다. 로그·exception에도 값을 남기지 않는다. 원래 가정은08의 역사 구분을 읽는다.
 - 로컬 절대 경로를 사용하지 않는다.
 
 먼저 작은 Task 하나를 성공시키고, 그 다음에 단계를 늘린다.
@@ -603,3 +612,18 @@ airflow tasks test hello_job_dag run_hello 2026-05-02
 다음 문서에서는 여러 Python 파일을 순서대로 연결하고, 실패/재시도/스케줄을 설정한다.
 
 - [03. 의존성, 스케줄, 재시도](./03-dependencies-scheduling-retry.md)
+
+
+## 검증 근거 — 2026-10-04
+
+- [2.10.5 PythonOperator/TaskFlow](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/operator/python.html), [TaskFlow tutorial](https://airflow.apache.org/docs/apache-airflow/2.10.5/tutorial/taskflow.html).
+- [DAG discovery](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html), [module path와 unique package](https://airflow.apache.org/docs/apache-airflow/2.10.5/administration-and-deployment/modules_management.html).
+- [날짜 템플릿](https://airflow.apache.org/docs/apache-airflow/2.10.5/templates-ref.html), [BashOperator](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/operator/bash.html).
+- [Helm Git Sync 배포 예시](https://airflow.apache.org/docs/helm-chart/stable/manage-dag-files.html): 실제 회사가 이 chart/config를 사용한다는 증거는 없다.
+
+
+### 로컬 검증 결과 — 2026-10-04
+
+완성형 정의 예제 5개를 실제 Airflow 2.10.5가 DAG로 발견했다. PythonOperator의 외부 접속 없는 hello 함수 1건을 실행했다.
+
+검증 환경은 저장소 밖의 임시 Python 3.12.12 환경이다. 문서 예제를 임시 파일로 추출하고 로컬 helper를 사용했다. 실제 scheduler와 worker, 업무 파일, FTP·MinIO·API, 인증과 TLS 연결은 실행하지 않았다. DAG 발견은 업무 처리의 성공을 보장하지 않는다.

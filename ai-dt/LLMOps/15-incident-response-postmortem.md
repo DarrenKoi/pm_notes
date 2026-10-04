@@ -2,7 +2,14 @@
 tags: [llmops, incident-response, postmortem, rollback, feedback-loop]
 level: advanced
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
+
+> [!info] 검토 범위 — 2026-10-04
+> [공통 적용 조건](./verified-conditions.md)과 [정리 기록](./organization-log.md)에 판본·일차 근거·로컬 검증을 기록했다. 실제 회사 운영·모델/서버 품질·조직 승인·Claude 협의·읽기 화면은 미확인이다.
+
 
 # 15. Incident Response와 Postmortem
 
@@ -29,6 +36,8 @@ last_updated: 2026-07-06
 
 ### 2) 심각도 기준
 
+다음 SEV 분류/30분 대응/3회 편입 기준은 제안 운영 규칙이며 조직 승인·실제 대응 실적은 미확인이다.
+
 | 등급 | 기준 | 예 |
 |---|---|---|
 | SEV-1 | 기밀·개인정보 유출, 쓰기 도구 오작동, 안전 정책 중대 위반 | 내부 문서 원문 노출, 잘못된 레코드 생성 |
@@ -45,6 +54,8 @@ last_updated: 2026-07-06
 ## 어떻게 사용하는가? (How)
 
 ### Incident record 표준 포맷
+
+아래2026-07-06 기록은 가상 학습 시나리오이며 실제 회사 사고 이력이 아니다. 영향/기밀 노출 없음/원인 후보를 확인된 사실로 읽지 않는다.
 
 ```yaml
 incident_id: llm-2026-07-06-001
@@ -82,22 +93,20 @@ status: open
 
 ```python
 def incident_to_eval_case(incident, trace):
-    return {
-        "id": incident["follow_up_eval_cases"][0],
-        "question": trace["input"],
-        "reference": "",  # 사람 검수 후 채움
-        "contexts": trace.get("retrieved_contexts", []),
-        "meta": {
-            "category": trace.get("category", "unknown"),
-            "source": f"incident:{incident['incident_id']}",
-            "answerable": True,
-            "severity": incident["severity"],
-            "release_id": incident["release_id"],
-        },
-    }
+    ids = incident.get("follow_up_eval_cases")
+    if not isinstance(ids,list) or not ids or not isinstance(ids[0],str) or not ids[0]:
+        raise ValueError("유일 후보 id 준비 필요")
+    # trace는 승인된 마스킹 자료/참조. 원래 raw input/output을 자동 복사하지 않음.
+    return {"id":ids[0], "question":trace.get("sanitized_input"),
+        "reference":None, "contexts":trace.get("sanitized_retrieved_contexts"),
+        "meta":{"category":trace.get("category","unknown"),
+            "source":f"incident:{incident['incident_id']}","data_ref":trace.get("data_ref"),
+            "answerable":None,"review_status":"unreviewed","dataset_tier":"candidate",
+            "severity":incident["severity"],"release_id":incident["release_id"]}}
+# 후보는eval_set이 아니다. question/contexts/answerable/reference/유일id·권한/출처를검수해승격한다.
 ```
 
-승격 규칙:
+승격 규칙(제안):
 
 - SEV-1/SEV-2는 검수 후 `golden` 또는 `redteam`에 반드시 편입한다.
 - SEV-3은 같은 유형이 3회 이상 반복되면 편입한다.
@@ -154,4 +163,5 @@ def incident_to_eval_case(incident, trace):
 ## 참고 자료 (References)
 
 - OWASP Top 10 for LLM Applications 2025: https://genai.owasp.org/llm-top-10/
+- [Google SRE postmortem 원문](https://sre.google/sre-book/postmortem-culture/) — 2026-10-04, 비난보다 원인/재발 방지 액션과 검증 기록.
 - NIST AI RMF Generative AI Profile(NIST AI 600-1): https://doi.org/10.6028/NIST.AI.600-1

@@ -2,9 +2,17 @@
 tags: [airflow, sensor, dataset, dynamic-task-mapping, backfill, operations]
 level: advanced
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 07. 고급 운영 패턴
+
+> [!info] 판본·검증 범위 — 2026-10-04
+> **Airflow 2.10.5** 예제다. 회사 설치 버전·executor·권한·Git Sync 조건은 미확인이다. 3.x로 그대로 복사하지 않고 해당 판본의 public API/provider 문서를 확인한다. 로컬 파싱과 실제 scheduler·worker·외부 시스템 검증을 구분한다.
+> Dataset과 mapping의 코드 구성은 실제 데이터 생성·외부 호출·알림 전송의 증거가 아니다. 운영 권한과 부하 조건을 확인한다.
+
 
 ## 목표
 
@@ -58,7 +66,7 @@ wait_file >> preprocess
 | `mode="poke"` | Worker slot을 잡고 대기 |
 | `mode="reschedule"` | 확인 후 slot을 반환하고 나중에 다시 확인 |
 
-긴 대기에는 `mode="reschedule"`을 우선 고려한다. `poke`로 수시간 대기하면 Worker slot을 낭비할 수 있다.
+FileSensor는 worker가 해당 경로를 볼 수 있어야 한다. 위 `preprocess`는 별도 정의가 필요한 부분 예제다. 긴 대기에는 `mode="reschedule"`을 우선 고려한다. `poke`로 수시간 대기하면 Worker slot을 낭비할 수 있다.
 
 ## done.flag 패턴
 
@@ -72,7 +80,7 @@ s3://raw/sales/dt=2026-05-02/_DONE
 
 업스트림 시스템이 모든 파일을 쓴 뒤 `_DONE` 파일을 만들고, Airflow는 `_DONE`을 기다린다.
 
-이 방식은 "파일이 보이지만 아직 쓰는 중"인 문제를 줄인다.
+여러 object의 batch 완료 신호를 구분하는 패턴이다. S3 단일 object 게시와 전체 batch 완료는 다르다. producer가 전체 파일의 무결성을 확인한 후 신호를 게시하고 reader가 해당 run의 신호/파일 목록을 검증하는 계약이 필요하다. 오래된 `_DONE` 재사용은 잘못된 완료 판단을 만들 수 있다.
 
 ## Dataset
 
@@ -136,7 +144,7 @@ def consume_raw_sales():
 consume_raw_sales()
 ```
 
-Dataset은 같은 Airflow 인스턴스 안에서 DAG 간 의존성을 표현하기 좋다. 다른 시스템의 외부 이벤트를 직접 받는 용도라면 Sensor, REST API trigger, message queue 연동을 검토한다.
+위 producer/consumer는 print만 한다. Dataset URI는 의존성 식별자이며 파일을 직접 검사하지 않는다. outlet Task 성공이 event를 발생시키므로 실제 저장 완료 후 성공하도록 구현한다. 이 장은 2.10.5 Dataset API이며 3.x Asset API와 혼용하지 않는다. Dataset은 같은 Airflow 인스턴스 안에서 DAG 간 의존성을 표현하기 좋다. 다른 시스템의 외부 이벤트를 직접 받는 용도라면 Sensor, REST API trigger, message queue 연동을 검토한다.
 
 ## Dynamic Task Mapping
 
@@ -173,13 +181,14 @@ dynamic_mapping_example()
 
 주의:
 
+- scheduler가 runtime의 list/dict로 Task를 확장한다. 빈 입력은 skipped, 2.10.5 `max_map_length` 기본 1024는 설치 설정으로 확인한다.
 - 너무 많은 Task를 한 번에 만들면 Scheduler와 UI가 느려질 수 있다.
 - 수천 개 이상의 작은 Task보다 적당히 묶어서 처리하는 것이 나을 수 있다.
 - pool로 동시 실행 개수를 제한한다.
 
 ## pool
 
-pool은 특정 리소스를 사용하는 Task의 동시 실행 수를 제한한다.
+pool은 여러 DAG/Run에 걸쳐 공유하는 slot을 제한한다. 기본1slot/Task이지만 `pool_slots` 가중치에 따라 Task 수와 slot 수가 다르다. deferred Task를 포함할지는 pool 설정으로 확인한다.
 
 예:
 
@@ -213,7 +222,7 @@ pool 생성은 운영팀 권한일 수 있다.
 | Worker capacity | 실제 Worker가 동시에 몇 Task를 돌릴 수 있는지 | 운영팀 문의, Task가 queued에 머무는지 관찰 |
 | `parallelism` | Airflow 전체에서 동시에 running 가능한 Task 수 | Admin Config 또는 운영팀 문의 |
 | `max_active_tasks_per_dag` | DAG 하나에서 동시에 running 가능한 Task 수 | Admin Config, DAG 코드의 `max_active_tasks` |
-| `max_active_runs_per_dag` | DAG Run을 몇 개까지 동시에 만들지 | Admin Config, DAG 코드의 `max_active_runs` |
+| `max_active_runs_per_dag` | 같은 DAG의 active run 상한 | Admin Config, DAG 코드의 `max_active_runs` |
 | Pool slots | 특정 pool에 묶인 Task의 동시 실행 수 | Admin -> Pools, Task Instance detail |
 | Queue | 특정 Worker queue로 Task를 보낼지 | Task Instance detail, 운영팀 문의 |
 | Task 의존성 | upstream이 끝나야 downstream 실행 | Graph/Grid view |
@@ -276,7 +285,7 @@ with DAG(
 
 | 결과 | 해석 |
 |------|------|
-| 세 Task가 동시에 `running` | 최소 3개 병렬 실행 가능 |
+| 세 Task가 동시에 `running` | 해당 시점의 sleep Task 3개 상태 중첩을 관찰; CPU/메모리/실제 job 용량 증거는 아님 |
 | 하나만 `running`, 나머지는 `queued` | pool, worker, executor, DAG 동시성 제한 가능성 |
 | 순서대로 하나씩 실행 | SequentialExecutor, pool slot 1, worker slot 부족, DAG 제한 가능성 |
 | 계속 `queued` | worker/queue/pool 문제 가능성 |
@@ -303,7 +312,7 @@ with DAG(
 
 ## queue
 
-CeleryExecutor나 KubernetesExecutor 환경에서는 queue를 통해 특정 Worker 그룹으로 Task를 보낼 수 있다.
+CeleryExecutor의 `queue`는 그 queue를 듣는 Celery worker로 routing하는 설정이다. 일반 KubernetesExecutor에서 `queue="high_memory"`가 고메모리 node를 선택한다는 뜻은 아니다. Kubernetes pod resource/node 배치는 해당 provider의 pod template/`executor_config`로 별도 설정한다. hybrid/multi-executor 구성은 설치 설정에 따라 다르다.
 
 ```python
 task = BashOperator(
@@ -378,7 +387,7 @@ default_args = {
 }
 ```
 
-실제 운영에서는 print 대신 사내 알림 API를 호출한다. 단, 알림 함수 안에서도 secret을 로그에 남기지 않는다.
+위 callback은 print만 하며 알림을 전송하지 않는다. 2.10.5 callback은 worker 실행에 따른 상태 변화에서 호출되며 UI/CLI의 단순 상태 변경은 호출하지 않는다. callback 자체 오류는 scheduler log에서 확인한다. 전달 실패/timeout/retry/중복 알림 계약도 별도 구현한다. 실제 운영에서는 print 대신 사내 알림 API를 호출한다. 단, 알림 함수 안에서도 secret을 로그에 남기지 않는다.
 
 ## 장기 실행 작업
 
@@ -410,7 +419,7 @@ Task 실패 시 확인 순서:
 3. 같은 Task만 재실행 가능한지 판단
 4. 입력 데이터 존재 여부 확인
 5. 패키지/import 오류인지 확인
-6. 코드 기반 secret, 계정 권한, 네트워크 오류인지 확인
+6. 승인된 secret 주입, 계정 권한, 네트워크 오류인지 확인
 7. Worker 리소스 부족인지 확인
 8. upstream/downstream 영향 범위 확인
 9. 재실행 또는 코드 수정 결정
@@ -448,7 +457,7 @@ DAG 설계:
 
 - Worker Python 버전과 패키지를 확인했는가
 - provider 설치 여부를 확인했는가
-- `secrets.py`와 `config.py`가 Bitbucket Git Sync 대상 branch에 있고 import 가능한가
+- helper package/비밀 없는 설정이 배포되고 실행 worker에 승인된 secret이 공급되는가
 - Worker가 필요한 저장소와 DB에 접근 가능한가
 
 운영:
@@ -464,3 +473,14 @@ DAG 설계:
 Airflow 운영의 핵심은 DAG 문법보다 실행 환경과 재실행 가능성이다.
 
 작은 DAG 하나를 안정적으로 만들고, 그 다음 패키지 격리, 공유 저장소, 알림, pool, backfill을 단계적으로 붙이는 방식이 가장 안전하다.
+
+
+## 검증 근거 — 2026-10-04
+
+- [2.10.5 Dataset](https://airflow.apache.org/docs/apache-airflow/2.10.5/authoring-and-scheduling/datasets.html), [Dynamic Task Mapping](https://airflow.apache.org/docs/apache-airflow/2.10.5/authoring-and-scheduling/dynamic-task-mapping.html), [pools](https://airflow.apache.org/docs/apache-airflow/2.10.5/administration-and-deployment/pools.html).
+- [callbacks](https://airflow.apache.org/docs/apache-airflow/2.10.5/administration-and-deployment/logging-monitoring/callbacks.html).
+- [공식 2.10.5 Celery 전송 소스](https://github.com/apache/airflow/blob/2.10.5/airflow/providers/celery/executors/celery_executor_utils.py)의 `apply_async(queue=queue)`와 [KubernetesExecutor 소스](https://github.com/apache/airflow/blob/2.10.5/airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py)의 `execute_async`/`PodGenerator.from_obj(executor_config)`를 대조했다. provider 독립 release나 실제 cluster 실행 증거는 아니다. 병렬 sleep/실제 외부 알림은 실행하지 않았다.
+
+미확인: 사내 배포·계정·리소스·네트워크 조건과 실제 운영 성공. 중복 예제의 계약 통합·회사 정책 결정은 Herdr `pane_not_found`로 Claude 협의를 보류한다. [주제 정리 기록](../organization-log.md)에 진행 결과를 남긴다.
+
+로컬 확인: Python 3.12.12/Airflow 2.10.5 임시 환경에서 이 장의 Python 구문과 완성 DAG 정의를 검사했다. Kubernetes provider import·실제 venv job·외부 접속·scheduler 실행은 별도 미확인이다. 추가 실행 결과와 판본은 위 정리 기록을 읽는다.

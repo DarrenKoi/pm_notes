@@ -2,11 +2,18 @@
 tags: [langgraph, state-machine, stategraph, basics]
 level: intermediate
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 05. LangGraph 개요 및 상태 머신 이해
 
 > LangGraph는 LLM 앱을 "상태(State)를 공유하는 노드(Node)들이 엣지(Edge)로 연결된 그래프"로 모델링한다. 그 핵심인 상태 머신 개념을 이해한다.
+
+
+> [!info] 적용 조건과 실행 순서
+> 2026-10-04 개별 검토. [공통 적용 조건](./verified-conditions.md)의 판본·설정·검증 경계를 먼저 확인한다. 같은 문서의 코드 조각은 위에서 아래로 이어 실행하며 개념 조각은 별도로 표시한다. 이전 문서의 vs/chunks/embeddings 등은 관련 절의 선행 예제가 필요하다. 공개·사내 API/실제 데이터·운영 실행은 미확인이며 예제 출력은 보장이 아니다.
 
 ## 왜 필요한가? (Why)
 
@@ -37,19 +44,20 @@ class State(TypedDict):
 > 메시지 누적에는 LangGraph가 제공하는 `add_messages` reducer를 쓴다(다음 문서).
 
 ### 특수 노드 START / END
-`START`는 진입점, `END`는 종료점. 최소한 `START → ... → END` 경로가 있어야 한다.
+`START`는 진입점, `END`는 종료점. START/진입점과 종료/중단 경로를 설계한다. END는 명시적 종료를 표시하며 모든 edge가 정적 END에 도달해야 한다는 뜻은 아니다.
 
 ## 어떻게 사용하는가? (How)
 
 ### 최소 그래프: 단일 노드
 ```python
+import os
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langchain_openai import ChatOpenAI
 
 # 사내:
-llm = ChatOpenAI(model="Kimi-K2.5", base_url="http://llm-gateway.internal/v1",
-                 api_key="EMPTY", temperature=0)
+llm = ChatOpenAI(model=os.environ["LLM_MODEL"], base_url=os.environ["LLM_BASE_URL"],
+                 api_key=os.environ["LLM_API_KEY"], temperature=0)
 
 class State(TypedDict):
     question: str
@@ -102,7 +110,7 @@ print(graph.get_graph().draw_mermaid())
 
 ### 스트리밍으로 각 노드 진행 관찰
 ```python
-for step in graph.stream({"text": "..."}):
+for step in graph.stream({"text": "..."}, stream_mode="updates"):
     print(step)     # {노드이름: 그 노드가 반환한 부분 상태}
 ```
 

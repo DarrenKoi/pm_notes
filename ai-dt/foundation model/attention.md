@@ -2,11 +2,17 @@
 tags: [attention, self-attention, transformer, seq2seq]
 level: beginner-to-intermediate
 last_updated: 2026-03-14
+reviewed_on: 2026-10-04
+review_status: partial
+type: learning
 ---
 
 # Attention이란 무엇인가?
 
 > Attention은 "현재 계산에 필요한 정보를 입력 전체에서 선택적으로 끌어오는 방법"이다. Transformer에서는 이 메커니즘이 모델의 중심이 된다.
+
+> [!info] 검토 범위 · 2026-10-04
+> 공개 원 논문에 근거한 학습 문서다. 논문의 발표·개정 연도와 오늘의 제품 구현은 구분한다. 최신 제품의 구조·학습 공정·시장 점유율은 미확인이다. [정리 기록](./organization-log.md)에 근거와 검증 한계를 남겼다.
 
 ## 왜 필요한가? (Why)
 
@@ -37,7 +43,7 @@ Attention은 이 "어디를 볼지"를 수치적으로 학습하는 메커니즘
 3. 그 가중치로 Value들을 가중합한다
 4. 그 결과가 "지금 이 위치가 참고한 문맥 정보"가 된다
 
-즉 attention은 **soft lookup** 이다. 메모리 전체를 뒤지는 대신, 필요한 부분에 더 큰 가중치를 주어 읽는다.
+즉 attention은 **soft lookup** 이다. 표준 dense attention은 허용된 모든 Key와 점수를 계산한 뒤 Value의 기여도를 다르게 준다. 검색 엔진처럼 일부 항목만 먼저 찾아오는 연산이라는 뜻은 아니다.
 
 ## Q / K / V를 실무 감각으로 이해하기
 
@@ -81,7 +87,7 @@ Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V
 예를 들어 문장 내 각 토큰은:
 
 - 자기 자신을 볼 수 있고
-- 앞뒤 토큰을 모두 볼 수 있으며
+- 양방향 mask라면 앞뒤 토큰을 모두 볼 수 있으며
 - 멀리 떨어진 토큰과도 직접 연결될 수 있다
 
 이 때문에 장거리 의존성을 다루기 쉬워진다. RNN처럼 정보를 여러 step에 걸쳐 전달할 필요가 없기 때문이다.
@@ -96,7 +102,7 @@ Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V
 
 ### 2. Cross-Attention
 
-- Query는 decoder에서 오고, Key/Value는 encoder 출력에서 온다
+- encoder-decoder 구조에서는 Query가 decoder에서, Key/Value가 encoder 출력에서 온다. 일반적으로는 서로 다른 시퀀스·표현 사이의 attention을 말한다
 - decoder가 입력 문장을 참고하면서 출력을 생성할 때 사용된다
 - 번역, 요약, speech-to-text 같은 입력-출력 변환 태스크에 중요하다
 
@@ -114,7 +120,9 @@ Transformer는 attention을 한 번만 하지 않고 여러 개의 head로 나�
 
 왜 head를 여러 개 둘까?
 
-- 어떤 head는 문법 관계를 본다
+각 head는 서로 다른 학습 가능한 투영을 쓴다. 다음은 가능한 해석의 예이며 역할이 미리 고정되거나 모든 모델에서 보장되는 것은 아니다.
+
+- 어떤 head는 문법 관계를 볼 수 있다
 - 어떤 head는 coreference를 본다
 - 어떤 head는 지역적 문맥을 본다
 - 어떤 head는 멀리 떨어진 토큰 관계를 본다
@@ -125,7 +133,7 @@ Transformer는 attention을 한 번만 하지 않고 여러 개의 head로 나�
 
 Attention, 특히 self-attention이 LLM의 핵심이 된 이유는 다음과 같다.
 
-- **병렬화**: RNN처럼 step-by-step recurrence가 없어 GPU/TPU에서 대규모 학습이 유리하다
+- **병렬화**: 주어진 학습 시퀀스의 위치들을 병렬 계산할 수 있다. 자동회귀 생성 시에는 아직 없는 다음 토큰을 순서대로 생성해야 한다
 - **장거리 연결**: 먼 토큰도 직접 참조할 수 있어 긴 문맥을 다루기 쉽다
 - **범용성**: 번역, 요약, 언어모델링, 질의응답 등 다양한 텍스트 작업에 동일한 블록을 재사용할 수 있다
 - **확장성**: 더 많은 데이터, 더 긴 문맥, 더 큰 모델에 맞춰 스케일업하기 쉬웠다
@@ -140,7 +148,7 @@ attention weight가 무엇을 봤는지 일부 힌트를 주는 것은 맞지만
 
 ### 오해 2. Attention만 있으면 순서 정보가 자동으로 생긴다
 
-아니다. self-attention은 기본적으로 집합(set)처럼 입력을 볼 수 있기 때문에, Transformer는 **positional encoding / positional embedding** 같은 별도 순서 정보를 넣어야 한다.
+위치 정보나 순서에 따른 mask가 없는 self-attention만으로는 토큰 순서를 구별하지 못한다. 2017 Transformer는 **positional encoding**을 넣는다. causal mask 또한 읽기 방향을 제한하므로 모든 attention 구현을 순서 없는 집합이라고 단정하지 않는다.
 
 ### 오해 3. 모든 토큰을 똑같이 자세히 본다
 
@@ -148,9 +156,9 @@ attention weight가 무엇을 봤는지 일부 힌트를 주는 것은 맞지만
 
 ## 한계도 있다
 
-- 표준 self-attention은 길이 `n`에 대해 대략 `O(n^2)` 메모리/연산 비용이 든다
-- 문맥 창(context window)이 길어질수록 비용이 빠르게 커진다
-- 그래서 긴 문맥 처리에는 sparse attention, linear attention, chunking, KV cache 최적화 같은 보완 기법이 발전했다
+- dense self-attention의 모든 위치 쌍 계산은 고정된 head 차원에서 `O(n²)` 연산이다. 점수 행렬을 그대로 저장하는 구현은 그 행렬에 `O(n²)` 메모리를 쓴다
+- [FlashAttention (2022, v2)](https://arxiv.org/abs/2205.14135v2)은 exact attention을 타일 단위로 계산하여 전체 점수 행렬의 메모리 저장과 GPU 메모리 접근을 줄인다. dense 연산의 모든 위치 쌍 자체를 없애는 방법은 아니다
+- sparse/linear attention은 연산 패턴·근사 조건을 바꿀 수 있다. KV cache는 생성 중 과거 K/V의 재계산을 줄이는 별도 기법이며 dense prefill의 이차 연산을 자동으로 없애지 않는다
 
 ## 실무에서 이렇게 정리하면 된다
 
@@ -159,7 +167,22 @@ attention weight가 무엇을 봤는지 일부 힌트를 주는 것은 맞지만
 - causal self-attention은 **생성 모델의 읽기 규칙**
 - multi-head attention은 **여러 관점으로 동시에 읽는 방식**
 
-LLM은 결국 "엄청 큰 텍스트 말뭉치 위에서 self-attention 기반 구조를 대규모로 학습한 언어 모델"이라고 보면 된다.
+이 문서에서 다루는 Transformer 기반 LLM은 self-attention을 언어모델 학습에 사용한다. LLM이라는 용어 자체를 특정 아키텍처만의 정의로 사용하지 않는다.
+
+## 식을 직접 확인하는 작은 예
+
+`Q`는 `(n_q, d_k)`, `K`는 `(n_k, d_k)`, `V`는 `(n_k, d_v)`이고 결과는 `(n_q, d_v)`다. Q/K/V는 보통 은닉 표현에 학습된 행렬을 곱해 만든다. 아래에서는 이미 계산된 두 위치의 Q/K/V를 사용한다.
+
+```text
+Q = K = [[1, 0], [0, 1]], V = [[10, 0], [0, 20]]
+d_k = 2
+mask 없음: 첫 행 가중치 ≈ [0.669762, 0.330238]
+           첫 행 출력 ≈ [6.697615, 6.604769]
+causal mask: 첫 위치는 둘째 위치 점수를 -∞로 가린다
+             첫 행 가중치 = [1, 0], 출력 = [10, 0]
+```
+
+softmax는 **Key 축의 각 행**에 적용한다. 가중치 합은 1이며 가린 위치의 기여는 0이다. 모든 Key를 가린 행은 이 예의 전제 밖이다. 실제 구현에서는 padding과 causal mask를 함께 다룬다. 학습 입력을 한 칸 이동시켜야 현재 입력 토큰을 보더라도 예측할 미래 정답이 누출되지 않는다. `sqrt(d_k)`는 큰 내적이 softmax를 포화시켜 gradient를 작게 만드는 문제를 완화한다. 근거: [2017 Transformer §3.2, arXiv v7](https://arxiv.org/html/1706.03762v7), 확인 2026-10-04.
 
 ## 참고 자료 (Primary Sources)
 

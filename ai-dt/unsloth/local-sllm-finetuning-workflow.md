@@ -1,6 +1,16 @@
+---
+type: learning
+tags: [unsloth, finetuning]
+reviewed_on: 2026-10-04
+review_status: partial
+---
+
 # 로컬 sLLM 파인튜닝 워크플로우
 
-> 강한 로컬 API 모델을 teacher / judge로 쓰고, GPU에 올라간 작은 모델을 student로 파인튜닝하는 방식이 현재 가장 실용적이다.
+> 강한 로컬 API 모델을 teacher / judge로 쓰고, GPU에 올라간 작은 모델을 student로 파인튜닝하는 한 가지 실험 워크플로우다. teacher의 품질·비용·사용 조건과 student 기준 성능을 비교해야 한다.
+
+> [!info] 검토 범위 · 2026-10-04
+> 공식 문서와 코드 예제를 대조한 학습 자료다. GPU 학습·모델 다운로드·export·serving은 실행하지 않았다. [적용 조건](./verified-conditions.md)과 [정리 기록](./organization-log.md)에 버전 경계와 미확인을 남겼다.
 
 ## 전체 그림
 
@@ -31,9 +41,11 @@
 
 ## Step 2. student 모델을 고른다
 
-첫 시도 기준으로는 instruct 모델 + QLoRA가 가장 안전하다.
+좁은 대화/형식 태스크에서는 instruct 모델 + QLoRA를 첫 후보로 검토한다. VRAM·데이터 수만으로 성공을 보장하지 않는다.
 
 ### 모델 선택 기준
+
+아래 수치는 경험적 시작 후보이며 학습 성공·품질의 경계값이 아니다. 모델 architecture·언어·template·runtime 지원을 함께 확인한다.
 
 - VRAM이 작다: 3B ~ 8B instruct 모델부터 시작
 - 데이터가 300개 미만이다: instruct 모델 우선
@@ -75,7 +87,7 @@ teacher 모델을 student 대신 쓰는 것이 아니라, 학습 준비와 평�
 
 ## Step 5. synthetic data를 늘린다
 
-Unsloth datasets guide는 synthetic data 활용 자체를 적극적으로 다루지만, 그대로 넣기보다 검수 루프를 넣어야 한다.
+원본 seed를 먼저 train/eval/test 그룹으로 나누고 **train 그룹 안에서만** 학습 데이터를 확장한다. 같은 원본의 paraphrase가 평가 세트로 들어가면 누출이 된다. teacher 응답의 사실성·정책 준수도 검수한다.
 
 권장 방식:
 
@@ -83,7 +95,7 @@ Unsloth datasets guide는 synthetic data 활용 자체를 적극적으로 다루
 2. teacher 모델로 변형 예시 생성
 3. 중복/허위/과잉 길이 제거
 4. 사람이 샘플 검수
-5. train / eval 분리
+5. train / eval의 원본·파생 그룹 분리 확인
 
 ## Step 6. chat format을 고정한다
 
@@ -99,7 +111,7 @@ Unsloth datasets guide는 synthetic data 활용 자체를 적극적으로 다루
 
 ## Step 7. 첫 학습은 작게 돌린다
 
-권장 초기값:
+단일 GPU의 예시 초기값(권장 보장값 아님). 대표 설명은 [학습 레시피](./training-and-deployment-recipe.md)에 둔다:
 
 - `max_seq_length=2048`
 - `r=16`
@@ -126,7 +138,7 @@ fine-tuned 모델이 항상 더 좋은 것은 아니다. 데이터가 약하면 
 
 ## Step 9. teacher judge로 자동 평가를 붙인다
 
-강한 로컬 API 모델을 judge로 활용하면 반복 속도가 빨라진다. 다만 judge score만 믿지 말고, 사람이 직접 보는 검수 세트를 따로 유지해야 한다.
+강한 로컬 API 모델을 judge로 활용하면 반복 속도가 빨라진다. 다만 teacher가 생성한 데이터를 같은 teacher로 평가하면 자기 선호가 과대평가될 수 있다. judge score만 믿지 말고, 사람이 직접 보는 검수 세트를 따로 유지해야 한다.
 
 권장 평가 세트:
 
@@ -137,13 +149,13 @@ fine-tuned 모델이 항상 더 좋은 것은 아니다. 데이터가 약하면 
 
 학습 전에 배포 목표를 먼저 정하는 편이 좋다.
 
-- Ollama / llama.cpp 예정: GGUF export 필요
+- Ollama / llama.cpp 예정: 지원 architecture와 import 형식을 확인하고 GGUF export를 검토
 - vLLM 예정: merged weights 또는 호환 가능한 HF 형식 필요
 - adapter만 공유 예정: PEFT adapter 저장
 
 ## 추천 운영 방식
 
-### 가장 안전한 시작점
+### 시작 실험 예시
 
 1. 4B 또는 8B instruct student 선택
 2. 고품질 seed 100개 작성

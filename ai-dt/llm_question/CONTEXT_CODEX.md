@@ -1,4 +1,16 @@
+---
+type: historical-record
+tags: [aix, llm-report-contest, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+aliases: ["설계 문맥 기록 — CONTEXT_CODEX"]
+---
+
 # LLM Report Contest
+
+> [!info] 2026-10-04 검토 — 설계 문맥 기록
+> 아래는 당시 설계와 예시를 보존한 기록입니다. 현재 시행 규칙이나 실제 모델 성능을 뜻하지 않습니다. 버전·용도·미확인은 [목차](./README.md)와 [검토 안내](./review-notes.md)에 정리했습니다.
+
 
 회사 내 LLM Chat 서비스인 기내식을 활용해 제한 시간 안에 리포트를 작성하는 경진대회 출제 컨텍스트.
 핵심은 완성된 전략 문서 자체보다, 참가자가 LLM을 활용해 본인 업무 경험을 구조화하고 보고서로 완성하는 능력을 평가하는 것이다.

@@ -2,9 +2,65 @@
 tags: [airflow, bitbucket, git-sync, secrets, company-env]
 level: intermediate-advanced
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: historical_scenario_with_review
 ---
 
 # 08. Bitbucket Git Sync와 코드 기반 Secret 운영
+
+> [!warning] 현재 사용 지침과 원문 시나리오 — 2026-10-04
+> 아래 “2026-05-02 원문 시나리오”는 당시 문서가 가정한 권한 제한·코드 secret 운영안을 보존한 것이다. 실제 회사 정책·허용 방식은 검증되지 않았다. 원문의 “실제 secret은 private repository에 넣는다”와 `secure=False`를 현재 권장 방식으로 따르지 않는다. private Git도 비밀의 안전한 공급을 자동 보장하지 않는다. Claude/사내 정책 협의가 필요하나 현재 Herdr pane_not_found여서 미결정으로 남긴다.
+
+## 현재 확인된 기능과 적용 조건
+
+Airflow 2.10.5 Connection은 metadata DB 외에 환경변수와 외부 secret backend에서도 제공된다. env/backend 값은 UI의 Connection 목록에 나타나지 않을 수 있다. UI 관리 권한 제한과 Task 실행 시 credential 사용 가능 여부는 다른 문제다. 운영팀이 제공한 Connection ID/주입 방식·Task 접근 권한·유효 기간을 확인한다. [Connection 공식 설명](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/connection.html), [secret backend](https://airflow.apache.org/docs/apache-airflow/2.10.5/security/secrets/secrets-backend/index.html).
+
+Git Sync는 DAG source를 배포하는 방식이다. secret 주입이나 requirements 설치를 그 자체로 보장하지 않는다. 운영팀 제공 환경변수/backend 또는 승인된 외부 파일을 사용하도록 구성할 수 있지만 이 회사에서 사용 가능하다는 사실은 미확인이다. [공식 Helm DAG 배포 예시](https://airflow.apache.org/docs/helm-chart/stable/manage-dag-files.html)는 제품 배포 옵션의 근거이며 사내 설치 증거는 아니다.
+
+### 비밀 값 대신 실행 환경에서 읽는 최소 예시
+
+아래는 **환경변수 주입이 승인돼 사용 가능한 경우**의 loader다. 실제 key를 source·문서에 적거나 출력하지 않는다. 누락은 빈 문자열/기본 key로 바꾸지 않고 실패한다. TLS를 사용하는 MinIO SDK client에 전달할 설정이며 실제 endpoint·CA·계정·권한은 별도 확인해야 한다.
+
+```python
+from collections.abc import Mapping
+import os
+
+
+def load_minio_settings(env: Mapping[str, str]) -> dict[str, str | bool]:
+    names = {
+        "endpoint": "COMPANY_MINIO_ENDPOINT",
+        "access_key": "COMPANY_MINIO_ACCESS_KEY",
+        "secret_key": "COMPANY_MINIO_SECRET_KEY",
+        "bucket": "COMPANY_MINIO_BUCKET",
+    }
+    missing = [name for name in names.values() if not env.get(name)]
+    if missing:
+        raise ValueError("필수 MinIO 환경변수 누락: " + ", ".join(missing))
+    return {**{key: env[name] for key, name in names.items()}, "secure": True}
+
+
+# Task 내부에서 운영팀이 주입한 환경을 읽는다. 반환값은 print/log/XCom하지 않는다.
+# settings = load_minio_settings(os.environ)
+# Minio(endpoint=settings["endpoint"], access_key=settings["access_key"],
+#       secret_key=settings["secret_key"], secure=settings["secure"])
+```
+
+[MinIO Python API](https://docs.min.io/aistor/developers/sdk/python/api/)의 `secure=True`는 HTTPS 사용이다. CA 신뢰·인증서 검증·권한/소유자 정책은 별도 조건이며 TLS를 끄는 것을 사내 기본으로 가정하지 않는다. 확인한 페이지는 AIStor 문서로 redirect됐고 기존 OSS/사내 버전은 미확인이다.
+
+### 원래 예제의 실행 한계
+
+원문08에는 날짜 전용 `main(run_date)`와 시간 구간용 `main(start_ts,end_ts)`가 같은 가상 download.py 이름으로 나타난다. 서로 다른 예제이므로 동시에 덮어써 실행하지 않는다. 단순 Bash 예제는 CLI entrypoint가 없는 함수만의 파일과 그대로 조합하면 일을 하지 않을 수 있다. 시간 문자열 slice 기반 경로도 timezone/DST/수동 run을 식별하는 완성형이 아니다. 주석 처리된 `put_object`는 실제 업로드가 아니다. 고유 예제를 보존하되 이 장을 완성된 운영 서비스나 secret 정책으로 사용하지 않는다. 실제 구현 계약 통합은 Claude 협의 대기다.
+
+
+
+### 로컬 검증 결과 — 2026-10-04
+
+역사 시나리오의 DAG 2개는 정의와 의존성 파싱만 통과했다. 새 환경변수 loader는 필수 값 4가지가 누락되면 실패했고, 오류 메시지에 비밀 값을 포함하지 않았다.
+
+검증 환경은 저장소 밖의 임시 Python 3.12.12 환경이다. 문서 예제를 임시 파일로 추출하고 로컬 helper를 사용했다. 실제 scheduler와 worker, 업무 파일, FTP·MinIO·API, 인증과 TLS 연결은 실행하지 않았다. DAG 발견은 업무 처리의 성공을 보장하지 않는다.
+
+## 2026-05-02 원문 시나리오 — 역사 보존, 현재 사실 아님
 
 ## 이 장의 전제
 

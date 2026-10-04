@@ -1,6 +1,16 @@
+---
+type: learning
+tags: [unsloth, finetuning]
+reviewed_on: 2026-10-04
+review_status: partial
+---
+
 # 데이터셋과 Chat Template 가이드
 
-> sLLM 파인튜닝은 코드보다 데이터 형식과 template consistency에서 더 자주 실패한다.
+> 데이터 형식·chat template·label masking을 학습과 추론에서 일치시켜야 한다. 실패 빈도를 비교한 로컬 통계는 없다.
+
+> [!info] 검토 범위 · 2026-10-04
+> 공식 문서와 코드 예제를 대조한 학습 자료다. GPU 학습·모델 다운로드·export·serving은 실행하지 않았다. [적용 조건](./verified-conditions.md)과 [정리 기록](./organization-log.md)에 버전 경계와 미확인을 남겼다.
 
 ## 왜 이 문서가 중요한가?
 
@@ -11,7 +21,7 @@ Unsloth 공식 가이드는 데이터셋 형식과 chat template 일치를 반�
 
 ## 권장 데이터 형식
 
-가장 안전한 시작점은 대화형 JSONL이다.
+대화형 JSONL을 사용하는 예다. 아래는 **가독성을 위해 펼친 JSON 객체**이며 실제 JSONL은 객체 하나를 한 물리적 줄에 기록한다.
 
 ```json
 {"conversations":[
@@ -25,7 +35,7 @@ system role이 불필요하면 생략해도 되지만, 학습/추론 전체에�
 
 ## 최소 데이터 수에 대한 현실적 기준
 
-Unsloth datasets guide는 아주 작은 데이터셋도 가능하다고 보지만, 실전에서는 다음 구간으로 보는 편이 좋다.
+다음 구간은 원래 학습 메모의 계획 예시다. 검증된 최소 표본 수나 base/instruct 전환의 통계적 기준은 아니다.
 
 - 50 ~ 100개: 파이프라인 점검용
 - 100 ~ 300개: 좁은 형식 학습은 가능
@@ -48,7 +58,7 @@ Unsloth datasets guide는 아주 작은 데이터셋도 가능하다고 보지�
 
 ### 2. 원하는 출력 형식을 강하게 고정한다
 
-작은 모델은 "느낌"보다 "패턴"을 더 잘 배운다. 따라서 다음 요소를 반복적으로 보여주는 편이 효과적이다.
+태스크가 요구하는 형식을 예제로 보여준다. JSON 객체의 key 순서는 JSON schema의 의미적 유효성과 별개이며, 외부 시스템이 직렬화 순서를 요구할 때만 추가 조건으로 다룬다:
 
 - JSON key 순서
 - bullet 수
@@ -66,11 +76,11 @@ student가 작을수록 장황한 답변보다 짧고 규격화된 답변에 더
 
 ### 추천 절차
 
-1. 사람이 gold examples 50 ~ 200개 작성
-2. teacher 모델에 변형 규칙을 줘서 paraphrase / edge case 생성
+1. 사람이 gold examples 50 ~ 200개 작성(계획 예시) 후 원본별 train/eval/test 분리
+2. train 원본만 teacher로 paraphrase / edge case 생성
 3. 자동 필터로 중복 제거
 4. 사람이 샘플 검수
-5. eval set은 따로 떼어둠
+5. 평가 원본과 같은 파생 그룹이 train에 섞이지 않았는지 확인
 
 ### teacher 프롬프트 예시
 
@@ -125,13 +135,13 @@ text = tokenizer.apply_chat_template(
 )
 ```
 
-실제 template 이름은 모델 family에 맞춰 선택해야 한다.
+위 snippet의 `tokenizer`와 `conversations`는 앞서 로딩·검증한 객체를 전제한다. `llama-3.1`은 해당 형식의 예이며 이름만 비슷한 모든 모델에 적용하지 않는다. system role 지원, special token ID와 tokenizer의 실제 template을 확인한다. 렌더링한 문자열을 다시 tokenize한다면 BOS/EOS 중복을 피하도록 `add_special_tokens=False` 조건을 확인한다.
 
 ## response-only training 메모
 
 모든 프롬프트 전체를 loss에 넣을 수도 있고, assistant 답변 부분만 loss에 반영할 수도 있다. 일반적으로 형식 튜닝에는 response-only 방식이 유리할 때가 많다.
 
-다만 label masking이 잘못되면 학습 loss가 비정상적으로 낮거나 0에 가까워질 수 있으므로, 학습 전 일부 샘플을 직접 디코딩해 보는 것이 좋다.
+다만 label masking이 잘못되면 학습 loss가 비정상적으로 낮거나 0에 가까워질 수 있으므로, 학습 전 일부 샘플을 직접 디코딩하고 실제 `labels != -100`인 토큰이 있는지 확인한다. response-only는 delimiter/template 지원에 따라 달라지며 아래 레시피의 preformatted text 학습은 response-only masking을 구현하지 않는다.
 
 ## 데이터 품질 체크리스트
 

@@ -2,11 +2,18 @@
 tags: [langgraph, conditional-edges, branching, toolnode, workflow]
 level: intermediate
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 07. Condition, Branching, Tool 결합 Workflow 실습
 
 > 조건부 엣지로 분기·루프를 만들고, `ToolNode`/`tools_condition`으로 도구 호출 루프를 그래프에 통합한다.
+
+
+> [!info] 적용 조건과 실행 순서
+> 2026-10-04 개별 검토. [공통 적용 조건](./verified-conditions.md)의 판본·설정·검증 경계를 먼저 확인한다. 같은 문서의 코드 조각은 위에서 아래로 이어 실행하며 개념 조각은 별도로 표시한다. 이전 문서의 vs/chunks/embeddings 등은 관련 절의 선행 예제가 필요하다. 공개·사내 API/실제 데이터·운영 실행은 미확인이며 예제 출력은 보장이 아니다.
 
 ## 왜 필요한가? (Why)
 
@@ -41,12 +48,13 @@ builder.add_conditional_edges(
 
 ### 1) 조건 분기 (감정 라우팅 예)
 ```python
+import os
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="Kimi-K2.5", base_url="http://llm-gateway.internal/v1",
-                 api_key="EMPTY", temperature=0)
+llm = ChatOpenAI(model=os.environ["LLM_MODEL"], base_url=os.environ["LLM_BASE_URL"],
+                 api_key=os.environ["LLM_API_KEY"], temperature=0)
 
 class State(TypedDict):
     text: str
@@ -55,10 +63,13 @@ class State(TypedDict):
 
 def classify(state):
     s = llm.invoke(f"다음이 긍정/부정 중 뭐야? 단어 하나로: {state['text']}").content
-    return {"sentiment": "negative" if "부정" in s else "positive"}
+    if not isinstance(s, str):
+        return {"sentiment": "unknown"}
+    return {"sentiment": {"긍정": "positive", "부정": "negative"}.get(s.strip(), "unknown")}
 
 def handle_positive(state): return {"reply": "감사합니다! 😊"}
 def handle_negative(state): return {"reply": "불편을 드려 죄송합니다. 상담 연결해 드릴게요."}
+def handle_unknown(state): return {"reply": "감정 분류 미확인; 원문을 검토해 주세요."}
 
 def route(state) -> str:
     return state["sentiment"]
@@ -67,11 +78,13 @@ b = StateGraph(State)
 b.add_node("classify", classify)
 b.add_node("handle_positive", handle_positive)
 b.add_node("handle_negative", handle_negative)
+b.add_node("handle_unknown", handle_unknown)
 b.add_edge(START, "classify")
 b.add_conditional_edges("classify", route,
-                        {"positive": "handle_positive", "negative": "handle_negative"})
+                        {"positive": "handle_positive", "negative": "handle_negative", "unknown": "handle_unknown"})
 b.add_edge("handle_positive", END)
 b.add_edge("handle_negative", END)
+b.add_edge("handle_unknown", END)
 graph = b.compile()
 
 print(graph.invoke({"text": "배송이 너무 느려요"})["reply"])
@@ -89,7 +102,7 @@ from langchain_core.tools import tool
 @tool
 def get_status(eqp_id: str) -> str:
     """설비 상태 조회."""
-    return f"{eqp_id}: DOWN, 알람=온도과열"
+    return f"{eqp_id}: DOWN, 알람=온도과열 (가상 fixture)"
 
 tools = [get_status]
 llm_with_tools = llm.bind_tools(tools)
@@ -117,7 +130,8 @@ print(out["messages"][-1].content)
 
 ### 3) 루프 안전장치
 ```python
-graph.invoke(inputs, {"recursion_limit": 10})   # 무한 루프 방지
+inputs = {"messages": [("user", "EQP-102 상태 알려줘")]}
+graph.invoke(inputs, {"recursion_limit": 10})   # graph superstep 상한; 초과 시 GraphRecursionError, 정상 답변 아님
 ```
 또는 상태에 `iterations: int`를 두고 라우터에서 상한 도달 시 `END`로 보낸다.
 

@@ -2,9 +2,16 @@
 tags: [ai, prompting, zero-shot, one-shot, few-shot]
 level: beginner
 last_updated: 2026-07-28
+type: learning
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # 03. 제로샷과 퓨샷
+
+> [!info] 검토 · 2026-10-04
+> 원래 2026-07-28 입문 자료입니다. 비유·사내 예시는 실측 결과와 구분하며 [근거와 적용 조건](./verified-conditions.md)을 함께 읽습니다. [정리 기록](./organization-log.md)에 개별 결과·검증 경계·미확인을 남겼습니다.
+
 
 ## 이 글에서 답할 질문
 
@@ -14,7 +21,7 @@ last_updated: 2026-07-28
 
 ## 먼저 한 문장으로 정리해 보겠습니다
 
-> `Shot`은 프롬프트 안에 넣어 주는 **완성 예시의 수**이며, Zero-shot은 예시 없이 지시하고 Few-shot은 몇 개의 예시로 원하는 패턴을 보여 줍니다.
+> `Shot`은 이 문서의 in-context prompting에서 프롬프트 안에 넣어 주는 **완성 예시의 수**이며, Zero-shot은 예시 없이 지시하고 Few-shot은 몇 개의 예시로 원하는 패턴을 보여 줍니다.
 
 ## Zero-shot: 설명만으로 요청하기
 
@@ -74,7 +81,7 @@ Few-shot(퓨샷)은 보통 두 개 이상의 완성 예시를 제공합니다.
 
 ## Few-shot은 모델 학습이 아닙니다
 
-퓨샷 예시는 현재 요청의 컨텍스트 안에서만 참고됩니다. 모델의 파라미터를 바꾸는 Fine-tuning(파인튜닝)이나 Distillation(증류)과는 다릅니다.
+여기서 few-shot은 현재 요청의 예시를 뜻합니다. 다른 연구의 few-shot learning은 소수 표본으로 weights를 조정하는 경우도 있어 용어 범위를 확인해야 합니다. 모델의 파라미터를 바꾸는 Fine-tuning(파인튜닝)이나 Distillation(증류)과는 다릅니다.
 
 ```text
 Few-shot       현재 요청에 예시를 넣음       모델 자체는 그대로

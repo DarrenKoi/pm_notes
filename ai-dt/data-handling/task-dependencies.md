@@ -2,9 +2,18 @@
 tags: [airflow, task-dependency, dag, sequential-execution]
 level: beginner
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # Airflow Task 의존성 — Python 코드 순차 실행 패턴
+
+> [!info] 검증 판본과 읽기 조건 — 2026-10-04
+> Airflow **2.10.5** 공식 문서·해당 tag 소스와 대조했다. 아래 DAG 예제는 2.x 학습용이며 설치된 Airflow/provider에서 파싱·실행해야 한다. Airflow 3의 DAG/Task public API는 `airflow.sdk`이며 legacy import를 그대로 최신 예제로 읽지 않는다. 회사 서버 버전·executor·패키지·운영 권한은 미확인이다. Python 구문/모의 검증과 실제 scheduler 실행을 구분한다.
+>
+> 이 문서는 **Task 사이의 실행 순서**를 다룬다. DAG를 시작시키는 조건은 [이벤트 기반 실행](./event-driven-execution.md), 순서대로 배우는 과정은 [Airflow 커리큘럼](./airflow-basic-to-advanced/README.md)을 읽는다. 중복 문법을 독립적인 실전 패턴으로 유지했으며 완전 통합은 Claude 협의 대기다.
+
 
 > 여러 Python 코드를 "앞 코드가 성공해야 뒤 코드가 실행"되도록 묶는 모든 방법
 
@@ -20,12 +29,12 @@ python step1.py && python step2.py && python step3.py
 - 로그 분산, 재시도 없음, 모니터링 없음
 
 ### Airflow가 자동으로 보장하는 것
-- **`trigger_rule="all_success"` (모든 Task의 기본값)** → upstream이 모두 성공해야만 downstream 실행
-- upstream이 실패하면 downstream은 자동으로 `upstream_failed` 상태가 되어 **건너뛰어짐**
+- **`trigger_rule="all_success"` (일반 Task의 기본값; teardown 등 예외 확인)** → upstream이 모두 성공해야만 downstream 실행
+- 기본 `all_success`에서는 upstream 실패로 downstream이 `upstream_failed`가 될 수 있다. 이는 `skipped`와 다른 상태다. 분기 skip·다른 trigger rule·재시도 중인 상태를 별도로 본다
 - 실패 Task만 골라서 **Clear & Re-run** 가능
 - 재시도(`retries`), 타임아웃(`execution_timeout`), 알림(`on_failure_callback`)도 Task 단위 설정
 
-> 핵심: **순차 실행은 별도 옵션이 아니라 의존성을 선언만 하면 자동으로 보장**된다.
+> 핵심: **의존성은 한 DAG run 안의 선후 관계를 선언한다**. 실제 실행 시점은 trigger rule·상태·pool·executor 자원에 따라 달라지고, 서로 다른 run이나 외부 부작용까지 직렬화하지 않는다.
 
 ---
 
@@ -39,7 +48,7 @@ python step1.py && python step2.py && python step3.py
 | **Shift 연산자** | `task_a >> task_b` | 전통 Operator(BashOperator 등) 사용 시 |
 | **메서드** | `task_b.set_upstream(task_a)` | 동적으로 의존성을 만들 때 |
 
-> 한 DAG 안에서는 **하나로 통일**한다. 섞이면 의존성 그래프가 한눈에 안 들어옴.
+> TaskFlow의 데이터 의존과 `>>`의 순서 의존은 한 DAG에서 함께 쓸 수 있다. 코드 스타일보다 실제 Graph에 필요한 edge가 있는지 확인한다.
 
 ### `trigger_rule` 종류
 
@@ -48,14 +57,14 @@ python step1.py && python step2.py && python step3.py
 | `all_success` (기본) | upstream 모두 성공 시 실행 | 일반적인 순차 실행 |
 | `all_failed` | upstream 모두 실패 시 실행 | 실패 알림 / 복구 Task |
 | `all_done` | upstream 결과 무관, 끝나기만 하면 | 정리(cleanup) Task |
-| `one_success` | upstream 중 하나라도 성공 시 | 백업 경로 (A 실패 → B 시도) |
+| `one_success` | upstream 중 하나라도 성공 시 | upstream 중 하나 성공 시 실행; A 실패 뒤 B 실행을 의미하지 않음 |
 | `one_failed` | upstream 중 하나라도 실패 시 | 부분 실패 알림 |
 | `none_failed` | 실패 없이 끝났을 때 (skip은 OK) | 분기 후 합치기 |
 
 ### "성공"의 정의
-- Python 함수가 **예외를 발생시키지 않고 return**하면 성공
+- 정상 Python callable은 예외 없이 끝나면 성공한다. `AirflowSkipException` 같은 명시적 skip·운영자가 바꾼 상태는 별도다
 - `return` 값이 `None`이든 dict든 무관 — 예외 여부만 본다
-- BashOperator는 **exit code 0**이 성공
+- BashOperator는 exit code 0이면 성공, 기본 skip code 99는 `skipped`, 다른 nonzero는 실패다 (`skip_on_exit_code` 설정에 따라 달라짐)
 - 따라서 "결과가 의도와 다르면" Task 안에서 **명시적으로 `raise`** 해야 다음 Task가 차단된다
 
 ---
@@ -150,8 +159,8 @@ with DAG(
 
 **`>>` 연산자 응용**:
 ```python
-t1 >> [t2a, t2b] >> t3   # t1 끝나면 t2a, t2b 병렬 실행, 둘 다 끝나면 t3
-t1 >> t2; t1 >> t3        # t1 끝나면 t2, t3 동시 실행 (fan-out)
+t1 >> [t2a, t2b] >> t3   # t1 성공 후 t2a/t2b 실행 가능; 둘 다 성공 후 t3 (자원에 따라 실제 동시성은 다름)
+t1 >> t2; t1 >> t3        # t1 성공 후 t2/t3 실행 가능 (fan-out; 동시 시작 보장은 아님)
 ```
 
 ---
@@ -190,8 +199,8 @@ with DAG(
 ```
 
 **핵심 디테일**:
-- `set -euo pipefail` 필수 — 안 쓰면 Python이 traceback 찍고 죽어도 exit code가 0으로 나가는 경우가 생김
-- `{{ ds }}`는 Airflow Jinja 매크로 (`execution_date`의 `YYYY-MM-DD`)
+- Python 단독 명령의 nonzero exit는 그대로 실패한다. 뒤에 성공 명령이 붙거나 pipeline 앞단에서 실패하면 최종 exit가 0이 될 수 있어 `set -euo pipefail`을 사용한다. bash의 조건문 등 `-e` 예외까지 제거하는 기능은 아니다
+- `{{ ds }}`는 logical date의 `YYYY-MM-DD`다. hourly 처리 범위는 `data_interval_start/end`를 사용하며 `ds`만으로 run 고유 경로나 시간 구간을 만들지 않는다
 - 각 스크립트 자체는 **인자로 날짜를 받아 동작하는 멱등한 형태**여야 재실행이 안전
 
 ---
@@ -240,7 +249,8 @@ with DAG(
     t1 >> t2
 ```
 
-> 주의: `python_callable` 안에서 쓰는 모든 import는 **함수 내부**에 둬야 한다. 외부 import는 venv에 없으므로 `NameError` 발생.
+> [!warning] 패턴 4의 적용 범위
+> 함수 소스를 분리한 환경에서 실행하므로 필요한 import와 의존성을 함수 안에 명시한다. 위 `/tmp/step1_out.parquet` 전달은 **동일 파일시스템이 유지되는 제한된 실습**이다. Celery/Kubernetes 등에서는 다른 worker/pod에 배치돼 파일이 없을 수 있다. 운영에서는 공유 저장소의 run별 객체 URI를 전달하고 재시도·동시 run·쓰기 완료를 설계한다. 고정 pandas/pyarrow 버전은 당시 예시이며 현재 Python 호환성은 미확인이다.
 
 ---
 
@@ -329,6 +339,9 @@ def with_cleanup():
 with_cleanup()
 ```
 
+> [!warning] Task 성공과 DAG run 성공은 다르다
+> 위 패턴은 trigger rule 시연이며 실패 감지용 운영 DAG의 완성형이 아니다. 2.10.5의 일반 DAG run 판정은 leaf 상태를 사용한다. `main_work`가 실패해도 leaf인 cleanup·알림이 모두 성공하면 run이 성공으로 표시될 수 있다. [DAG run 상태](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dag-run.html)를 대조하고 원래 작업 실패가 최종 판정에 남는지 실제 scheduler에서 확인한다.
+
 **자주 쓰는 조합**:
 - `all_done` cleanup Task — 임시 파일 삭제, 락 해제
 - `one_failed` 알림 Task — Slack/이메일 통보
@@ -349,11 +362,13 @@ trigger_b = TriggerDagRunOperator(
     trigger_dag_id="pipeline_b",
     wait_for_completion=True,    # B가 끝날 때까지 이 Task가 기다림
     poke_interval=30,            # 30초마다 상태 체크
-    reset_dag_run=True,          # 같은 날짜 재실행 허용
+    reset_dag_run=False,         # 기존 run을 자동 clear하지 않음; 재실행 정책은 별도 결정
 )
 
 last_task_in_a >> trigger_b
 ```
+
+`logical_date`를 생략하면 2.10.5 구현은 호출 시각을 사용한다. 같은 논리 날짜의 기존 run을 의도한 경우 날짜/run ID를 명시해야 한다. `reset_dag_run=True`는 기존 run을 clear해 재실행하며 conf를 새로 만들지 않는다. wait는 worker 슬롯을 점유할 수 있고 database isolation mode에서는 이 두 기능의 제약이 있다.
 
 #### 방법 B. `ExternalTaskSensor` — B가 A의 완료를 기다림
 ```python
@@ -369,6 +384,8 @@ wait_for_a = ExternalTaskSensor(
 
 wait_for_a >> first_task_in_b
 ```
+
+기본 sensor는 **현재 run과 같은 logical date**를 찾는다. 서로 다른 schedule이면 `execution_delta` 또는 `execution_date_fn`으로 대응 날짜를 정의해야 한다. 기본적으로 선행 실패를 곧바로 자신의 실패로 바꾸지 않고 timeout까지 기다릴 수 있으므로 `failed_states`/`skipped_states`를 목적에 맞게 확인한다.
 
 | 선택 기준 | A: TriggerDagRunOperator | B: ExternalTaskSensor |
 |-----------|-------------------------|----------------------|
@@ -388,7 +405,7 @@ from airflow.decorators import task
 @task(
     retries=3,
     retry_delay=timedelta(minutes=2),
-    retry_exponential_backoff=True,   # 2분, 4분, 8분으로 점증
+    retry_exponential_backoff=True,   # 기본 지연을 바탕으로 증가; task별 hash jitter와 상한 적용
     max_retry_delay=timedelta(minutes=30),
 )
 def flaky_api_call():
@@ -398,13 +415,22 @@ def flaky_api_call():
 
 DAG 전체 default로도 가능:
 ```python
+from datetime import datetime, timedelta
+from airflow.decorators import dag, task
+
 default_args = {
     "retries": 2,
     "retry_delay": timedelta(minutes=5),
 }
 
-@dag(default_args=default_args, ...)
-def my_dag(): ...
+@dag(default_args=default_args, start_date=datetime(2026, 5, 1), schedule=None, catchup=False)
+def my_dag():
+    @task
+    def work() -> None:
+        print("작업 예시")
+    work()
+
+my_dag()
 ```
 
 > 재시도는 **upstream Task 입장에서 보면 마지막 시도가 성공하면 success로 간주**된다. 즉 downstream은 정상 실행됨.
@@ -442,22 +468,29 @@ def my_dag(): ...
 | 실수 | 결과 | 해결 |
 |------|------|------|
 | `def func(): ...` 만 작성하고 `func()` 호출 안 함 | DAG에 Task가 0개로 등록 | TaskFlow는 `func()`로 호출해야 Task 인스턴스 생성 |
-| `t1 >> t2` 인데 의존성이 안 잡힘 | 두 Task가 병렬 실행됨 | `with DAG(...)` 블록 **안에서** Operator를 만들었는지 확인 |
+| `t1 >> t2` 인데 의존성이 안 잡힘 | 두 Task가 병렬 실행됨 | context manager·`dag=`·연결을 통한 DAG 할당과 실제 edge를 확인; `with` 밖이라는 이유만으로 병렬이 되지 않음 |
 | 함수 내부 import를 까먹고 외부에 둠 (PythonVirtualenvOperator) | `NameError` | 모든 import를 함수 안으로 이동 |
 | 결과가 잘못됐는데 예외 안 던짐 | 다음 Task가 잘못된 데이터로 실행 | Task 끝부분에 검증 후 `raise ValueError(...)` |
-| `BashOperator`에서 `set -e` 없이 파이프 사용 | Python 실패해도 exit 0 | `set -euo pipefail` 항상 prepend |
+| pipeline 앞단 실패가 최종 exit에 반영되지 않음 | Python 실패해도 exit 0 | `pipefail`/종료 코드와 조건문 동작을 확인 |
 | XCom으로 큰 DataFrame 전달 | metadata DB 비대화, 성능 저하 | 파일 경로만 XCom으로 넘기고 데이터는 MinIO/디스크 |
 
 ---
 
 ## 참고 자료 (References)
 
-- [Airflow: TaskFlow API](https://airflow.apache.org/docs/apache-airflow/stable/tutorial/taskflow.html)
-- [Airflow: Tasks & Dependencies](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/tasks.html)
-- [Trigger Rules](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html#trigger-rules)
-- [Cross-DAG Dependencies](https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/external_task_sensor.html)
-- [chain / cross_downstream 헬퍼](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/baseoperator/index.html#airflow.models.baseoperator.chain)
+- [Airflow: TaskFlow API](https://airflow.apache.org/docs/apache-airflow/2.10.5/tutorial/taskflow.html)
+- [Airflow: Tasks & Dependencies](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/tasks.html)
+- [Trigger Rules](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html#trigger-rules)
+- [Cross-DAG Dependencies](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/operator/external_task_sensor.html)
+- [chain / cross_downstream 헬퍼](https://airflow.apache.org/docs/apache-airflow/2.10.5/_api/airflow/models/baseoperator/index.html#airflow.models.baseoperator.chain)
 
 ## 관련 문서
 - [Airflow + MinIO 파이프라인 튜토리얼](./airflow-minio-tutorial.md) — 전체 파이프라인 구성
-- [AI/DT 학습 노트](../README.md)
+
+
+### 추가 확인 근거 — 2026-10-04
+
+- [Airflow 2.10.5 Best Practices](https://airflow.apache.org/docs/apache-airflow/2.10.5/best-practices.html): worker 간 로컬 파일 공유를 가정하지 않는다.
+- [BashOperator 종료 상태](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/operator/bash.html), [템플릿 날짜](https://airflow.apache.org/docs/apache-airflow/2.10.5/templates-ref.html).
+- [TriggerDagRunOperator 2.10.5 소스](https://github.com/apache/airflow/blob/2.10.5/airflow/operators/trigger_dagrun.py), [ExternalTaskSensor 소스](https://github.com/apache/airflow/blob/2.10.5/airflow/sensors/external_task.py), [retry 계산 소스](https://github.com/apache/airflow/blob/2.10.5/airflow/models/taskinstance.py).
+- [Airflow 3 public interface](https://airflow.apache.org/docs/apache-airflow/stable/public-airflow-interface.html): 확인 당시 문서 표시는 3.3.2였다. 최신 보증이나 회사 설치 버전 확인은 아니다.

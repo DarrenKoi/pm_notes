@@ -2,9 +2,16 @@
 tags: [ai, glossary, literacy, rag, agent, security, token, hallucination, fine-tuning, evaluation]
 level: beginner
 last_updated: 2026-07-28
+type: index
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # AI 용어 및 기술 소개
+
+> [!info] 검토 · 2026-10-04
+> 원래 2026-07-28 입문 자료입니다. 비유·사내 예시는 실측 결과와 구분하며 [근거와 적용 조건](./verified-conditions.md)을 함께 읽습니다. [정리 기록](./organization-log.md)에 개별 결과·검증 경계·미확인을 남겼습니다.
+
 
 > AI를 처음 접하는 분도 주요 용어를 업무와 연결해 이해할 수 있도록 만든 입문 자료입니다. 어려운 수식보다는 “왜 필요한가 → 무엇인가 → 어디에 쓰는가 → 무엇을 조심해야 하는가” 순서로 설명합니다.
 
@@ -33,6 +40,8 @@ AI 관련 대화에는 LLM, RAG, 임베딩, 에이전트처럼 서로 연결된 
 | 9 | 프롬프트·RAG·파인튜닝 | 우리 업무에는 무엇이 필요하고, 잘 되는지 어떻게 아나요? | [09. 프롬프트, RAG, 파인튜닝 중 무엇을 선택할까](./09-prompt-rag-finetuning-and-evaluation.md) |
 
 AI를 처음 접하신다면 01을 읽은 뒤 08을 먼저 보시길 권합니다. 토큰과 컨텍스트 윈도우를 알고 나면 이후 문서의 설명이 훨씬 쉽게 읽힙니다.
+
+개별 01~09는 예제·점검표를 찾아보는 대표 상세 문서입니다. 통합본은 처음 읽을 때 전체 연결을 파악하는 요약이며 모든 상세 예제를 포함하지 않습니다. 사실 확인·변경 시에는 해당 상세 문서와 공통 근거를 기준으로 확인합니다.
 
 처음부터 끝까지 한 문서로 읽으려면 [AI 용어 및 기술 소개 통합본](./all-in-one.md)을 이용하시면 됩니다.
 
@@ -65,7 +74,7 @@ AI를 처음 접하신다면 01을 읽은 뒤 08을 먼저 보시길 권합니�
 | 품질이 낮은 AI 콘텐츠의 대량 생산 | AI Slop |
 | AI 안전 규칙을 우회 | Jailbreak |
 | 외부 문서가 AI의 지시를 바꿈 | Prompt Injection |
-| 최근 AI 보안 사례 | Fable 5, OpenAI 모델과 Hugging Face |
+| 2026년 6~7월 공개 보안 사례 | Fable 5, OpenAI 모델과 Hugging Face |
 | 조직과 업무 방식을 AI 중심으로 전환 | AX, AI Transformation |
 | 대규모 AI 연산을 지원하는 시설 | AI Data Center |
 

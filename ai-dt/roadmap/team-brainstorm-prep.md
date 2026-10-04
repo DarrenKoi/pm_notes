@@ -4,9 +4,15 @@ level: strategy
 last_updated: 2026-05-14
 version: 0.1
 purpose: AX Part 팀원과 ITC AI/DT 로드맵 v0.2를 함께 검증·확장하기 위한 브레인스토밍 준비 자료
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # ITC AI/DT 로드맵 — 팀 브레인스토밍 준비
+
+> [!info] 2026-10-04 검토 — v0.2 검토 회의 준비
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
 
 > 지금 outline v0.2는 **나 혼자의 생각**이다. 팀원에게 정답을 발표하러 가는 자리가 아니라,
 > **틀린 부분을 찾고, 빠진 시각을 채우고, 같이 들고 갈 narrative로 만드는 자리**다.

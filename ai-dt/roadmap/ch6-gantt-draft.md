@@ -4,11 +4,17 @@ level: drafting
 last_updated: 2026-05-15
 version: 0.1
 related: [./itc-aix-roadmap-outline.md, ./ch4-tracks-draft.md, ./quick-win-cards.md]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # Ch.6 추진 로드맵 간트 — 슬라이드 드래프트 (v0.1)
 
-> [Outline §Ch.6](./itc-aix-roadmap-outline.md#chapter-6-추진-로드맵-간트-2p) 본문 드래프트. **2슬라이드 분량**.
+> [!info] 2026-10-04 검토 — 일정과 시각 표기 초안
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
+
+> [Outline §Ch.6](./itc-aix-roadmap-outline.md#Chapter%206.%20%EC%B6%94%EC%A7%84%20%EB%A1%9C%EB%93%9C%EB%A7%B5%20%EA%B0%84%ED%8A%B8%20%282p%29) 본문 드래프트. **2슬라이드 분량**.
 > 작성 원칙: 사내 *간트 차트 문화*에 정합. 이산 PoC = 짧은 막대 + ✦ 마일스톤. 연속 운영(RAG·암묵지 순환고리) = 긴 운영 막대 + 정례 ✦.
 
 ## 슬라이드 흐름

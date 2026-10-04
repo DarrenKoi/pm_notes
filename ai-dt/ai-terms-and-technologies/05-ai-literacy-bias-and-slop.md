@@ -2,9 +2,16 @@
 tags: [ai, literacy, bias, ai-slop, responsible-ai]
 level: beginner
 last_updated: 2026-07-28
+type: learning
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # 05. AI 리터러시, AI 편향과 AI 슬롭
+
+> [!info] 검토 · 2026-10-04
+> 원래 2026-07-28 입문 자료입니다. 비유·사내 예시는 실측 결과와 구분하며 [근거와 적용 조건](./verified-conditions.md)을 함께 읽습니다. [정리 기록](./organization-log.md)에 개별 결과·검증 경계·미확인을 남겼습니다.
+
 
 ## 이 글에서 답할 질문
 
@@ -32,7 +39,7 @@ AI Literacy(AI 리터러시)는 AI의 기본 원리와 한계를 이해하고 �
 
 ## AI Bias: 특정 방향으로 치우치는 결과
 
-AI Bias(AI 편향)는 AI 시스템의 결과가 특정 집단이나 상황에 지속적으로 불리하거나 왜곡된 방향으로 나타나는 현상입니다.
+이 문서는 해로운 사회적/운영 편향을 중심으로 설명합니다. 통계적 bias·모델의 inductive bias 등 다른 의미와 구분합니다. AI 시스템의 특정 집단/상황에서 지속적인 불리함이나 왜곡을 집단별 평가로 살펴봅니다.
 
 편향은 한 지점에서만 생기지 않습니다.
 

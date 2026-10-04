@@ -2,11 +2,17 @@
 tags: [foundation-model, llm, transformer, attention, encoder, decoder]
 level: beginner-to-advanced
 last_updated: 2026-03-14
+reviewed_on: 2026-10-04
+review_status: partial
+type: index
 ---
 
 # Foundation Model / LLM 기초
 
-> Transformer가 왜 LLM의 표준이 되었는지, attention / encoder / decoder가 무엇인지, foundation LLM이 어떤 과정을 거쳐 만들어지는지 정리한 학습 노트
+> Transformer 기반 LLM이 어떻게 발전했는지, attention / encoder / decoder가 무엇인지, foundation LLM이 어떤 과정을 거쳐 만들어지는지 정리한 학습 노트
+
+> [!info] 검토 범위 · 2026-10-04
+> 공개 원 논문에 근거한 학습 문서다. 논문의 발표·개정 연도와 오늘의 제품 구현은 구분한다. 최신 제품의 구조·학습 공정·시장 점유율은 미확인이다. [정리 기록](./organization-log.md)에 근거와 검증 한계를 남겼다.
 
 ## 왜 필요한가? (Why)
 
@@ -34,8 +40,8 @@ last_updated: 2026-03-14
 
 - **Attention**: 지금 계산 중인 토큰이 다른 토큰들 중 어디를 얼마나 볼지 정하는 가중합 메커니즘
 - **Transformer**: recurrence 없이 attention 중심으로 시퀀스를 처리하는 구조
-- **Foundation model**: 대규모 broad data로 자기지도 사전학습을 수행하고 여러 다운스트림 작업에 적응 가능한 모델
-- **Chat / Instruct model**: foundation model 위에 instruction tuning, preference optimization, safety tuning을 추가한 모델
+- **Foundation model**: 광범위한 데이터로 대규모 학습하여 여러 다운스트림 작업에 적응 가능한 모델. 특정 구조나 후처리 방법이 정의의 필수 조건은 아니다
+- **Chat / Instruct model**: 지시·대화 응답에 맞게 추가 학습한 모델. SFT, 선호 최적화, 안전성 조정은 가능한 공정이며 모두 필수인 것은 아니다
 
 ## 이 문서 묶음에서 구분하는 층위
 

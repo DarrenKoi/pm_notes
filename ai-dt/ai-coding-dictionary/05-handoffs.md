@@ -3,15 +3,22 @@ tags: [ai-coding, handoff, spec, ticket, compaction, clearing]
 level: intermediate
 last_updated: 2026-05-05
 source: https://github.com/mattpocock/dictionary-of-ai-coding
+type: learning
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # Section 5 — Handoffs (인계)
 
-> 한 [Session](./02-sessions-context-windows-turns.md#session)이 감당하기엔 작업이 너무 클 때, 어떻게 **다음 세션으로 컨텍스트를 넘길 것인가**.
+> [!info] 검토 범위 · 2026-10-04
+> 원래 2026-05-05 학습 노트의 용어·대화 사례를 유지했다. 대화는 설명용 가상 사례이며 사내 시스템의 관측 결과가 아니다. 저자의 용어 선택은 보편 표준과 구분한다. 버전별 실제 조건은 [검증된 적용 조건](./verified-conditions.md), 개별 변경·남은 미확인은 [정리 기록](./organization-log.md)을 함께 읽는다.
+
+
+> 한 [Session](./02-sessions-context-windows-turns.md)이 감당하기엔 작업이 너무 클 때, 어떻게 **다음 세션으로 컨텍스트를 넘길 것인가**.
 
 ## 왜 이 섹션이 중요한가? (Why)
 
-- 큰 작업을 한 세션에 통째로 욱여넣으면 결국 [dumb zone](./04-failure-modes.md#smart-zone)에 빠지고 만다.
+- 관련 없는 입력을 많이 누적하면 활용 실패 위험이 커질 수 있지만 반드시 [dumb zone · Smart zone (스마트 존) 절](./04-failure-modes.md)에 빠진다는 보편 법칙은 없다.
 - 그래서 **작업을 나누고 → 다음 세션으로 인계하고 → 새 smart zone에서 다시 시작**하는 패턴이 필수다.
 - 이 섹션에서 다루는 용어들이 그 패턴을 이야기할 때 쓰는 어휘다.
 
@@ -19,17 +26,17 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### Clearing (클리어링)
 
-현재 [Session](./02-sessions-context-windows-turns.md#session)을 끝내고 **새 세션을 시작**하는 동작. 다음 메시지는 빈 세션과 빈 [Context window](./02-sessions-context-windows-turns.md#context-window) 위에서 새로 시작된다. 보통 사용자가 직접 트리거한다.
+현재 [Session](./02-sessions-context-windows-turns.md)을 끝내고 **새 세션을 시작**하는 동작. 다음 메시지는 대화 history가 초기화된 세션과 초기 지시·메모리가 로드될 수 있는 [Context window](./02-sessions-context-windows-turns.md) 위에서 새로 시작된다. 보통 사용자가 직접 트리거한다.
 
 **💬 실전 대화 예시**
 > "실패하는 테스트에서 루프에 갇혀 버렸어."
-> "그냥 clear 하는 게 나아. 계획 문서랑 테스트 파일만 들고 새 세션을 시작해. 지금 [Context](./02-sessions-context-windows-turns.md#context)랑 계속 싸워봐야 의미가 없어."
+> "그냥 clear 하는 게 나아. 계획 문서랑 테스트 파일만 들고 새 세션을 시작해. 지금 [Context](./02-sessions-context-windows-turns.md)랑 계속 싸워봐야 의미가 없어."
 
 ---
 
 ### Handoff (핸드오프, 인계)
 
-[Agent](./02-sessions-context-windows-turns.md#agent)의 [Context](./02-sessions-context-windows-turns.md#context)를 한 [Session](./02-sessions-context-windows-turns.md#session)에서 다른 세션으로 **되돌아오지 않는 방향으로** 넘기는 것. 운반 방식은 다양해서, 명시적으로 작성된 [Handoff artifact](#handoff-artifact)를 쓸 수도 있고, 인메모리 요약([Compaction](#compaction))을 쓸 수도 있다. 정보를 전혀 옮기지 않는 [Clearing](#clearing)과는 분명히 다르다. 핸드오프를 하는 이유도 다양한데, 역할 전환(planner → implementer), [AFK](./07-patterns-of-work.md#afk) 런 시작, 병렬 세션으로의 fan-out, [Context window](./02-sessions-context-windows-turns.md#context-window) 여유 공간 확보 등이 대표적이다.
+[Agent](./02-sessions-context-windows-turns.md)의 [Context](./02-sessions-context-windows-turns.md)를 한 [Session](./02-sessions-context-windows-turns.md)에서 다른 세션으로 인계하는 것. 이 사전에서는 역할/작업 소유권 전환을 강조하지만 일반 시스템에서 반환 경로가 금지되는 것은 아니다. 운반 방식은 다양해서, 명시적으로 작성된 [Handoff artifact](./05-handoffs.md)를 쓸 수도 있고, 인메모리 요약([Compaction](./05-handoffs.md))을 쓸 수도 있다. 정보를 전혀 옮기지 않는 [Clearing](./05-handoffs.md)과는 분명히 다르다. 핸드오프를 하는 이유도 다양한데, 역할 전환(planner → implementer), [AFK](./07-patterns-of-work.md) 런 시작, 병렬 세션으로의 fan-out, [Context window](./02-sessions-context-windows-turns.md) 여유 공간 확보 등이 대표적이다.
 
 **💬 실전 대화 예시**
 > "계획 세션이 슬슬 무거워지는데, 그냥 이어서 갈까?"
@@ -41,27 +48,27 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### Handoff artifact (핸드오프 아티팩트)
 
-[Handoff](#handoff)의 **운반 매체 역할을 하는 문서**. 한 [Session](./02-sessions-context-windows-turns.md#session)이 작성하고, 다른 세션이 그것을 읽어들이는 구조다. 여러 운반 방식 중 하나이며, 다른 방식으로는 [Compaction](#compaction)이 있다.
+[Handoff](./05-handoffs.md)의 **운반 매체 역할을 하는 문서**. 한 [Session](./02-sessions-context-windows-turns.md)이 작성하고, 다른 세션이 그것을 읽어들이는 구조다. 여러 운반 방식 중 하나이며, 다른 방식으로는 [Compaction](./05-handoffs.md)이 있다.
 
 **💬 실전 대화 예시**
-> "기획 [Agent](./02-sessions-context-windows-turns.md#agent)랑 구현 agent를 어떻게 나누는 게 좋아?"
+> "기획 [Agent](./02-sessions-context-windows-turns.md)랑 구현 agent를 어떻게 나누는 게 좋아?"
 > "Planner가 handoff artifact를 쓰게 만들어 줘. 파일 경로, 결정사항, 제약 조건 같은 걸 거기에 정리하는 거지. Implementer 세션은 그 artifact를 시작점으로 잡고, 그걸 브리핑 삼아서 일을 시작하면 돼."
 
 ---
 
 ### Spec (스펙)
 
-**여러 [Session](./02-sessions-context-windows-turns.md#session)에 걸쳐 진행되는 작업 전체**를 기술하는 [Handoff artifact](#handoff-artifact). spec에는 *무엇을 만들 것인가*가 담기지만, 각 세션이 *그 일부를 어떻게 처리할지*까지는 다루지 않는다. 작업이 진행되면서 spec도 함께 변형된다. 내부적으로는 **여러 [Tickets](#ticket)으로 구성**된다.
+**여러 [Session](./02-sessions-context-windows-turns.md)에 걸쳐 진행되는 작업 전체**를 기술하는 [Handoff artifact](./05-handoffs.md). spec에는 *무엇을 만들 것인가*가 담기지만, 각 세션이 *그 일부를 어떻게 처리할지*까지는 다루지 않는다. 작업이 진행되면서 spec도 함께 변형된다. 내부적으로는 **여러 [Tickets · Ticket (티켓) 절](./05-handoffs.md)으로 구성**된다.
 
 **💬 실전 대화 예시**
 > "이거 한 세션으로 다 처리할 수 있을까?"
-> "그건 무리야. spec으로 적어 두고, 거기서 ticket으로 쪼개서 각각 별도 세션에서 돌려. 한 [Context](./02-sessions-context-windows-turns.md#context) 안에 다 욱여넣으려고 하면, 절반 가기도 전에 [dumb zone](./04-failure-modes.md#smart-zone)에 빠질 거야."
+> "그건 무리야. spec으로 적어 두고, 거기서 ticket으로 쪼개서 각각 별도 세션에서 돌려. 한 [Context](./02-sessions-context-windows-turns.md) 안에 다 욱여넣으려고 하면, 절반 가기도 전에 [dumb zone · Smart zone (스마트 존) 절](./04-failure-modes.md)에 빠질 거야."
 
 ---
 
 ### Ticket (티켓)
 
-**한 [Session](./02-sessions-context-windows-turns.md#session) 분량의 작업**으로 스코프된 [Handoff artifact](#handoff-artifact). 단독으로 존재할 수도 있고, [Spec](#spec) 아래에 자식으로 매달려 있을 수도 있다. 형제 ticket들 사이에는 **block / blocked-by 관계**가 걸릴 수 있기 때문에, 작업 순서는 단순한 선형 계획이 아니라 **의존성 그래프**에서 자연스럽게 도출된다.
+**한 [Session](./02-sessions-context-windows-turns.md) 분량의 작업**으로 스코프된 [Handoff artifact](./05-handoffs.md). 단독으로 존재할 수도 있고, [Spec](./05-handoffs.md) 아래에 자식으로 매달려 있을 수도 있다. 형제 ticket들 사이에는 **block / blocked-by 관계**가 걸릴 수 있기 때문에, 작업 순서는 단순한 선형 계획이 아니라 **의존성 그래프**에서 자연스럽게 도출된다.
 
 **💬 실전 대화 예시**
 > "마이그레이션 spec, 어디서부터 시작해야 하지?"
@@ -71,21 +78,21 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 
 ### Compaction (컴팩션)
 
-**인메모리 형태로 수행하는 [Handoff](#handoff)**. 이전 [Session](./02-sessions-context-windows-turns.md#session)의 히스토리를 요약한 뒤, 그 요약을 새 세션의 시드로 삼는 방식이다. 본질적으로 **lossy(손실이 있는)** 작업이다. 디테일을 잃는 대신 컨텍스트 헤드룸을 확보하는 일종의 트레이드오프라고 보면 된다. 사용자가 수동으로 트리거할 수도 있고, [자동으로](#autocompact) 트리거될 수도 있다.
+history를 줄이고 요약·관련 상태를 남기는 컨텍스트 관리 방식. 이 사전은 [Handoff](./05-handoffs.md)의 비유로 설명한다. 이전 [Session](./02-sessions-context-windows-turns.md)의 히스토리를 요약한 뒤, 그 요약을 후속 입력에 사용하는 방식이다. 저장 위치·세션 ID 유지 여부·숨은 상태 유지 방식은 하네스별이다. 본질적으로 **lossy(손실이 있는)** 작업이다. 디테일을 잃는 대신 컨텍스트 헤드룸을 확보하는 일종의 트레이드오프라고 보면 된다. 사용자가 수동으로 트리거할 수도 있고, [자동으로 · Autocompact (자동 컴팩션) 절](./05-handoffs.md) 트리거될 수도 있다.
 
 **💬 실전 대화 예시**
-> "[Context](./02-sessions-context-windows-turns.md#context)가 슬슬 무거워지는데, 아직 테스트 통과 작업이 남아 있어."
+> "[Context](./02-sessions-context-windows-turns.md)가 슬슬 무거워지는데, 아직 테스트 통과 작업이 남아 있어."
 > "이어서 시작하기 전에 한 번 compact 하는 게 좋아. 꼭 유지해야 할 부분(예: 스키마 결정 같은 것)을 요약 프롬프트에 명시해 두고, 새 세션이 그건 유지하면서 탐색 흔적은 버리도록 잡아 줘."
 
 ---
 
 ### Autocompact (자동 컴팩션)
 
-[Harness](./01-the-model.md#harness)가 [Context window](./02-sessions-context-windows-turns.md#context-window)가 거의 가득 찼다고 판단했을 때 **자동으로 발동시키는** [Compaction](#compaction).
+[Harness](./01-the-model.md)가 [Context window](./02-sessions-context-windows-turns.md)가 거의 가득 찼다고 판단했을 때 **자동으로 발동시키는** [Compaction](./05-handoffs.md).
 
 **💬 실전 대화 예시**
 > "아까 결정한 스키마 내용을 잊어버린 것 같아."
-> "[Turn](./02-sessions-context-windows-turns.md#turn) 사이에 autocompact가 한 번 발동했네. 초기 결정이 요약 안에 묻히면서 일부가 빠진 거야. 계획 문서를 다시 로드하든가, 아니면 다음번에는 수동으로 compact해서 *무엇을 유지할지를* 네가 직접 통제해."
+> "[Turn](./02-sessions-context-windows-turns.md) 사이에 autocompact가 한 번 발동했네. 초기 결정이 요약 안에 묻히면서 일부가 빠진 거야. 계획 문서를 다시 로드하든가, 아니면 다음번에는 수동으로 compact해서 *무엇을 유지할지를* 네가 직접 통제해."
 
 🏢 **실무 적용**: Autocompact는 편리하지만 **정확히 무엇이 잘려나갔는지를 알 수 없다**는 단점이 있다. 중요한 작업에서는 수동 compaction이나 명시적인 handoff artifact를 쓰는 쪽이 안전하다.
 

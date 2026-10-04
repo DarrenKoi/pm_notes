@@ -2,11 +2,18 @@
 tags: [project, rag, agent, capstone, evaluation]
 level: advanced
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 13. 실전 Mini Project — 주제 선정부터 발표까지
 
 > 앞선 12개 문서의 기술을 하나로 엮어 실제로 동작하는 미니 프로젝트를 완성한다. 주제 선정 → 요구사항 정의 → 구현 → 테스트 → 발표/피드백의 전 과정을 가이드한다.
+
+
+> [!info] 적용 조건과 실행 순서
+> 2026-10-04 개별 검토. [공통 적용 조건](./verified-conditions.md)의 판본·설정·검증 경계를 먼저 확인한다. 같은 문서의 코드 조각은 위에서 아래로 이어 실행하며 개념 조각은 별도로 표시한다. 이전 문서의 vs/chunks/embeddings 등은 관련 절의 선행 예제가 필요하다. 공개·사내 API/실제 데이터·운영 실행은 미확인이며 예제 출력은 보장이 아니다.
 
 ## 왜 필요한가? (Why)
 
@@ -41,8 +48,9 @@ last_updated: 2026-07-06
 
 ## 3단계: 구현 (Implementation)
 
-전체 파이프라인을 한 파일로 조립한 골격:
+골격은 dense MMR 검색과 질문당 생성만 구현한다. 요구사항의 하이브리드·대화 메모리·검증 gate·5초/SLO는 아직 없다. 직접 생성·신뢰한 FAISS index만 load하며 모델·차원·정규화/metadata 계약을9/12절과 맞춘다. 일반 source 목록은 정확한 claim citation의 증명이 아니다.
 ```python
+import os
 # app.py — 설비 매뉴얼 Q&A 봇 (사내 엔드포인트)
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -50,12 +58,13 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 
-GATEWAY = "http://llm-gateway.internal/v1"
-llm = ChatOpenAI(model="Kimi-K2.5", base_url=GATEWAY, api_key="EMPTY", temperature=0)
-emb = OpenAIEmbeddings(model="BGE-M3", base_url=GATEWAY, api_key="EMPTY")
+GATEWAY = os.environ["LLM_BASE_URL"]
+llm = ChatOpenAI(model=os.environ["LLM_MODEL"], base_url=GATEWAY, api_key=os.environ["LLM_API_KEY"], temperature=0)
+emb = OpenAIEmbeddings(model=os.environ["EMBEDDING_MODEL"],
+                              check_embedding_ctx_length=False, encoding_format="float", base_url=GATEWAY, api_key=os.environ["LLM_API_KEY"])
 
 # (사전 단계에서 12번 파이프라인으로 만든 인덱스를 로드)
-vs = FAISS.load_local("faiss_kb", emb, allow_dangerous_deserialization=True)
+vs = FAISS.load_local("faiss_kb", emb, allow_dangerous_deserialization=True, normalize_L2=True)
 retriever = vs.as_retriever(search_type="mmr", search_kwargs={"k": 4, "fetch_k": 20})
 
 def format_docs(docs):
@@ -88,14 +97,14 @@ if __name__ == "__main__":
 # pip install gradio  (사내 허용 시)
 import gradio as gr
 def chat(msg, history):
-    ans, src = ask(msg)
+    ans, src = ask(msg)  # history를 사용하지 않는 단일 질문 UI; 대화 기억 미구현
     return f"{ans}\n\n📎 근거: {', '.join(src)}"
 gr.ChatInterface(chat).launch()
 ```
 
 ## 4단계: 테스트 (Evaluation)
 
-정답셋으로 자동 채점한다. 핵심 지표:
+아래 코드는 문자열 포함률만 측정하며 정답률/충실성/검색 적중을 구현하지 않는다. 부정문도 키워드를 포함하면 통과한다. 30문항/80%/5초/환각0건은 원래 제안 목표이며 실측 성과나 무환각 보장이 아니다. 빈 평가셋은 성공0%로 해석하지 않고 미측정으로 표시한다. 핵심 지표:
 - **정답률(Correctness)**: LLM-as-judge 또는 키워드 매칭.
 - **충실성(Faithfulness)**: 답이 근거에 있는가(환각 여부, [11번](./11-rag-qa-flow.md) 검증).
 - **검색 적중(Retrieval hit)**: 정답 문서가 검색 상위에 들어왔는가.
@@ -110,7 +119,10 @@ for e in eval_set:
     ans, _ = ask(e["q"])
     if all(kw in ans for kw in e["must_include"]):
         hit += 1
-print(f"정답률: {hit}/{len(eval_set)} = {hit/len(eval_set):.0%}")
+if not eval_set:
+    print("미측정: 평가셋 없음")
+else:
+    print(f"키워드 포함률: {hit}/{len(eval_set)} = {hit/len(eval_set):.0%}")
 ```
 > LLM-as-judge: 채점을 `llm.with_structured_output(Score)`로 자동화하면 자유형 답변도 평가 가능. 단, 채점 LLM도 사내 모델을 사용.
 
@@ -120,7 +132,7 @@ print(f"정답률: {hit}/{len(eval_set)} = {hit/len(eval_set):.0%}")
 | 엉뚱한 답 | 검색 실패 | 청킹 재조정, 하이브리드 검색([10](./10-retriever-tuning.md)) |
 | 근거 없이 단정 | 환각 | "모르면 모른다" 프롬프트 + 충실성 검증 |
 | 느림 | k·리랭킹 과다 | k 축소, HNSW 인덱스([09](./09-document-embedding-faiss.md)) |
-| OCR 깨짐 | VLM 라우팅 | 표/수식 페이지는 30B로([12](./12-rag-document-sources.md)) |
+| OCR 깨짐 | VLM 라우팅 | 원본/누락률 대조와8B/30B 후보 측정으로([12](./12-rag-document-sources.md)) |
 
 ## 5단계: 발표 및 피드백 (Presentation)
 
@@ -139,7 +151,7 @@ print(f"정답률: {hit}/{len(eval_set)} = {hit/len(eval_set):.0%}")
 - [ ] 인덱싱: 소스(DRM 포함) → Document → 청킹 → 벡터스토어
 - [ ] 검색: 하이브리드/MMR 적용, 결과 눈으로 확인
 - [ ] 생성: 근거 기반, "모름" 처리, 인용 표시
-- [ ] 검증: 충실성 체크로 환각 차단
+- [ ] 검증: 원문 대조·충실성 체크의 오탐/미탐 확인
 - [ ] 평가: 정답셋 30문항 자동 채점 ≥ 목표치
 - [ ] 발표: 데모 + 수치 + 한계/다음 단계
 

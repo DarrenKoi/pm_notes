@@ -2,6 +2,9 @@
 tags: [normalization, data-modeling, checklist, denormalization]
 level: intermediate
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: learning_note
 ---
 
 # 모델링 프로세스와 체크리스트
@@ -38,6 +41,8 @@ last_updated: 2026-05-02
 - 이 값은 현재 상태인가, 과거 특정 시점의 스냅샷인가?
 - 이 값은 원천인가, 다른 값으로부터 계산 가능한가?
 
+위 “나쁜 질문”은 그것만으로 원천 스키마를 결정할 때의 문제다. 실제 요구 수집과 읽기 전용 projection에는 화면 항목·JOIN 비용도 필요하다. 먼저 쓰기 사건·원천·이력 조건을 정한다.
+
 ## Step 2. 객체, 관계, 사건을 나눈다
 
 | 유형 | 설명 | 예시 |
@@ -56,7 +61,7 @@ projects(project_id, name)
 project_memberships(employee_id, project_id, role_code, start_date, end_date)
 ```
 
-`role_code`, `start_date`, `end_date`는 직원도 프로젝트도 아닌 참여 관계의 속성이다.
+`role_code`, `start_date`, `end_date`는 직원도 프로젝트도 아닌 참여 관계의 속성이다. 이 예는 같은 직원·프로젝트 쌍의 참여가 한 번이라고 가정한다. 반복 참여에는 다음 절의 별도 식별자·기간 중첩 규칙이 필요하다.
 
 ## Step 3. 식별자를 정한다
 
@@ -65,7 +70,7 @@ project_memberships(employee_id, project_id, role_code, start_date, end_date)
 | 식별자 유형 | 장점 | 주의점 |
 |-------------|------|--------|
 | 자연키 | 업무 의미가 명확함 | 변경 가능성, 개인정보 포함 위험 |
-| 인조키 | 안정적이고 참조가 쉬움 | 별도 유일성 제약이 필요함 |
+| 인조키 | 안정적이고 참조가 쉬움 | PK 외에도 업무 후보키의 유일성을 제약해야 함 |
 | 복합키 | 관계의 의미가 잘 드러남 | 자식 테이블로 전파되면 키 폭이 커짐 |
 | 외부 ID | 시스템 통합에 유용함 | 출처별 namespace 관리 필요 |
 
@@ -91,6 +96,8 @@ order_id와 product_id가 정해지면 주문 당시 단가가 정해진다.
 department_code가 정해지면 department_name이 정해진다.
 ```
 
+이 문장은 현재 상태와 업무 유일성에 대한 가정이다. 한 주문의 같은 상품이 여러 행·단가로 등장할 수 있으면 `order_id + product_id → order_price`는 성립하지 않는다. 행 식별자와 가격 결정 규칙을 먼저 확인한다. 샘플 데이터의 일치만으로 FD를 확정하지 않는다.
+
 그 다음 위치를 확인한다.
 
 | 속성 | 종속 대상 | 있어야 할 위치 |
@@ -102,12 +109,16 @@ department_code가 정해지면 department_name이 정해진다.
 
 ## Step 5. 정규형별 위반 신호를 찾는다
 
+정확한 정의는 [핵심 개념](./01-normalization-core.md)의 후보키·FD 조건을 따른다. 아래 신호만으로 정규형을 확정하지 않는다.
+
 ### 1NF 위반 신호
 
 - 콤마로 구분된 목록: `"A,B,C"`
 - 반복 컬럼: `phone1`, `phone2`, `phone3`
 - 하나의 컬럼에 여러 의미가 섞임: `"서울/강남/역삼"`
 - 컬럼 수가 업무 증가에 따라 계속 늘어남
+
+콤마·슬래시가 포함된 단일 문자열이나 반복 컬럼 자체가 곧 1NF 위반인 것은 아니다. 값의 도메인과 개별 항목 연산 요구를 먼저 확인한다.
 
 대응:
 
@@ -118,7 +129,7 @@ customer_phones(customer_id, phone_id, phone_number, phone_type)
 
 ### 2NF 위반 신호
 
-- 복합키 테이블에서 키 일부만으로 결정되는 속성이 있음
+- 모든 후보키를 대상으로 non-prime 속성이 키 일부만으로 결정되는지 확인함
 - 관계 테이블에 한쪽 객체의 속성이 섞임
 
 대응:
@@ -163,6 +174,8 @@ employees(employee_id, name, department_code, department_name)
   )
 ```
 
+유효 기간은 예를 들어 `[valid_from, valid_to)`로 정하고 종료 미정의 의미·시간대·중첩 금지·정정 정책을 명시한다. 테이블 이름만으로 이러한 규칙이 강제되지는 않는다.
+
 주문 당시 고객명, 상품명, 가격처럼 과거 거래 증빙에 필요한 값은 의도적으로 스냅샷을 둔다.
 
 ```text
@@ -189,7 +202,7 @@ user_auth_secrets(user_id, password_hash, mfa_secret)
 orders(order_id, user_id, amount)
 ```
 
-구조가 분리되면 접근 제어, 암호화, 감사 로그, 데이터 마스킹 범위를 좁힐 수 있다. 반대로 통합 테이블에 모든 정보가 들어 있으면 읽기 권한 하나가 과도한 노출로 이어진다.
+구조 분리는 접근 제어, 암호화, 감사 로그, 마스킹의 적용 범위를 나누는 데 도움이 된다. 별도 권한·제약·암호화 정책을 실제로 적용해야 하며 분리만으로 보호되지 않는다. `password_hash`와 `mfa_secret`은 필드 이름 예시이고 실제 비밀값을 문서에 넣지 않는다. 반대로 통합 테이블에 모든 정보가 들어 있으면 읽기 권한 하나가 과도한 노출로 이어진다.
 
 ## Step 8. 반정규화는 목적과 재생성 방법을 함께 적는다
 
@@ -200,9 +213,11 @@ orders(order_id, user_id, amount)
 | 왜 중복하는가? | 검색 결과를 한 번에 보여주기 위해 |
 | 원천은 어디인가? | `customers`, `orders`, `products` |
 | 언제 갱신되는가? | 주문 생성 이벤트, 고객 정보 변경 이벤트 |
-| 불일치 허용 시간은? | 최대 5분 |
+| 불일치 허용 시간은? | 학습용 목표 예: 최대 5분 — 실제 SLA는 측정·합의 필요 |
 | 재생성 가능한가? | 원천 DB에서 전체 rebuild 가능 |
 | 누가 읽는가? | OpenSearch, Redis cache, MongoDB read model |
+
+버전·삭제·중복 이벤트·역순 도착·권한 변경·재생성 실패·미확인 상태의 표시도 계약으로 정한다. 표는 설계 예시이며 OpenSearch/Redis/MongoDB 동기화나 5분 보장을 구현한 것이 아니다.
 
 ## 실전 체크리스트
 
@@ -216,6 +231,19 @@ orders(order_id, user_id, amount)
 - [ ] 개인정보와 인증정보가 업무 데이터와 과도하게 섞여 있지 않은가?
 - [ ] 검색/캐시용 반정규화 데이터의 원천과 재생성 방법이 분명한가?
 - [ ] LLM/RAG용 문서에 원천 ID, chunk ID, 버전, 출처가 포함되어 있는가?
+
+- [ ] 모든 후보키와 FD를 확인하고 무손실 분해·종속성 보존을 따로 검토했는가?
+- [ ] 인조키 외 업무 유일성·필수값·참조 제약을 실제로 적용했는가?
+- [ ] NULL의 모름·미수집·해당 없음과 projection의 미확인 상태를 구분했는가?
+- [ ] 이벤트 중복·역순·삭제·권한 변경과 동시 writer의 실패 경로를 검증했는가?
+
+## 검토 결과와 근거
+
+2026-10-04: 모든 단계·기존 예제·체크 항목을 보존했다. 이 문서는 설계 절차이고 01은 정의이므로 용도를 구분했다. 완전 통합·업무별 키/기간/보안 정책은 Claude `pane_not_found`로 협의 보류다. 실제 업무 DB·동기화 서비스 검증은 하지 않았다. [정리 기록](../organization-log.md)을 참고한다.
+
+- [RPI 교수 강의, Fall 2026](https://www.cs.rpi.edu/~sibel/csci4380/fall2026/lecture_notes/lecture5.html): FD·키·3NF/BCNF 정의, 2026-10-04 확인.
+- [T-SQL Fundamentals 3판 저자 설명, 2016](https://www.microsoftpressstore.com/articles/article.aspx?p=2730116): 모든 후보키의 2NF 조건과 NULL 의미, 같은 날 확인. SQL Server 최신 판본 근거가 아니다.
+- [PostgreSQL 18 제약](https://www.postgresql.org/docs/18/ddl-constraints.html): PK/UNIQUE/FK/NOT NULL의 별도 적용, 같은 날 확인. 실제 PostgreSQL 설치·업무 정책은 미확인.
 
 ## 참고 자료
 

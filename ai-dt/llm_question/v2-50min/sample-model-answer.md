@@ -1,4 +1,16 @@
+---
+type: historical-record
+tags: [aix, llm-report-contest, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+aliases: ["50분 개정 기록 — sample-model-answer"]
+---
+
 # [캘리브레이션 샘플] 모범 답안 (upper-bound) — 50분 개정판
+
+> [!info] 2026-10-04 검토 — 50분 개정 기록
+> 아래는 당시 설계와 예시를 보존한 기록입니다. 현재 시행 규칙이나 실제 모델 성능을 뜻하지 않습니다. 버전·용도·미확인은 [목차](./README.md)와 [검토 안내](../review-notes.md)에 정리했습니다.
+
 
 > ✅ **채점자 캘리브레이션용.** 5축 모두에서 *높은 점수를 받아야 하는* 답안의 모습.
 > [sample-llm-only-answer.md](./sample-llm-only-answer.md)와 함께 점수 분포의 위·아래 기준선을 합의하는 데 사용.

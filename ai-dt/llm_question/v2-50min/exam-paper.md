@@ -1,4 +1,16 @@
+---
+type: historical-record
+tags: [aix, llm-report-contest, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+aliases: ["50분 개정 기록 — exam-paper"]
+---
+
 # ITC AIX 리포트 경진대회 — 답안지 (50분 개정판)
+
+> [!info] 2026-10-04 검토 — 50분 개정 기록
+> 아래는 당시 설계와 예시를 보존한 기록입니다. 현재 시행 규칙이나 실제 모델 성능을 뜻하지 않습니다. 버전·용도·미확인은 [목차](./README.md)와 [검토 안내](../review-notes.md)에 정리했습니다.
+
 
 > 본 파일을 **그대로 본인 PC에 저장**한 뒤, 각 슬롯을 채우고 .md 형식으로 사내 블로그에 업로드해 주십시오.
 > 채점은 본 양식에 따라 진행됩니다.

@@ -1,4 +1,14 @@
+---
+tags: [itc, aix, roadmap, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
+---
+
 # ITC AI/DT Roadmap
+
+> [!info] 2026-10-04 검토 — 업무 용어와 가정
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
 
 기반기술센터(ITC)의 3~4년향 AI/DT 로드맵을 수립하기 위한 컨텍스트.
 1차 목적은 센터장이 CEO에게 보고할 수 있는 통합 narrative 확보, 2차 목적은 팀 간 AIX/DX 수준 상향 평준화.

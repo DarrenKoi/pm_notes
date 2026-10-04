@@ -1,6 +1,23 @@
+---
+type: index
+tags: [mcp, learning-index]
+reviewed_on: 2026-10-04
+review_status: partial
+---
+
 # MCP (Model Context Protocol) 학습 노트
 
 > LLM이 외부 도구와 데이터에 표준화된 방식으로 접근하기 위한 프로토콜
+
+> [!info] 검토 범위 · 2026-10-04
+> 프로토콜 사양과 SDK 버전은 별개다. [버전·실행 조건](./version-and-execution-notes.md)과 [정리 기록](./organization-log.md)을 먼저 확인한다. 원래 작성일은 보존했으며 실제 API·원격 서버 실행은 미검증이다.
+
+## 읽기 순서
+
+1. [버전·실행 조건](./version-and-execution-notes.md): 현재 사양과 기존 예제의 경계를 확인한다.
+2. MCP 기초: host/client/server와 도구 실행 흐름을 익힌다.
+3. LangGraph 연동: 도구를 agent 실행에 연결하고 수명을 관리한다.
+4. [LLM 하네스](./harness-engineering-llm.md): MCP를 포함한 실행·평가·관측 설계를 살핀다. 프로토콜 입문과 운영 방법론은 용도가 다르다.
 
 ## 목차
 

@@ -2,21 +2,26 @@
 tags: [pipeline, sklearn, preprocessing, column-transformer]
 level: intermediate
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # sklearn 데이터 파이프라인 템플릿
+
+> [!info] 2026-10-04 검토
+> 교육용 예제입니다. 필요한 입력·실행 순서·판본·검증 경계는 [데이터 처리 목차](./README.md)와 [공통 적용 조건](./verified-conditions.md)을 먼저 확인하세요.
 
 > sklearn Pipeline과 ColumnTransformer를 활용한 재현 가능하고 누수 없는 전처리 파이프라인 구축 가이드
 
 ## 왜 필요한가? (Why)
 
 ### 1. 재현 가능한 전처리 (Reproducible Preprocessing)
-- 전처리 단계를 코드로 명시적으로 정의하면, 누가 실행해도 동일한 결과를 보장한다.
+- 전처리 단계를 코드로 명시적으로 정의하면, 분할·입력·seed·패키지 판본을 기록해 동일 과정을 재현하기 쉬워진다. 실행 환경에 따른 수치 차이는 별도 확인한다.
 - 수동으로 스케일링, 인코딩, 결측치 처리를 따로따로 하면 순서가 꼬이거나 누락되기 쉽다.
 
 ### 2. 데이터 누수 방지 (Avoid Data Leakage)
 - `fit_transform`을 train 전체에 적용한 뒤 train/test를 나누면 **테스트 데이터 정보가 학습에 유입**된다.
-- Pipeline은 `fit`과 `transform`을 내부적으로 분리하므로, cross-validation이나 train/test split에서 자동으로 누수를 차단한다.
+- 전처리와 모델을 Pipeline에 넣고 **원시 학습 데이터**를 split/CV에 전달하면 fold별 전처리 통계 학습을 분리한다. 분할 전 피처 생성·타겟 누수·동일 대상/시간 중복까지 자동 해결하지는 않는다.
 
 ### 3. 프로젝트 간 재사용
 - 한 번 잘 만든 파이프라인 템플릿은 데이터셋만 바꿔서 여러 프로젝트에 즉시 적용할 수 있다.
@@ -44,7 +49,7 @@ predict() 호출 시:
 ```
 
 - 중간 단계는 반드시 `transform` 메서드를 가져야 한다 (transformer).
-- 마지막 단계만 `predict` 또는 `transform` 중 하나를 가지면 된다.
+- 마지막 단계는 `fit`을 지원해야 하며, `predict`·`transform` 등 사용할 작업에 필요한 메서드를 제공해야 한다.
 
 ---
 
@@ -91,6 +96,7 @@ print(f"Accuracy: {score:.4f}")
 
 ```python
 import pandas as pd
+import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
@@ -101,7 +107,7 @@ from sklearn.ensemble import RandomForestClassifier
 df = pd.DataFrame({
     "age": [25, 30, None, 45, 35],
     "salary": [50000, 60000, 55000, None, 70000],
-    "department": ["eng", "sales", "eng", "hr", None],
+    "department": ["eng", "sales", "eng", "hr", np.nan],
     "level": ["junior", "senior", "mid", "senior", "junior"],
     "target": [0, 1, 0, 1, 1],
 })
@@ -145,7 +151,7 @@ print(f"Train score: {full_pipe.score(X, y):.4f}")
 
 ### 3. 완전한 전처리 파이프라인 템플릿
 
-프로덕션에서 바로 사용할 수 있는 클래스 템플릿이다. 수치형/범주형 컬럼을 자동 분류하고, 결측치 처리, 스케일링, 인코딩을 일괄 적용한다.
+교육용 클래스 템플릿이다. 입력 스키마·결측 정책·모델별 인코딩과 운영 계약을 검증한 뒤 적용한다. 수치형/범주형 컬럼을 자동 분류하고, 결측치 처리, 스케일링, 인코딩을 일괄 적용한다.
 
 ```python
 import numpy as np
@@ -157,7 +163,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder
 
 
-class AutoPreprocessor(BaseEstimator, TransformerMixin):
+class AutoPreprocessor(TransformerMixin, BaseEstimator):
     """수치형/범주형 컬럼을 자동 감지하여 전처리 파이프라인을 구성한다.
 
     Parameters
@@ -188,8 +194,12 @@ class AutoPreprocessor(BaseEstimator, TransformerMixin):
         """수치형과 범주형 컬럼을 자동으로 분류한다."""
         self.numeric_cols_ = X.select_dtypes(include=[np.number]).columns.tolist()
         self.categorical_cols_ = X.select_dtypes(
-            include=["object", "category", "bool"]
+            include=["object", "string", "category", "bool"]
         ).columns.tolist()
+        supported = self.numeric_cols_ + self.categorical_cols_
+        unsupported = [c for c in X.columns if c not in supported]
+        if unsupported:
+            raise ValueError(f"명시적인 변환이 필요한 컬럼: {unsupported}")
         return self
 
     def _build_pipeline(self, X: pd.DataFrame) -> ColumnTransformer:
@@ -199,7 +209,7 @@ class AutoPreprocessor(BaseEstimator, TransformerMixin):
         # 수치형 파이프라인
         if self.numeric_cols_:
             num_pipe = Pipeline([
-                ("imputer", SimpleImputer(strategy=self.numeric_impute_strategy)),
+                ("imputer", SimpleImputer(strategy=self.numeric_impute_strategy, keep_empty_features=True)),
                 ("scaler", StandardScaler()),
             ])
             transformers.append(("num", num_pipe, self.numeric_cols_))
@@ -219,7 +229,7 @@ class AutoPreprocessor(BaseEstimator, TransformerMixin):
 
                 if onehot_cols:
                     onehot_pipe = Pipeline([
-                        ("imputer", SimpleImputer(strategy=self.categorical_impute_strategy)),
+                        ("imputer", SimpleImputer(strategy=self.categorical_impute_strategy, keep_empty_features=True)),
                         ("encoder", OneHotEncoder(
                             handle_unknown="ignore",
                             sparse_output=False,
@@ -229,13 +239,13 @@ class AutoPreprocessor(BaseEstimator, TransformerMixin):
 
                 if ordinal_cols:
                     ordinal_pipe = Pipeline([
-                        ("imputer", SimpleImputer(strategy=self.categorical_impute_strategy)),
+                        ("imputer", SimpleImputer(strategy=self.categorical_impute_strategy, keep_empty_features=True)),
                         ("encoder", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)),
                     ])
                     transformers.append(("cat_ordinal", ordinal_pipe, ordinal_cols))
             else:
                 cat_pipe = Pipeline([
-                    ("imputer", SimpleImputer(strategy=self.categorical_impute_strategy)),
+                    ("imputer", SimpleImputer(strategy=self.categorical_impute_strategy, keep_empty_features=True)),
                     ("encoder", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)),
                 ])
                 transformers.append(("cat", cat_pipe, self.categorical_cols_))
@@ -246,18 +256,37 @@ class AutoPreprocessor(BaseEstimator, TransformerMixin):
         )
         return self.transformer_
 
-    def fit(self, X, y=None):
-        X = pd.DataFrame(X)
+    def _prepare(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X.copy()
+        # pandas StringDtype/pd.NA를 imputer가 처리할 object/np.nan으로 맞춘다.
+        for col in self.categorical_cols_:
+            X[col] = X[col].astype(object).where(X[col].notna(), np.nan)
+        return X
+
+    def fit(self, X: pd.DataFrame, y=None):
+        if not isinstance(X, pd.DataFrame) or X.empty or X.columns.has_duplicates:
+            raise ValueError("중복 열 없는 비어 있지 않은 DataFrame이 필요합니다")
+        if self.categorical_encoding not in {"onehot", "ordinal"}:
+            raise ValueError("categorical_encoding은 onehot 또는 ordinal")
         self._detect_columns(X)
+        self.feature_names_in_ = np.asarray(X.columns, dtype=object)
+        self.n_features_in_ = X.shape[1]
         self._build_pipeline(X)
-        self.transformer_.fit(X, y)
+        self.transformer_.fit(self._prepare(X), y)
         return self
 
-    def transform(self, X):
-        X = pd.DataFrame(X)
-        return self.transformer_.transform(X)
+    def transform(self, X: pd.DataFrame):
+        from sklearn.utils.validation import check_is_fitted
+        check_is_fitted(self, "transformer_")
+        if not isinstance(X, pd.DataFrame) or list(X.columns) != list(self.feature_names_in_):
+            raise ValueError("학습과 동일한 컬럼 이름·순서가 필요합니다")
+        return self.transformer_.transform(self._prepare(X))
 
-    def get_feature_names_out(self):
+    def get_feature_names_out(self, input_features=None):
+        from sklearn.utils.validation import check_is_fitted
+        check_is_fitted(self, "transformer_")
+        if input_features is not None and list(input_features) != list(self.feature_names_in_):
+            raise ValueError("input_features가 학습 스키마와 다릅니다")
         return self.transformer_.get_feature_names_out()
 ```
 
@@ -289,7 +318,7 @@ print(f"Test accuracy: {pipe.score(X_test, y_test):.4f}")
 from sklearn.preprocessing import FunctionTransformer
 import numpy as np
 
-# 로그 변환 (0 이하 값 방지를 위해 +1)
+# log1p는 x > -1에서 유한하다. 임의 음수를 +1만으로 안전하게 만들지 않는다.
 log_transformer = FunctionTransformer(
     func=np.log1p,
     inverse_func=np.expm1,  # 역변환도 정의 가능
@@ -318,7 +347,7 @@ pipe_with_custom = Pipeline([
 ```python
 from sklearn.base import BaseEstimator, TransformerMixin
 
-class DateFeatureExtractor(BaseEstimator, TransformerMixin):
+class DateFeatureExtractor(TransformerMixin, BaseEstimator):
     """날짜 컬럼에서 연/월/요일 피처를 추출한다."""
 
     def __init__(self, date_column: str):
@@ -359,7 +388,8 @@ print(f"Loaded pipeline accuracy: {loaded_pipe.score(X_test, y_test):.4f}")
 
 **주의사항:**
 - `joblib` 파일은 Python/sklearn 버전에 의존한다. 배포 환경의 버전을 맞춰야 한다.
-- 커스텀 클래스를 사용했다면, 로드 시 해당 클래스가 import 가능한 상태여야 한다.
+- 커스텀 클래스를 사용했다면, 로드 시 해당 클래스가 같은 import 경로에서 사용 가능해야 한다.
+- joblib/pickle 로드는 임의 코드를 실행할 수 있으므로 신뢰한 출처의 산출물만 읽는다. 서로 다른 sklearn 판본 간 로딩은 지원 계약이 아니다.
 - 모델 파일에 sklearn 버전 정보를 함께 기록해두는 것이 좋다.
 
 ```python
@@ -367,7 +397,7 @@ import sklearn
 
 metadata = {
     "sklearn_version": sklearn.__version__,
-    "python_version": "3.11",
+    "python_version": __import__("platform").python_version(),
     "description": "분류 파이프라인 v1 - 수치형/범주형 전처리 + GBM",
 }
 joblib.dump({"pipeline": pipe, "metadata": metadata}, "pipeline_v1_with_meta.joblib")
@@ -429,16 +459,17 @@ print(type(result))  # <class 'pandas.core.frame.DataFrame'>
 
 ## 전체 실행 예제 (End-to-End)
 
-아래 코드는 복사하여 바로 실행할 수 있는 완전한 예제이다.
+아래는 데이터 다운로드 권한·네트워크 또는 OpenML cache, 의존성, 출력 경로가 준비됐을 때 실행할 수 있는 교육용 예제다. 분할·CV·최종 test를 분리한다. 실제 OpenML 요청 성공은 미확인이다.
 
 ```python
 """
 sklearn 데이터 파이프라인 — End-to-End 예제
-복사하여 바로 실행 가능.
+OpenML 연결 또는 cache와 기록된 의존성/출력 경로가 필요.
 """
 
 import numpy as np
 import pandas as pd
+import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.datasets import fetch_openml
 from sklearn.ensemble import GradientBoostingClassifier

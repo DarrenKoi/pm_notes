@@ -2,9 +2,16 @@
 tags: [airflow, dag, operator, scheduler, worker]
 level: beginner
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 01. Airflow 기본 개념
+
+> [!info] 판본·검증 범위 — 2026-10-04
+> 예제는 **Airflow 2.10.5** 학습용이다. 3.x public API는 `airflow.sdk`와 별도 provider 경로를 확인한다. 확인 당시 공식 3.x 페이지는 3.3.2를 표시했으며 회사 설치 버전이나 최신 보증이 아니다. 사내 Git Sync·권한·executor 조건은 확인되지 않은 시나리오다. 실행 예제의 로컬 구문/파싱 검증과 실제 scheduler·worker·업무 서버 검증을 구분한다.
+
 
 ## Airflow는 무엇인가
 
@@ -55,7 +62,7 @@ Executor / Worker
   - 실제 Task 실행
 ```
 
-중요한 점은 Python 코드가 Web UI에서 실행되는 것이 아니라 **Worker에서 실행**된다는 것이다. 패키지 설치 여부, 파일 경로, 네트워크 권한도 Worker 기준으로 봐야 한다.
+Task payload는 Web UI가 아니라 executor가 정한 실행 프로세스/worker에서 실행된다. DAG 최상위 Python은 DAG parsing 과정에서도 실행되므로 “모든 코드가 worker에서만 실행된다”는 뜻은 아니다. 패키지 설치 여부, 파일 경로, 네트워크 권한도 Worker 기준으로 봐야 한다.
 
 ## DAG
 
@@ -65,7 +72,7 @@ DAG는 Directed Acyclic Graph의 약자다. 순환이 없는 작업 그래프라
 download -> preprocess -> analyze -> report
 ```
 
-Airflow에서는 보통 `dags/` 폴더에 있는 `.py` 파일 하나가 DAG 하나를 정의한다.
+설정된 `dags_folder`의 Python 파일에서 DAG 객체를 발견한다. 한 파일에 여러 DAG가 있을 수 있고, helper module은 DAG 파일과 역할이 다르다. 아래는 Task가 없는 선언 골격이며 처리 작업을 실행하는 완성 DAG가 아니다.
 
 ```python
 from datetime import datetime
@@ -169,7 +176,7 @@ daily 작업이면 날짜만 인자로 받아도 충분할 수 있다.
 bash_command="python job.py --date {{ ds }}"
 ```
 
-`{{ ds }}`는 `YYYY-MM-DD` 형식 문자열이다.
+`{{ ds }}`는 logical date를 `YYYY-MM-DD`로 표현한 값이다. 실제 시작 시각/업무 날짜/run 고유 ID와 같다고 가정하지 않는다.
 
 하지만 매시간 실행하는 작업이면 날짜만으로는 부족하다. 같은 날짜 안에 24번 실행되기 때문이다. hourly 작업은 시간 정보까지 넘긴다.
 
@@ -247,11 +254,12 @@ def run():
 
 Connection 등록 권한이 없으면 운영팀에 요청해야 한다.
 
-하지만 현재 사내 환경처럼 사용자가 Connection/Variable에 접근할 수 없고 Bitbucket Git Sync로 DAG만 배포한다면, 현실적으로 `secrets.py` 같은 코드 파일에 secret을 넣어야 할 수 있다. 이 경우 Bitbucket private repository 자체를 secret 저장소처럼 관리해야 한다.
+UI에서 Connection/Variable을 볼 수 없다는 사실만으로 코드에 비밀을 넣어야 하는 것은 아니다. 운영팀이 환경변수(`AIRFLOW_CONN_<ID>`)나 secret backend로 Connection을 제공할 수도 있고, 이러한 값은 UI 목록에 나타나지 않을 수 있다. 실제 사용 권한·worker 전달 범위는 별도 확인한다.
+
+아래는 원문이 가정했던 코드 설정의 **자리표시자 비교 예시**다. 실제 비밀을 Git에 저장하라는 절차가 아니다.
 
 ```python
-# dags/company_job/secrets.py
-
+# 원문 비교: dags/company_job/secrets.py (실제 값으로 채워 commit하지 않음)
 MINIO = {
     "endpoint": "minio.company.internal:9000",
     "access_key": "REPLACE_WITH_REAL_ACCESS_KEY",
@@ -260,13 +268,7 @@ MINIO = {
 }
 ```
 
-이 방식에서는 다음 원칙을 지킨다.
-
-- secret을 여러 파일에 흩뿌리지 않고 `secrets.py`에 모은다.
-- secret 값을 로그에 출력하지 않는다.
-- secret이 들어간 Bitbucket repository 접근 권한을 최소화한다.
-- secret이 노출되면 파일 삭제가 아니라 key rotation으로 대응한다.
-- 자세한 운영 방식은 [08. Bitbucket Git Sync와 코드 기반 Secret 운영](./08-bitbucket-git-sync-and-code-secrets.md)을 따른다.
+비밀 값을 로그에 출력하지 않고, 노출된 값은 삭제만으로 해결하지 않고 폐기·교체한다. 승인된 주입 방식과 원래 사내 시나리오의 차이는 [08. Git Sync와 Secret 운영](./08-bitbucket-git-sync-and-code-secrets.md)에서 구분한다. 사내 secret 정책 결정은 Claude 협의·정책 확인 대기다.
 
 ## Variable
 
@@ -291,7 +293,7 @@ Variable은 DAG에서 사용하는 설정값을 Airflow에 저장하는 기능�
 | DAG 배포 방식 | Bitbucket Git Sync 대상 repository, branch, sync interval 확인 |
 | Worker 패키지 목록 | `ModuleNotFoundError` 예방 |
 | 사내 PyPI/Nexus | 추가 패키지 설치 가능 여부 |
-| Connection/Variable 권한 | 현재 환경에서는 접근 불가로 가정하고 코드 기반 secret 사용 |
+| Connection/Variable 권한 | UI 관리 권한·Task 사용 권한·env/backend 주입을 각각 확인; Git 저장 필수로 추론하지 않음 |
 | 공유 저장소 | Task 간 파일 전달 방식 결정 |
 | Kubernetes/Docker 허용 여부 | 패키지 격리 전략 결정 |
 
@@ -302,7 +304,7 @@ Variable은 DAG에서 사용하는 설정값을 Airflow에 저장하는 기능�
 - 실패해야 할 상황에서는 예외를 발생시킨다.
 - 처리 날짜 또는 처리 시간 구간은 Airflow에서 받은 값을 사용한다.
 - 큰 데이터는 XCom이 아니라 외부 저장소로 전달한다.
-- 현재 환경에서는 secret을 `secrets.py`에 모으고 Bitbucket 접근 권한을 엄격히 관리한다.
+- 실제 비밀은 승인된 실행 환경에 주입한다. Git Sync는 source 배포와 secret 공급을 구분한다.
 - 로컬 디스크에 의존하지 않는다.
 - 패키지 버전 차이를 빨리 확인한다.
 
@@ -311,3 +313,17 @@ Variable은 DAG에서 사용하는 설정값을 Airflow에 저장하는 기능�
 다음 문서에서는 기존 Python 파일 하나를 Airflow에서 실행하는 가장 작은 DAG를 만든다.
 
 - [02. 첫 번째 DAG 만들기](./02-first-dag-python-file.md)
+
+
+## 검증 근거 — 2026-10-04
+
+- [2.10.5 DAG](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html), [날짜 템플릿](https://airflow.apache.org/docs/apache-airflow/2.10.5/templates-ref.html).
+- [Connection 저장 방식](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/connection.html), [secret backend와 조회 순서](https://airflow.apache.org/docs/apache-airflow/2.10.5/security/secrets/secrets-backend/index.html).
+- [3.x public interface](https://airflow.apache.org/docs/apache-airflow/stable/public-airflow-interface.html).
+
+
+### 로컬 검증 결과 — 2026-10-04
+
+Task가 없는 선언 골격 1개를 실제 Airflow 2.10.5가 DAG로 발견했다. 처리 작업을 실행하는 완성형 DAG라는 뜻은 아니다.
+
+검증 환경은 저장소 밖의 임시 Python 3.12.12 환경이다. 문서 예제를 임시 파일로 추출하고 로컬 helper를 사용했다. 실제 scheduler와 worker, 업무 파일, FTP·MinIO·API, 인증과 TLS 연결은 실행하지 않았다. DAG 발견은 업무 처리의 성공을 보장하지 않는다.

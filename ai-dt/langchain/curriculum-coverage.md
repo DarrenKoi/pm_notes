@@ -1,3 +1,10 @@
+---
+tags: [langchain, documentation-review]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: curriculum_review
+---
+
 # LangChain 커리큘럼 커버리지 점검
 
 점검 기준: `study_list.txt`의 4개 영역 / 13개 세부 항목.
@@ -7,7 +14,7 @@
 - 전체 항목: 13개
 - 생성 문서: 13개
 - 누락 문서: 없음
-- 보강 완료: Agent API 구분(`create_agent` vs LangGraph `create_react_agent`), 이동된 LangGraph 문서 링크, `study_list.txt` 오탈자/줄바꿈
+- 원래 점검 기록: Agent API 구분(`create_agent` vs LangGraph `create_react_agent`), 이동된 LangGraph 문서 링크, `study_list.txt` 오탈자/줄바꿈
 
 ## 항목별 매핑
 
@@ -26,6 +33,8 @@
 | RAG 기반 질의 응답 흐름 구성 | [11](./11-rag-qa-flow.md) |
 | PDF, 웹 문서, 내부 지식 적용 사례 실습 | [12](./12-rag-document-sources.md) |
 | 주제 선정 및 요구 사항 정의, 구현, 테스트, 발표 및 피드백 | [13](./13-mini-project.md) |
+
+문서 매핑13/13은 코드 실행·업무 품질 검증의 완료를 뜻하지 않는다. 2026-10-04 개별 결과는 [정리 기록](./organization-log.md)과 [적용 조건](./verified-conditions.md)에 분리했다.
 
 ## 남은 개선 후보
 

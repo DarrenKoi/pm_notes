@@ -1,4 +1,16 @@
+---
+type: historical-record
+tags: [aix, llm-report-contest, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+aliases: ["50분 전환 중 설계 기록 — contest-spec"]
+---
+
 # ITC AIX 리포트 경진대회 — 출제 spec (v0.2)
+
+> [!info] 2026-10-04 검토 — 50분 전환 중 설계 기록
+> 아래는 당시 설계와 예시를 보존한 기록입니다. 현재 시행 규칙이나 실제 모델 성능을 뜻하지 않습니다. 버전·용도·미확인은 [목차](./README.md)와 [검토 안내](./review-notes.md)에 정리했습니다.
+
 
 > Grilling 세션(2026-05-15 v0.1, 2026-05-20 v0.2)으로 도출한 출제 설계 문서. 입력 메모는 [bgk.txt](./bgk.txt).
 > 본 spec은 *문제 자체*가 아니라 *문제를 어떻게 설계할 것인가의 결정사항* 모음.

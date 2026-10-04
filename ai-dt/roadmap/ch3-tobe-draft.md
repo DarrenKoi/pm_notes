@@ -4,11 +4,17 @@ level: drafting
 last_updated: 2026-05-15
 version: 0.1
 related: [./itc-aix-roadmap-outline.md, ./ch1-context-asis-draft.md, ./ch2-vision-draft.md]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # Ch.3 To-Be — Active를 거쳐 Proactive로 — 슬라이드 드래프트 (v0.1)
 
-> [Outline §Ch.3](./itc-aix-roadmap-outline.md#chapter-3-to-be--active를-거쳐-proactive로-2p) 본문 드래프트. **2슬라이드 분량**.
+> [!info] 2026-10-04 검토 — 전환 단계·KPI 초안
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
+
+> [Outline §Ch.3](./itc-aix-roadmap-outline.md#Chapter%203.%20To-Be%20%E2%80%94%20Active%EB%A5%BC%20%EA%B1%B0%EC%B3%90%20Proactive%EB%A1%9C%20%282p%29) 본문 드래프트. **2슬라이드 분량**.
 > 작성 원칙: Ch.2 Vision의 *정성적 그림*을 *시간축 + 능력 + KPI*의 정량 좌표로 옮긴다.
 
 ## 슬라이드 흐름
@@ -132,7 +138,7 @@ Slide 1 = narrative (3.1 + 3.2 통합). Slide 2 = measurement (3.3).
 
 > **Baseline 우선:** Hero KPI 3개 모두 6개월 PoC 단계에서 baseline 측정 필수. *측정 가능성이 ↓30% 표현의 전제조건*.
 >
-> **Layer 3 (technical metrics):** 분류 정확도·RAG hit rate·precision-recall 등은 [Appendix B](./itc-aix-roadmap-outline.md#appendix)에 격리.
+> **Layer 3 (technical metrics):** 분류 정확도·RAG hit rate·precision-recall 등은 [Appendix B](./itc-aix-roadmap-outline.md#Appendix)에 격리.
 >
 > **Fallback 보존:** Stream 3 lead time baseline 측정 자체가 PoC 과제 수준 — 1년차 미달성 시 Hero에서 E1 승격 옵션.
 

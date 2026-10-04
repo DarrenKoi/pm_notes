@@ -2,6 +2,9 @@
 tags: [evaluation, metrics, roc-auc, confusion-matrix]
 level: intermediate
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 모델 평가 메트릭 (Model Evaluation Metrics)
@@ -36,9 +39,9 @@ last_updated: 2026-02-14
 - **데이터가 불균형** → F1, PR-AUC, ROC-AUC
 - **False Positive 비용이 큼** → Precision 우선
 - **False Negative 비용이 큼** → Recall 우선
-- **확률 기반 랭킹** → ROC-AUC, Log Loss
+- **점수의 랭킹** → ROC-AUC; **예측 확률 품질** → Log Loss와 calibration도 확인
 - **오차 크기가 중요** → RMSE, MAE
-- **비율 기반 해석** → MAPE, R²
+- **비율 기반 오차** → MAPE(0/음수·원점 의미 확인); **평균 예측 대비 잔차 감소** → R²
 
 ---
 
@@ -55,7 +58,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import LogisticRegression
 
-# 한글 폰트 설정 (필요 시)
+# 범용 기본 폰트: DejaVu Sans의 한글 글리프는 보장되지 않음
 plt.rcParams['font.family'] = 'DejaVu Sans'
 plt.rcParams['figure.figsize'] = (8, 5)
 plt.rcParams['figure.dpi'] = 100
@@ -96,16 +99,16 @@ y_pred_r = reg.predict(X_test_r)
 혼동 행렬은 분류 모델의 성능을 한눈에 파악할 수 있는 가장 기본적인 도구다.
 
 ```
-              예측 Positive    예측 Negative
-실제 Positive     TP              FN
-실제 Negative     FP              TN
+              예측 Negative    예측 Positive
+실제 Negative     TN              FP
+실제 Positive     FN              TP
 ```
 
 ```python
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # 혼동 행렬 계산
-cm = confusion_matrix(y_test_c, y_pred_c)
+cm = confusion_matrix(y_test_c, y_pred_c, labels=[0, 1])
 print("Confusion Matrix:\n", cm)
 
 # 히트맵 시각화 (ConfusionMatrixDisplay 사용)
@@ -114,7 +117,7 @@ fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 # 방법 1: ConfusionMatrixDisplay (sklearn 공식 API)
 ConfusionMatrixDisplay.from_estimator(
     clf, X_test_c, y_test_c,
-    display_labels=['Negative', 'Positive'],
+    labels=[0, 1], display_labels=['Negative', 'Positive'],
     cmap='Blues',
     ax=axes[0]
 )
@@ -123,7 +126,7 @@ axes[0].set_title('Confusion Matrix (Counts)')
 # 방법 2: 정규화된 혼동 행렬
 ConfusionMatrixDisplay.from_estimator(
     clf, X_test_c, y_test_c,
-    display_labels=['Negative', 'Positive'],
+    labels=[0, 1], display_labels=['Negative', 'Positive'],
     normalize='true',  # 'true', 'pred', 'all' 중 선택
     cmap='Blues',
     values_format='.2%',
@@ -153,13 +156,13 @@ print(classification_report(
     digits=4
 ))
 
-# 출력 예시:
+# 2026-10-04 검증 환경 출력 예시 (다른 판본/입력에서 같은 수치 보장 아님):
 #               precision    recall  f1-score   support
-#     Negative     0.8800    0.9500    0.9137       200
-#     Positive     0.8667    0.7222    0.7879       100
-#     accuracy                         0.8733       300
-#    macro avg     0.8733    0.8361    0.8508       300
-# weighted avg    0.8756    0.8733    0.8717       300
+#     Negative     0.8634    0.9245    0.8929       212
+#     Positive     0.7808    0.6477    0.7081        88
+#     accuracy                         0.8433       300
+#    macro avg     0.8221    0.7861    0.8005       300
+# weighted avg     0.8392    0.8433    0.8387       300
 ```
 
 **Precision-Recall Curve 시각화:**
@@ -319,6 +322,7 @@ print("=" * 60)
 ```python
 from sklearn.metrics import (
     mean_squared_error,
+    root_mean_squared_error,
     mean_absolute_error,
     r2_score,
     mean_absolute_percentage_error
@@ -326,7 +330,7 @@ from sklearn.metrics import (
 
 # 모든 회귀 메트릭 계산
 mse = mean_squared_error(y_test_r, y_pred_r)
-rmse = mean_squared_error(y_test_r, y_pred_r, squared=False)
+rmse = root_mean_squared_error(y_test_r, y_pred_r)
 mae = mean_absolute_error(y_test_r, y_pred_r)
 r2 = r2_score(y_test_r, y_pred_r)
 mape = mean_absolute_percentage_error(y_test_r, y_pred_r)
@@ -348,9 +352,9 @@ print("=" * 40)
 |--------|------|------|
 | MSE | [0, ∞) | 큰 오차에 패널티가 큼 (이상치에 민감) |
 | RMSE | [0, ∞) | MSE의 제곱근, 원래 단위와 동일 |
-| MAE | [0, ∞) | 직관적인 평균 오차, 이상치에 강건 |
+| MAE | [0, ∞) | 평균 절대 오차; 제곱 오차보다 큰 오차의 영향이 덜 증폭됨 |
 | R² | (-∞, 1] | 1에 가까울수록 좋음, 음수면 평균보다 못함 |
-| MAPE | [0, ∞) | 비율 기반, 스케일 독립적, 0 근처 값에 주의 |
+| MAPE | [0, ∞) | 동일 비율척도에서 해석. 0 근처에서 커지고 0은 epsilon 분모; 원점 이동 비교 부적합 |
 
 #### 2-2. 잔차 플롯 (Residual Plot)
 
@@ -404,15 +408,15 @@ plt.show()
 ```
 
 **잔차 플롯 해석:**
-- 잔차가 0 주위에 **랜덤하게 분포** → 모델이 잘 적합됨
+- 잔차가 0 주위에 **뚜렷한 패턴 없이 분포** → 해당 plot에서 구조적 오차가 드러나지 않음. 좋은 일반화의 증명은 아님
 - 잔차에 **패턴(곡선, 부채꼴)이 보임** → 비선형 관계 누락, 이분산성(heteroscedasticity)
-- 잔차가 **정규분포를 따르지 않음** → 변수 변환 또는 다른 모델 고려
+- 잔차의 **정규성에서 벗어남** → 원인과 목적을 점검. 모든 예측 모델이 정규 잔차를 요구하지 않으며 변환/모델 교체를 자동 결정하지 않음
 
 ---
 
 ### 3. 클러스터링 메트릭 (Clustering Metrics)
 
-클러스터링은 정답 레이블이 없으므로 **내부 평가 지표(Internal Validation)**를 사용한다.
+정답 label이 없는 군집 탐색에서는 **내부 평가 지표(Internal Validation)**를 활용한다. 기준 label이 있으면 ARI/AMI 같은 외부 비교도 가능하다. 내부 지표가 업무상 유효한 군집을 보장하지는 않는다.
 
 ```python
 from sklearn.datasets import make_blobs
@@ -522,16 +526,16 @@ plt.show()
 | 문제 유형 | 비즈니스 목표 | 추천 메트릭 | 이유 |
 |-----------|-------------|------------|------|
 | 이진 분류 (균형) | 전반적 성능 | **Accuracy, F1** | 클래스 비율이 비슷하면 Accuracy도 유효 |
-| 이진 분류 (불균형) | 소수 클래스 탐지 | **F1, PR-AUC** | ROC-AUC는 불균형에서 과대평가 가능 |
+| 이진 분류 (불균형) | 소수 클래스 탐지 | **관심 클래스 F1, AP/PR 곡선** | ROC-AUC와 별도로 실제 양성 비율·FP 수·임계값 비용을 확인 |
 | 이진 분류 | FP 최소화 (스팸 필터) | **Precision** | 정상을 스팸으로 분류하면 안 됨 |
 | 이진 분류 | FN 최소화 (질병 진단) | **Recall** | 환자를 놓치면 안 됨 |
-| 이진 분류 | 확률 랭킹 | **ROC-AUC, Log Loss** | 예측 확률의 품질 평가 |
+| 이진 분류 | 랭킹·확률 품질 | **ROC-AUC / Log Loss** | ROC-AUC는 순위, Log Loss는 확률 예측을 평가 |
 | 다중 클래스 (균형) | 전반적 성능 | **Macro F1** | 모든 클래스에 동등한 가중치 |
-| 다중 클래스 (불균형) | 전체 정확도 | **Weighted F1** | 클래스 빈도 반영 |
+| 다중 클래스 (불균형) | 빈도를 반영한 F1 | **Weighted F1 + 클래스별 지표** | accuracy와 다르며 소수 클래스 실패가 가려질 수 있음 |
 | 회귀 | 큰 오차 패널티 | **RMSE** | 이상치에 민감하게 반응 |
 | 회귀 | 강건한 오차 측정 | **MAE** | 이상치에 덜 민감 |
 | 회귀 | 설명력 | **R²** | 분산 설명 비율 |
-| 회귀 | 스케일 독립적 비교 | **MAPE** | 서로 다른 단위의 모델 비교 |
+| 회귀 | 비율척도 오차 비교 | **MAPE** | 타겟 원점·0/음수·업무 비용을 먼저 확인 |
 | 클러스터링 | 최적 K 탐색 | **Silhouette + Elbow** | 종합적으로 판단 |
 
 ---
@@ -556,11 +560,18 @@ print(f"F2 Score (CV): {scores.mean():.4f} (+/- {scores.std():.4f})")
 def custom_profit_metric(y_true, y_pred):
     """
     비즈니스 수익 기반 커스텀 메트릭.
-    - TP: +100 (정상 탐지 → 수익)
+    - TP: +100 (관심 사건 탐지 → 가정한 수익)
     - FP: -50  (오탐 → 비용)
     - FN: -200 (미탐 → 큰 손실)
-    - TN: 0    (정상 무시 → 비용 없음)
+    - TN: 0    (비사건을 비사건으로 예측 → 가정한 비용 없음)
     """
+    # 0/1 이진 label 계약; unknown을 0으로 변환하지 않음
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+    if y_true.ndim != 1 or y_true.shape != y_pred.shape or y_true.size == 0:
+        raise ValueError("동일 길이의 비어 있지 않은 1차원 label 필요")
+    if not np.isin(y_true, [0, 1]).all() or not np.isin(y_pred, [0, 1]).all():
+        raise ValueError("이 수익 예제는 알려진 0/1 label만 받음")
     tp = ((y_true == 1) & (y_pred == 1)).sum()
     fp = ((y_true == 0) & (y_pred == 1)).sum()
     fn = ((y_true == 1) & (y_pred == 0)).sum()
@@ -574,7 +585,7 @@ profit_scorer = make_scorer(custom_profit_metric)
 # GridSearchCV에서 커스텀 메트릭 사용
 param_grid = {
     'C': [0.01, 0.1, 1, 10],
-    'penalty': ['l1', 'l2']
+    'l1_ratio': [1.0, 0.0]  # scikit-learn >=1.8: 각각 L1/L2
 }
 
 grid_search = GridSearchCV(
@@ -618,6 +629,24 @@ for metric in scoring:
 
 ---
 
+## 검토 근거와 적용 조건
+
+확인일 **2026-10-04**, 공식 API 판본 **scikit-learn 1.9.1**. 앞의 공통 셋업부터 순서대로 실행하는 부분 예제다. NumPy·Matplotlib·seaborn·SciPy·scikit-learn이 필요하다. PNG를 현재 작업 디렉토리에 저장하므로 별도 실험 폴더에서 실행한다. 난수·판본·입력 분할을 기록하며 이 합성 데이터의 점수를 운영 성능으로 해석하지 않는다.
+
+- [RMSE API](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.root_mean_squared_error.html): 1.4부터 추가. 현재 예제는 root_mean_squared_error를 사용한다.
+- [혼동행렬 API](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html): 행=실제, 열=예측, labels=[0,1]이면 [[TN,FP],[FN,TP]]. 1이 관심 사건이라는 데모 계약이다.
+- [AP API](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html): recall 증가량으로 precision을 가중하는 비보간 AP이며 사다리꼴 PR-AUC와 동일하지 않다. 본문의 AP와 PR-AUC 계산 방식을 보고서에 구분한다.
+- [MAPE API](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_absolute_percentage_error.html): 반환 0.1은 10%이며 실제값 0은 큰 유한 값이 될 수 있다. 음수/0을 포함한 합성 회귀 예제는 호출법 데모다.
+- [군집 평가](https://scikit-learn.org/stable/modules/clustering.html): 데이터·거리·스케일을 고정해 비교한다. Silhouette/CH/DB에는 2 이상·표본 수 미만의 label 수가 필요하다. 밀도/비볼록 구조의 업무 의미는 별도 확인한다.
+- [make_scorer API](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.make_scorer.html): 기본 response_method는 predict, 손실은 greater_is_better=False로 부호를 바꾼다. 확률/점수 metric은 그 입력을 요청해야 한다.
+- [LogisticRegression API](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html): penalty는 1.8에서 deprecated, 1.10 제거 예정이라는 공식 문서 기준이다. 현재 grid는 >=1.8의 l1_ratio와 saga를 사용한다. 이전 판본에 이 grid를 그대로 적용하지 않는다.
+
+임계값을 test 곡선으로 골라 같은 test 점수를 최종 성능으로 발표하면 선택 누수가 생긴다. 임계값/튜닝은 validation 또는 학습 CV에서 선택하고 최종 test를 보류한다. cross_validate의 test_*는 각 CV 검증 fold를 뜻하며 최종 보류 test가 아니다. CV 표준편차가 독립 test 신뢰구간인 것은 아니다.
+
+Macro는 클래스 동등 가중, weighted는 support 가중이다. 단일 label 다중 클래스에서 모든 클래스를 포함한 micro precision/recall/F1은 accuracy와 같다. 실제 양성 비율이 달라지면 PR 해석도 달라질 수 있다. ROC-AUC만으로 확률 보정 품질을 판단하지 않는다.
+
+수익 예제의 +100/-50/-200은 설명용 가정이다. 반환값은 fold 전체 수익이라 표본 수가 다른 fold/데이터의 점수를 직접 비교하지 않는다. 실제 비용/발생률·표본 단위는 미확인이고 이진 0/1 외 입력은 거부한다. 잘못된/미확인 label을 비사건으로 취급하지 않는다.
+
 ## 참고 자료 (References)
 
 - [scikit-learn Metrics and Scoring 공식 문서](https://scikit-learn.org/stable/modules/model_evaluation.html)
@@ -631,6 +660,6 @@ for metric in scoring:
 ## 관련 문서
 
 - [상위 개념: Classic ML Overview](./README.md)
-- [교차 검증(Cross Validation)](./cross-validation.md)
+- [교차 검증과 분할](./ml-workflow-overview.md)
 - [하이퍼파라미터 튜닝](./hyperparameter-tuning.md)
-- [Feature Engineering](./feature-engineering.md)
+- 피처 생성·fit 범위는 ML/DL 루트 목차의 데이터 처리 문서를 참고한다. 이 폴더에 feature-engineering.md가 있는 것으로 링크하지 않는다.

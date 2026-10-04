@@ -1,4 +1,14 @@
+---
+tags: [itc, aix, roadmap, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
+---
+
 # Grilling Session — 2026-05-14
+
+> [!info] 2026-10-04 검토 — 질문과 결정의 시간순 기록
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
 
 > ITC AI/DT 로드맵 수립을 위한 `/grill-with-docs` 세션 기록.
 > 재개 시 이 파일과 [CONTEXT.md](./CONTEXT.md), [bgk.txt](./bgk.txt)를 같이 읽으면 컨텍스트 복원됨.

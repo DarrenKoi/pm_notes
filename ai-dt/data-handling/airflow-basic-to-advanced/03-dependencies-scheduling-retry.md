@@ -2,9 +2,17 @@
 tags: [airflow, dependency, schedule, retry, timeout]
 level: beginner-intermediate
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 03. 의존성, 스케줄, 재시도
+
+> [!info] 판본·검증 범위 — 2026-10-04
+> **Airflow 2.10.5** 예제다. 회사 설치 버전·executor·권한·Git Sync 조건은 미확인이다. 3.x로 그대로 복사하지 않고 해당 판본의 public API/provider 문서를 확인한다. 로컬 파싱과 실제 scheduler·worker·외부 시스템 검증을 구분한다.
+> DAG 정의와 부분 설정 예제를 구분한다. 표시 시각, logical date, 처리 구간은 같은 개념이 아니다.
+
 
 ## 목표
 
@@ -22,7 +30,7 @@ Airflow에서는 이 순서를 Task 의존성으로 표현한다.
 download >> preprocess >> analyze >> report
 ```
 
-기본적으로 앞 Task가 성공해야 뒤 Task가 실행된다. 앞 Task가 실패하면 뒤 Task는 실행되지 않고 `upstream_failed` 상태가 된다.
+일반 Task의 기본 `all_success`에서는 upstream이 모두 성공해야 실행된다. 최종 실패는 downstream의 `upstream_failed`로 이어질 수 있고, retry 중에는 기다리며 skip은 별도 전파 규칙이 있다. branch/teardown/다른 trigger rule은 구분한다.
 
 ## 여러 스크립트 순차 실행
 
@@ -93,23 +101,24 @@ with DAG(
 
 | 값 | 의미 |
 |----|------|
-| `None` | 자동 실행 없음, 수동 실행만 |
+| `None` | 자동 스케줄 없음; UI/CLI/API 외부 trigger 가능 |
 | `"@daily"` | 매일 |
 | `"@hourly"` | 매시간 |
 | `"0 6 * * *"` | 매일 06:00 |
 | `"0 6 * * 1-5"` | 평일 06:00 |
 
-cron을 쓸 때는 Airflow 서버의 timezone 설정을 확인한다. 회사 서버가 UTC로 설정되어 있으면 한국 시간과 9시간 차이가 난다.
+cron은 DAG timezone을 기준으로 계산한다. aware `start_date`와 기본 timezone을 확인한다. Web UI의 표시 timezone은 브라우저 설정이므로 스케줄 기준과 따로 확인한다. UTC와 KST는 9시간 차이다.
 
 ## UTC 서버에서 한국 시간 기준으로 실행하기
 
 회사 Airflow 서버가 UTC이고 업무 기준이 한국 시간(KST, `Asia/Seoul`)이면 `{{ ds }}`를 그대로 업무일로 쓰지 않는 것이 안전하다.
 
-Airflow는 내부적으로 시간을 UTC로 저장하고, template의 datetime도 자동으로 한국 시간으로 바꿔주지 않을 수 있다. 따라서 한국 업무일이 필요하면 명시적으로 KST로 변환해서 넘긴다.
+Airflow 2.10.5는 내부 datetime을 UTC로 저장하고 template datetime을 업무 timezone으로 자동 변환하지 않는다. `ds`는 logical date의 날짜 표현이며 실제 실행 시각이나 UI 표시 날짜가 아니다. 따라서 한국 업무일이 필요하면 명시적으로 KST로 변환해서 넘긴다.
 
-권장 방식:
+timezone 선언 골격(아래 `...`는 Task 구현이 아님):
 
 ```python
+from airflow import DAG
 import pendulum
 
 KST = pendulum.timezone("Asia/Seoul")
@@ -123,7 +132,7 @@ with DAG(
     ...
 ```
 
-그리고 Task 인자에서는 KST 기준 값을 만든다.
+그리고 앞서 import한 `BashOperator`/`BASE_DIR`와 DAG context 안에서 다음 Task 설정을 추가한다. 아래는 독립 실행 파일이 아닌 부분 예제다.
 
 ```python
 hourly_job = BashOperator(
@@ -266,7 +275,7 @@ catchup=False
 
 ```text
 catchup=True
-  -> 10:00 구간, 11:00 구간, 12:00 구간, 13:00 구간을 순서대로 처리하려고 함
+  -> 10:00 구간, 11:00 구간, 12:00 구간, 13:00 구간별 run을 생성 대상으로 삼음; 실제 시작/완료 순서는 보장하지 않음
 
 catchup=False
   -> 과거 누락 구간 전체를 자동 backfill하지 않음
@@ -313,7 +322,7 @@ download = BashOperator(
 
 ## timeout
 
-Task가 무한정 실행되는 것을 막기 위해 `execution_timeout`을 둔다.
+`execution_timeout`은 각 Task 실행 시도에 대한 제한이다. retry 전체 시간이나 외부 제출 job 취소를 보장하지 않는다. HTTP/DB client timeout과 외부 job 정리도 따로 설정한다.
 
 ```python
 from datetime import timedelta
@@ -360,6 +369,8 @@ cleanup = BashOperator(
 
 [download, preprocess, analyze] >> cleanup
 ```
+
+`all_done` cleanup이 유일한 leaf이고 성공하면 중간 Task가 실패해도 DAG Run이 성공으로 계산될 수 있다. cleanup 성공과 업무 성공을 구분해 leaf 구조를 확인한다. `one_failed`는 upstream의 `failed`/`upstream_failed` 조건이며 skip만으로 실패 알림을 대신하지 않는다.
 
 ## 병렬 실행
 
@@ -427,9 +438,11 @@ def pipeline():
 pipeline()
 ```
 
-함수의 반환값은 XCom을 통해 다음 Task로 전달된다. 반환값은 작은 문자열이나 dict 정도로 유지한다.
+위 TaskFlow 함수는 경로 생성/print만 하는 인터페이스 예제이며 실제 파일을 읽거나 쓰지 않는다. 함수의 반환값은 XCom을 통해 다음 Task로 전달된다. 반환값은 작은 문자열이나 dict 정도로 유지한다.
 
 ## 운영용 기본값 예시
+
+앞선 import를 전제로 한 선언 골격이다. Task가 없으며 이 설정만으로 업무가 실행되지 않는다. `max_active_runs=1`은 같은 DAG의 active run 제한이지 다른 DAG·외부 writer와의 전역 lock이 아니다.
 
 ```python
 default_args = {
@@ -467,3 +480,13 @@ with DAG(
 다음 문서에서는 Task 간 데이터 전달, XCom, 파일 저장소, 멱등성을 정리한다.
 
 - [04. 데이터와 상태 관리](./04-data-and-state.md)
+
+
+## 검증 근거 — 2026-10-04
+
+- [2.10.5 Time Zones](https://airflow.apache.org/docs/apache-airflow/2.10.5/authoring-and-scheduling/timezone.html), [템플릿](https://airflow.apache.org/docs/apache-airflow/2.10.5/templates-ref.html).
+- [DAG Run·leaf 상태·catchup](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dag-run.html), [Task timeout](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/tasks.html).
+
+미확인: 사내 배포·계정·리소스·네트워크 조건과 실제 운영 성공. 중복 예제의 계약 통합·회사 정책 결정은 Herdr `pane_not_found`로 Claude 협의를 보류한다. [주제 정리 기록](../organization-log.md)에 진행 결과를 남긴다.
+
+로컬 확인: Python 3.12.12/Airflow 2.10.5 임시 환경에서 이 장의 Python 구문과 완성 DAG 정의를 검사했다. Kubernetes provider import·실제 venv job·외부 접속·scheduler 실행은 별도 미확인이다. 추가 실행 결과와 판본은 위 정리 기록을 읽는다.

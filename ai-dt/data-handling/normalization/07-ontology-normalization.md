@@ -2,11 +2,17 @@
 tags: [ontology, normalization, taxonomy, glossary, knowledge-graph, data-modeling]
 level: advanced
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: learning_note
 ---
 
 # 온톨로지 관점의 정규화
 
 > 온톨로지가 "도메인에 어떤 것들이 존재하며 어떻게 관계 맺는가"를 정의한다면, 정규화는 그 개념들이 데이터 구조 안에서 올바른 책임 위치를 갖도록 만드는 논리 모델링 규율이다.
+
+> [!info] 관점과 표준 — 2026-10-04
+> “ontology-lite”와 아래 계층은 이 학습 문서의 설계 용어다. JSON 저장만으로 OWL 추론이나 정합성 검사가 활성화되지 않는다. W3C SKOS2009·OWL2 Primer2판2012·SHACL2017 자료와 정규형의 차이를 대조했다. 실제 RDF/OWL/SHACL 엔진은 미실행이다.
 
 ## 온톨로지와 정규화의 차이
 
@@ -17,6 +23,8 @@ last_updated: 2026-05-02
 | 관심사 | 의미, 분류, 추론, 공유 어휘 | 중복, 종속성, 무결성, 변경 비용 |
 | 위치 | 개념 모델/의미 모델 | 논리 모델/물리 모델로 가는 중간 규율 |
 | 예시 | `Customer`, `Order`, `placesOrder` | `customers`, `orders`, `order_items` |
+
+이 표의 정규화는 모델링 관점이다. 정확한 관계형 정규형은 [01](./01-normalization-core.md)의 키/FD 기준으로 검사한다. ontology class/property를 테이블/컬럼으로 옮기는 것만으로 충족되지 않는다.
 
 둘은 경쟁하지 않는다. 온톨로지는 무엇을 모델링해야 하는지 알려주고, 정규화는 그것을 어떻게 안정적인 데이터 구조로 배치할지 알려준다.
 
@@ -39,7 +47,7 @@ last_updated: 2026-05-02
    검색 문서, 캐시, 분석 mart, RAG chunk index
 ```
 
-정규화는 2번과 4번 사이에 있다. 온톨로지를 데이터베이스 구조로 옮길 때 의미가 섞이지 않도록 잡아주는 역할이다.
+위 순서는 학습용 설계 흐름이며 W3C가 정한 필수 실행 순서가 아니다. 이 흐름에서 정규화 검토는2번과4번 사이에 둔다. 온톨로지를 데이터베이스 구조로 옮길 때 의미가 섞이지 않도록 잡아주는 역할이다.
 
 ## 정규화는 ontology를 검증한다
 
@@ -69,7 +77,7 @@ bank_transfers(payment_id, bank_code, account_hash)
 simple_payments(payment_id, provider_code)
 ```
 
-NULL은 단순 데이터 품질 문제가 아니라 "분류가 모델에 반영되지 않았다"는 신호다.
+NULL은 subtype 점검 신호일 수 있지만 모름·미수집·해당 없음도 가능하다. NULL만으로 분류 누락/정규형 위반을 확정하지 않는다. 분리된 subtype의 일치·필수값·권한은 별도 제약으로 적용한다.
 
 ### 예시 2. N:M 관계는 relation class일 수 있다
 
@@ -101,7 +109,7 @@ project_memberships(
 )
 ```
 
-정규화는 relation class가 필요한 지점을 드러낸다.
+이 설계는 참여 관계에 ID를 부여하는 선택지다. 반복 참여·기간 중첩·역할 변경의 업무 규칙과 무손실/키 조건을 확인한다.
 
 ### 예시 3. 이력은 event ontology가 필요하다
 
@@ -137,7 +145,7 @@ customer_grade_histories(
 
 ## Ontology-lite: glossary, taxonomy, canonical ID
 
-모든 프로젝트가 OWL/RDF 수준의 형식 온톨로지를 도입할 필요는 없다. RAG나 검색 시스템에서는 ontology-lite가 실용적이다.
+모든 프로젝트가 OWL/RDF 수준의 형식 온톨로지를 도입할 필요는 없다. 이 문서는 glossary(용어 정의), taxonomy(분류 관계), canonical ID를 묶는 경량 계약을 ontology-lite라고 부른다. 모든 RAG가 OWL 또는 이런 계약을 필수로 갖춰야 한다는 뜻은 아니다.
 
 ```json
 {
@@ -164,11 +172,13 @@ customer_grade_histories(
 | definition | LLM 컨텍스트에 넣을 짧은 정의 |
 | source | 정의의 근거 |
 
-이 ontology-lite는 MongoDB에 저장하고, Redis에 alias cache를 두고, OpenSearch/RAG chunk에는 `canonical_terms`로 투영할 수 있다.
+JSON의 broader/related는 애플리케이션 필드다. SKOS로 변환한다면 IRI/언어 태그/직접 계층/연관 관계를 명시한다. SKOS broader는 자체로 transitive가 아니고 broaderTransitive를 구분한다. prefLabel은 한 언어당 최대 하나라는 무결성 조건이 있으며 업무의 공식 승인 표기는 별도 정책이다. source가 위 JSON에 없으므로 정의 승인/출처와 revision을 추가해야 한다.
+
+이 계약은 [04 MongoDB](./04-mongodb-normalization.md)·[05 Redis](./05-redis-normalization.md)·[03 OpenSearch](./03-opensearch-normalization.md)에 투영할 수 있다. canonical_terms에 ID를 넣는지 label을 넣는지 명세로 구분한다.
 
 ## 정규화와 Knowledge Graph
 
-Knowledge Graph에서는 triple 형태로 사실을 표현한다.
+다음은 RDF 방식의 subject/predicate/object를 설명한 텍스트다. 실제 Turtle이 아니며 prefix/IRI 선언이 필요하다. 모든 Knowledge Graph가 RDF 표현만 사용하는 것은 아니다.
 
 ```text
 customer:1001  placesOrder  order:9001
@@ -176,7 +186,7 @@ order:9001     hasItem      product:p1
 product:p1     belongsTo    category:laptop
 ```
 
-이 구조는 매우 정규화된 의미 표현에 가깝다. 하지만 애플리케이션 조회에는 비용이 클 수 있다. 그래서 보통 다음처럼 함께 쓴다.
+triple 표현은 관계형3NF/BCNF 충족의 증명이 아니다. 조회 비용은 구현/데이터/인덱스로 측정한다. 다음은 역할을 나누는 한 가지 배치 예다.
 
 ```text
 Knowledge Graph:
@@ -192,7 +202,7 @@ Knowledge Graph:
   빈번한 조회와 alias lookup
 ```
 
-정규화는 KG와 RDB 사이의 번역 규칙을 안정화한다. class는 table/collection으로, property는 column/field로, relationship은 foreign key나 edge로 대응될 수 있다.
+class/property/relationship를 table/field/FK/edge로 대응하는 것은 선택지이며 일대일 기계 변환이 아니다. OWL의 open-world는 누락 사실을 false로 확정하지 않으며 DB의 NOT NULL/FK 제약과 구분한다. 필수 속성 같은 RDF 데이터 검증에는 SHACL shape/minCount 등의 명시적 조건을 검토한다. JSON 저장이나 OWL class 선언만으로 실행되지 않는다.
 
 ## LLM/RAG에서 ontology와 정규화의 연결
 
@@ -216,7 +226,7 @@ LLM 컨텍스트:
   검색 chunk + 용어 정의 + 관련 객체 정보
 ```
 
-효과:
+기대 효과(평가로 확인할 가설):
 
 - 약어와 동의어로 인한 누락을 줄인다.
 - 잘못된 동명이인 객체를 줄인다.
@@ -231,7 +241,7 @@ LLM 컨텍스트:
 2. 정규화는 ontology를 논리 데이터 모델로 구현할 때 의미가 섞이지 않게 하는 규율이다.
 3. 정규화 과정은 숨은 객체, 관계 객체, subtype, event를 드러내므로 ontology를 개선하는 피드백 루프가 된다.
 4. 온톨로지는 RAG에서 query expansion, entity linking, metadata filtering, context grounding을 가능하게 한다.
-5. 정규화된 데이터와 ontology가 함께 있어야 LLM이 "그럴듯한 텍스트"가 아니라 "식별 가능한 사실"을 근거로 답할 수 있다.
+5. ID/용어 계약은 근거 추적에 도움이 될 수 있지만 ontology가 모든 RAG의 필요조건이나 정답 보장은 아니다. 실제 답변/충돌/검색 평가가 필요하다.
 
 ## 체크리스트
 
@@ -243,8 +253,20 @@ LLM 컨텍스트:
 - [ ] ontology의 ID가 MongoDB, OpenSearch, Redis, RAG chunk에 일관되게 전달되는가?
 - [ ] LLM이 생성한 용어/관계 후보를 검증해 ontology에 반영하는 절차가 있는가?
 
+## 검토 결과
+
+2026-10-04: 모든 원래 객체/subtype/참여/event/glossary/KG/RAG 예제와 절·작성일을 보존했다. 학습용 계층과 정규형/표준을 구분하고 NULL·추론·검증·효과의 보장 한계를 정정했다. 업무 ontology 선택·완전 통합은 Claude pane_not_found로 보류했으며 실제 reasoner/shape engine/검색은 미실행이다. [정리 기록](../organization-log.md)을 참고한다.
+
 ## 참고 자료
 
+아래 W3C 판본을2026-10-04 확인했다. 미래 개정판이나 설치 라이브러리 호환을 보장하지 않는다. 기존 제품 링크는 같은 주제의 적용 문서로 연결해 해당 판본·조건을 따른다.
+
 - [정규화(Normalization)란 무엇인가 - 교과서 너머의 이해](https://wikidocs.net/blog/%40jcnahm/12324/)
-- [OpenSearch Object Field Types](https://docs.opensearch.org/latest/mappings/supported-field-types/object-fields/)
-- [MongoDB Vector Search Overview](https://www.mongodb.com/docs/atlas/atlas-search/vector-search/)
+- [OpenSearch 적용](./03-opensearch-normalization.md)
+- [MongoDB 적용](./04-mongodb-normalization.md)
+- [SKOS Reference, 2009](https://www.w3.org/TR/skos-reference/)
+- [OWL2 Primer2판, 2012](https://www.w3.org/TR/owl2-primer/)
+- [SHACL, 2017](https://www.w3.org/TR/shacl/)
+- [RDF1.1 Concepts, 2014; 같은 확인일](https://www.w3.org/TR/rdf11-concepts/)
+
+- [NIST 연구, 기체 전구체/CVD 박막 증착, 2019; 2026-10-04 확인](https://www.nist.gov/publications/apparatus-characterizing-gas-phase-chemical-precursor-delivery-thin-film-deposition) — 용어 배경이며 가상 장비의 실제 조치 근거가 아님.

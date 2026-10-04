@@ -2,11 +2,17 @@
 tags: [mcp, langgraph, langchain, agent, tool-use]
 level: intermediate
 last_updated: 2026-01-31
+reviewed_on: 2026-10-04
+review_status: partial
+type: learning
 ---
 
 # MCP + LangGraph 연동
 
 > langchain-mcp-adapters를 사용하여 MCP 서버의 도구를 LangGraph Agent에서 활용하는 방법
+
+> [!info] 검토 범위 · 2026-10-04
+> 프로토콜 사양과 SDK 버전은 별개다. [버전·실행 조건](./version-and-execution-notes.md)과 [정리 기록](./organization-log.md)을 먼저 확인한다. 원래 작성일은 보존했으며 실제 API·원격 서버 실행은 미검증이다.
 
 ## 왜 필요한가? (Why)
 
@@ -49,18 +55,20 @@ MCP Tool                          LangChain Tool
 ──────────                        ──────────────
 name         →                    name
 description  →                    description
-inputSchema  →                    args_schema (Pydantic)
-call()       →                    _run() / _arun()
+inputSchema  →                    args_schema (JSON schema)
+tools/call   →                    async tool invocation
 ```
 
 ## 어떻게 사용하는가? (How)
 
 ### 설치
 
+아래는 유지보수 중단된 **독립 adapter의 기존 구조를 읽기 위한 예제**다. 현재 신규 통합은 별도 버전 조건 문서의 `langchain[mcp]`/`MCPAdapter` 안내를 확인한다. `main`에서 확인한 adapter 소스 버전은 `0.3.2`이며 mcp 의존 범위는 `>=1.24,<2`다. 패키지 배포와 전체 dependency 조합은 로컬 검증하지 않았다.
+
 ```bash
-pip install langchain-mcp-adapters langgraph langchain-openai
+pip install "langchain-mcp-adapters==0.3.2" "mcp==1.26.0" langchain langgraph langchain-openai
 # 또는
-uv add langchain-mcp-adapters langgraph langchain-openai
+uv add "langchain-mcp-adapters==0.3.2" "mcp==1.26.0" langchain langgraph langchain-openai
 ```
 
 ### 예제 1: 단일 MCP 서버 + ReAct Agent
@@ -92,41 +100,43 @@ if __name__ == "__main__":
 ```python
 # agent.py
 import asyncio
+import sys
+from pathlib import Path
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 
-async def main():
+async def main() -> None:
     model = ChatOpenAI(model="gpt-4o")
 
-    # MCP 클라이언트를 context manager로 사용
-    async with MultiServerMCPClient(
+    # 독립 adapter API: client 생성은 동기, 도구 조회는 await
+    client = MultiServerMCPClient(
         {
             "math": {
-                "command": "python",
-                "args": ["math_server.py"],
+                "command": sys.executable,
+                "args": [str(Path(__file__).with_name("math_server.py"))],
                 "transport": "stdio",
             }
         }
-    ) as client:
-        # MCP 도구를 LangChain Tool로 변환
-        tools = client.get_tools()
+    )
+    # MCP 도구를 LangChain Tool로 변환
+    tools = await client.get_tools()
 
-        # ReAct Agent 생성
-        agent = create_react_agent(model, tools)
+    # ReAct Agent 생성
+    agent = create_agent(model, tools)
 
-        # 실행
-        result = await agent.ainvoke(
-            {"messages": [{"role": "user", "content": "3과 5를 더하고, 그 결과에 2를 곱해줘"}]}
-        )
+    # 실행
+    result = await agent.ainvoke(
+        {"messages": [{"role": "user", "content": "3과 5를 더하고, 그 결과에 2를 곱해줘"}]}
+    )
 
-        for msg in result["messages"]:
-            print(f"[{msg.type}] {msg.content}")
+    for msg in result["messages"]:
+        print(f"[{msg.type}] {msg.content}")
 
 asyncio.run(main())
 ```
 
-**실행 결과** (예시):
+**실행 결과** (가상 예시 · 로컬/API 실행 기록 아님):
 ```
 [human] 3과 5를 더하고, 그 결과에 2를 곱해줘
 [ai] (tool_calls: add(a=3, b=5))
@@ -146,7 +156,7 @@ mcp = FastMCP("weather")
 
 @mcp.tool()
 def get_weather(city: str) -> str:
-    """도시의 현재 날씨를 조회한다."""
+    """학습용 고정 날씨 문자열을 반환한다."""
     weather_data = {
         "서울": "맑음, 3°C",
         "부산": "흐림, 7°C",
@@ -161,62 +171,70 @@ if __name__ == "__main__":
 ```python
 # multi_agent.py
 import asyncio
+import sys
+from pathlib import Path
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 
-async def main():
+async def main() -> None:
     model = ChatOpenAI(model="gpt-4o")
 
     # 여러 MCP 서버를 동시에 연결
-    async with MultiServerMCPClient(
+    client = MultiServerMCPClient(
         {
             "math": {
-                "command": "python",
-                "args": ["math_server.py"],
+                "command": sys.executable,
+                "args": [str(Path(__file__).with_name("math_server.py"))],
                 "transport": "stdio",
             },
             "weather": {
-                "command": "python",
-                "args": ["weather_server.py"],
+                "command": sys.executable,
+                "args": [str(Path(__file__).with_name("weather_server.py"))],
                 "transport": "stdio",
             },
         }
-    ) as client:
-        # 모든 서버의 도구가 합쳐져서 반환됨
-        tools = client.get_tools()
-        print(f"사용 가능한 도구: {[t.name for t in tools]}")
-        # → ['add', 'multiply', 'get_weather']
+    )
+    # 모든 서버의 도구가 합쳐져서 반환됨
+    tools = await client.get_tools()
+    print(f"사용 가능한 도구: {[t.name for t in tools]}")
+    # → ['add', 'multiply', 'get_weather']
 
-        agent = create_react_agent(model, tools)
+    agent = create_agent(model, tools)
 
-        result = await agent.ainvoke(
-            {"messages": [{"role": "user", "content": "서울 날씨 알려주고, 기온에서 영하 5도를 더해줘"}]}
-        )
+    result = await agent.ainvoke(
+        {"messages": [{"role": "user", "content": "서울의 예시 날씨를 보여주고, 도구에 저장된 기온 3도에 -5를 더해줘"}]}
+    )
 
-        for msg in result["messages"]:
-            print(f"[{msg.type}] {msg.content}")
+    for msg in result["messages"]:
+        print(f"[{msg.type}] {msg.content}")
 
 asyncio.run(main())
 ```
 
-### 예제 3: SSE Transport (원격 MCP 서버)
+### 예제 3: Streamable HTTP Transport (원격 MCP 서버)
 
 이미 실행 중인 원격 MCP 서버에 연결하는 경우:
 
 ```python
-async with MultiServerMCPClient(
-    {
-        "remote-tools": {
-            "url": "http://localhost:8000/mcp",
-            "transport": "streamable_http",
-        }
-    }
-) as client:
-    tools = client.get_tools()
-    agent = create_react_agent(model, tools)
-    # ...
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain.agents import create_agent
+from langchain_openai import ChatOpenAI
+from typing import Any
+
+async def load_remote_agent() -> Any:
+    client = MultiServerMCPClient(
+        {"remote-tools": {"url": "http://localhost:8000/mcp/", "transport": "http"}}
+    )
+    tools = await client.get_tools()
+    return create_agent(ChatOpenAI(model="gpt-4o"), tools)
 ```
+
+### 실행 조건과 상태
+
+`get_tools()`로 가져온 목록은 실행 시점의 snapshot이다. 설정만 바꾸어 이미 만든 agent에 도구가 즉시 추가되는 것은 아니다. 서버 프로세스·명령 경로·인증·모델 tool calling 지원을 확인하고 목록을 다시 조회·bind해야 한다. 독립 adapter의 기본 호출은 도구 호출마다 새 세션을 열므로 서버 메모리 상태가 이어질 것으로 가정하지 않는다. 상태가 필요하면 해당 버전의 `client.session(...)` 수명 안에서 도구를 로드하고 실행한다. 새 `MCPAdapter`에서는 도구 사용을 adapter context 안에서 끝낸다.
+
+`get_weather`는 현재 날씨가 아니라 고정 문자열을 반환한다. 응답 문자열에서 기온을 읽어 숫자 도구를 호출하는 것은 모델의 해석이며 structured 수치 계약이 아니다. `gpt-4o`는 원래 예제 ID이며 계정 접근·현재 API 사용 가능성은 미검증이다.
 
 ### 구조 요약
 
@@ -224,7 +242,7 @@ async with MultiServerMCPClient(
 ┌─────────────────────────────────────────┐
 │            LangGraph Agent              │
 │  ┌─────────────────────────────────┐    │
-│  │    create_react_agent(model,    │    │
+│  │    create_agent(model,          │    │
 │  │           tools=[...])          │    │
 │  └────────────┬────────────────────┘    │
 │               │                         │

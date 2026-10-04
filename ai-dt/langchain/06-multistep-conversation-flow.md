@@ -2,11 +2,18 @@
 tags: [langgraph, memory, checkpointer, conversation, state]
 level: intermediate
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 06. 상태 기반 멀티스텝 대화 흐름 설계
 
 > 여러 턴에 걸친 대화에서 맥락을 유지하려면 상태에 메시지를 누적하고, checkpointer로 대화를 저장/재개해야 한다. 그 방법을 다룬다.
+
+
+> [!info] 적용 조건과 실행 순서
+> 2026-10-04 개별 검토. [공통 적용 조건](./verified-conditions.md)의 판본·설정·검증 경계를 먼저 확인한다. 같은 문서의 코드 조각은 위에서 아래로 이어 실행하며 개념 조각은 별도로 표시한다. 이전 문서의 vs/chunks/embeddings 등은 관련 절의 선행 예제가 필요하다. 공개·사내 API/실제 데이터·운영 실행은 미확인이며 예제 출력은 보장이 아니다.
 
 ## 왜 필요한가? (Why)
 
@@ -35,13 +42,14 @@ from langgraph.graph import MessagesState   # messages 필드가 미리 정의�
 
 ### Checkpointer (메모리)
 - **`InMemorySaver`**: 프로세스 메모리에 저장(개발/테스트용).
-- **`SqliteSaver` / `PostgresSaver`**: 영속 저장(운영). 재시작해도 대화 유지.
+- **`SqliteSaver`**: 파일 저장 개발/로컬 예제. **`PostgresSaver`**: 별도 DB 기반 운영 후보. 재시작 후 같은 파일/DB·graph·thread 설정에서 복원하며 durability/권한/백업은 별도다.
 - 실행 시 `config={"configurable": {"thread_id": "..."}}`로 대화 세션을 구분한다.
 
 ## 어떻게 사용하는가? (How)
 
 ### 메모리 있는 챗봇 그래프
 ```python
+import os
 from typing import Annotated
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
@@ -50,8 +58,8 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langchain_openai import ChatOpenAI
 
 # 사내:
-llm = ChatOpenAI(model="Kimi-K2.5", base_url="http://llm-gateway.internal/v1",
-                 api_key="EMPTY", temperature=0)
+llm = ChatOpenAI(model=os.environ["LLM_MODEL"], base_url=os.environ["LLM_BASE_URL"],
+                 api_key=os.environ["LLM_API_KEY"], temperature=0)
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
@@ -64,14 +72,14 @@ b.add_node("chatbot", chatbot)
 b.add_edge(START, "chatbot")
 b.add_edge("chatbot", END)
 
-memory = InMemorySaver()
-graph = b.compile(checkpointer=memory)     # ← 메모리 연결
+conversation_memory = InMemorySaver()
+graph = b.compile(checkpointer=conversation_memory)     # ← 메모리 연결
 
 # 대화 세션 1
 cfg = {"configurable": {"thread_id": "user-42"}}
 graph.invoke({"messages": [("user", "내 이름은 대영이야.")]}, cfg)
 out = graph.invoke({"messages": [("user", "내 이름 뭐라고 했지?")]}, cfg)
-print(out["messages"][-1].content)   # "대영" 이라고 기억함 (같은 thread_id 덕분)
+print(out["messages"][-1].content)   # 같은 thread의 이전 메시지를 모델에 전달; 실제 정답은 모델에 달림
 ```
 
 ### 영속 저장 (운영)
@@ -79,14 +87,14 @@ print(out["messages"][-1].content)   # "대영" 이라고 기억함 (같은 thre
 # pip install langgraph-checkpoint-sqlite
 from langgraph.checkpoint.sqlite import SqliteSaver
 
-with SqliteSaver.from_conn_string("checkpoints.sqlite") as memory:
-    graph = b.compile(checkpointer=memory)
-    graph.invoke({"messages": [("user", "안녕")]},
+with SqliteSaver.from_conn_string("checkpoints.sqlite") as sqlite_memory:
+    sqlite_graph = b.compile(checkpointer=sqlite_memory)
+    sqlite_graph.invoke({"messages": [("user", "안녕")]},
                  {"configurable": {"thread_id": "user-42"}})
-# 프로세스를 껐다 켜도 user-42 대화는 그대로 이어짐
+# 재시작 후 같은 DB로 graph를 다시 생성해야 한다. with 밖 sqlite_graph는 사용 불가
 ```
 
-### 긴 대화의 토큰 관리 (최신 기법)
+### 긴 대화의 토큰 관리 (입력 길이 제어)
 히스토리가 길어지면 토큰 한도를 넘는다. 노드에서 **메시지를 잘라내거나(trim) 요약**한다.
 ```python
 from langchain_core.messages import trim_messages
@@ -94,10 +102,19 @@ from langchain_core.messages import trim_messages
 def chatbot(state: State) -> dict:
     trimmed = trim_messages(
         state["messages"], max_tokens=4000, strategy="last",
-        token_counter=llm, include_system=True,
+        token_counter=llm, include_system=True, start_on="human",
+        end_on=("human", "tool"),
     )
     return {"messages": [llm.invoke(trimmed)]}
+
+# 함수 재정의만으로 기존 compiled graph가 바뀌지 않는다. 새 node/graph에 연결
+trim_builder = StateGraph(State)
+trim_builder.add_node("chatbot", chatbot)
+trim_builder.add_edge(START, "chatbot")
+trim_builder.add_edge("chatbot", END)
+graph = trim_builder.compile(checkpointer=conversation_memory)
 ```
+> trim은 이 호출 입력만 줄이며 checkpoint의 누적 상태를 지우지 않는다. tool call/결과 짝·system·실제 모델 tokenizer·출력 예산을 확인한다. 공유 thread_id는 사용자 인증/접근 격리가 아니다.
 > 요약 메모리 패턴: 오래된 메시지를 LLM으로 요약해 하나의 SystemMessage로 압축하고, 최근 메시지만 원문 유지.
 
 ### 상태 조회/수정 (디버깅·감사)

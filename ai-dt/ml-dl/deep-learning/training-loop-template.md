@@ -2,18 +2,24 @@
 tags: [pytorch, training-loop, early-stopping, checkpointing]
 level: intermediate
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # PyTorch 학습 루프 템플릿
 
-> 재현 가능하고 견고한 딥러닝 학습 루프를 처음부터 끝까지 구성하는 실전 템플릿.
+> 단일 장치·비가중 다중 클래스 분류의 학습/검증·early stopping·체크포인트를 구성하는 교육용 템플릿.
+
+> [!info] 적용 범위와 검증일
+> 2026-10-04 공식 PyTorch2.14 문서와 설치2.14.1/Python3.14.2를 대조했다. 0~6절은 앞 import와 사용자가 준비한 model/train_loader/val_loader/criterion/optimizer에 의존하는 조각이다. 7절은 별도 스크립트다. 기본 criterion은 weight 없는 CrossEntropyLoss(reduction="mean"), 출력(N,C)/target(N,) int64이다. ignore label·가중 손실·segmentation·회귀 지표에는 집계 코드를 바꿔야 한다. CUDA/MPS·CIFAR 다운로드·worker·원래30epoch 규모의 실행은 미확인이다.
 
 ## 왜 필요한가? (Why)
 
 - 학습 루프(Training Loop)는 **모든 딥러닝 프로젝트의 뼈대**다. 모델 정의보다 학습 루프의 품질이 실험 생산성을 좌우한다.
 - 매번 처음부터 작성하면 Early Stopping, 체크포인팅, 로깅 등 필수 기능을 빠뜨리기 쉽다.
-- **복붙 가능한 표준 템플릿**을 갖추면 새 프로젝트를 시작할 때 수 시간을 절약할 수 있다.
-- 재현성(Reproducibility)을 보장하려면 시드 고정, 결정론적 설정 등을 학습 루프에 내장해야 한다.
+- 학습/검증의 모드·집계와 저장 상태를 명시하면 새 프로젝트에서 반복 구현을 줄일 수 있다.
+- seed는 난수 원인을 줄이지만 장치·판본 간 결과를 보장하지 않는다. 데이터 순서·worker·알고리즘·라이브러리 판본도 함께 기록한다.
 
 ---
 
@@ -24,9 +30,9 @@ last_updated: 2026-02-14
 | **Training Loop** | 배치 단위로 forward → loss → backward → optimizer step을 반복하는 핵심 루프 |
 | **Validation Loop** | 매 에포크 종료 후 검증 데이터로 모델 성능을 평가 (gradient 계산 없음) |
 | **Early Stopping** | 검증 손실이 일정 에포크(patience) 동안 개선되지 않으면 학습을 조기 종료 |
-| **Checkpointing** | 최적 모델 가중치를 파일로 저장하고, 필요 시 복원(resume) |
+| **Checkpointing** | 추론용 best 가중치와 재개용 optimizer/scheduler/epoch 상태를 구분해 저장 |
 | **Learning Rate Scheduler** | 에포크/스텝에 따라 학습률을 동적으로 조절 |
-| **Seed Fixing** | `torch.manual_seed` 등으로 난수를 고정해 실험 재현성 확보 |
+| **Seed Fixing** | `torch.manual_seed` 등으로 특정 환경의 난수 원인을 제어 |
 
 ---
 
@@ -34,7 +40,7 @@ last_updated: 2026-02-14
 
 ### 0. 공통 설정 및 재현성(Reproducibility) 시드 고정
 
-모든 실험 전에 반드시 시드를 고정한다.
+데이터 생성·분할·모델 생성 전에 seed를 설정한다. `PYTHONHASHSEED`는 Python 시작 전에 환경 변수로 지정해야 현재 프로세스의 hash seed에 반영된다.
 
 ```python
 import os
@@ -44,13 +50,13 @@ import torch
 
 
 def set_seed(seed: int = 42):
-    """모든 난수 시드를 고정하여 실험 재현성을 보장한다."""
+    """현재 프로세스의 난수를 제어한다. 판본/장치 간 재현 보장은 아니다."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)  # multi-GPU
-    os.environ["PYTHONHASHSEED"] = str(seed)
+    # PYTHONHASHSEED는 실행 전에 환경에서 설정; 여기서 hash seed를 바꾸지 않음
     # 결정론적 동작 (약간의 성능 저하 가능)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
@@ -82,22 +88,34 @@ def train_one_epoch(
     """1 에포크 학습을 수행하고 평균 손실을 반환한다."""
     model.train()
     running_loss = 0.0
+    total = 0
+    if getattr(criterion, "reduction", None) != "mean" or getattr(criterion, "weight", None) is not None:
+        raise ValueError("이 집계는 비가중 mean 손실만 지원합니다")
 
     for batch_idx, (inputs, targets) in enumerate(dataloader):
         inputs, targets = inputs.to(device), targets.to(device)
 
         # Forward
         outputs = model(inputs)
+        if outputs.ndim != 2 or targets.ndim != 1 or targets.dtype != torch.int64:
+            raise ValueError("분류 출력(N,C)/int64 target(N,)가 필요합니다")
+        if torch.any((targets < 0) | (targets >= outputs.size(1))):
+            raise ValueError("ignore/unknown label은 지원하지 않습니다")
         loss = criterion(outputs, targets)
 
+        if not torch.isfinite(loss).item():
+            raise ValueError("손실이 finite가 아닙니다")
         # Backward
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-        running_loss += loss.item()
+        running_loss += loss.item() * targets.size(0)
+        total += targets.size(0)
 
-    avg_loss = running_loss / len(dataloader)
+    if total == 0:
+        raise ValueError("학습 DataLoader가 비어 있습니다")
+    avg_loss = running_loss / total
     return avg_loss
 
 
@@ -129,18 +147,28 @@ def validate(
     running_loss = 0.0
     correct = 0
     total = 0
+    if getattr(criterion, "reduction", None) != "mean" or getattr(criterion, "weight", None) is not None:
+        raise ValueError("이 집계는 비가중 mean 손실만 지원합니다")
 
     for inputs, targets in dataloader:
         inputs, targets = inputs.to(device), targets.to(device)
         outputs = model(inputs)
         loss = criterion(outputs, targets)
 
-        running_loss += loss.item()
+        if outputs.ndim != 2 or targets.ndim != 1 or targets.dtype != torch.int64:
+            raise ValueError("분류 출력(N,C)/int64 target(N,)가 필요합니다")
+        if torch.any((targets < 0) | (targets >= outputs.size(1))):
+            raise ValueError("ignore/unknown label은 이 집계에서 지원하지 않습니다")
+        if not torch.isfinite(loss).item():
+            raise ValueError("손실이 finite가 아닙니다")
+        running_loss += loss.item() * targets.size(0)
         _, predicted = outputs.max(1)
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
 
-    avg_loss = running_loss / len(dataloader)
+    if total == 0:
+        raise ValueError("검증 DataLoader가 비어 있습니다")
+    avg_loss = running_loss / total
     accuracy = 100.0 * correct / total
     return avg_loss, accuracy
 
@@ -167,7 +195,7 @@ for epoch in range(num_epochs):
 
 ### 3. Early Stopping 구현
 
-검증 손실이 `patience` 에포크 동안 `delta` 이상 개선되지 않으면 학습을 조기 종료한다.
+검증 손실이 `patience` 에포크 동안 `delta`보다 크게 감소하지 않으면 학습을 조기 종료한다.
 
 ```python
 class EarlyStopping:
@@ -187,6 +215,10 @@ class EarlyStopping:
         path: str = "best_model.pt",
         verbose: bool = True,
     ):
+        if isinstance(patience, bool) or not isinstance(patience, int) or patience < 1:
+            raise ValueError("patience는 양의 정수여야 합니다")
+        if not np.isfinite(delta) or delta < 0:
+            raise ValueError("delta는 finite/nonnegative여야 합니다")
         self.patience = patience
         self.delta = delta
         self.path = path
@@ -198,12 +230,14 @@ class EarlyStopping:
         self.val_loss_min = float("inf")
 
     def __call__(self, val_loss: float, model: nn.Module):
+        if not np.isfinite(val_loss):
+            raise ValueError("검증 손실이 finite가 아닙니다")
         score = -val_loss  # 손실이 작을수록 좋으므로 부호 반전
 
         if self.best_score is None:
             self.best_score = score
             self._save_checkpoint(val_loss, model)
-        elif score < self.best_score + self.delta:
+        elif score <= self.best_score + self.delta:
             self.counter += 1
             if self.verbose:
                 print(f"  EarlyStopping counter: {self.counter}/{self.patience}")
@@ -237,12 +271,12 @@ for epoch in range(num_epochs):
         break
 
 # 최적 모델 복원
-model.load_state_dict(torch.load("best_model.pt", weights_only=True))
+model.load_state_dict(torch.load("best_model.pt", map_location=device, weights_only=True))
 ```
 
 ### 4. 모델 체크포인팅 (Save & Resume)
 
-학습 중간 상태를 저장하고, 중단된 지점부터 재개할 수 있다.
+model/optimizer/scheduler/epoch/history를 저장하고 다음 epoch부터 재개한다. RNG·sampler·worker·early stopping 상태는 이 간단한 함수에 포함되지 않으므로 끊김 없는 학습과 동일한 결과를 보장하지 않는다. 아래 Trainer는 early stopping 상태도 저장한다.
 
 ```python
 def save_checkpoint(
@@ -254,7 +288,7 @@ def save_checkpoint(
     history: dict | None = None,
     **kwargs,
 ):
-    """학습 상태 전체를 체크포인트로 저장한다."""
+    """명시한 model/optimizer/scheduler/epoch/history를 저장한다."""
     checkpoint = {
         "epoch": epoch,
         "model_state_dict": model.state_dict(),
@@ -263,7 +297,9 @@ def save_checkpoint(
     }
     if scheduler is not None:
         checkpoint["scheduler_state_dict"] = scheduler.state_dict()
-    checkpoint.update(kwargs)  # 추가 메타데이터
+    if {"epoch", "model_state_dict", "optimizer_state_dict", "history", "scheduler_state_dict"} & kwargs.keys():
+        raise ValueError("메타데이터가 예약된 checkpoint 키와 겹칩니다")
+    checkpoint.update(kwargs)  # weights_only로 읽을 수 있는 tensor/기본 타입 메타데이터
     torch.save(checkpoint, path)
     print(f"Checkpoint saved: {path} (epoch {epoch})")
 
@@ -276,7 +312,7 @@ def load_checkpoint(
     device: torch.device = torch.device("cpu"),
 ) -> dict:
     """체크포인트에서 학습 상태를 복원한다."""
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = torch.load(path, map_location=device, weights_only=True)
     model.load_state_dict(checkpoint["model_state_dict"])
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
@@ -327,14 +363,13 @@ scheduler_plateau = ReduceLROnPlateau(
     optimizer,
     mode="min",       # 손실이 줄어들어야 개선
     factor=0.5,       # 학습률을 절반으로
-    patience=5,       # 5 에포크 개선 없으면 감소
-    verbose=True,
+    patience=5,       # 허용 bad epoch 수5; 조건상 여섯째 bad epoch에서 감소
 )
 
 # --- 3) CosineAnnealingLR ---
 scheduler_cosine = CosineAnnealingLR(
     optimizer,
-    T_max=50,         # 한 주기 = 50 에포크
+    T_max=50,         # step 50회에서 eta_min에 도달; 자동 warm restart는 아님
     eta_min=1e-6,     # 최소 학습률
 )
 
@@ -397,11 +432,12 @@ def plot_history(history: dict, save_path: str | None = None):
 # plot_history(history, save_path="training_curves.png")
 ```
 
-### 7. 완전한 프로덕션 학습 루프 (Trainer 클래스)
+### 7. 통합 학습 루프 (Trainer 클래스)
 
-위의 모든 요소를 하나의 `Trainer` 클래스로 통합한다. `tqdm` 프로그레스 바 포함.
+분류 루프·저장·기록을 Trainer로 묶는다. `tqdm` 표시를 포함하지만 AMP/DDP·원자적 저장·장애 복구·보안·데이터 버전 관리는 구현하지 않아 프로덕션 완성을 주장하지 않는다. 모델/데이터를 만들기 전에도 seed를 설정해야 한다. 생성자 안의 seed는 이미 만들어진 가중치를 되돌리지 않는다.
 
 ```python
+import copy
 import os
 import random
 import time
@@ -443,7 +479,17 @@ class TrainerConfig:
     # Device
     device: str = "auto"  # "auto", "cpu", "cuda", "mps"
 
+    def __post_init__(self):
+        for name in ("num_epochs", "patience", "save_every_n_epochs"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"{name}은 양의 정수여야 합니다")
+        if not np.isfinite(self.delta) or self.delta < 0:
+            raise ValueError("delta는 finite/nonnegative여야 합니다")
+
     def resolve_device(self) -> torch.device:
+        if self.device not in {"auto", "cpu", "cuda", "mps"}:
+            raise ValueError("지원 장치는 auto/cpu/cuda/mps입니다")
         if self.device == "auto":
             if torch.cuda.is_available():
                 return torch.device("cuda")
@@ -487,7 +533,9 @@ class Trainer:
         self.model = model.to(self.device)
         self.train_loader = train_loader
         self.val_loader = val_loader
-        self.criterion = criterion
+        self.criterion = criterion.to(self.device)
+        if not isinstance(criterion, nn.CrossEntropyLoss) or criterion.reduction != "mean" or criterion.weight is not None:
+            raise ValueError("Trainer는 비가중 mean CrossEntropyLoss 분류 전용입니다")
 
         # Optimizer & Scheduler
         self.optimizer = torch.optim.AdamW(
@@ -513,6 +561,8 @@ class Trainer:
         # Early Stopping 상태
         self._best_val_loss = float("inf")
         self._es_counter = 0
+        self._best_model_state: dict | None = None
+        self._start_epoch = 0
 
         # 체크포인트 디렉토리
         os.makedirs(self.config.checkpoint_dir, exist_ok=True)
@@ -524,7 +574,7 @@ class Trainer:
         np.random.seed(seed)
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
-        os.environ["PYTHONHASHSEED"] = str(seed)
+        # PYTHONHASHSEED는 실행 전에 환경에서 설정; 여기서 hash seed를 바꾸지 않음
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
@@ -532,6 +582,7 @@ class Trainer:
     def _train_one_epoch(self) -> float:
         self.model.train()
         running_loss = 0.0
+        total = 0
         pbar = tqdm(self.train_loader, desc="  Train", leave=False)
 
         for inputs, targets in pbar:
@@ -539,14 +590,23 @@ class Trainer:
 
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
+            if outputs.ndim != 2 or targets.ndim != 1 or targets.dtype != torch.int64:
+                raise ValueError("분류 출력(N,C)/int64 target(N,)가 필요합니다")
+            if torch.any((targets < 0) | (targets >= outputs.size(1))):
+                raise ValueError("ignore/unknown label은 지원하지 않습니다")
             loss = self.criterion(outputs, targets)
+            if not torch.isfinite(loss).item():
+                raise ValueError("손실이 finite가 아닙니다")
             loss.backward()
             self.optimizer.step()
 
-            running_loss += loss.item()
+            running_loss += loss.item() * targets.size(0)
+            total += targets.size(0)
             pbar.set_postfix(loss=f"{loss.item():.4f}")
 
-        return running_loss / len(self.train_loader)
+        if total == 0:
+            raise ValueError("학습 DataLoader가 비어 있습니다")
+        return running_loss / total
 
     # ── Validate ──
     @torch.no_grad()
@@ -559,15 +619,23 @@ class Trainer:
         for inputs, targets in self.val_loader:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             outputs = self.model(inputs)
+            if outputs.ndim != 2 or targets.ndim != 1 or targets.dtype != torch.int64:
+                raise ValueError("분류 출력(N,C)/int64 target(N,)가 필요합니다")
+            if torch.any((targets < 0) | (targets >= outputs.size(1))):
+                raise ValueError("ignore/unknown label은 지원하지 않습니다")
             loss = self.criterion(outputs, targets)
+            if not torch.isfinite(loss).item():
+                raise ValueError("손실이 finite가 아닙니다")
 
-            running_loss += loss.item()
+            running_loss += loss.item() * targets.size(0)
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
 
-        avg_loss = running_loss / len(self.val_loader)
-        accuracy = 100.0 * correct / total if total > 0 else 0.0
+        if total == 0:
+            raise ValueError("검증 DataLoader가 비어 있습니다")
+        avg_loss = running_loss / total
+        accuracy = 100.0 * correct / total
         return avg_loss, accuracy
 
     # ── 체크포인트 저장 ──
@@ -581,6 +649,8 @@ class Trainer:
                 "scheduler_state_dict": self.scheduler.state_dict(),
                 "history": self.history,
                 "best_val_loss": self._best_val_loss,
+                "es_counter": self._es_counter,
+                "best_model_state": self._best_model_state,
             },
             path,
         )
@@ -589,21 +659,31 @@ class Trainer:
     # ── 체크포인트 복원 ──
     def resume(self, path: str) -> int:
         """체크포인트에서 학습 상태를 복원하고, 다음 시작 에포크를 반환한다."""
-        ckpt = torch.load(path, map_location=self.device, weights_only=False)
+        ckpt = torch.load(path, map_location=self.device, weights_only=True)
+        required = {"epoch", "model_state_dict", "optimizer_state_dict", "scheduler_state_dict", "history", "best_val_loss", "es_counter", "best_model_state"}
+        if not required <= ckpt.keys():
+            raise ValueError("이 판본의 재개 상태 키가 누락되었습니다")
         self.model.load_state_dict(ckpt["model_state_dict"])
         self.optimizer.load_state_dict(ckpt["optimizer_state_dict"])
         self.scheduler.load_state_dict(ckpt["scheduler_state_dict"])
         self.history = ckpt["history"]
         self._best_val_loss = ckpt["best_val_loss"]
+        # 이전 템플릿 checkpoint의 누락 상태를 0/default로 추측하지 않는다.
+        self._es_counter = ckpt["es_counter"]
+        self._best_model_state = ckpt["best_model_state"]
+        self._start_epoch = ckpt["epoch"] + 1
         start_epoch = ckpt["epoch"] + 1
         print(f"Resumed from {path} (next epoch: {start_epoch})")
         return start_epoch
 
     # ── Early Stopping 체크 ──
     def _check_early_stopping(self, val_loss: float, epoch: int) -> bool:
+        if not np.isfinite(val_loss):
+            raise ValueError("검증 손실이 finite가 아닙니다")
         if val_loss < self._best_val_loss - self.config.delta:
             self._best_val_loss = val_loss
             self._es_counter = 0
+            self._best_model_state = copy.deepcopy(self.model.state_dict())
             path = self._save_checkpoint(epoch, "best_model.pt")
             print(f"  ** Best model saved (val_loss={val_loss:.4f}) -> {path}")
             return False
@@ -615,13 +695,17 @@ class Trainer:
             return self._es_counter >= self.config.patience
 
     # ── 메인 학습 루프 ──
-    def fit(self, start_epoch: int = 0):
+    def fit(self, start_epoch: int | None = None):
         """학습을 실행한다."""
         print(f"Device: {self.device}")
         print(f"Model params: {sum(p.numel() for p in self.model.parameters()):,}")
         print(f"Config: {self.config}")
         print("-" * 60)
 
+        if start_epoch is None:
+            start_epoch = self._start_epoch
+        if not 0 <= start_epoch < self.config.num_epochs:
+            raise ValueError("시작 epoch는 남은 학습 범위 안에 있어야 합니다")
         total_start = time.time()
 
         for epoch in range(start_epoch, self.config.num_epochs):
@@ -667,11 +751,10 @@ class Trainer:
         print(f"Best val loss: {self._best_val_loss:.4f}")
 
         # 최적 모델 복원
-        best_path = os.path.join(self.config.checkpoint_dir, "best_model.pt")
-        if os.path.exists(best_path):
-            ckpt = torch.load(best_path, map_location=self.device, weights_only=False)
-            self.model.load_state_dict(ckpt["model_state_dict"])
-            print("Best model weights restored.")
+        if self._best_model_state is not None:
+            self.model.load_state_dict(self._best_model_state)
+            self.model.eval()
+            print("Best model weights restored for inference.")
 
     # ── 시각화 ──
     def plot(self, save_path: str | None = None):
@@ -715,6 +798,10 @@ class Trainer:
 if __name__ == "__main__":
     import torch.nn.functional as F
     from torchvision import datasets, transforms
+    from torch.utils.data import random_split
+
+    # 모델·분할 생성 전에 seed 적용 (Trainer 생성자만으로 초기 가중치는 제어 불가)
+    Trainer._set_seed(42)
 
     # 데이터 (CIFAR-10 예시)
     transform = transforms.Compose([
@@ -722,10 +809,11 @@ if __name__ == "__main__":
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)),
     ])
     train_ds = datasets.CIFAR10("./data", train=True, download=True, transform=transform)
-    val_ds = datasets.CIFAR10("./data", train=False, transform=transform)
+    # 공식 test split은 튜닝/early stopping에 쓰지 않는다.
+    train_ds, val_ds = random_split(train_ds, [40000, 10000], generator=torch.Generator().manual_seed(42))
 
-    train_loader = DataLoader(train_ds, batch_size=128, shuffle=True, num_workers=2)
-    val_loader = DataLoader(val_ds, batch_size=256, shuffle=False, num_workers=2)
+    train_loader = DataLoader(train_ds, batch_size=128, shuffle=True, num_workers=0)
+    val_loader = DataLoader(val_ds, batch_size=256, shuffle=False, num_workers=0)
 
     # 간단한 CNN 모델
     class SimpleCNN(nn.Module):
@@ -766,8 +854,23 @@ if __name__ == "__main__":
 
 ---
 
+각 독립 run은 별도 checkpoint_dir를 사용한다. Trainer는 메모리에 best state를 deepcopy하고 checkpoint에도 포함하므로 가중치 저장 비용이 늘어난다. 다른 run의 best_model.pt를 자동으로 읽지 않는다. resume은 이 판본에서 저장한 es_counter/best_model_state 키를 요구하고 이전 checkpoint를 임의 기본값으로 복원하지 않는다. RNG·DataLoader shuffle/worker 상태는 저장하지 않아 resume이 끊김 없는 학습과 수치적으로 같다는 보장은 없다. fit 종료는 추론용 best 가중치만 복원하므로 이후 학습은 재개용 checkpoint를 resume해야 optimizer/scheduler와 모델 상태가 맞는다. 파일은 신뢰 가능한 자신의 기록만 읽고 메타데이터는 weights_only가 허용하는 타입으로 제한한다.
+
+통합 CIFAR 예제는 공식 train50,000개를40,000/10,000으로 분할하고 공식 test10,000개를 선택 과정에서 사용하지 않는다. test 최종 평가 코드는 별도로 구성해야 한다. download=True는 네트워크·저장 공간을 요구하며 여기서 실제 다운로드/전체 학습을 검증하지 않았다. worker>0은 파일 최상위 함수와 main guard·worker RNG를 확인한 뒤 설정한다. 미지원/빈 입력·non-finite loss는 학습 성공으로 숨기지 않는다.
+
 ## 참고 자료 (References)
 
+2026-10-04 확인: 공식2.14 계약, 로컬 설치2.14.1을 구분한다.
+
+- [ReduceLROnPlateau 현재 signature·bad epoch 조건](https://docs.pytorch.org/docs/2.14/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html)
+- [optimizer 이후 scheduler.step](https://docs.pytorch.org/docs/2.14/optim.html)
+- [체크포인트 상태·best deepcopy](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html)
+- [CrossEntropyLoss reduction/weight/ignore 조건](https://docs.pytorch.org/docs/2.14/generated/torch.nn.CrossEntropyLoss.html)
+- [torch.load weights_only 제한](https://docs.pytorch.org/docs/2.14/notes/serialization.html)
+- [DataLoader worker 설정](https://docs.pytorch.org/docs/2.14/data.html)
+- [CIFAR10 원 저자 데이터 크기/분할](https://www.cs.toronto.edu/~kriz/cifar.html)
+- [CIFAR10 공식 dataset 계약](https://docs.pytorch.org/vision/stable/generated/torchvision.datasets.CIFAR10.html)
+- [PYTHONHASHSEED 시작 환경](https://docs.python.org/3/using/cmdline.html)
 - [PyTorch Training Loop 공식 튜토리얼](https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html)
 - [PyTorch Learning Rate Scheduler 문서](https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate)
 - [Reproducibility in PyTorch](https://pytorch.org/docs/stable/notes/randomness.html)
@@ -778,5 +881,5 @@ if __name__ == "__main__":
 
 ## 관련 문서
 
-- [상위 폴더: Deep Learning](../deep-learning/)
-- [데이터 처리 파이프라인](../../data-processing/)
+- [딥러닝 읽기 순서](./README.md)
+- 데이터 전처리/파이프라인은 학습 루프 전에 준비해야 한다. 원래 ../../data-processing/ 링크는 대상이 없어 제거했다.

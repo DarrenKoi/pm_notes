@@ -2,15 +2,20 @@
 tags: [feature-engineering, sklearn, encoding, scaling]
 level: intermediate
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # 피처 엔지니어링(Feature Engineering) 실전 가이드
+
+> [!info] 2026-10-04 검토
+> 교육용 예제입니다. 필요한 입력·실행 순서·판본·검증 경계는 [데이터 처리 목차](./README.md)와 [공통 적용 조건](./verified-conditions.md)을 먼저 확인하세요.
 
 > 원시 데이터를 ML 모델이 학습하기 좋은 형태로 변환하는 핵심 전처리 기법 모음
 
 ## 왜 필요한가? (Why)
 
-- **ML 모델은 숫자만 이해한다** - 범주형 문자열, 날짜, 텍스트 등을 그대로 넣을 수 없다
+- **입력 계약은 모델마다 다르다** - 이 문서의 sklearn 레시피는 주로 수치 행렬을 만든다. 범주형 입력을 지원하는 모델도 있으므로 모델·라이브러리 조건을 확인한다
 - **스케일 차이가 학습을 방해한다** - 키(170cm)와 몸무게(70kg)의 단위 차이가 거리 기반 알고리즘(KNN, SVM)에 큰 영향을 준다
 - **좋은 피처가 좋은 모델을 만든다** - 복잡한 모델보다 잘 설계된 피처가 성능에 더 큰 영향을 줄 때가 많다
 - **실무에서는 raw data가 그대로 쓰이는 경우가 거의 없다** - 결측치, 이상치, 비정형 데이터 등 전처리가 필수
@@ -151,8 +156,8 @@ print(le.inverse_transform(y_encoded))  # 원래 값 복원
 
 | 스케일러 | 수식 | 결과 범위 | 이상치 민감도 | 적합한 경우 |
 |----------|------|-----------|---------------|-------------|
-| `StandardScaler` | (x - mean) / std | 평균=0, 표준편차=1 | 민감 | 정규분포에 가까운 데이터 |
-| `MinMaxScaler` | (x - min) / (max - min) | [0, 1] | 매우 민감 | 범위가 명확한 데이터 |
+| `StandardScaler` | (x - mean) / std | 학습 값 중심화·분산 스케일링 (상수 열 예외) | 민감 | 스케일에 민감한 모델; 정규분포로 바꾸는 방법은 아님 |
+| `MinMaxScaler` | (x - min) / (max - min) | 학습 최소/최대는 [0, 1]; 새 값은 벗어날 수 있음 | 매우 민감 | 범위가 명확한 데이터 |
 | `RobustScaler` | (x - median) / IQR | 중앙값=0 | **강건** | 이상치가 많은 데이터 |
 
 #### 스케일러 코드 비교
@@ -210,7 +215,8 @@ X_robust = rs.fit_transform(df[["age", "salary"]])
 # 나이를 10세 단위로 구간화
 df["age_bin"] = pd.cut(
     df["age"],
-    bins=[0, 30, 40, 50, 60],
+    bins=[20, 30, 40, 50, 60],
+    right=False,  # [20,30), [30,40)처럼 30세를 30대에 넣음
     labels=["20대", "30대", "40대", "50대"],
 )
 
@@ -329,7 +335,7 @@ tfidf_df = pd.DataFrame(
 print(tfidf_df.head())
 ```
 
-> **CountVectorizer vs TfidfVectorizer**: CountVectorizer는 단순 빈도, TfidfVectorizer는 문서 전체에서의 희귀도(IDF)까지 반영한다. 일반적으로 TfidfVectorizer가 더 좋은 성능을 보인다.
+> **CountVectorizer vs TfidfVectorizer**: CountVectorizer는 단순 빈도, TfidfVectorizer는 문서 전체에서의 희귀도(IDF)까지 반영한다. 어느 쪽이 더 좋은지는 실제 과제·분할·모델을 고정해 평가한다. 단어 기반 기본 tokenizer는 한국어 형태소 분석기가 아니다.
 
 ---
 
@@ -387,12 +393,12 @@ sklearn 파이프라인에 통합 가능한 자체 변환기를 만든다.
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
-class DatetimeFeatureExtractor(BaseEstimator, TransformerMixin):
+class DatetimeFeatureExtractor(TransformerMixin, BaseEstimator):
     """날짜 컬럼에서 시간 피처를 추출하는 커스텀 변환기."""
 
     def __init__(self, column: str, features: list[str] | None = None):
         self.column = column
-        self.features = features or ["year", "month", "weekday"]
+        self.features = features
 
     def fit(self, X, y=None):
         # 학습할 통계량이 없으므로 self 반환
@@ -402,22 +408,28 @@ class DatetimeFeatureExtractor(BaseEstimator, TransformerMixin):
         X = X.copy()
         dt = pd.to_datetime(X[self.column])
 
+        features = ["year", "month", "weekday"] if self.features is None else self.features
+        invalid = set(features) - {"year", "month", "day", "weekday", "hour"}
+        if invalid:
+            raise ValueError(f"지원하지 않는 날짜 피처: {sorted(invalid)}")
         result = pd.DataFrame(index=X.index)
-        if "year" in self.features:
+        if "year" in features:
             result[f"{self.column}_year"] = dt.dt.year
-        if "month" in self.features:
+        if "month" in features:
             result[f"{self.column}_month"] = dt.dt.month
-        if "day" in self.features:
+        if "day" in features:
             result[f"{self.column}_day"] = dt.dt.day
-        if "weekday" in self.features:
+        if "weekday" in features:
             result[f"{self.column}_weekday"] = dt.dt.weekday
-        if "hour" in self.features:
+        if "hour" in features:
             result[f"{self.column}_hour"] = dt.dt.hour
 
         return result
 
     def get_feature_names_out(self, input_features=None):
-        return [f"{self.column}_{f}" for f in self.features]
+        features = ["year", "month", "weekday"] if self.features is None else self.features
+        # transform의 고정 출력 순서와 동일한 이름을 반환한다.
+        return np.asarray([f"{self.column}_{f}" for f in ["year", "month", "day", "weekday", "hour"] if f in features], dtype=object)
 
 
 # 사용 예시

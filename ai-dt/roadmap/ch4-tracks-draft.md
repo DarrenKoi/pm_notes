@@ -4,11 +4,17 @@ level: drafting
 last_updated: 2026-05-15
 version: 0.1
 related: [./itc-aix-roadmap-outline.md, ./ch3-tobe-draft.md, ./quick-win-cards.md]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # Ch.4 추진 트랙 — 5 능력 × 3 트랙 매트릭스 — 슬라이드 드래프트 (v0.1)
 
-> [Outline §Ch.4](./itc-aix-roadmap-outline.md#chapter-4-추진-트랙--5-능력-×-3-트랙-매트릭스-67p) 본문 드래프트. **7슬라이드 분량** (가장 무거운 챕터).
+> [!info] 2026-10-04 검토 — 능력·트랙 구성 초안
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
+
+> [Outline §Ch.4](./itc-aix-roadmap-outline.md#Chapter%204.%20%EC%B6%94%EC%A7%84%20%ED%8A%B8%EB%9E%99%20%E2%80%94%205%20%EB%8A%A5%EB%A0%A5%20%C3%97%203%20%ED%8A%B8%EB%9E%99%20%EB%A7%A4%ED%8A%B8%EB%A6%AD%EC%8A%A4%20%286~7p%29) 본문 드래프트. **7슬라이드 분량** (가장 무거운 챕터).
 > 작성 원칙: 본문 팀명·도메인 라벨 ✕. 5 능력으로만 기술. 트랙별 무게 = Track 1(1.5p) · Track 2(3p, 메인) · Track 3(3p, 메인).
 
 ## 슬라이드 흐름
@@ -90,7 +96,7 @@ Slide 7 — 능력 횡전개 메시지
 ### 본문 하단 박스 — 입구 메시지
 
 > **"Track 1은 모든 팀의 entry point — AIX TF 공통 능력이 가장 빠르게 흐를 수 있는 통로."**
-> Quick Win #1 ([quick-win-cards.md](./quick-win-cards.md#qw-1)) 와 직접 연결.
+> Quick Win #1 ([quick-win-cards.md](./quick-win-cards.md#QW%20%231%20%E2%80%94%20%ED%98%84%EC%9E%A5%20%EC%9D%98%EB%A2%B0%20%EB%B6%84%EB%A5%98%C2%B7%EB%9D%BC%EC%9A%B0%ED%8C%85%20%E2%98%85%20Hero)) 와 직접 연결.
 
 ### Speaker notes
 > "Track 1이 1.5p로 가장 짧은 이유는 *모든 팀이 의뢰를 받기* 때문에 entry point로서의 균일성·단순성이 높기 때문입니다. 6팀 모두에 같은 패턴이 적용 가능합니다. 1년차 Quick Win #1이 여기에 위치합니다."
@@ -114,7 +120,7 @@ Slide 7 — 능력 횡전개 메시지
 - 검측 이미지 다중 분류 (정확도 ≥90%)
 - 알람 자동 카테고라이즈 + 우선순위 큐
 - 데이터 의존성: A2 (계측 데이터 인벤토리)
-- → Quick Win #3 ([quick-win-cards.md](./quick-win-cards.md#qw-3)) 직접 연결
+- → Quick Win #3 ([quick-win-cards.md](./quick-win-cards.md#QW%20%233%20%E2%80%94%20%EA%B2%80%EC%B8%A1%20%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%9E%90%EB%8F%99%20%EB%B6%84%EB%A5%98%C2%B7%EC%84%A0%EB%B3%84%20%E2%98%85%20Hero)) 직접 연결
 
 #### RAG — 운영 매뉴얼 응답
 - 운영 매뉴얼·과거 셋업 로그·교대 인계 노트 의미 기반 회수
@@ -124,7 +130,7 @@ Slide 7 — 능력 횡전개 메시지
 #### 초안 생성 — 검측 리포트
 - 검측 결과 → 자동 리포트 초안 → 분석가 편집
 - 분석 보고서 작성시간 ↓40% (L1 KPI Stream 2)
-- → Quick Win #2 ([quick-win-cards.md](./quick-win-cards.md#qw-2)) 직접 연결
+- → Quick Win #2 ([quick-win-cards.md](./quick-win-cards.md#QW%20%232%20%E2%80%94%20%EB%B6%84%EC%84%9D%C2%B7%EA%B2%80%EC%B8%A1%20%EB%A6%AC%ED%8F%AC%ED%8A%B8%20%EC%B4%88%EC%95%88%20%EC%9E%90%EB%8F%99%ED%99%94)) 직접 연결
 
 ### 본문 하단 박스
 > *"Track 2 Active = 검측·분석·운영 3개 stream을 동시에 가속하는 1~2년차 핵심 트랙."*
@@ -152,7 +158,7 @@ Slide 7 — 능력 횡전개 메시지
 - FDC 시계열 이상 탐지 모델 — 알람 전 시그널 캡처
 - 결함 예측 — 특정 조건에서 결함 발생 확률
 - 데이터 의존성: A3 anchor (FDC 사후분석률) + 한정 범위 장비 라벨
-- 1년차 시드 PoC: Quick Win #4 ([quick-win-cards.md](./quick-win-cards.md#qw-4)) — *"완성 아님, 시그널 검증"*
+- 1년차 시드 PoC: Quick Win #4 ([quick-win-cards.md](./quick-win-cards.md#QW%20%234%20%E2%80%94%20%EC%9E%A5%EB%B9%84%20%EC%95%88%EC%A0%95%EC%84%B1%28FDC%29%20%EC%9D%B4%EC%83%81%20%EC%8B%9C%EA%B7%B8%EB%84%90%20%EC%8B%9C%EB%93%9C%20%E2%98%85%20Hero%20%28%EC%A1%B0%EA%B1%B4%EB%B6%80%29)) — *"완성 아님, 시그널 검증"*
 - 3년차 본 적용: 예지보전 hit rate ≥40% (★ Hero 5)
 
 #### 추천·시뮬레이션 — OPC 보조·검사 우선순위
@@ -279,12 +285,12 @@ Slide 7 — 능력 횡전개 메시지
 | **개발 비용** | 5 능력 × 3 트랙 = 15회 개발이 아닌 5회 개발 |
 | **운영 비용** | 모니터링·재학습 파이프라인을 능력별로 통합 |
 | **품질** | 한 트랙에서 발견된 개선이 다른 트랙으로 즉시 전파 |
-| **암묵지** | 캡처된 노하우가 모든 트랙의 RAG 품질에 동시 영향 ([순환고리 PoC](./quick-win-cards.md#qw-5)) |
+| **암묵지** | 캡처된 노하우가 모든 트랙의 RAG 품질에 동시 영향 ([순환고리 PoC](./quick-win-cards.md#QW%20%235%20%E2%80%94%20%EC%95%94%EB%AC%B5%EC%A7%80%20%EC%88%9C%ED%99%98%EA%B3%A0%EB%A6%AC%20PoC%20%28Enabler%20%ED%9A%A1%EB%8B%A8%29)) |
 
 ### 본문 하단 박스 — 차별 메시지
 
 > **"이게 ITC 차별의 정량적 근거 — 5 stream을 모두 가진 단위만이 *횡전개의 곱셈 효과* 를 가질 수 있다."**
-> (→ [Ch.2 Slide B](./ch2-vision-draft.md#slide-b--왜-itc인가-slide-22) "왜 ITC인가" backing)
+> (→ [Ch.2 Slide B](./ch2-vision-draft.md#Slide%20B%20%E2%80%94%20%EC%99%9C%20ITC%EC%9D%B8%EA%B0%80%20%28Slide%202.2%29) "왜 ITC인가" backing)
 
 ### Speaker notes
 > "이 슬라이드가 추진 트랙 챕터의 *결론* 입니다. 매트릭스는 *15개 적용*처럼 보이지만, 능력 인프라는 *5개*입니다. 이게 보고서 전체에서 가장 강력한 *효율 메시지*이고, *왜 ITC가 단독으로 추진할 가치가 있는가*의 정량 근거입니다."

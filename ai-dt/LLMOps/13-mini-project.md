@@ -2,7 +2,14 @@
 tags: [llmops, evaluation, mini-project, capstone]
 level: advanced
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
+
+> [!info] 검토 범위 — 2026-10-04
+> [공통 적용 조건](./verified-conditions.md)과 [정리 기록](./organization-log.md)에 판본·일차 근거·로컬 검증을 기록했다. 실제 회사 운영·모델/서버 품질·조직 승인·Claude 협의·읽기 화면은 미확인이다.
+
 
 # 13. Mini Project — 사내 RAG/Agent 평가 파이프라인 구축
 
@@ -11,7 +18,7 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - 지식은 따로 배우면 흩어진다. 데이터셋·자동지표·LLM-judge·RAG지표·안전·CI게이트·모니터링을 **한 파이프라인**으로 통합해야 실무 감각이 생긴다.
-- 산출물(`eval_set.jsonl` + `run_eval.py` + CI gate + 리포트)은 그대로 **실제 사내 프로젝트의 출발점**이 된다.
+- 아래는 학습용 산출물 구성안이다. 해당 examples 패키지는 아직 이 폴더에 없고 기존 실제 프로젝트를 구현/검증한 문서도 아니다.
 
 ## 핵심 개념 (What) — 프로젝트 골격
 
@@ -35,73 +42,116 @@ llmops-eval/
 
 ## 어떻게 진행하는가? (How)
 
+파일 트리는 만들려는 프로젝트의 구성도이며 실행 파일 목록이 아니다. 코드 블록은 선행 함수/입력을 준비한 조립 예제다. 실제 서비스·운영 승인·대표 평가셋은 미확인이다.
+
 ### 1단계 — 주제 선정 & 요구사항 정의
 - **대상 시스템**: 사내 공정 문서 RAG QA(예: 특정 공정 카테고리 하나로 스코프 축소).
-- **성공 기준(측정 가능하게)**: 예 — faithfulness ≥ 0.85, 거절 정확도 ≥ 0.9, 누출률 0, p95 ≤ 3s.
+- **성공 기준(제안값, 조직 승인 전)**: 예 — faithfulness ≥ 0.85, 거절 정확도 ≥ 0.9, 누출률 0, p95 ≤ 3s.
 - **평가 축 선정**: 검색·생성·안전을 최소 하나씩 포함. → [04](./04-llm-evaluation-overview.md)
 
 ### 2단계 — 평가 데이터셋 구축 (→ [05](./05-eval-dataset-construction.md))
-- DRM 문서를 VLM(Qwen3-VL)으로 텍스트화 → context 확보.
-- context에서 합성 QA 생성 + 사람 검수로 golden 50건.
-- **거절 케이스**(문서에 없는 질문) 10~20% 포함.
+- 승인된 export/화면·VLM 후보 방식으로 근거 확보; 원문 숫자/표/페이지를 검수.
+- context에서 합성 QA 생성 + 사람 검수로 시작 규모 예시 golden 50건.
+- **거절 케이스**(문서에 없는 질문) 시작 비율 예시10~20% 포함; 실제 위험/사용 분포에 맞춰 근거 기록.
 - `eval_set.jsonl` 완성, 카테고리·난이도 균형 확인.
 
 ```python
-# 최소 데이터셋 자가검증
 import json
-ds = [json.loads(l) for l in open("eval_set.jsonl", encoding="utf-8")]
-assert all("question" in c and "meta" in c for c in ds)
-refuse = [c for c in ds if not c["meta"].get("answerable", True)]
-print(f"총 {len(ds)}건 / 거절 케이스 {len(refuse)}건({len(refuse)/len(ds):.0%})")
+
+def validate_dataset(cases):
+    if not cases: raise ValueError("빈 평가셋")
+    ids = []
+    for case in cases:
+        if not isinstance(case.get("id"),str) or not case["id"] or not isinstance(case.get("question"),str) or not case["question"].strip():
+            raise ValueError("id/질문 필요")
+        meta = case.get("meta",{})
+        if not isinstance(meta.get("category"),str) or not meta["category"] or type(meta.get("answerable")) is not bool:
+            raise ValueError("category/검수한 answerable 필요")
+        if not isinstance(case.get("contexts"),list): raise ValueError("검색 문맥 목록 필요")
+        ids.append(case["id"])
+    if len(set(ids)) != len(ids): raise ValueError("중복 id")
+    return cases
+
+def load_dataset(path="eval_set.jsonl"):
+    with open(path,encoding="utf-8") as file:
+        cases = [json.loads(line) for line in file if line.strip()]
+    return validate_dataset(cases)
+# load_dataset() 후 검수/출처·실사용 대표성 확인. 필드 통과는 golden 승인 증거가 아님.
 ```
 
 ### 3단계 — 평가 대상 시스템 구현 (→ [02](./02-prompt-management-versioning.md))
 - 버전 관리되는 프롬프트로 RAG 답변 함수 `answer(question) -> (pred, contexts, retrieved_ids)`.
-- **Arize Phoenix** 계측 설정(`tracing.py`) — OpenAI 클라이언트 자동 계측으로 검색·생성 span 기록. → [03](./03-tracing-observability.md)
+- **Arize Phoenix** 계측 설정(`tracing.py`) — OpenAI 자동 계측은 LLM 호출만 기록; 검색 span은 직접 생성. → [03](./03-tracing-observability.md)
 
 ```python
-# tracing.py — 프로젝트 시작 시 1회 호출
+# 03의 초기화 함수를 앱 시작 시 한 번만 호출한다. collector/network 수신은 미검증.
 import os
-os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://phoenix.internal:6006"
-
-from openinference.instrumentation.openai import OpenAIInstrumentor
 from phoenix.otel import register
-tracer_provider = register()
-OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+from openinference.instrumentation import TraceConfig
+from openinference.instrumentation.openai import OpenAIInstrumentor
+
+def setup_tracing():
+    provider = register(endpoint=os.environ["PHOENIX_COLLECTOR_ENDPOINT"],
+                        batch=True, auto_instrument=False, verbose=False)
+    config = TraceConfig(hide_inputs=True, hide_outputs=True,
+        hide_llm_invocation_parameters=True, hide_llm_tools=True,
+        hide_embedding_vectors=True, hide_embeddings_text=True)
+    OpenAIInstrumentor().instrument(tracer_provider=provider, config=config)
+    return provider  # 종료 시 shutdown(); 중복 instrument 금지
 ```
 
 ### 4단계 — 채점기 조립 (→ [06](./06-automatic-metrics.md)/[07](./07-llm-as-a-judge.md)/[08](./08-rag-evaluation.md)/[10](./10-safety-hallucination-guardrails.md))
 
 ```python
-from scorers.automatic import cosine_sim
-from scorers.judge import judge_pointwise
-from scorers.rag import faithfulness, recall_at_k
-from scorers.safety import refusal_correctness, leak_scan
+import math
+# 선행06/07/08/10 함수들을 준비해 아래 mapping에 전달한다.
+# semantic=cosine_sim, judge=judge_pointwise, faithfulness=faithfulness,
+# recall@5=recall_at_k, refusal_ok=refusal_correctness, leak_scan_hit=leak_scan
 
-def score_case(case, out):
+def score_case(case, out, scorers):
     pred, contexts, retrieved_ids = out
-    row = {
-        "semantic":     cosine_sim(case, pred),
-        "judge":        judge_pointwise(case, pred)["score"],
-        "faithfulness": faithfulness(pred, contexts),
-        "recall@5":     recall_at_k(retrieved_ids, case["meta"].get("gold_ids", []), 5),
-        "refusal_ok":   refusal_correctness(case, pred),
-        "leak":         0.0 if leak_scan(pred)["leak"] else 1.0,   # 누출 없으면 1
-    }
-    return row
+    row, status = {}, {}
+    for name in ("semantic","judge","faithfulness","recall@5","refusal_ok","leak_scan_hit"):
+        try:
+            if name in ("semantic","judge"):
+                if not case.get("reference"): raise ValueError("reference 미확인")
+                value = scorers[name](case,pred)
+                if name == "judge": value = value["score"]
+            elif name == "faithfulness":
+                if case["meta"]["answerable"] is False:
+                    row[name],status[name] = None,"not_applicable_refusal"; continue
+                value = scorers[name](pred,contexts)
+            elif name == "recall@5":
+                gold = case["meta"].get("gold_ids")
+                if not gold: raise ValueError("gold id 미확인")
+                value = scorers[name](retrieved_ids,gold,5)
+            elif name == "refusal_ok": value = scorers[name](case,pred)
+            else: value = float(scorers[name](pred)["leak"])  # 1=스캔 hit, 실제 누출 확정 아님
+            value = float(value)
+            if not math.isfinite(value): raise ValueError("비유한 점수")
+            row[name],status[name] = value,"measured"
+        except Exception as exc:
+            row[name],status[name] = None,"unconfirmed:"+type(exc).__name__
+    return {**row,"metric_status":status}
+# 실패/미확인을0 또는 안전1로 대체하지 않는다. 오류 원문/기밀은 출력하지 않는다.
 ```
 
 ### 5단계 — 하네스 실행 & 리포트 (→ [04](./04-llm-evaluation-overview.md))
 
 ```python
-def main():
-    ds = [json.loads(l) for l in open("eval_set.jsonl", encoding="utf-8")]
-    rows = [ {"id": c["id"], "category": c["meta"]["category"], **score_case(c, answer_full(c["question"]))}
-             for c in ds ]
-    dims = ["semantic","judge","faithfulness","recall@5","refusal_ok","leak"]
-    for d in dims:
-        print(f"{d:14s} {sum(r[d] for r in rows)/len(rows):.3f}")
-    # 카테고리별·실패 케이스 상위 N도 함께 출력 → 개선 우선순위
+def main(dataset, system_fn, scorers):
+    validate_dataset(dataset)
+    rows = [{"id":case["id"],"category":case["meta"]["category"],
+             **score_case(case,system_fn(case["question"]),scorers)} for case in dataset]
+    summary = {}
+    for name in rows[0]["metric_status"]:
+        values = [row[name] for row in rows if row["metric_status"][name] == "measured"]
+        summary[name] = {"mean":sum(values)/len(values) if values else None,
+            "n_measured":len(values), "n_total":len(rows),
+            "n_unconfirmed":sum(row["metric_status"][name].startswith("unconfirmed") for row in rows),
+            "n_not_applicable":sum(row["metric_status"][name].startswith("not_applicable") for row in rows)}
+    return rows,summary
+# 같은 적용 subset/coverage로 비교. unknown을 뺀 평균만으로 CI 통과로 보지 않음.
 ```
 
 ### 6단계 — 두 버전 비교 & CI 게이트 (→ [11](./11-online-eval-deployment.md))
@@ -115,7 +165,7 @@ def main():
 
 ### 7단계 — 사고 시뮬레이션 & 피드백 (→ [15](./15-incident-response-postmortem.md))
 - synthetic 실패 1건을 만들어 incident record와 postmortem을 작성한다.
-- 사고 케이스를 `redteam` 또는 `production-mined` eval case로 승격한다.
+- 사고 후보의 answerable/reference/출처를 사람이 검수한 뒤 redteam 또는 production-mined 평가셋으로 승격한다.
 - 새 케이스가 CI에서 재현되고, 패치 후 통과하는지 확인한다.
 
 ### 8단계 — 발표 & 피드백
@@ -142,7 +192,7 @@ def main():
 
 ## 관련 문서
 - [01. LLMOps 개요](./01-llmops-overview-lifecycle.md) — 전체 라이프사이클
-- [04~10] — 각 단계의 이론·구현
+- [04. 하네스](./04-llm-evaluation-overview.md)·[05. 데이터](./05-eval-dataset-construction.md)·[06. 자동지표](./06-automatic-metrics.md)·[07. Judge](./07-llm-as-a-judge.md)·[08. RAG](./08-rag-evaluation.md)·[09. Agent](./09-agent-tool-evaluation.md)·[10. 안전](./10-safety-hallucination-guardrails.md) — 각 단계의 서로 다른 역할
 - [11. 온라인 평가 & 배포](./11-online-eval-deployment.md) / [12. 모니터링](./12-monitoring-drift.md) — 확장 방향
 - [14. 아티팩트 계보와 거버넌스](./14-artifact-lineage-governance.md) / [15. Incident Response](./15-incident-response-postmortem.md) — 운영 준비도 보강
 

@@ -2,15 +2,20 @@
 tags: [eda, pandas, matplotlib, seaborn]
 level: beginner
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # EDA 레시피 모음 (Exploratory Data Analysis Recipes)
+
+> [!info] 2026-10-04 검토
+> 교육용 예제입니다. 필요한 입력·실행 순서·판본·검증 경계는 [데이터 처리 목차](./README.md)와 [공통 적용 조건](./verified-conditions.md)을 먼저 확인하세요.
 
 > 모델링 전 데이터를 빠르게 파악하기 위한 실전 EDA 코드 레시피 모음
 
 ## 왜 필요한가? (Why)
 
-- **모델링 전 필수 단계**: 데이터의 분포, 결측값, 이상치를 모르고 모델을 만들면 성능이 나올 수 없다
+- **모델링 전 필수 단계**: 데이터의 분포·결측·이상치와 수집 조건을 확인해 모델링 오류를 줄인다. EDA만으로 성능이 보장되지는 않는다
 - **데이터 품질 확인**: 수집된 데이터가 분석에 적합한지 판단하는 근거를 마련한다
 - **피처 엔지니어링 방향 설정**: 어떤 변수가 유의미하고, 어떤 변환이 필요한지 EDA를 통해 파악한다
 - **커뮤니케이션**: 데이터의 현황을 시각적으로 정리하여 팀원/의사결정자에게 공유한다
@@ -37,7 +42,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
 
-warnings.filterwarnings("ignore")
+# 경고를 일괄 숨기지 않는다. 알려진 특정 경고만 원인 확인 후 처리한다.
 
 # --- 한글 폰트 설정 ---
 import platform
@@ -52,7 +57,7 @@ else:  # Linux
 plt.rcParams["axes.unicode_minus"] = False  # 마이너스 기호 깨짐 방지
 
 # 기본 스타일
-sns.set_style("whitegrid")
+sns.set_theme(style="whitegrid", rc={"font.family": plt.rcParams["font.family"]})
 plt.rcParams["figure.figsize"] = (10, 6)
 plt.rcParams["figure.dpi"] = 100
 ```
@@ -104,7 +109,7 @@ df["embarked"].value_counts()
 
 ```python
 # 모든 object 타입 컬럼의 value_counts 한 번에 보기
-for col in df.select_dtypes(include="object").columns:
+for col in df.select_dtypes(include=["object", "string"]).columns:
     print(f"\n--- {col} ---")
     print(df[col].value_counts())
 ```
@@ -181,17 +186,17 @@ plt.show()
 # 모든 수치형 변수 분포 한 번에 보기
 numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
 n_cols = 3
-n_rows = (len(numeric_cols) + n_cols - 1) // n_cols
+n_rows = max(1, (len(numeric_cols) + n_cols - 1) // n_cols)
 
 fig, axes = plt.subplots(n_rows, n_cols, figsize=(5 * n_cols, 4 * n_rows))
-axes = axes.flatten()
+axes = np.asarray(axes).reshape(-1)
 
 for i, col in enumerate(numeric_cols):
     sns.histplot(data=df, x=col, bins=30, kde=True, ax=axes[i])
     axes[i].set_title(f"{col} 분포")
 
 # 빈 subplot 제거
-for j in range(i + 1, len(axes)):
+for j in range(len(numeric_cols), len(axes)):
     fig.delaxes(axes[j])
 
 plt.tight_layout()
@@ -313,7 +318,8 @@ plt.show()
 ```python
 # 교차표 (Crosstab) - 두 범주형 변수 간 관계
 ct = pd.crosstab(df["class"], df["survived"], margins=True, normalize="index")
-ct.columns = ["사망비율", "생존비율", "합계"]
+ct = ct.rename(columns={0: "사망비율", 1: "생존비율"})
+# normalize="index"의 margins는 합계 행을 만든다. 합계 열을 강제로 추가하지 않는다.
 print(ct.round(3))
 ```
 
@@ -341,7 +347,8 @@ def detect_outliers_iqr(df: pd.DataFrame, col: str, factor: float = 1.5) -> pd.S
     IQR = Q3 - Q1
     lower = Q1 - factor * IQR
     upper = Q3 + factor * IQR
-    return (df[col] < lower) | (df[col] > upper)
+    mask = ((df[col] < lower) | (df[col] > upper)).astype("boolean")
+    return mask.mask(df[col].isna(), pd.NA)
 
 
 # 사용 예시
@@ -374,9 +381,15 @@ from scipy import stats
 
 def detect_outliers_zscore(df: pd.DataFrame, col: str, threshold: float = 3.0) -> pd.Series:
     """Z-score 기반 이상치 탐지. True = 이상치."""
-    z_scores = np.abs(stats.zscore(df[col].dropna()))
-    mask = pd.Series(False, index=df.index)
-    mask.loc[df[col].dropna().index] = z_scores > threshold
+    values = df[col].to_numpy(dtype=float, na_value=np.nan)
+    # 결측은 미확인으로 유지한다. 중복 인덱스에서도 위치로 대응한다.
+    mask = pd.Series(pd.NA, index=df.index, dtype="boolean")
+    valid = np.flatnonzero(~np.isnan(values))
+    if len(valid) and np.std(values[valid]) > 0:
+        z_scores = np.abs(stats.zscore(values[valid]))
+        mask.iloc[valid] = z_scores > threshold
+    elif len(valid):
+        mask.iloc[valid] = False
     return mask
 
 
@@ -427,8 +440,12 @@ def run_full_eda(
         분석 결과 요약 딕셔너리
     """
     results = {}
+    if df.empty:
+        # 빈 입력을 정상 관측 결과로 해석하지 않는다.
+        return {"status": "empty", "missing": pd.DataFrame(),
+                "outliers": pd.DataFrame(), "correlation": pd.DataFrame()}
     numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
-    categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+    categorical_cols = df.select_dtypes(include=["object", "string", "category"]).columns.tolist()
 
     # ========== 1. 기본 정보 ==========
     print("=" * 60)
@@ -446,7 +463,7 @@ def run_full_eda(
     print("2. 결측값 분석")
     print("=" * 60)
     missing = df.isnull().sum()
-    missing_pct = (missing / len(df) * 100).round(2)
+    missing_pct = (missing / len(df) * 100).round(2) if len(df) else missing.astype(float)
     missing_df = pd.DataFrame({
         "결측수": missing, "결측비율(%)": missing_pct
     }).sort_values("결측비율(%)", ascending=False)
@@ -486,7 +503,7 @@ def run_full_eda(
             sns.histplot(data=df, x=col, bins=30, kde=True, ax=axes[i])
             axes[i].set_title(f"{col} 분포")
 
-        for j in range(i + 1, len(axes)):
+        for j in range(len(numeric_cols), len(axes)):
             fig.delaxes(axes[j])
 
         plt.suptitle("수치형 변수 분포", y=1.01, fontsize=14)
@@ -501,7 +518,7 @@ def run_full_eda(
         outlier_summary = {}
         for col in numeric_cols:
             mask = detect_outliers_iqr(df, col)
-            outlier_summary[col] = {"이상치수": mask.sum(), "비율(%)": round(mask.mean() * 100, 2)}
+            outlier_summary[col] = {"이상치수": mask.sum(), "비율(%)": round(float(mask.mean()) * 100, 2) if mask.notna().any() else np.nan}
 
         outlier_df = pd.DataFrame(outlier_summary).T
         outlier_df = outlier_df[outlier_df["이상치수"] > 0].sort_values("비율(%)", ascending=False)
@@ -559,7 +576,7 @@ def run_full_eda(
                 axes[i].set_title(f"{col}")
                 axes[i].tick_params(axis="x", rotation=45)
 
-            for j in range(i + 1, len(axes)):
+            for j in range(len(plot_cats), len(axes)):
                 fig.delaxes(axes[j])
 
             plt.suptitle("범주형 변수 분포", y=1.01, fontsize=14)
@@ -601,6 +618,6 @@ eda_results["correlation"]   # 상관계수 행렬
 
 ## 관련 문서
 
-- [데이터 전처리 기법](./data-preprocessing.md)
+- [결측·변환을 포함한 파이프라인](./data-pipeline-template.md)
 - [피처 엔지니어링](./feature-engineering.md)
 - [ML/DL 상위 폴더](../README.md)

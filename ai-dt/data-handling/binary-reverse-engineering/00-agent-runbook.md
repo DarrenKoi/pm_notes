@@ -2,22 +2,29 @@
 tags: [binary, reverse-engineering, runbook, agent, cd-sem]
 level: intermediate
 last_updated: 2026-07-10
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: work_reference
 ---
 
 # Agent Runbook — Binary 파일 구조 복원 파이프라인
+
+> [!info] 검토 범위 — 2026-10-04
+> 여기의 CDS1·offset48·stride16·recipe와 좌표는 합성 fixture의 학습 예다. 실제 CD-SEM/회사 데이터의 규격이 아니다. `bre.py`는 후보를 찾는 도구이며 출력의 hint가 “확정”이라고 표현해도 독립 근거를 검사한다. 정상 결과/포착한 분석 오류는 stdout JSON,인자 오류는 stderr/exit2일 수 있다. 구체 호출 계약은 [도구 README](./scripts/README.md)를 따른다. 원본 외의 전용 작업 경로에 결과를 저장하며 실제 장비 조사·벤더 연락·다른 agent 실행은 이 문서 정리에서 수행하지 않는다.
+
 
 > 다른 agent가 그대로 실행할 수 있는 phase 파이프라인. 각 phase는 **입력 · 명령 · 합격기준(acceptance) · 산출 JSON(handoff)** 을 명시한다. 한 phase의 산출 JSON이 다음 phase의 입력이 된다.
 
 ## 실행 원칙
 
-- **모든 `bre.py` 명령은 stdout에 JSON을 낸다.** 그 JSON을 파싱해 다음 phase에 넘긴다. 사람이 hex를 다시 읽을 필요가 없도록 설계됐다.
+- **분석 결과 계약을 검사한다.** exit status·JSON 파싱·`error`·필수 결과 구조를 함께 검사한다. `--help`/인자 오류는 JSON이 아니다. 원시 바이트/단위와 결과를 대조한다.
 - **각 phase는 합격기준을 통과해야 다음으로 넘어간다.** 통과 못 하면 해당 phase의 "실패 시" 지침을 따른다.
-- **파괴적 동작 없음.** 이 파이프라인은 읽기 전용이다. 원본 파일을 수정하지 않는다.
-- 시작 전 `python3 scripts/selftest.py`로 환경을 검증한다 (exit 0 = 정상).
+- **원본 보존.** 분석 입력은 읽기 전용이지만 결과 JSON/추출물은 별도 파일로 쓴다. 입력과 같은 결과 경로를 지정하지 않는다. 생성/재저장/추출도 승인된 사본/작업 경로에서만 수행한다.
+- 시작 전 `python3 scripts/selftest.py`로 환경을 검증한다 (현재 합성 검사28개·ALL PASS·exit0 확인).
 
 ## 산출물 규약 (Artifacts)
 
-각 phase는 작업 디렉토리에 JSON을 저장한다. 권장 파일명:
+각 phase는 작업 디렉토리에 JSON을 저장한다. 전용 작업 디렉터리를 먼저 만들고 입력/결과 경로 충돌과 기존 결과 덮어쓰기를 확인한다. 아래 `work/`는 그 디렉터리를 뜻한다. 권장 파일명:
 
 ```
 work/
@@ -37,8 +44,8 @@ work/
 
 **입력:** 대상 장비/파일 종류.
 **행동:** [03-legal-and-first-moves.md](./03-legal-and-first-moves.md) 확인. 벤더 apps 엔지니어에게 (a) 포맷 스펙, (b) CSV/XML export, (c) SEMI EDA/Interface A 피드가 있는지 먼저 묻는다.
-**합격기준:** "자사 데이터를 자사가 파싱"하는 범위이고 NDA/PO에 저촉 없음이 확인됨. 이미지 파일이면 Phase 2로 우회 가능.
-**실패 시:** 역공학 대신 벤더 export/EDA 경로로 데이터를 얻는다. 여기서 종료.
+**합격기준:** "자사 데이터를 자사가 파싱"하는 범위이고 NDA/PO에 저촉 없음이 확인됨. 이미지 확장자만으로 게이트를 면제하지 않는다. 권한이 확인된 사본에서 기존 reader 경로를 검토한다.
+**실패 시:** 미확인 권한/계약 범위의 실행은 보류하고 기록한다. export/EDA도 승인된 접근과 필요한 값/판본/단위를 충족하는지 확인한다.
 
 ---
 
@@ -46,17 +53,18 @@ work/
 
 **입력:** 대상 파일 1개 (`FILE`).
 **명령:**
+`FILE`은 승인된 입력 사본, `HEADER_SIZE`/`BEST_STRIDE`/`ABS_LO`/`ABS_HI`는 검증한 숫자 shell 변수다. 후속 단계 전에 값을 지정하고 미확인 값으로 실행하지 않는다.
 ```bash
 python3 scripts/bre.py triage "$FILE" > work/01_triage.json
 ```
 **읽을 필드:**
 - `magic_at_offset_0`, `head_ascii` — 알려진 컨테이너인가?
-- `entropy_verdict` — `compressed_or_encrypted`면 먼저 해제해야 한다.
+- `entropy_verdict` — `compressed_or_encrypted`는 고entropy 휴리스틱 후보다. 압축/암호화/무작위 payload를 단독 구분하지 않는다.
 - `embedded_signatures` — 파일 중간에 TIFF/zlib 등이 박혀 있나?
 - `ascii_strings`, `utf16le_strings` — recipe명, 장비 ID, 단위, 컬럼명 노출.
 
 **합격기준:**
-- `entropy_verdict != compressed_or_encrypted` (구조 분석 가능), **또는** 압축이면 해제 후 이 phase 재실행.
+- 알려진 header/reader/실제 decoder 결과와 자원 한도로 다음 분기를 정한다. 낮은entropy도 압축 부재를 증명하지 않는다. 압축으로 확인된 사본을 해제했다면 이 phase를 재실행한다.
 - magic이 알려진 포맷(TIFF/HDF5/zip 등)이면 → **Phase 2로 분기** (기존 reader 사용).
 
 **실패 시(압축):** `unblob -e out/ "$FILE"` 또는 Python `zlib`/`zstandard`로 해제 → 해제물로 Phase 1 재실행. 상세는 [01-toolkit-reference.md](./01-toolkit-reference.md) §1.
@@ -72,6 +80,7 @@ python3 scripts/bre.py triage "$FILE" > work/01_triage.json
 - **이미지(TIFF)면:**
   ```python
   import tifffile
+  FILE = "image.tif"  # 권한을 확인한 사본 경로로 변경
   with tifffile.TiffFile(FILE) as t:
       print(t.is_fei, t.is_sem)          # 벤더 자동감지
       if t.is_fei: print(t.fei_metadata) # Thermo/FEI
@@ -81,7 +90,7 @@ python3 scripts/bre.py triage "$FILE" > work/01_triage.json
   ```
 - **HDF5면** `h5py`, **SER/DM3/EMD면** `ncempy`, **STDF면** `pystdf`.
 
-**합격기준:** 기존 라이브러리가 메타데이터·픽셀·측정값을 읽어주면 → **여기서 종료** (역공학 불필요). 못 읽으면 Phase 3로.
+**합격기준:** 기존 라이브러리가 필요한 값/픽셀/메타와 단위·개수·판본을 원천과 대조해 읽어주면 → **여기서 종료** (역공학 불필요). 못 읽으면 Phase 3로.
 
 **Handoff:** 어떤 reader가 무엇까지 읽었는지 메모.
 
@@ -93,7 +102,7 @@ python3 scripts/bre.py triage "$FILE" > work/01_triage.json
 **행동:** **변수 하나만 바꾼** 파일 세트를 만든다. 이것이 이후 모든 정확도의 근거다.
 - `base.dat` — 기준.
 - `one_more_point.dat` — 측정점 **1개만 추가**. (count/stride를 드러냄)
-- `resaved.dat` — **같은 recipe 재저장**. (timestamp/checksum만 바뀜)
+- `resaved.dat` — **같은 recipe 재저장**. (timestamp/checksum 변화 후보; 다른 내부 값도 바뀔 수 있음)
 - `corpus_*.dat` — 같은 구조, 다른 데이터 4개 이상. (offset별 분산용)
 
 **합격기준:** 최소 2개(diff용), 권장 6개 이상(variance용). 각 변경이 "무엇을 바꿨는지" 기록됨.
@@ -116,19 +125,19 @@ python3 scripts/bre.py variance work/corpus_*.dat > work/04_variance.json
 ```bash
 python3 scripts/bre.py diff work/base.dat work/one_more_point.dat > work/04_diff_points.json
 ```
-- `size_delta` = **record stride** (측정점 1개 늘어난 만큼 커진 바이트 수).
-- `field_candidates` 중 `<I` delta==1 필드 = **count field**.
+- `size_delta`는 파일 크기 차이다. fixed-record 하나만 추가되고 header/trailer/압축/정렬이 바뀌지 않는 조건에서 stride 후보가 된다. 알려진record 경계와 여러 count 변화로 대조한다.
+- `field_candidates` 중 `<I` delta==1은 count 후보다. 다른 counter도1증가할 수 있으며 dtype/endianness와 여러 알려진count를 대조한다.
 
 ### 4c. 재저장 diff → timestamp·checksum 격리
 ```bash
 python3 scripts/bre.py diff work/base.dat work/resaved.dat > work/04_diff_resave.json
 ```
-- 여기서 바뀐 offset만이 timestamp/sequence/checksum. 보통 header의 시간 필드 + 말미 checksum 둘.
+- 바뀐 offset은 timestamp/sequence/checksum 등의 후보이며 padding/압축/metadata도 바뀔 수 있다. 변하지 않은 필드가 반드시 고정 의미라는 증거도 아니다.
 
 **합격기준:**
 - stride(=`size_delta`) 확정.
 - count field offset 확정 (delta==1).
-- header 크기 추정 확정 (`constant_runs`의 마지막 + diff 교차검증).
+- header 크기는 실제 경계/record 소비/독립 값 대조로 확인한다. constant_runs의 마지막은 payload 안의 상수도 포함하므로 header 끝으로 쓰지 않는다.
 
 **실패 시:** corpus가 부족하면 3~4개만으로도 variance는 유효. diff는 최소 2파일이면 됨.
 
@@ -140,27 +149,27 @@ python3 scripts/bre.py diff work/base.dat work/resaved.dat > work/04_diff_resave
 
 ### 5a. Record stride 확정 (diff 교차검증)
 ```bash
-python3 scripts/bre.py stride work/base.dat --offset <header_size> --max-stride 4096 > work/05_stride.json
+python3 scripts/bre.py stride work/base.dat --offset "$HEADER_SIZE" --max-stride 4096 > work/05_stride.json
 ```
-- `best_stride` = 가장 작은 fundamental. `harmonics_of_best`는 그 배수(가짜).
-- **Phase 4b의 `size_delta`와 반드시 일치해야 함.** 불일치 시 header_size 재검토.
+- `best_stride`는 fixed_column_ratio와 작은stride 우선순위로 선택한 후보다. 가장 작은 수학적 주기나 실제 record 크기를 보장하지 않는다. `harmonics_of_best`도 실제 복합record와 구분해야 한다.
+- **Phase 4b의 `size_delta`와 반드시 일치해야 함.** 불일치 시 header_size뿐 아니라 압축/정렬/count·record 가정을 재검토한다.
 
 ### 5b. 측정값 필드 탐지 (interleaved)
 ```bash
 python3 scripts/bre.py arrays work/base.dat \
-    --stride <best_stride> --payload-offset <header_size> \
-    --lo <물리최소> --hi <물리최대> --top 8 > work/05_arrays.json
+    --stride "$BEST_STRIDE" --payload-offset "$HEADER_SIZE" \
+    --lo "$ABS_LO" --hi "$ABS_HI" --top 8 > work/05_arrays.json
 ```
-- `--lo/--hi`를 **실제 계측 물리 범위로 좁히는 것이 정확도에 가장 큰 영향** (예: CD nm면 `--lo 1 --hi 1000`).
-- 1위 후보의 `field_offset_in_record` + `dtype` = 측정값 필드.
-- `element_count`가 tool UI의 측정점 수와 일치하면 확정.
+- `--lo/--hi`는 구현에서 **0을 제외한 값의 절댓값 범위**에 적용된다. signed구간/단위 검증과는 다르며 가정에 맞춰 선택한다 (예: CD nm면 `--lo 1 --hi 1000`).
+- 1위는 점수상 후보이며 이름/단위/record 순서와 원천값을 독립 검증한다. `field_offset_in_record`는 record 내부offset, `payload_offset+k`는 첫 파일offset이다.
+- 개수 일치는 필요 대조 중 하나이며 필드 의미를 확정하지 않는다. trailer/여분 바이트·상수필드 제외·샘플 상한도 확인한다.
 - (측정값이 record가 아니라 연속 배열이면 `--stride` 없이 실행.)
 
 ### 5c. Timestamp 검증
 ```bash
 python3 scripts/bre.py stamps work/base.dat --max-bytes 8192 > work/05_stamps.json
 ```
-- **오탐 다수.** 4c diff에서 바뀐 offset과 교차하는 후보만 진짜.
+- **오탐 다수.** 4c와 교차해도 후보이며 기준시각/단위/epoch/시간대와 여러 알려진 저장시각을 대조한다.
 
 **합격기준:**
 - 측정값 필드의 (offset, dtype, endianness) 확정.
@@ -170,22 +179,22 @@ python3 scripts/bre.py stamps work/base.dat --max-bytes 8192 > work/05_stamps.js
 **Handoff:** `{payload_offset, stride, field_layout:[{offset,dtype,name}], value_field}`.
 
 ### 5d. 파일이 고정 record 배열이 아닐 때 (recipe/좌표)
-Phase 5a~5c는 **고정 크기 record 배열**(측정값·좌표)을 가정한다. `stride`의 coverage가 낮거나 `arrays`가 전부 쓰레기면 **가변 구조(recipe)** 일 수 있다. → **좌표/recipe 전용 경로는 [04-coordinate-and-recipe-files.md](./04-coordinate-and-recipe-files.md)**.
+Phase 5a~5c는 **고정 크기 record 배열**(측정값·좌표)을 가정한다. `stride`의 verified/autocorr가 약하거나 `arrays` 후보가 없다면 (`stride` 출력에는 coverage필드가 없음) **가변 구조(recipe)** 일 수 있다. → **좌표/recipe 전용 경로는 [04-coordinate-and-recipe-files.md](./04-coordinate-and-recipe-files.md)**.
 ```bash
 python3 scripts/bre.py serial  work/target.dat            # 텍스트/XML/직렬화인지 먼저
 python3 scripts/bre.py offsets work/target.dat            # 포인터 테이블(디렉토리)
-python3 scripts/bre.py tlv     work/target.dat --start <header_size>   # 가변 TLV 체인
+python3 scripts/bre.py tlv     work/target.dat --start "$HEADER_SIZE"   # 가변 TLV 체인
 python3 scripts/bre.py strtab  work/target.dat            # 파라미터명 문자열
 ```
 - 좌표 파일은 측정값과 동형이라 5a~5b 그대로 (단 `--lo/--hi`를 웨이퍼 좌표 스케일로).
-- recipe는 `serial`→`offsets`→`tlv`→`strtab` 순. `serial`이 mostly_text/xml이면 표준 파서로 종료.
+- recipe는 `serial`→`offsets`→`tlv`→`strtab` 순. mostly_text/시그니처는 후보이므로 실제 텍스트/컨테이너 parser가 필요한 값과 경계를 검증해야 종료한다.
 
 ---
 
 ## Phase 6 — 파서 형식화 & 검증
 
 **입력:** Phase 4·5의 확정 값.
-**행동:** Kaitai `.ksy` 또는 Python `construct`로 스펙을 적고 **corpus 전체에 대해 round-trip 검증**. 문법·예시는 [01-toolkit-reference.md](./01-toolkit-reference.md) §형식화.
+**행동:** Kaitai `.ksy` 또는 Python `construct`로 스펙을 적고 **corpus 전체 파싱과 의미/범위 검증**. parse→build의 바이트동일 round-trip은 writer·원시 unknown영역/padding/NaN/checksum 보존이 있어야 별도로 검사한다. 일반 `.ksy` 컴파일만으로 writer가 생기지 않는다. read-write 옵션·언어/runtime 지원을 [Kaitai 공식 serialization 안내](https://doc.kaitai.io/serialization.html)와 대조하며 여기서는 생성기를 실행하지 않았다. 문법·예시는 [01-toolkit-reference.md](./01-toolkit-reference.md) §형식화.
 
 **합격기준:**
 - 스펙이 corpus의 모든 파일을 에러 없이 파싱.
@@ -198,10 +207,14 @@ python3 scripts/bre.py strtab  work/target.dat            # 파라미터명 문�
 ## 실패·중단 규칙 (rabbit-hole 방지)
 
 - 한 phase에서 2~3회 시도해도 합격기준을 못 넘으면 **중단하고 사람에게 보고**한다. 무한 재시도 금지.
-- 전체 파일이 고엔트로피(암호화 의심)면 역공학 불가 → 벤더 경로로 전환.
+- 고entropy만으로 암호화/복원 불가를 확정하지 않는다. 알려진 header/decoder·오프셋/지원 부족을 승인 범위에서 대조한 후 미확인을 기록하고 중단/벤더 경로를 검토한다.
 - `bre.py`가 `{"error": ...}` JSON을 내면 그 메시지를 그대로 보고한다.
 
 ## 참고 자료
 
 - [01-toolkit-reference.md](./01-toolkit-reference.md), [02-cd-sem-formats.md](./02-cd-sem-formats.md)
 - [agent-tasks.md](./agent-tasks.md) — 이 runbook의 각 phase를 subagent에 위임하는 프롬프트.
+
+## 검토 결과
+
+2026-10-04 원래 절·phase/task·실습 호출의 목적을 보존하고 후보/확정, 입력/출력, JSON/exit, 실제 reader 값 대조와 미확인 반환을 구분했다. 근거는 [CLI 소스](./scripts/bre.py)와 [합성 검사](./scripts/selftest.py)다. Kaitai parse와 writer 조건은 [공식 serialization 문서](https://doc.kaitai.io/serialization.html)를 확인했으며 compiler/runtime는 실행하지 않았다. HDF5/SER/STDF 등의 외부 reader 후보와 unblob 명령의 설치 판본·옵션·실제 결과는 이 문서에서 확인하지 않았다. 실제 장비와 corpus, 작업 계약의 완성과 중복 통합은 미확인이다. HERDR_ENV=1/pane_not_found로 Claude 의견을 받지 못해 구조 통합은 보류했다. [정리 기록](../organization-log.md)에 남긴다.

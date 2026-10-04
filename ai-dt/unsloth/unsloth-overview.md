@@ -1,6 +1,16 @@
+---
+type: learning
+tags: [unsloth, finetuning]
+reviewed_on: 2026-10-04
+review_status: partial
+---
+
 # Unsloth 개요
 
 > Unsloth는 "모델 품질을 자동으로 올려주는 마법"이라기보다, Hugging Face 기반 파인튜닝을 더 빠르고 가볍게 돌리게 해주는 최적화 레이어에 가깝다.
+
+> [!info] 검토 범위 · 2026-10-04
+> 공식 문서와 코드 예제를 대조한 학습 자료다. GPU 학습·모델 다운로드·export·serving은 실행하지 않았다. [적용 조건](./verified-conditions.md)과 [정리 기록](./organization-log.md)에 버전 경계와 미확인을 남겼다.
 
 ## Unsloth란?
 
@@ -32,7 +42,7 @@ TRL 문서는 Unsloth를 사용할 때 "`up to 2x faster`" 그리고 "`up to 80%
 
 ### 2. 작은 VRAM에서도 시작할 수 있다
 
-공식 requirements 문서는 QLoRA 기준 대략 다음 수준을 제시한다.
+공식 requirements의 QLoRA(4-bit) **최소 메모리 예시**를 2026-10-04 확인했다. 실제 모델·sequence·batch·backend를 고정한 로컬 측정값은 아니다:
 
 - 3B: 약 3.5GB+
 - 7B: 약 5GB+
@@ -41,7 +51,7 @@ TRL 문서는 Unsloth를 사용할 때 "`up to 2x faster`" 그리고 "`up to 80%
 
 실전에서는 데이터 길이, batch size, gradient accumulation, target modules 수에 따라 더 필요할 수 있지만, "작은 GPU로도 시작 가능하다"는 점이 가장 큰 매력이다.
 
-### 3. 기존 Hugging Face 워크플로우와 충돌이 적다
+### 3. 기존 Hugging Face API를 활용한다
 
 완전히 새로운 프레임워크를 배우는 것이 아니라 `FastLanguageModel`을 앞단에 두고 `SFTTrainer`를 활용하는 식이라, 이미 HF 생태계를 쓰던 사람에게 진입 장벽이 낮다.
 
@@ -75,12 +85,12 @@ Unsloth는 로컬 또는 다운로드 가능한 모델 weights를 기준으로 �
 
 ## 로컬 환경에서의 현실적 포지션
 
-질문처럼 이미 다음 자원이 있는 경우가 Unsloth에 잘 맞는다.
+다음 자원을 이용하는 하나의 실험 구성을 다룬다. 실제로 이 자원이 확보되었다는 기록은 아니다.
 
 - 로컬 API LLM: 강한 teacher / evaluator
 - GPU에 상주한 sLLM: 실제 student 모델
 
-이 조합이면 다음 패턴이 가장 효율적이다.
+이 조합에서는 다음 비교 실험을 설계할 수 있다. 모든 비용·품질 조건에서 가장 효율적인 방식이라는 뜻은 아니다.
 
 1. teacher 모델로 synthetic data 생성
 2. 사람이 샘플 검수 및 정제
@@ -90,13 +100,13 @@ Unsloth는 로컬 또는 다운로드 가능한 모델 weights를 기준으로 �
 
 ## instruct 모델 vs base 모델
 
-Unsloth의 model selection 가이드는 데이터 양에 따라 다음처럼 안내한다.
+공식 model selection의 사례별 안내를 요약한 수치다. 데이터 수만으로 instruct/base의 우열이 결정되는 경계값은 아니다:
 
 - 300개 미만: instruct 모델 쪽이 유리한 경우가 많다
 - 300 ~ 1,000개: instruct 또는 base 모두 가능
 - 1,000개 이상: base 모델도 적극 고려 가능
 
-첫 실험에서는 보통 instruct 모델이 더 안전하다. 이미 대화 형식과 assistant behavior가 잡혀 있어, 작은 데이터셋에서도 원하는 형식으로 수렴하기 쉽기 때문이다.
+좁은 대화 형식의 첫 실험에서는 instruct 모델을 시작 후보로 삼을 수 있다. 이미 대화 형식과 assistant behavior가 잡혀 있어, 작은 데이터셋에서도 원하는 형식으로 수렴하기 쉽기 때문이다.
 
 ## 주의할 점
 
@@ -104,7 +114,7 @@ Unsloth의 model selection 가이드는 데이터 양에 따라 다음처럼 안
 
 공식 문서는 잘못된 chat template 사용을 대표적인 실패 원인으로 강조한다. 학습 때 쓴 template과 추론 때 쓰는 template이 다르면 성능이 무너지기 쉽다.
 
-### 데이터 품질이 하이퍼파라미터보다 중요하다
+### 데이터 품질도 통제한다
 
 Synthetic data를 쉽게 많이 만들 수 있어도, 잘못된 예시를 넣으면 모델이 그대로 나쁜 습관을 배운다.
 

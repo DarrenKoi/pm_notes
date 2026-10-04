@@ -2,9 +2,14 @@
 tags: [pandas, polars, csv, json, parquet, excel, data-loading]
 level: beginner
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # 데이터 로딩 포맷 가이드 (CSV, JSON, Parquet, Excel)
+
+> [!info] 2026-10-04 검토
+> 교육용 예제입니다. 필요한 입력·실행 순서·판본·검증 경계는 [데이터 처리 목차](./README.md)와 [공통 적용 조건](./verified-conditions.md)을 먼저 확인하세요.
 
 > 실무에서 자주 만나는 데이터 포맷별 로딩 방법과 트레이드오프를 정리한 실전 가이드
 
@@ -23,9 +28,9 @@ last_updated: 2026-02-14
 
 | 항목 | CSV | JSON | Parquet | Excel |
 |------|-----|------|---------|-------|
-| **타입 보존** | X (모두 문자열) | 부분적 (숫자/문자열) | O (스키마 내장) | 부분적 |
+| **타입 보존** | 스키마 없음 (로더가 타입 추론) | 부분적 (숫자/문자열) | O (스키마 내장) | 부분적 |
 | **압축 효율** | 낮음 | 낮음 | 매우 높음 (컬럼 압축) | 중간 |
-| **읽기 속도** | 보통 | 느림 | 매우 빠름 | 느림 |
+| **읽기 속도** | 구조·엔진·옵션에 따라 다름 | 구조·엔진에 따라 다름 | 컬럼 선택·압축·배치 읽기 조건에서 유리 | 엔진·파일 구조에 따라 다름 |
 | **사람이 읽기** | 쉬움 | 쉬움 | 불가 (바이너리) | 쉬움 (Excel 필요) |
 | **스트리밍/청크** | O | O (JSON Lines) | O (row group) | X |
 | **주 사용처** | 범용 교환 | API 응답, 설정 | 분석/ML 파이프라인 | 비개발자 협업 |
@@ -33,9 +38,9 @@ last_updated: 2026-02-14
 ### 핵심 원칙
 
 1. **분석/ML 파이프라인 내부**: Parquet을 기본으로 사용 (타입 보존 + 빠른 속도)
-2. **외부 데이터 수신**: CSV/Excel로 받되, 즉시 Parquet으로 변환 저장
+2. **외부 데이터 수신**: 원본과 스키마·출처를 보존한 뒤 분석용 Parquet 변환을 검토
 3. **대용량 파일**: 청크(chunk) 단위 처리 또는 Polars 활용
-4. **API 연동**: JSON Lines(`.jsonl`) 포맷 우선
+4. **API 연동**: 서버 계약의 JSON 구조를 따른다. 레코드 단위 파일·스트림 교환에는 JSON Lines(`.jsonl`)를 검토
 
 ---
 
@@ -65,10 +70,10 @@ df = pd.read_csv(
     low_memory=False,          # 대용량 파일에서 dtype 혼합 경고 방지
 )
 
-# --- 한글 인코딩 자동 감지 패턴 ---
+# --- 한글 인코딩 후보 재시도 (자동 판별을 보장하지 않음) ---
 def read_csv_auto_encoding(filepath: str, **kwargs) -> pd.DataFrame:
-    """한글 CSV 인코딩을 자동 감지하여 로딩"""
-    encodings = ["utf-8", "cp949", "euc-kr", "utf-8-sig"]
+    """후보 인코딩으로 재시도. 결과의 실제 문자·출처 인코딩은 따로 검증."""
+    encodings = ["utf-8-sig", "cp949", "euc-kr"]
     for enc in encodings:
         try:
             return pd.read_csv(filepath, encoding=enc, **kwargs)
@@ -121,7 +126,8 @@ df = pd.json_normalize(
 # --- API 응답을 바로 DataFrame으로 ---
 import requests
 
-resp = requests.get("https://api.example.com/data")
+resp = requests.get("https://api.example.com/data", timeout=10)
+resp.raise_for_status()
 df = pd.json_normalize(resp.json()["results"])
 
 # --- JSON Lines 저장 (다른 시스템 연동용) ---
@@ -181,7 +187,7 @@ df = table.to_pandas()
 
 ### 4. Excel 로딩
 
-비개발자(현업)로부터 받는 데이터의 대부분이 Excel이다.
+Excel은 현업과 표·시트 형태로 협업할 때 사용할 수 있다. 이 저장소의 실제 수신 포맷 비율은 미확인이다.
 
 ```python
 import pandas as pd
@@ -193,8 +199,8 @@ df = pd.read_excel("data.xlsx", engine="openpyxl")
 df = pd.read_excel(
     "data.xlsx",
     sheet_name="Sheet1",       # 시트 이름 또는 인덱스(0, 1, ...)
-    header=1,                  # 실제 헤더가 2번째 행에 있는 경우 (0-indexed)
-    skiprows=[0],              # 건너뛸 행
+    header=0,                  # 아래 skiprows 후 첫 행이 실제 헤더
+    skiprows=[0],              # 원본 첫 행이 제목이고 2번째 행이 헤더일 때
     usecols="A:F",             # 사용할 컬럼 범위 (Excel 스타일)
     dtype={"장비코드": str},
     na_values=["", "-", "N/A"],
@@ -234,20 +240,21 @@ def clean_dtypes(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
     # 문자열 컬럼 공백 제거
-    str_cols = df.select_dtypes(include="object").columns
+    str_cols = df.select_dtypes(include=["object", "string"]).columns
     for col in str_cols:
-        df[col] = df[col].str.strip()
+        if df[col].dropna().map(lambda value: isinstance(value, str)).all():
+            df[col] = df[col].str.strip()
 
     # 카디널리티 낮은 문자열 → category
     for col in str_cols:
-        if df[col].nunique() / len(df) < 0.05:  # 고유값 비율 5% 미만
+        if len(df) and df[col].nunique() / len(df) < 0.05:  # 고유값 비율 5% 미만
             df[col] = df[col].astype("category")
 
     return df
 
 # --- 결측치 처리 패턴 ---
 def handle_missing(df: pd.DataFrame) -> pd.DataFrame:
-    """결측치 현황 확인 및 기본 처리"""
+    """결측 현황을 보고하고 원본의 미확인 값을 보존한다."""
     # 결측 현황 출력
     missing = df.isnull().sum()
     missing = missing[missing > 0].sort_values(ascending=False)
@@ -256,15 +263,11 @@ def handle_missing(df: pd.DataFrame) -> pd.DataFrame:
         print(missing)
         print(f"전체 행 수: {len(df)}")
 
-    # 숫자형 결측: 0 또는 중앙값으로 채우기 (상황에 맞게 선택)
-    num_cols = df.select_dtypes(include="number").columns
-    df[num_cols] = df[num_cols].fillna(0)
+    # 기본은 미확인을 보존한다. 대치 정책은 학습 데이터와 도메인에 맞게
+    # 별도의 Pipeline에서 명시한다. category에 새 값을 넣으려면
+    # cat.add_categories로 먼저 등록해야 한다.
 
-    # 문자열 결측: "unknown"으로 채우기
-    str_cols = df.select_dtypes(include=["object", "category"]).columns
-    df[str_cols] = df[str_cols].fillna("unknown")
-
-    return df
+    return df.copy()
 
 # 사용 예시
 df = pd.read_csv("data.csv", dtype={"id": str})
@@ -303,7 +306,7 @@ for i, chunk in enumerate(chunks):
 
 ### 7. Polars로 빠르게 로딩
 
-Polars는 Rust 기반으로 pandas보다 **대용량 데이터에서 2~10배 빠르다**.
+Polars는 Rust 기반의 DataFrame 엔진이다. lazy 최적화·병렬 실행이 유리할 수 있지만 pandas 대비 속도 배수는 작업·데이터·엔진·하드웨어를 고정해 측정해야 한다.
 
 ```python
 import polars as pl
@@ -312,7 +315,7 @@ import polars as pl
 df = pl.read_csv(
     "data.csv",
     encoding="utf8",
-    dtypes={"id": pl.Utf8, "value": pl.Float64},
+    schema_overrides={"id": pl.String, "value": pl.Float64},
     null_values=["", "N/A", "-"],
     try_parse_dates=True,       # 날짜 자동 파싱
 )
@@ -400,5 +403,5 @@ convert_to_parquet("report.xlsx", sheet_name="Data")
 
 ## 관련 문서
 
-- [EDA 레시피](../eda-recipes.md)
-- [AI/DT ML-DL README](../../README.md)
+- [EDA 레시피](./eda-recipes.md)
+- [AI/DT 상위 목차](../../README.md)

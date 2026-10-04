@@ -2,9 +2,17 @@
 tags: [airflow, python, dependency, virtualenv, external-python, kubernetes]
 level: intermediate-advanced
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 05. 패키지와 실행 환경
+
+> [!info] 판본·검증 범위 — 2026-10-04
+> **Airflow 2.10.5** 예제다. 회사 설치 버전·executor·권한·Git Sync 조건은 미확인이다. 3.x로 그대로 복사하지 않고 해당 판본의 public API/provider 문서를 확인한다. 로컬 파싱과 실제 scheduler·worker·외부 시스템 검증을 구분한다.
+> 패키지 pin은 원문의 예시이며 최신·보안 적합 버전 보증이 아니다. 승인된 실행 환경을 조사한 뒤 core/Python/provider 조합을 정한다.
+
 
 ## 목표
 
@@ -24,7 +32,7 @@ Permission denied
 
 ## 먼저 알아야 할 사실
 
-`PythonOperator`, `@task`, `BashOperator`로 실행한 Python 코드는 기본적으로 **Airflow Worker의 Python 환경**을 사용한다.
+일반 `PythonOperator`/`@task`는 executor가 실행하는 Task 프로세스의 Python을 사용한다. `BashOperator`의 `python`은 shell의 PATH로 선택되므로 같은 Python이라고 보장할 수 없다. 절대 interpreter 경로나 실행할 환경의 `sys.executable`을 확인한다.
 
 즉, 로컬에 `pandas==2.2.2`가 설치되어 있어도 Airflow Worker에 `pandas==1.5.3`만 있으면 서버에서는 `1.5.3`으로 실행된다.
 
@@ -32,7 +40,7 @@ Airflow 서버에서 패키지 설치 권한이 없으면 사용자가 DAG만 �
 
 ## 환경 조사 DAG
 
-처음에는 아래 DAG를 올려 Worker의 실제 환경을 확인한다. secret 값은 출력하지 않는다.
+아래 DAG는 Python Task 프로세스의 선택 패키지 버전을 조사한다. 경로/플랫폼 출력도 사내 정보일 수 있으므로 로그 접근 정책을 확인하고 운영팀이 승인한 진단에서만 실행한다. Bash/별도 venv/container 환경은 각각 조사한다.
 
 ```python
 from datetime import datetime
@@ -52,7 +60,6 @@ def airflow_env_probe():
     def print_runtime() -> None:
         import os
         import platform
-        import subprocess
         import sys
         from importlib.metadata import PackageNotFoundError, version
 
@@ -80,16 +87,6 @@ def airflow_env_probe():
             except PackageNotFoundError:
                 print(f"{name}: NOT INSTALLED")
 
-        print("=== pip freeze first 200 lines ===")
-        result = subprocess.run(
-            [sys.executable, "-m", "pip", "freeze"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        print("\n".join(result.stdout.splitlines()[:200]))
-        if result.stderr:
-            print(result.stderr)
 
     print_runtime()
 
@@ -105,13 +102,13 @@ airflow_env_probe()
 - 패키지 버전
 - provider 설치 여부
 - Worker 실행 경로
-- `pip freeze` 실행 가능 여부
+- 선택 패키지 설치 여부; 전체 freeze는 승인된 별도 진단 자료로만 수집
 
 조사가 끝나면 이 DAG는 비활성화하거나 삭제한다.
 
 ## 로컬 의존성 정리
 
-로컬에서 모든 패키지를 그대로 freeze하면 개발 도구까지 섞인다. 운영 실행에 필요한 것만 별도 파일로 정리한다.
+`pip freeze`는 설치 목록이지 dependency solver의 lockfile이 아니다. 직접 URL/VCS 설치 경로 등 사내 위치 정보가 포함될 수 있어 원문처럼 Task 로그에 전체 출력하지 않는다. 표준 direct URL metadata는 민감 인증정보를 제거하도록 정하지만, 이것만으로 모든 설치 경로·진단 stderr의 공개 적합성을 보장하지 않는다. 필요한 경우 민감 URL을 제거해 승인된 진단 자료로 관리한다. 로컬에서 모든 패키지를 그대로 freeze하면 개발 도구까지 섞인다. 운영 실행에 필요한 것만 별도 파일로 정리한다.
 
 ```text
 requirements-app.txt
@@ -189,7 +186,7 @@ task = PythonOperator(
 
 ## 전략 B. PythonVirtualenvOperator
 
-Task 실행 시점에 별도 virtualenv를 만들고 패키지를 설치한다.
+사용 환경에 `virtualenv`가 설치되어 있어야 한다. 함수 본문을 별도 Python 환경에서 실행한다. 기본 임시 venv는 실행마다 만들며 `venv_cache_path`를 설정하면 캐시를 재사용할 수 있지만 worker 경로·캐시 정리·오염 관리가 필요하다.
 
 ```python
 from datetime import datetime
@@ -242,15 +239,15 @@ task = PythonVirtualenvOperator(
     pip_install_options=[
         "--index-url",
         "https://nexus.your-company.com/repository/pypi/simple",
-        "--trusted-host",
-        "nexus.your-company.com",
+        "--cert",
+        "/path/to/approved-company-ca.pem",
     ],
 )
 ```
 
-현재 환경처럼 Connection 접근이 불가능하면 Airflow Connection 기반 package index 설정은 사용할 수 없다. 이 경우 운영팀이 Worker의 pip config를 설정해주거나, DAG 코드의 `pip_install_options`에 사내 Nexus 주소를 직접 넣어야 한다.
+위 URL/CA 경로는 자리표시자이며 실제 조직 설정이 아니다. `--trusted-host`로 TLS 검증을 우회하던 원문은 승인된 CA를 신뢰하는 `--cert` 예제로 바꿨다. index URL에는 credential을 적지 않는다. UI 관리 권한과 Task Connection 조회 권한은 구분한다. 2.10.5 PythonVirtualenvOperator의 `index_urls`와 worker pip config를 판본별로 확인한다. package index Connection ID 지원은 설치 core/provider 조합을 확인해야 한다.
 
-credential이 필요한 package index라면 코드에 넣는 순간 Bitbucket repository가 credential 저장소가 된다. 접근 권한과 key rotation 정책을 반드시 확인한다.
+인증은 승인된 worker 설정/secret 공급 방식으로 제공한다. Git Sync에 credential을 넣어 해결하지 않는다. 사내 사용 가능 방식은 미확인이다.
 
 ## 전략 C. ExternalPythonOperator
 
@@ -302,6 +299,7 @@ with DAG(
 - 모든 Worker에 같은 경로와 같은 패키지가 있어야 한다.
 - CeleryExecutor에서는 어떤 Worker에서 실행될지 모를 수 있다.
 - KubernetesExecutor에서는 Pod 이미지 안에 venv가 있어야 한다.
+- 함수 내부 import와 필요한 dependency를 별도 환경에 준비한다. `dill` 등 serializer를 쓰면 양쪽 판본도 맞춰야 한다.
 - venv 업데이트 절차를 운영팀과 정해야 한다.
 
 ## 전략 D. 컨테이너 실행
@@ -339,7 +337,7 @@ with DAG(
 
 장점:
 
-- Airflow 환경과 완전히 분리 가능
+- job의 Python/system package 환경을 별도 image로 분리; mount·network·secret·권한까지 자동 격리되는 것은 아님
 - system package, CLI, Java, ML library 포함 가능
 - 재현성이 좋음
 
@@ -383,14 +381,14 @@ PYTHON_VERSION=3.11
 CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
 
 python -m pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
-python -m pip install -r requirements-app.txt --constraint "${CONSTRAINT_URL}"
+python -m pip install "apache-airflow==${AIRFLOW_VERSION}" -r requirements-app.txt --constraint "${CONSTRAINT_URL}"
 ```
 
-폐쇄망에서는 constraints 파일과 wheel 파일을 사내 저장소에 미리 반입해야 한다.
+위는 설치 구조 예시다. core 버전 pin을 유지해 의도치 않은 변경을 방지한다. release constraints는 당시 검증 조합이며 보안 최신성 보증이 아니다. 위 requirements 예시의 pin과 충돌할 수 있으므로 그대로 결합해 설치 성공을 가정하지 않는다. Python/core/provider 호환 조합을 맞추거나 job 환경을 분리한다. 공식 설치 지원 방식은 pip이며 다른 도구의 성공은 동일한 지원 보증이 아니다. 폐쇄망에서는 승인된 constraints/wheel 반입이 필요하다.
 
 ## 운영팀에 요청할 내용
 
-패키지 문제를 운영팀에 전달할 때는 아래 형식이 좋다.
+아래 수치/서버 설치 버전은 원문의 가상 요청서 예시이며 현재 조사 결과가 아니다. 실제 환경 조사 후 바꿔 사용한다.
 
 ```text
 요청 목적:
@@ -464,3 +462,14 @@ python -m pip install -r requirements-app.txt --constraint "${CONSTRAINT_URL}"
 다음 문서에서는 로컬에서 DAG와 Python 코드를 어떻게 테스트하고 배포 전에 점검할지 다룬다.
 
 - [06. 로컬 개발과 테스트](./06-local-development-and-testing.md)
+
+
+## 검증 근거 — 2026-10-04
+
+- [2.10.5 Python/virtualenv/external operators](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/operator/python.html), [pip·constraints 설치](https://airflow.apache.org/docs/apache-airflow/2.10.5/installation/installing-from-pypi.html).
+- [Direct URL metadata 보안 규정](https://packaging.python.org/en/latest/specifications/direct-url-data-structure/), [pip HTTPS 인증서](https://pip.pypa.io/en/stable/topics/https-certificates/), [pip freeze](https://pip.pypa.io/en/stable/cli/pip_freeze/): 확인 페이지26.2.1, 실행 환경의 pip 버전과 다를 수 있음.
+- [KubernetesPodOperator](https://airflow.apache.org/docs/apache-airflow-providers-cncf-kubernetes/stable/operators.html): 확인 페이지는 provider 10.23.0이며 2.10.5 예제와 같은 판본이라고 가정하지 않는다. 설치 provider/core 호환·클러스터 권한·이미지·CA·망 접근을 별도 확인하며 local core 파싱 성공에 포함하지 않음.
+
+미확인: 사내 배포·계정·리소스·네트워크 조건과 실제 운영 성공. 중복 예제의 계약 통합·회사 정책 결정은 Herdr `pane_not_found`로 Claude 협의를 보류한다. [주제 정리 기록](../organization-log.md)에 진행 결과를 남긴다.
+
+로컬 확인: Python 3.12.12/Airflow 2.10.5 임시 환경에서 이 장의 Python 구문과 완성 DAG 정의를 검사했다. Kubernetes provider import·실제 venv job·외부 접속·scheduler 실행은 별도 미확인이다. 추가 실행 결과와 판본은 위 정리 기록을 읽는다.

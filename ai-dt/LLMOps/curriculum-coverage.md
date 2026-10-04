@@ -1,3 +1,14 @@
+---
+tags: [llmops, evaluation]
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: index
+---
+
+> [!info] 검토 범위 — 2026-10-04
+> 공식·일차 근거와 로컬 검증은 [공통 적용 조건](./verified-conditions.md), 변경·미확인은 [정리 기록](./organization-log.md)에 있다. 실제 사내 접속·모델 품질·운영 승인과 Claude 협의는 미확인이다. 원래17개를 개별 검토했다. 실제 운영·읽기 화면 검증은 미완료다.
+
+
 # LLMOps & 평가 커리큘럼 커버리지 점검
 
 점검 기준: `study_list.txt`의 6개 영역 / 15개 세부 항목.
@@ -7,7 +18,8 @@
 - 전체 항목: 15개
 - 생성 문서: 15개
 - 누락 문서: 없음
-- 특이사항: 외부 LLM API 차단 환경에 맞춰 모든 판정(judge)·임베딩 코드를 **사내 OpenAI 호환 엔드포인트**(Kimi-K2.5 / BGE-M3 / Qwen3-VL)로 병기. RAGAS/DeepEval도 사내 모델 주입 방식으로 정리. **Arize Phoenix**를 사내 LLM 관측성·모니터링 도구로 채택, 트레이싱(03)과 모니터링(12)에 반영. 추가 보강으로 release manifest, risk register, incident postmortem까지 운영 문서화.
+- 문서 존재와 기술 검증 완료는 다르다. 2026-10-04 현재 README·본 점검·01~15(원래17개)을 개별 수정·검증했다. 원격 서비스·실제 모델·읽기 화면·Claude 협의는 미확인이다.
+- 사내 endpoint·DRM 비율·Phoenix 채택·실제 judge 성능은 미확인이다. 공통 실행 조건은 [적용 조건](./verified-conditions.md)에 모았다.
 
 ## 항목별 매핑
 
@@ -29,7 +41,7 @@
 | 아티팩트 계보와 release governance | [14](./14-artifact-lineage-governance.md) |
 | Incident response와 postmortem | [15](./15-incident-response-postmortem.md) |
 
-> 14·15는 `study_list.txt`에 없던 **추가 보강** 문서다. 나머지 01~13은 항목 그대로 대응한다.
+> 현재 `study_list.txt`에는 14·15도 포함되어 있다. 15개 세부 항목은 01~15에 모두 대응한다. 원래 “14·15가 목록에 없다”는 설명을 실제 파일과 대조해 수정했다.
 
 ## 문서 간 흐름(의존)
 
@@ -43,7 +55,7 @@
 
 - 각 문서 코드 블록을 실제 실행 가능한 `examples/` 패키지로 분리(scorer 모듈화, `run_eval.py` 하네스 1개로 통합).
 - `eval_set.jsonl` 샘플 20건과 golden 라벨 예시를 동봉.
-- ~~사내 self-host observability(Langfuse 등) 연동 가이드를 03번 부록으로 추가.~~ → **완료**: Arize Phoenix self-host 설정·계측 가이드를 03번에 반영.
+- Phoenix 설정 예제의 문서 존재는 확인했으나 collector 수신·server/UI·실제 사내 사용은 검증하지 않았다.
 - judge 메타평가(인간 라벨 일치도) 실측 결과를 07번에 채워 넣기.
 - 실제 사내 release manifest 샘플과 risk register 템플릿을 프로젝트별로 구체화.
 - 사고 postmortem 예시 1건을 synthetic trace 기반으로 작성해 15번의 종료 조건을 검증.

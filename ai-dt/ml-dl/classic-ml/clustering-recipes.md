@@ -2,6 +2,9 @@
 tags: [clustering, kmeans, dbscan, sklearn]
 level: intermediate
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
 
 # 클러스터링(Clustering) 실전 가이드
@@ -17,20 +20,20 @@ last_updated: 2026-02-14
 
 ## 핵심 개념 (What)
 
-클러스터링 알고리즘은 크게 세 가지 접근 방식으로 나뉜다:
+이 문서에서는 다음 세 가지 접근 방식을 비교한다. 혼합 모델·spectral 등 다른 군집 방식도 있다:
 
 | 접근 방식 | 대표 알고리즘 | 핵심 아이디어 |
 |-----------|-------------|-------------|
-| **분할 기반 (Partitioning)** | KMeans, KMedoids | 데이터를 K개 그룹으로 나눔. 중심점(centroid) 기반 |
+| **분할 기반 (Partitioning)** | KMeans, KMedoids | KMeans는 평균 중심, KMedoids는 실제 표본 medoid로 대표 |
 | **밀도 기반 (Density-based)** | DBSCAN, HDBSCAN | 밀집 영역을 클러스터로 인식. 비구형 클러스터 탐지 가능 |
 | **계층적 (Hierarchical)** | Agglomerative, Divisive | 트리 구조로 클러스터를 병합/분할. 덴드로그램으로 시각화 |
 
 ### 주요 용어
 
-- **관성(Inertia)**: 각 데이터 포인트와 소속 클러스터 중심 간 거리 제곱합. 낮을수록 좋음
+- **관성(Inertia)**: KMeans 표본과 소속 중심의 거리 제곱합. 같은 입력·단위에서 K 증가로 줄어들 수 있어 단독 최소화로 K를 고르지 않음
 - **실루엣 점수(Silhouette Score)**: 클러스터 내 응집도와 클러스터 간 분리도의 균형. -1 ~ 1 범위, 높을수록 좋음
 - **eps (epsilon)**: DBSCAN에서 이웃 탐색 반경
-- **min_samples**: DBSCAN에서 코어 포인트가 되기 위한 최소 이웃 수
+- **min_samples**: DBSCAN에서 코어 포인트가 되기 위한 eps 이웃 표본 수 (자기 자신 포함)
 
 ## 어떻게 사용하는가? (How)
 
@@ -41,6 +44,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
+
+
+def safe_silhouette(values, labels, *, exclude_noise=False):
+    """정의 불가능한 군집 수는 NaN; unknown label을 정상으로 바꾸지 않음."""
+    values = np.asarray(values)
+    labels = np.asarray(labels)
+    if labels.ndim != 1 or len(values) != len(labels):
+        raise ValueError("표본 수와 1차원 label 길이가 일치해야 함")
+    if not np.issubdtype(labels.dtype, np.integer):
+        raise ValueError("이 데모는 알려진 정수 군집 label만 받음")
+    mask = labels != -1 if exclude_noise else np.ones(len(labels), dtype=bool)
+    observed = labels[mask]
+    n_samples = len(observed)
+    n_labels = len(np.unique(observed))
+    if not 2 <= n_labels < n_samples:
+        return np.nan
+    return silhouette_score(values[mask], observed)
+
 
 # 샘플 데이터 생성
 X, y_true = make_blobs(
@@ -50,7 +72,7 @@ X, y_true = make_blobs(
     random_state=42,
 )
 
-# 스케일링 (클러스터링 전 필수)
+# 각 피처 단위가 거리에서 갖는 의미를 정한 뒤 스케일링 여부를 선택
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
@@ -85,7 +107,7 @@ for k in K_range:
     km = KMeans(n_clusters=k, random_state=42, n_init=10)
     km.fit(X_scaled)
     inertias.append(km.inertia_)
-    silhouette_scores.append(silhouette_score(X_scaled, km.labels_))
+    silhouette_scores.append(safe_silhouette(X_scaled, km.labels_))
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -107,9 +129,9 @@ plt.tight_layout()
 plt.savefig("elbow_silhouette.png", dpi=150, bbox_inches="tight")
 plt.show()
 
-# 최적 K: Elbow 꺾이는 지점 + 실루엣 점수 최대인 K
+# 아래 코드는 silhouette 최대 후보만 계산; Elbow 꺾임을 자동 판정하지 않음
 best_k = K_range[np.argmax(silhouette_scores)]
-print(f"실루엣 기준 최적 K: {best_k}")
+print(f"실루엣 기준 후보 K: {best_k}")
 ```
 
 ```python
@@ -157,8 +179,8 @@ from sklearn.cluster import DBSCAN
 from sklearn.neighbors import NearestNeighbors
 
 # --- k-distance 그래프로 eps 추정 ---
-# k = min_samples 값으로 설정 (일반적으로 2*차원수 권장)
-k = 4
+# 자기 자신을 포함한 min_samples번째 거리 후보 (2*차원수는 보장된 최적값 아님)
+k = 5
 nn = NearestNeighbors(n_neighbors=k)
 nn.fit(X_scaled)
 distances, _ = nn.kneighbors(X_scaled)
@@ -172,7 +194,7 @@ plt.xlabel("데이터 포인트 (정렬됨)")
 plt.ylabel(f"{k}-번째 이웃 거리")
 plt.title("k-Distance Graph (eps 결정용)")
 plt.grid(True, alpha=0.3)
-# 그래프에서 급격히 꺾이는 지점의 y값이 적절한 eps
+# 꺾임은 eps 탐색 후보; 실제 단위/밀도/노이즈 비율도 점검
 plt.axhline(y=0.5, color="red", linestyle="--", label="eps 후보: 0.5")
 plt.legend()
 plt.tight_layout()
@@ -193,10 +215,8 @@ print(f"노이즈 포인트 수: {n_noise} ({n_noise / len(db_labels) * 100:.1f}
 print(f"클러스터별 샘플 수: {dict(zip(*np.unique(db_labels, return_counts=True)))}")
 
 # 노이즈가 아닌 포인트만 실루엣 점수 계산
-mask = db_labels != -1
-if len(set(db_labels[mask])) > 1:
-    score = silhouette_score(X_scaled[mask], db_labels[mask])
-    print(f"실루엣 점수 (노이즈 제외): {score:.3f}")
+score = safe_silhouette(X_scaled, db_labels, exclude_noise=True)
+print(f"실루엣 점수 (노이즈 제외; 정의 불가=nan): {score:.3f}")
 ```
 
 ```python
@@ -214,7 +234,7 @@ for eps in eps_values:
         n_c = len(set(lbl)) - (1 if -1 in lbl else 0)
         n_n = (lbl == -1).sum()
         mask = lbl != -1
-        sil = silhouette_score(X_scaled[mask], lbl[mask]) if len(set(lbl[mask])) > 1 else -1
+        sil = safe_silhouette(X_scaled, lbl, exclude_noise=True)
         print(f"{eps:5.1f} | {ms:11d} | {n_c:10d} | {n_n:7d} | {sil:10.3f}")
 ```
 
@@ -233,7 +253,7 @@ Z = linkage(X_scaled, method="ward")
 plt.figure(figsize=(14, 6))
 dendrogram(
     Z,
-    truncate_mode="lastp",   # 마지막 p개 병합만 표시
+    truncate_mode="lastp",   # 마지막 p개의 비단말 node를 포함하도록 압축 표시
     p=30,
     leaf_rotation=90,
     leaf_font_size=8,
@@ -259,7 +279,7 @@ agg_labels = agg.fit_predict(X_scaled)
 
 print(f"클러스터 수: {len(np.unique(agg_labels))}")
 print(f"클러스터별 샘플 수: {np.bincount(agg_labels)}")
-print(f"실루엣 점수: {silhouette_score(X_scaled, agg_labels):.3f}")
+print(f"실루엣 점수: {safe_silhouette(X_scaled, agg_labels):.3f}")
 ```
 
 ```python
@@ -288,12 +308,12 @@ for k in K_range:
     km = KMeans(n_clusters=k, random_state=42, n_init=10)
     km.fit(X_scaled)
     results["kmeans_inertia"].append(km.inertia_)
-    results["kmeans_sil"].append(silhouette_score(X_scaled, km.labels_))
+    results["kmeans_sil"].append(safe_silhouette(X_scaled, km.labels_))
 
     # Agglomerative
     agg = AgglomerativeClustering(n_clusters=k, linkage="ward")
     agg_labels = agg.fit_predict(X_scaled)
-    results["agg_sil"].append(silhouette_score(X_scaled, agg_labels))
+    results["agg_sil"].append(safe_silhouette(X_scaled, agg_labels))
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -319,8 +339,8 @@ plt.show()
 
 best_km = list(K_range)[np.argmax(results["kmeans_sil"])]
 best_agg = list(K_range)[np.argmax(results["agg_sil"])]
-print(f"KMeans 최적 K: {best_km} (실루엣: {max(results['kmeans_sil']):.3f})")
-print(f"Agglomerative 최적 K: {best_agg} (실루엣: {max(results['agg_sil']):.3f})")
+print(f"KMeans silhouette 후보 K: {best_km} (실루엣: {max(results['kmeans_sil']):.3f})")
+print(f"Agglomerative silhouette 후보 K: {best_agg} (실루엣: {max(results['agg_sil']):.3f})")
 ```
 
 ---
@@ -358,9 +378,9 @@ plt.show()
 # --- t-SNE 2D 시각화 ---
 tsne = TSNE(
     n_components=2,
-    perplexity=30,       # 데이터 수에 따라 5~50 조정
+    perplexity=30,       # 반드시 표본 수보다 작아야 함; 후보 범위는 목적별 탐색
     random_state=42,
-    n_iter=1000,
+    max_iter=1000,       # sklearn 1.5에서 n_iter 이름 변경
 )
 X_tsne = tsne.fit_transform(X_scaled)
 
@@ -417,13 +437,13 @@ plt.show()
 
 | 기준 | KMeans | DBSCAN | Agglomerative |
 |------|--------|--------|---------------|
-| **클러스터 수 사전 지정** | 필요 (K) | 불필요 | 필요 (K) |
+| **클러스터 수 사전 지정** | 필요 (K) | 불필요 | K 또는 distance_threshold 설정 |
 | **클러스터 형태** | 구형(spherical) | 비정형 가능 | 다양 (linkage에 따라) |
-| **노이즈/이상치 처리** | 취약 | 강건 (노이즈 라벨 -1) | 취약 |
-| **대용량 데이터** | 빠름 O(nK) | 보통 O(n log n) | 느림 O(n^2) ~ O(n^3) |
+| **노이즈/이상치 처리** | 취약 | 노이즈 라벨 -1 제공; 실제 이상/고장 판정은 별도 | 취약 |
+| **대용량 데이터** | 반복·차원·K에 따른 비용 | 구현·반경·차원 의존; sklearn 메모리 최악 O(n²) | 구현/linkage·표본 수에 따른 시간/메모리 비용 |
 | **하이퍼파라미터** | K | eps, min_samples | K, linkage |
-| **결정론적** | 아니오 (초기값 의존) | 예 | 예 |
-| **추천 상황** | 대용량, 구형 클러스터 | 밀도 차이 큰 데이터, 이상치 존재 | 계층 구조 탐색, 소규모 데이터 |
+| **결정론적** | 초기값/판본/환경 조건 고정 필요 | 경계점 소속/번호는 입력 순서 영향 가능 | 동률·입력 순서/구현 영향 가능 |
+| **추천 상황** | 대용량, 구형 클러스터 | 동일 eps로 밀도를 구분할 수 있는 입력; 밀도 차이가 크면 OPTICS/HDBSCAN 검토 | 계층 구조 탐색, 소규모 데이터 |
 
 ### 실무 선택 가이드
 
@@ -437,10 +457,26 @@ plt.show()
 │   └── Elbow / Silhouette로 K 탐색 → KMeans
 └── 데이터가 매우 큼 (>100K)
     ├── KMeans 또는 MiniBatchKMeans
-    └── HDBSCAN (DBSCAN보다 확장성 좋음)
+    └── HDBSCAN/OPTICS도 차원·거리·메모리·실측 비교 후 검토
 ```
 
 ---
+
+## 확인 근거와 적용 조건
+
+확인일 **2026-10-04**. 공식 scikit-learn **1.9.1**, SciPy 문서 **1.18.0** 기준으로 대조했다. NumPy·Matplotlib·SciPy·scikit-learn을 설치하고 0번 셋업부터 순차 실행한다. 출력 PNG는 별도 실험 폴더에 저장한다. 실제 장비 입력·업무 군집·속도와 한글 plot은 별도 검증한다.
+
+- [군집 User Guide](https://scikit-learn.org/stable/modules/clustering.html): KMeans의 형태 가정과 단위/거리, DBSCAN의 밀도 가정과 입력 순서 영향을 확인한다. KMedoids는 scikit-learn 기본 KMeans의 별칭이 아니며 이 문서에 구현하지 않았다.
+- [별도 sklearn-extra KMedoids 구현](https://raw.githubusercontent.com/scikit-learn-contrib/scikit-learn-extra/main/sklearn_extra/cluster/_k_medoids.py): 실제 표본 medoid를 사용한다. 이 문서 실행 의존성으로 추가하거나 해당 모델을 실행한 것은 아니다.
+- [DBSCAN](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html): min_samples는 자신을 포함하며 eps는 같은 cluster의 최대 거리라는 뜻이 아니다. 큰 eps/낮은 min_samples의 최악 메모리는 O(n²)다. -1은 해당 밀도 설정의 노이즈 label이지 고장/오류 사실이 아니다.
+- [silhouette_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html): 2 <= label 수 < 표본 수일 때 정의된다. 전부 노이즈·한 군집·모든 표본이 singleton이면 이 데모는 NaN으로 미평가를 보존한다. -1 점수는 실제 유효한 낮은 점수일 수 있어 미평가 sentinel로 쓰지 않는다.
+- [AgglomerativeClustering](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html): Ward는 Euclidean 거리의 분산 기준을 사용한다. distance_threshold를 지정하면 n_clusters=None 등의 계약을 따른다. 여기서는 K를 지정했다.
+- [dendrogram](https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html): lastp의 node 표시 의미를 확인한다. 그림의 거리15 선과 뒤의 K=4 fit은 서로 자동 연결되지 않는다.
+- [TSNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html): max_iter는 1.5에서 n_iter 이름 변경. perplexity < 표본 수 조건, 초기화/seed/비용을 확인한다. t-SNE는 일반적인 신규 표본 transform을 제공하지 않으며 2D 군집 간 거리/크기만으로 원래 공간의 구조를 증명하지 않는다.
+
+합성 입력은 이미 2D라 PCA 2D가 차원 감소 데모인 것은 아니다. 군집은 원래 X_scaled에서 계산하고 PCA/t-SNE는 표시 좌표만 만든다. 다른 알고리즘의 label 번호/색은 서로 같은 군집이라는 뜻이 아니다. y_true는 합성 자료의 생성 label로 준비했지만 이 예제는 이를 업무 정답으로 사용하지 않는다.
+
+scaler를 전체 입력에 fit하는 것은 해당 표본 집합의 탐색 데모다. 미래 표본 성능을 평가한다면 train에만 fit하고 적용 시 transform 계약을 정해야 한다. 실루엣 최대나 Elbow만으로 실제 cluster 수를 확정하지 않고 목적·안정성·도메인 의미를 비교한다. DBSCAN에서 노이즈를 제외한 점수는 제외한 비율도 함께 기록해야 하고 다른 표본 집합의 점수만으로 우열을 판단하지 않는다. 현재 고정500행 입력의 K=2..10 루프는 표본 수/중복 조건이 충족되는 데모이며 임의의 소표본에 그대로 적용하지 않는다.
 
 ## 참고 자료 (References)
 

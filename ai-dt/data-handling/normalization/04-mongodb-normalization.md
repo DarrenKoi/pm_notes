@@ -2,11 +2,17 @@
 tags: [mongodb, normalization, schema-design, embedding, reference, vector-search, rag]
 level: intermediate
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: learning_note
 ---
 
 # MongoDB에서의 정규화
 
 > MongoDB에서는 정규화와 반정규화가 "테이블 분해"가 아니라 embedding과 reference 사이의 선택으로 나타난다.
+
+> [!info] 판본과 검증 범위 — 2026-10-04
+> validator·unique index·원자성·참조는 MongoDB 8.0 공식 문서를 대조했다. embedding/reference는 확인 당시 manual 표시9.0, Vector Search는 별도 제품 안내다. 최신 설치 판본이나 사내 기능 지원을 단정하지 않는다. 로컬 구문·구조 계약만 검사했고 mongosh·서버·Atlas·인덱스·실제 벡터 검색은 실행하지 않았다.
 
 ## MongoDB 모델링의 출발점
 
@@ -21,11 +27,11 @@ Reference:
   order_items.product_id -> products._id
 ```
 
-MongoDB 공식 문서도 embedding은 읽기 성능과 단일 원자적 업데이트에 유리하고, reference는 정규화된 모델로서 중복을 줄이고 복잡한 관계나 자주 바뀌는 데이터를 다루는 데 적합하다고 설명한다.
+공식 문서는 embedding의 단일 읽기·문서 단위 원자적 쓰기와 reference의 독립 조회·변경/복잡한 관계 조건을 설명한다. 실제 성능은 접근 패턴과 크기로 측정한다. embedding/reference 선택은 관계형 3NF/BCNF 충족의 증명이 아니며 정의는 [핵심 개념](./01-normalization-core.md)을 참고한다. 단일 문서의 여러 속성 변경은 원자적이지만 여러 문서 updateMany 전체가 자동 원자적이지는 않다. 다중 문서 transaction은 배포/드라이버 조건과 비용을 따로 검토한다.
 
 ## 1. Embedding이 적합한 경우
 
-Embedding은 "부모 문서의 일부로만 의미가 있는 데이터"에 적합하다.
+Embedding은 부모와 함께 조회하는 contains 관계에 적합한 선택지다. 자식이 부모 밖에서 의미를 가지면 무조건 금지된다는 규칙은 아니다.
 
 ```json
 {
@@ -53,7 +59,8 @@ Embedding은 "부모 문서의 일부로만 의미가 있는 데이터"에 적�
 - 부모와 항상 함께 읽힌다.
 - 자식이 독립적으로 자주 갱신되지 않는다.
 - "주문 당시 가격", "주문 당시 배송지"처럼 스냅샷이 필요하다.
-- 문서 크기 제한에 걸리지 않는다.
+- BSON 문서 최대 크기16MiB와 배열 성장·쓰기 비용을 고려한다. 처음 작다고 무한 성장 배열이 안전한 것은 아니다.
+- 한 문서에 있더라도 동시 갱신 시 기대값/version 조건을 update filter에 넣는 등 덮어쓰기 방지 계약을 정한다.
 
 여기서 `product_name_snapshot`은 중복이지만 나쁜 중복이 아니다. 현재 상품명이 아니라 주문 당시 계약 사실이다.
 
@@ -61,8 +68,9 @@ Embedding은 "부모 문서의 일부로만 의미가 있는 데이터"에 적�
 
 Reference는 독립 객체, 자주 변경되는 객체, N:M 관계, 큰 계층 구조에 적합하다.
 
+customers 문서:
+
 ```json
-// customers
 {
   "_id": "customer_10",
   "name": "Kim",
@@ -71,8 +79,9 @@ Reference는 독립 객체, 자주 변경되는 객체, N:M 관계, 큰 계층 �
 }
 ```
 
+orders 문서:
+
 ```json
-// orders
 {
   "_id": "order_1001",
   "customer_id": "customer_10",
@@ -85,11 +94,13 @@ Reference는 독립 객체, 자주 변경되는 객체, N:M 관계, 큰 계층 �
 - 같은 객체가 여러 문서에서 참조된다.
 - 값이 자주 바뀌며 중복 갱신 비용이 크다.
 - N:M 관계나 큰 계층 구조를 표현해야 한다.
-- 권한, 개인정보, 감사 경계를 분리해야 한다.
+- 권한, 개인정보, 감사 경계를 나눌 필요가 있다. 컬렉션 분리만으로 권한/암호화가 적용되지는 않는다.
+
+여기서는 string `_id`와 같은 타입의 `customer_id`를 사용한다. 필드 이름에 `_id`가 들어간다고 ObjectId로 자동 변환되거나 FK 존재·cascade 삭제가 강제되는 것은 아니다. 애플리케이션 조회 또는 `$lookup`과 참조 누락·삭제·버전/권한 처리를 설계한다. 둘 이상의 문서에서 일관된 스냅샷이 필요하면 별도 읽기/transaction 계약을 확인한다.
 
 ## 3. Hybrid 패턴: reference + snapshot
 
-실무에서는 reference와 snapshot을 함께 쓰는 경우가 많다.
+이 주문 예제는 reference와 snapshot을 함께 쓰는 선택지다. 실제 사용 빈도나 항상 최선이라는 주장은 아니다.
 
 ```json
 {
@@ -112,10 +123,12 @@ Reference는 독립 객체, 자주 변경되는 객체, N:M 관계, 큰 계층 �
 
 ## 4. JSON Schema로 계약을 고정한다
 
-MongoDB는 유연한 스키마를 제공하지만, 운영 단계에서는 JSON Schema validation으로 구조를 보호하는 편이 좋다.
+MongoDB의 `$jsonSchema`는 JSON Schema draft4를 기반으로 BSON 확장·생략이 있다. 일반 JSON Schema validator와 완전히 같은 기능이라고 간주하지 않는다. 아래는 새 학습용 `terms` 컬렉션의 mongosh 예제이며 기존 업무 컬렉션에 바로 적용하는 migration이 아니다.
 
 ```javascript
 db.createCollection("terms", {
+  validationLevel: "strict",
+  validationAction: "error",
   validator: {
     $jsonSchema: {
       bsonType: "object",
@@ -142,34 +155,44 @@ db.createCollection("terms", {
 })
 ```
 
-정규화 관점에서 schema validation은 "어떤 문서가 유효한 사실인가"를 DB 레벨 계약으로 고정하는 장치다.
+이 validator는 필수 필드와 string/array 타입만 검사한다. 빈 문자열·빈 aliases·중복 aliases·추가 필드·용어 내용의 진실성·참조 존재·권한은 검사하지 않는다. strict/error는 insert/update를 거부하는 계약이며 기존 문서를 자동 수정/전수 정리하지 않는다. 기존 컬렉션 변경에는 현황 조사와 collMod/validationLevel의 적용 범위를 별도로 검토한다.
+
+아래 JSON은 terms의 최소 유효 문서다. glossary 예제와 필드 계약을 혼동하지 않는다.
+
+```json
+{
+  "canonical_term": "Chemical Vapor Deposition",
+  "aliases": ["CVD", "화학기상증착"],
+  "category": "deposition_process"
+}
+```
 
 ## 5. 값 정규화 필드를 별도로 둔다
 
-검색, 유일성, 매칭이 필요한 값은 원문과 정규화 값을 함께 둔다.
+검색과 업무 식별의 변환 규칙을 먼저 구분한다. RFC 5321의 local-part 대소문자 보존 조건은 [핵심 개념](./01-normalization-core.md)을 따른다. 아래 email_normalized는 도메인만 소문자로 바꾸며 `Kim`을 보존한다. 별도 고객 예제의 `kim@example.com`은 그 원형이 이미 소문자라고 가정한다. 두 값을 제공자 확인 없이 같은 계정으로 합치지 않는다. 전화번호 변환은 국가/국내 trunk prefix·내선·입력 검증 정책이 필요하고 문자열 구분자 제거만으로 처리하지 않는다. 숫자는 가상 형식 예시다.
 
 ```json
 {
   "_id": "customer_10",
   "email": "Kim@Example.COM",
-  "email_normalized": "kim@example.com",
+  "email_normalized": "Kim@example.com",
   "phone": "010-1234-5678",
   "phone_e164": "+821012345678"
 }
 ```
 
-인덱스 예시:
+인덱스 예시(메일 식별 필드가 항상 존재하는 unsharded 학습 컬렉션 전제):
 
 ```javascript
 db.customers.createIndex({ email_normalized: 1 }, { unique: true })
 db.customers.createIndex({ phone_e164: 1 })
 ```
 
-이렇게 하면 사용자 입력 표기는 보존하면서, 식별과 검색은 canonical value로 수행할 수 있다.
+입력 표기와 계약에 따른 식별값을 분리할 수 있다. unique index가 올바른 이메일/동일인 판정까지 해주지는 않는다. 기존 중복이 있으면 unique 생성은 실패하며, 위 단일 필드 non-sparse unique에서 누락과 null은 같은 null index key로 취급되어 하나만 허용된다. 이메일이 선택 사항이면 업무 계약에 맞는 partial index와 필수/nullable validator를 따로 설계한다. sharded 컬렉션은 shard key prefix 등 unique 제한이 있으므로 이 예제를 그대로 적용하지 않는다. unknown 값을 빈 문자열로 조용히 대체하지 않는다.
 
 ## 6. 용어 사전과 ontology 저장소
 
-MongoDB는 RAG용 glossary, taxonomy, ontology-lite 저장소로 쓰기 좋다.
+MongoDB에 RAG용 glossary/taxonomy 관계를 JSON으로 저장하는 예다. 아래는 별도 `glossary_terms` 구조이며 앞의 `terms` validator를 그대로 적용하면 canonical_term 누락으로 거부된다. canonical_label/broader/related/definitions에 맞는 별도 validator와 참조·순환·출처 검토가 필요하다. 문서 저장만으로 OWL 추론/온톨로지 일관성 검사가 실행되지는 않는다.
 
 ```json
 {
@@ -215,16 +238,18 @@ MongoDB Vector Search를 RAG에 사용할 때도 정규화된 메타데이터가
 }
 ```
 
-Vector Search는 의미적으로 가까운 chunk를 찾지만, 실무 검색 품질은 메타데이터 필터에 크게 의존한다.
+위 2차원 embedding은 구조 예시다. 수동 임베딩 검색에는 별도 Vector Search index와 실제 모델 차원·거리 함수·query vector 계약이 필요하다. 일반 createIndex나 배열 저장만으로 활성화되지 않는다. pre-filter 필드를 Vector Search index에도 정의해야 한다. 확인한 제품 개요는 Atlas·지원되는 self-managed/local 경로를 설명하므로 Atlas만 가능하거나 임의의 Community 설치에서 곧바로 가능한 것으로 단정하지 않는다. 회사 배포 지원은 미확인이다.
+
+메타데이터 필터는 검색 대상 범위를 제한하며 품질 개선 여부는 평가 데이터로 확인한다. ANN/ENN 지원·인덱스 옵션·배포별 기능은 설치 판본에 맞게 확인한다.
 
 예:
 
 - 특정 장비 모델만 검색: `entity_ids`
-- 최신 버전만 검색: `version`
+- 승인한 특정 버전만 검색: `version` — 문자열 필드가 존재한다고 최신 판별이 자동으로 되는 것은 아님
 - 한국어 문서만 검색: `language`
-- 특정 문서 유형만 검색: `doc_type`
+- 특정 문서 유형만 검색: `doc_type` — 위 chunk 예제에는 없으므로 먼저 필드 계약/색인에 추가해야 함
 
-정규화되지 않은 메타데이터는 벡터 검색의 recall과 precision을 동시에 떨어뜨린다.
+필드 누락·값/타입 불일치는 필터에서 관련 문서를 배제하거나 다른 범위를 포함시킬 수 있다. recall/precision이 언제나 함께 하락한다는 보편적 결론은 피한다. 문서 버전·권한 변경·chunk 재생성과 오래된 index 정리를 함께 검증한다. 특정 장비/언어 조건은 ACL의 대체가 아니다.
 
 ## 8. MongoDB 정규화 체크리스트
 
@@ -237,9 +262,21 @@ Vector Search는 의미적으로 가까운 chunk를 찾지만, 실무 검색 품
 - [ ] RAG chunk 문서에 source, page, section, version, entity, canonical term이 있는가?
 - [ ] Vector Search 필터링에 필요한 메타데이터가 정규화되어 있는가?
 
+## 검토 결과
+
+2026-10-04: 기존 주문·고객·snapshot·validator·glossary·chunk 예제의 맥락과 모든 절·작성일·경로를 보존했다. 이메일 도메인 처리값을 정정하고 JSON fence 밖으로 컬렉션 설명을 옮겼다. strict/error와 유효 fixture를 보강했다. 01은 정의, 03은 검색 projection, 이 문서는 MongoDB 저장 구조의 선택이다. Claude 협의는 HERDR_ENV=1에서 pane_not_found로 불가했고 완전 통합·업무별 unique/partial/보안/벡터 배포 계약은 보류했다. [정리 기록](../organization-log.md)에 실제 검증과 미확인을 남긴다.
+
 ## 참고 자료
+
+모두 2026-10-04 확인. 8.0은 예제 대조 판본이며 설치/최신 판본 보장이 아니다. Vector Search stage/type의 이전/신규 추측 URL과 개요의 ANN/ENN 링크는 조회 오류였고 정상 확인한 개요 범위를 넘어 stage 실행을 검증했다고 주장하지 않는다.
 
 - [MongoDB Embedded Data](https://www.mongodb.com/docs/manual/data-modeling/embedding/)
 - [MongoDB Reference Data](https://www.mongodb.com/docs/manual/data-modeling/referencing/)
-- [MongoDB Schema Validation](https://www.mongodb.com/docs/current/core/schema-validation/)
-- [MongoDB Vector Search Overview](https://www.mongodb.com/docs/atlas/atlas-search/vector-search/)
+- [MongoDB Schema Validation](https://www.mongodb.com/docs/v8.0/core/schema-validation/)
+- [MongoDB Vector Search Overview](https://www.mongodb.com/docs/vector-search/)
+
+- [JSON Schema와 BSON 차이, 8.0](https://www.mongodb.com/docs/v8.0/core/schema-validation/specify-json-schema/)
+- [Validation level, 8.0](https://www.mongodb.com/docs/v8.0/core/schema-validation/specify-validation-level/)
+- [Unique index, 8.0](https://www.mongodb.com/docs/v8.0/core/index-unique/)
+- [원자성과 transaction, 8.0](https://www.mongodb.com/docs/v8.0/core/write-operations-atomicity/)
+- [Manual reference, 8.0](https://www.mongodb.com/docs/v8.0/reference/database-references/)

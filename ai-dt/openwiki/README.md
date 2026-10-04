@@ -2,11 +2,29 @@
 tags: [ai-coding, documentation, agents, openwiki]
 level: beginner
 last_updated: 2026-07-07
+reviewed_on: 2026-10-04
+review_status: partial
+type: learning
 ---
 
 # OpenWiki 사용법
 
 > OpenWiki는 코드베이스를 읽어 에이전트가 참고할 수 있는 저장소 문서를 생성하고 유지하는 CLI 도구다.
+
+> [!info] 확인 범위 · 2026-10-04
+> 공식 `main`의 `package.json`에서 OpenWiki `0.7.0`과 Node.js `>=22.22.0`을 확인했다. `main`은 바뀔 수 있으며 npm 배포 버전·실제 실행은 미확인이다. 원래 작성일은 보존했다. [정리 기록](./organization-log.md)에 변경 근거와 검증 한계를 남겼다.
+
+## 읽기 순서
+
+1. 언제 쓰면 좋은가 → 설치 전 확인: 저장소 문서 생성이 필요한지 판단한다.
+2. 실행 방식 선택 → 설치 → 첫 실행 → 기본 명령: 에이전트 연동과 독립 CLI를 구분한다.
+3. Provider 설정 → CI → 시험 범위 → 운영 팁: 자격 증명·변경 파일·평가 조건을 확인한다.
+
+## 실행 방식 선택
+
+- **코딩 에이전트 연동:** 공식 문서는 `openwiki integrations install codex` 또는 `... claude` 등을 안내한다. host의 인증된 모델 세션과 저장소 도구를 이용한다. 연동 설치는 사용자 설정을 바꿀 수 있으므로 범위를 확인한다.
+- **독립 CLI:** 아래의 `--init`/`--update`는 OpenWiki 자체 문서 생성 실행이다. provider·모델·인증을 별도로 설정한다.
+- 이 문서는 저장소 `code` 모드를 다룬다. `personal` 모드는 별도 로컬 위키에 기록하며, 이 저장소의 Obsidian vault 정리와 자동으로 같은 작업이 되지 않는다.
 
 ## 한 줄 요약
 
@@ -23,19 +41,19 @@ OpenWiki는 저장소 안에 `openwiki/` 문서 폴더를 만들고, 이후 코�
 
 ## 설치 전 확인
 
-- Node.js 20 이상이 필요하다. 공식 GitHub Actions 예시는 Node.js 22를 사용한다.
-- LLM API 키가 필요하다. 기본 제공 provider는 OpenRouter, Fireworks, Baseten, OpenAI, OpenAI-compatible, Anthropic이다.
+- 확인한 소스 버전 `0.7.0`은 Node.js `>=22.22.0`이 필요하다. CI의 `22` 계열 지정만 보고 낮은 22.x에서도 가능하다고 판단하지 않는다.
+- 독립 CLI는 선택한 provider에 맞는 인증이 필요하다. API key 외 인증 방식도 있으므로 모든 실행에 새 LLM API key가 필수라고 일반화하지 않는다. 코딩 에이전트 연동은 host 인증을 사용한다.
 - OpenWiki 실행 결과는 저장소 안의 `openwiki/` 폴더를 수정할 수 있다.
 - 첫 설정 값과 API 키는 로컬 `~/.openwiki/.env`에 저장된다.
-- `AGENTS.md` 또는 `CLAUDE.md`가 있으면 OpenWiki 문서를 참고하라는 프롬프트를 추가할 수 있고, 파일이 없으면 생성할 수 있다.
+- 공식 문서상 code 실행은 루트 `AGENTS.md`를 관리하고 기존 `CLAUDE.md`를 갱신한다. `CLAUDE.md`를 없다고 새로 만드는 것으로 설명하지 않는다. 관리 block 밖의 내용 보존은 실제 diff로 확인한다.
 
 ## 설치
 
 ```bash
-npm install -g openwiki
+npm install -g openwiki@0.7.0
 ```
 
-설치 후 도움말을 확인한다.
+위 버전은 확인한 소스 버전의 명시 예시다. npm에 같은 버전이 배포되었는지는 설치 전에 확인해야 한다. 이번 문서 정리에서는 설치하지 않았다. 설치 후 도움말을 확인한다.
 
 ```bash
 openwiki --help
@@ -57,7 +75,7 @@ openwiki --init
 ```bash
 OPENWIKI_PROVIDER=openai \
 OPENAI_API_KEY=... \
-OPENWIKI_MODEL_ID=gpt-5.5 \
+OPENWIKI_MODEL_ID=your-available-openai-model \
 openwiki --init --print
 ```
 
@@ -80,24 +98,24 @@ openwiki --init
 openwiki --update
 
 # 특정 모델로 실행
-openwiki --modelId openai/gpt-5.5
+openwiki --modelId your-provider-model-id
 
 # 기존 문서를 갱신하면서 우선순위 지시
-openwiki --update --modelId openai/gpt-5.5 "Please document the API routes first"
+openwiki --update --modelId your-provider-model-id "Please document the API routes first"
 ```
 
-대화형 CLI 안에서는 `/provider`, `/model`, `/init`, `/update`, `/clear`, `/help`, `/exit` 명령을 사용할 수 있다.
+원래 문서의 대화형 목록은 `/provider`, `/model`, `/init`, `/update`, `/clear`, `/help`, `/exit`였다. 현재 설치 CLI에서 이 전체 목록을 실행 검증하지 못했다. `--modelId`/`--model-id`는 확인한 공식 CLI parser에서 지원한다. slash command의 실제 목록과 실행은 설치 버전의 `--help`/`/help`로 확인한다. 모델 ID 예시는 placeholder이며 provider마다 실제 사용할 수 있는 ID를 지정한다.
 
 ## Provider 설정 예시
 
 ### OpenRouter
 
-OpenWiki의 기본 provider는 OpenRouter다.
+OpenRouter를 명시적으로 선택하는 예다. 확인한 공식 README의 onboarding 기본값은 OpenAI이며, 실제 설치 버전의 안내를 확인한다.
 
 ```bash
 OPENWIKI_PROVIDER=openrouter
 OPENROUTER_API_KEY=...
-OPENWIKI_MODEL_ID=z-ai/glm-5.2
+OPENWIKI_MODEL_ID=your-available-openrouter-model
 ```
 
 ### OpenAI
@@ -105,7 +123,7 @@ OPENWIKI_MODEL_ID=z-ai/glm-5.2
 ```bash
 OPENWIKI_PROVIDER=openai
 OPENAI_API_KEY=...
-OPENWIKI_MODEL_ID=gpt-5.5
+OPENWIKI_MODEL_ID=your-available-openai-model
 ```
 
 ### Anthropic 호환 게이트웨이
@@ -116,7 +134,7 @@ Anthropic provider를 프록시나 사내 게이트웨이로 보내려면 `ANTHR
 OPENWIKI_PROVIDER=anthropic
 ANTHROPIC_API_KEY=...
 ANTHROPIC_BASE_URL=https://your-gateway.example.com/anthropic
-OPENWIKI_MODEL_ID=claude-sonnet-5
+OPENWIKI_MODEL_ID=your-available-anthropic-model
 ```
 
 ### OpenAI-compatible 엔드포인트
@@ -140,7 +158,7 @@ GitHub Actions에서는 다음 흐름을 사용한다.
 4. `openwiki --update --print`
 5. 변경된 `openwiki/` 폴더를 PR로 생성
 
-최소 예시는 다음과 같다.
+다음은 기존 간소화 예시를 보완한 템플릿이다. 실제 CI 실행·토큰 권한·action 호환성은 미검증이다. action의 v4/v7 표기를 최신이라고 단정하지 않는다. 공식 현재 예시는 full history, 부분 완료 페이지 보존과 실패 결과 전파까지 다루므로 운영 시 원문과 대조한다.
 
 ```yaml
 name: OpenWiki Update
@@ -161,6 +179,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -173,15 +192,17 @@ jobs:
         run: openwiki --update --print
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          OPENWIKI_MODEL_ID: z-ai/glm-5.2
-          LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
-          LANGCHAIN_PROJECT: openwiki
-          LANGCHAIN_TRACING_V2: "true"
+          OPENWIKI_PROVIDER: openrouter
+          OPENWIKI_MODEL_ID: your-available-openrouter-model
+          OPENWIKI_TELEMETRY_DISABLED: "1"
 
       - name: Create OpenWiki update pull request
         uses: peter-evans/create-pull-request@v7
         with:
-          add-paths: openwiki
+          add-paths: |
+            openwiki
+            AGENTS.md
+            CLAUDE.md
           branch: openwiki/update
           commit-message: "docs: update OpenWiki"
           title: "docs: update OpenWiki"
@@ -192,12 +213,12 @@ jobs:
 
 ## pm_notes에서 시험해볼 때
 
-이 저장소에서 바로 시험한다면 먼저 별도 브랜치를 만들고 실행하는 것이 안전하다.
+이 저장소는 최상위 주제들이 독립적이다. `--init`은 Git 저장소 루트의 공통 지시 파일까지 바꿀 수 있으므로 루트에서 전체 생성을 시험하지 않는다. 시험할 단일 모듈의 **독립 Git 저장소**를 별도로 준비한 뒤 해당 경로에서 실행한다. 브랜치만 나누어도 도구의 읽기·쓰기 범위가 좁아지는 것은 아니다.
 
 ```bash
-cd /Users/daeyoung/Codes/pm_notes
-git switch -c docs/openwiki-trial
-npm install -g openwiki
+cd /path/to/isolated-topic-repo
+git status --short
+npm install -g openwiki@0.7.0
 openwiki --init
 git status --short
 ```
@@ -208,7 +229,9 @@ git status --short
 - `AGENTS.md` 또는 `CLAUDE.md`: OpenWiki 참고 지시가 추가됐는지
 - `~/.openwiki/.env`: 로컬에 저장된 provider/API key/model 설정
 
-생성 결과가 마음에 들지 않으면 커밋하지 않고 변경분을 폐기하면 된다. 단, 이미 있던 `AGENTS.md`/`CLAUDE.md`가 수정될 수 있으므로 diff를 확인한 뒤 정리한다.
+생성 결과와 기존 변경을 diff로 구분해 검토한다. 기존 사용자 변경을 함께 폐기하지 않는다. `--init` 재실행은 기존 생성 위키를 교체할 수 있으므로 일상 갱신에는 `--update`를 검토한다. 이 문서는 실제 초기화나 변경 폐기를 수행했다는 기록이 아니다.
+
+CI에서 PR에 포함할 경로는 생성 문서와 실제 관리 지시 파일을 함께 검토한다. 공식 예시에 workflow 파일도 포함될 수 있으나 위 템플릿은 자동 workflow 변경까지 허용하지 않는다. LangSmith tracing은 원래 예제에 있던 선택 기능이며 기본 동작 검증에는 필요하지 않다. 활성화하면 trace 전송 범위도 따로 확인한다.
 
 ## 운영 팁
 
@@ -217,6 +240,10 @@ git status --short
 - 자동 갱신 PR은 사람이 리뷰한다. 에이전트가 만든 문서는 오래된 가정이나 과도한 일반화를 포함할 수 있다.
 - API 키는 저장소에 커밋하지 않는다. 로컬은 `~/.openwiki/.env`, CI는 secret store를 사용한다.
 - OpenWiki가 생성한 문서를 다른 에이전트 지시 파일과 함께 쓸 때는 중복되거나 충돌하는 운영 규칙이 없는지 확인한다.
+
+## 검증 경계
+
+문서·소스 대조와 Markdown/YAML 정적 검사만 수행했다. 로컬 `openwiki` 실행 파일을 찾지 못했으며 설치·API 호출·CI·문서 자동 생성은 하지 않았다. 공식 문서의 Claims나 자동 검증도 사람이 작성한 모든 사실의 정확성을 보증하는 것으로 읽지 않는다.
 
 ## 참고 자료
 

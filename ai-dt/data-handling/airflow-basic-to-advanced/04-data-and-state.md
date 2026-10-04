@@ -2,9 +2,17 @@
 tags: [airflow, xcom, storage, idempotency, connections]
 level: intermediate
 last_updated: 2026-05-02
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 04. 데이터와 상태 관리
+
+> [!info] 판본·검증 범위 — 2026-10-04
+> **Airflow 2.10.5** 예제다. 회사 설치 버전·executor·권한·Git Sync 조건은 미확인이다. 3.x로 그대로 복사하지 않고 해당 판본의 public API/provider 문서를 확인한다. 로컬 파싱과 실제 scheduler·worker·외부 시스템 검증을 구분한다.
+> 큰 데이터의 저장 위치와 작은 참조 전달을 분리한다. 덮어쓰기·upsert라는 이름만으로 멱등성이나 원자성이 보장되지는 않는다.
+
 
 ## 목표
 
@@ -110,7 +118,7 @@ raw_path = extract("{{ ds }}")
 clean_path = transform("{{ ds }}", raw_path)
 ```
 
-`raw_path`와 `clean_path`는 실제 데이터가 아니라 경로 문자열이다.
+DAG 정의 시점의 `raw_path`/`clean_path`는 XComArg 참조이고 실행 시 반환된 경로 문자열로 해석된다. 위는 DAG context가 생략된 부분 예제이며 함수는 URI만 반환하고 실제 저장을 하지 않는다.
 
 ## 멱등성
 
@@ -143,7 +151,9 @@ def load_to_db(run_date: str, rows):
     insert_partition(run_date, rows)
 ```
 
-또는 DB가 지원하면 upsert를 사용한다.
+위 `delete_partition`/`insert_partition`은 미구현 의사코드다. 같은 DB transaction에서 삭제와 삽입을 commit해야 중간 실패로 빈 파티션이 노출되는 위험을 줄인다. transaction 지원·격리 수준·동시 writer 계약을 확인한다.
+
+또는 DB가 지원하면 upsert를 사용한다. 고유 key/constraint와 결정적인 갱신 값이 필요하며 upsert만으로 외부 부작용의 exactly-once를 보장하지 않는다.
 
 ```python
 def load_to_db(rows):
@@ -160,7 +170,7 @@ output_path = f"s3://clean/sales/dt={run_date}/data.parquet"
 
 ## 임시 경로와 최종 경로
 
-긴 작업은 임시 경로에 먼저 쓰고 성공하면 최종 경로로 이동하는 방식이 안전하다.
+긴 작업은 임시 산출물을 검증한 뒤 최종 결과를 게시하는 단계를 분리한다. 아래 S3 경로의 “이동”은 copy와 원본 delete이며 파일시스템의 원자적 rename과 다르다.
 
 ```text
 s3://clean/sales/_tmp/run_id=.../data.parquet
@@ -168,7 +178,7 @@ s3://clean/sales/_tmp/run_id=.../data.parquet
 s3://clean/sales/dt=2026-05-02/data.parquet
 ```
 
-이렇게 하면 중간 실패로 불완전한 파일이 최종 경로에 남는 문제를 줄일 수 있다.
+단일 object 복사와 여러 object로 구성된 전체 batch의 완료는 다르다. 최종 key 복사 검증·reader가 읽는 완료 신호·동시 writer·실패 후 임시 key 정리 계약이 없으면 위 화살표만으로 안전한 게시를 보장할 수 없다. 구체적 manifest/교체 설계는 Claude 협의 대기다.
 
 ## 날짜/시간 파티션
 
@@ -281,7 +291,7 @@ def get_db_config():
 
 S3/MinIO는 회사에 따라 AWS provider의 S3Hook을 쓰거나 boto3/minio client를 직접 쓴다. provider가 설치되어 있는지 먼저 확인해야 한다.
 
-하지만 현재 사내 환경에서는 Airflow Connection/Variable 접근이 불가능하므로 이 방식을 사용할 수 없다. 대신 Bitbucket Git Sync repository 안에 `secrets.py`와 `config.py`를 두는 방식으로 정리한다.
+원문은 사내 UI 권한 제한을 가정했다. 실제 조건은 미확인이고, UI에서 보이지 않아도 환경변수/secret backend로 Connection을 제공할 수 있다. 아래 구조·자리표시자는 원래 코드 설정 방식의 비교 예시이며 실제 비밀을 Git에 넣는 지침이 아니다.
 
 ```text
 dags/
@@ -318,12 +328,12 @@ def get_db_config() -> dict:
 
 주의:
 
-- secret은 `secrets.py` 한 곳에 모은다.
+- 승인된 env/backend/외부 파일 주입 방식을 확인한다. 반환된 credential dict도 로그·XCom으로 전달하지 않는다.
 - secret 값을 로그에 출력하지 않는다.
 - Bitbucket repository 접근 권한을 최소화한다.
 - secret이 노출되면 key rotation을 한다.
 
-자세한 내용은 [08. Bitbucket Git Sync와 코드 기반 Secret 운영](./08-bitbucket-git-sync-and-code-secrets.md)을 따른다.
+현재 기능과 원문의 역사적 가정은 [08. Bitbucket Git Sync와 코드 기반 Secret 운영](./08-bitbucket-git-sync-and-code-secrets.md)에서 구분한다.
 
 ## 설정값 관리
 
@@ -354,7 +364,7 @@ def run():
 bash_command="python job.py --bucket {{ var.value.company_data_bucket }}"
 ```
 
-현재 환경에서는 Variable 접근이 불가능하므로 설정값은 `config.py`에 둔다.
+비밀이 아닌 고정 설정은 승인된 코드 설정에 둘 수 있다. UI 권한만으로 Variable의 Task 사용 가능 여부를 추론하지 않는다. 아래 `config.py`는 비밀 없는 값의 예시다.
 
 ```python
 # dags/company_job/config.py
@@ -377,7 +387,7 @@ Task 로그는 운영자와 여러 사용자가 볼 수 있다.
 - 주민번호/개인정보
 - 내부망 민감 URL 전체
 
-로그에 남기면 좋은 값:
+정책에 따라 식별자를 축약·비식별화한 뒤 남길 수 있는 값(경로/URL/request ID도 민감할 수 있음):
 
 - run_date
 - input path
@@ -413,7 +423,7 @@ def main():
         raise
 ```
 
-BashOperator에서는 Python script가 non-zero exit code로 종료되어야 실패로 잡힌다.
+위 예외 예제의 `run_job`/`logger`와 아래 `command`는 별도 정의가 필요한 부분 예제다. BashOperator는 non-zero exit를 실패로 다루지만 2.10.5 기본 `skip_on_exit_code=99`는 skipped다. 성공 exit로 실패를 숨기지 않는다.
 
 ```python
 subprocess.run(command, check=True)
@@ -426,7 +436,7 @@ subprocess.run(command, check=True)
 - 출력 경로가 날짜/시간 파티션을 포함하는가
 - 같은 처리 구간 재실행 시 중복이 생기지 않는가
 - 실패 중간 산출물이 최종 경로에 남지 않는가
-- 현재 환경에서는 secret을 `secrets.py`에 모으고 Bitbucket 권한을 제한했는가
+- 비밀 주입·사용 권한을 확인하고 Git/로그/XCom에 실제 값이 남지 않게 했는가
 - 로그에 민감정보를 찍지 않는가
 - 코드가 실패를 삼키지 않고 예외를 발생시키는가
 
@@ -435,3 +445,14 @@ subprocess.run(command, check=True)
 다음 문서에서는 로컬 Python 환경과 Airflow 서버 환경이 다를 때 패키지 버전을 어떻게 맞출지 다룬다.
 
 - [05. 패키지와 실행 환경](./05-packages-and-environments.md)
+
+
+## 검증 근거 — 2026-10-04
+
+- [2.10.5 XCom](https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/xcoms.html), [Connections](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/connection.html), [BashOperator](https://airflow.apache.org/docs/apache-airflow/2.10.5/howto/operator/bash.html).
+- [AWS S3 object copy/move](https://docs.aws.amazon.com/AmazonS3/latest/userguide/copy-object.html): AWS 동작의 근거이며 사내 MinIO 버전은 별도 확인.
+- [PostgreSQL transaction](https://www.postgresql.org/docs/current/tutorial-transactions.html): 확인 페이지는18, transaction 개념의 예시이며 사내 DB 제품/버전 증거가 아님.
+
+미확인: 사내 배포·계정·리소스·네트워크 조건과 실제 운영 성공. 중복 예제의 계약 통합·회사 정책 결정은 Herdr `pane_not_found`로 Claude 협의를 보류한다. [주제 정리 기록](../organization-log.md)에 진행 결과를 남긴다.
+
+로컬 확인: Python 3.12.12/Airflow 2.10.5 임시 환경에서 이 장의 Python 구문과 완성 DAG 정의를 검사했다. Kubernetes provider import·실제 venv job·외부 접속·scheduler 실행은 별도 미확인이다. 추가 실행 결과와 판본은 위 정리 기록을 읽는다.

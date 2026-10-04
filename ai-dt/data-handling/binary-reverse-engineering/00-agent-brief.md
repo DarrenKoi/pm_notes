@@ -2,9 +2,16 @@
 tags: [binary, reverse-engineering, agent, cd-sem, metrology]
 level: intermediate
 last_updated: 2026-07-10
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: work_reference
 ---
 
 # Agent Brief — 미지 binary 포맷 복원 작업 계약
+
+> [!info] 검토 범위 — 2026-10-04
+> 여기의 CDS1·offset48·stride16·recipe와 좌표는 합성 fixture의 학습 예다. 실제 CD-SEM/회사 데이터의 규격이 아니다. `bre.py`는 후보를 찾는 도구이며 출력의 hint가 “확정”이라고 표현해도 독립 근거를 검사한다. 정상 결과/포착한 분석 오류는 stdout JSON,인자 오류는 stderr/exit2일 수 있다. 구체 호출 계약은 [도구 README](./scripts/README.md)를 따른다. 원본 외의 전용 작업 경로에 결과를 저장하며 실제 장비 조사·벤더 연락·다른 agent 실행은 이 문서 정리에서 수행하지 않는다.
+
 
 > 이 문서는 사람이 아니라 **agent 가 읽는 작업 계약서**다. 상세 명령은 [00-agent-runbook.md](./00-agent-runbook.md)에 있고, 이 브리프는 그 위의 미션·게이트·공유상태·가드레일을 정한다. 작업 시작 전 이것부터 읽는다.
 
@@ -12,14 +19,14 @@ last_updated: 2026-07-10
 
 계측 장비(CD-SEM 등)가 뱉은 문서화되지 않은 binary 파일의 구조를 복원해, 재사용 가능한 parser 스펙으로 만든다.
 
-**완료 정의(Definition of Done)**: [01-toolkit-reference.md](./01-toolkit-reference.md) §3 규격의 Kaitai `.ksy` 또는 `construct` 스펙이 존재하고, 보유한 모든 sample 파일에 대해 오류 없이 parsing 되며, 최소 한 개 필드의 값이 장비 UI/CSV export 값과 일치한다.
+**완료 정의(Definition of Done)**: [01-toolkit-reference.md](./01-toolkit-reference.md) §3 규격의 Kaitai `.ksy` 또는 `construct` 스펙이 존재하고, 보유한 모든 sample 파일에 대해 오류 없이 parsing 되며, 학습 시작점으로 최소 한 개 필드를 장비 UI/CSV와 대조한다. 이는 포맷 전체 완성 증거는 아니다. 사용하려는 모든 필드의 값/단위/개수/좌표계/판본과 미해석 영역·checksum 범위를 확인하고 검증 corpus 밖은 미확인으로 남긴다.
 
 ## 시작 전 게이트 (건너뛰지 말 것)
 
 두 게이트를 통과하지 못하면 **작업을 시작하지 말고 사용자에게 보고**한다.
 
-1. **법무/계약 게이트** — [03-legal-and-first-moves.md](./03-legal-and-first-moves.md)를 읽는다. 장비 구매계약·EULA·NDA에 reverse engineering 금지 조항이 있을 수 있다. 본인 데이터를 담은 본인 장비의 출력 파일을 파싱하는 것과, 벤더 소프트웨어를 역컴파일하는 것은 위험도가 전혀 다르다. **후자는 절대 자동으로 진행하지 않는다.**
-2. **낭비 방지 게이트** — [02-cd-sem-formats.md](./02-cd-sem-formats.md)를 먼저 확인한다. 이미 열려 있는 포맷(TIFF private tag, HDF5, STDF 등)을 손으로 파싱하는 것은 순수한 시간 낭비다. **SEM 이미지의 경우 `tifffile`이 FEI/Zeiss 메타데이터를 이미 파싱한다.**
+1. **법무/계약 게이트** — [03-legal-and-first-moves.md](./03-legal-and-first-moves.md)를 읽는다. 장비 구매계약·EULA·NDA에 reverse engineering 금지 조항이 있을 수 있다. 본인 데이터를 담은 본인 장비의 출력 파일을 파싱하는 것과, 벤더 소프트웨어를 역컴파일하는 것은 서로 다른 행위이며 출력 소유만으로 허용을 확정하지 않는다. 적용 관할/실제 계약은 별도 확인한다. **후자는 절대 자동으로 진행하지 않는다.**
+2. **낭비 방지 게이트** — [02-cd-sem-formats.md](./02-cd-sem-formats.md)를 먼저 확인한다. TIFF/HDF5/STDF 등은 기존 reader 적용 가능성을 먼저 확인한다. tifffile은 일부 FEI/Zeiss 메타데이터 reader를 구현하지만 특정 CD-SEM 판본과 모든 필드의 지원은 미확인이다. 필요한 값/단위가 원천과 일치해야 reader 경로로 종료할 수 있다.
 
 ## 실행 순서 (phase pipeline)
 
@@ -34,7 +41,7 @@ last_updated: 2026-07-10
 | 4 | [runbook Phase 5](./00-agent-runbook.md) | `05_stride.json`, `05_arrays.json` | payload dtype·offset·stride 확정 |
 | 5 | [runbook Phase 6](./00-agent-runbook.md) + [01-toolkit §3](./01-toolkit-reference.md) | `FORMAT.md` (.ksy + validate) | 전 sample parsing 성공 |
 
-Phase 2 에서 기존 parser 로 해결되면 **3~5는 실행하지 않는다.** 그게 성공이다.
+Phase 2 에서 기존 parser 로 해결되면 **3~5는 실행하지 않는다.** 필요한 값/단위/권한/출처가 충족된 범위에서 성공이다.
 
 ## 환경 준비
 
@@ -44,7 +51,7 @@ python3 -m pip install numpy          # 유일한 필수 의존성
 python3 selftest.py                   # 정답을 아는 합성 파일로 toolkit 회귀 검증
 ```
 
-`selftest.py`가 `ALL PASS`가 아니면 toolkit 결과를 신뢰하지 말고 먼저 고친다. 이 스크립트는 `make_fixture.py`가 만든 합성 CD-SEM 유사 파일에서 magic·count 필드·timestamp·record stride·interleaved CD 배열을 전부 정확히 복원하는지 확인한다(17개 단언).
+`selftest.py`가 `ALL PASS`가 아니면 toolkit 결과를 신뢰하지 말고 사용을 중단하고 실패 원인을 기록한다. 실행 코드 수정은 별도 승인된 작업 범위에서 진행한다. 이 스크립트는 `make_fixture.py`가 만든 합성 CD-SEM 유사 파일에서 magic·count 필드·timestamp·record stride·interleaved CD 배열을 전부 정확히 복원하는지 확인한다(12구간28개 검사).
 
 ## 산출물 규약 — `findings.json`
 
@@ -79,14 +86,18 @@ Agent 는 작업 디렉터리에 `findings.json` 하나를 누적 갱신한다. 
 
 ## 가드레일
 
-- **원본 파일을 수정하지 않는다.** 모든 스크립트는 read-only다. 변조 실험이 필요하면 사본에 한다.
+- **원본 파일을 수정하지 않는다.** bre는 입력 읽기 전용이며 fixture 생성기는 출력 파일을 쓴다. stdout 리다이렉션도 파일을 쓸 수 있다. 변조 실험이 필요하면 사본에 한다.
 - **`bre.py`의 출력은 후보이지 정답이 아니다.** 특히 `stamps`는 오탐이 매우 많고, `variance`의 `weak_boundary_hint`는 수 바이트 어긋난다. 이 두 값은 단독 근거로 쓰지 않는다.
 - **모든 확정에는 교차 검증 2개를 요구한다.** 예: stride 는 `stride` subcommand 의 autocorrelation **과** `diff`의 `size_delta` 가 일치해야 확정.
-- **막히면 3회 시도 후 멈추고 보고한다.** 같은 방법을 반복하지 않는다. 특히 entropy 가 7.5 이상인데 압축을 못 푸는 경우는 암호화일 수 있으므로 즉시 사람에게 넘긴다.
-- **벤더에게 먼저 물어보는 것이 거의 항상 더 빠르다.** Apps engineer 에게 포맷 스펙·SDK·CSV export·EDA(Interface A) feed 를 요청하는 선택지를 사용자에게 반드시 제시한다.
+- **막히면 3회 시도 후 멈추고 보고한다.** 같은 방법을 반복하지 않는다. entropy7.5 이상은 이 도구의 휴리스틱 경계이며 암호화 증거가 아니다. 압축 해제 실패도 포맷/offset/손상/지원 부족일 수 있다. 승인 범위·자원 한도에서 원인을 기록하고 근거 없이 암호화로 확정하지 않는다.
+- **벤더가 제공하는 공식 경로를 먼저 조사한다.** Apps engineer 에게 포맷 스펙·SDK·CSV export·EDA(Interface A) feed 를 요청하는 선택지를 사용자에게 반드시 제시한다.
 
 ## 관련 문서
 
 - [README](./README.md) — 시리즈 목차
 - [00-agent-runbook.md](./00-agent-runbook.md) — phase별 정확한 명령·합격기준
 - [agent-tasks.md](./agent-tasks.md) — 각 phase 를 subagent 에게 위임할 때 쓰는 프롬프트 원문
+
+## 검토 결과
+
+2026-10-04 원래 절·phase/task·실습 호출의 목적을 보존하고 후보/확정, 입력/출력, JSON/exit, 실제 reader 값 대조와 미확인 반환을 구분했다. 근거는 [CLI 소스](./scripts/bre.py)와 [합성 검사](./scripts/selftest.py)다. Kaitai parse와 writer 조건은 [공식 serialization 문서](https://doc.kaitai.io/serialization.html)를 확인했으며 compiler/runtime는 실행하지 않았다. HDF5/SER/STDF 등의 외부 reader 후보와 unblob 명령의 설치 판본·옵션·실제 결과는 이 문서에서 확인하지 않았다. 실제 장비와 corpus, 작업 계약의 완성과 중복 통합은 미확인이다. HERDR_ENV=1/pane_not_found로 Claude 의견을 받지 못해 구조 통합은 보류했다. [정리 기록](../organization-log.md)에 남긴다.

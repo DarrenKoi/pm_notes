@@ -3,9 +3,15 @@ tags: [itc, aix, roadmap, ceo-report]
 level: strategy
 last_updated: 2026-05-15
 version: 0.3
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # ITC AIX 로드맵 — 보고서 Outline (v0.3)
+
+> [!info] 2026-10-04 검토 — 통합 설계 v0.3
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
 
 > 기반기술센터(ITC) AI/DT 로드맵 CEO 보고용 outline.
 > 컨텍스트: [CONTEXT.md](./CONTEXT.md) / 진행 기록: [grilling-session-2026-05-14.md](./grilling-session-2026-05-14.md)

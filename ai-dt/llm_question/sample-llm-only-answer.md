@@ -1,4 +1,16 @@
+---
+type: historical-record
+tags: [aix, llm-report-contest, archive]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+aliases: ["90분 초안 기록 — sample-llm-only-answer"]
+---
+
 # [캘리브레이션 샘플] LLM-only 답안
+
+> [!info] 2026-10-04 검토 — 90분 초안 기록
+> 아래는 당시 설계와 예시를 보존한 기록입니다. 현재 시행 규칙이나 실제 모델 성능을 뜻하지 않습니다. 버전·용도·미확인은 [목차](./README.md)와 [검토 안내](./review-notes.md)에 정리했습니다.
+
 
 > ⚠️ **이 답안은 채점자 캘리브레이션용입니다.**
 > 참가자가 사내 RAG-LLM에 본 spec을 그대로 던졌을 때 나올 법한 답안을 재구성한 것. **의도적으로 모든 5축의 실패 패턴을 노출**합니다. 실전 우수 답안의 모범이 아닙니다.

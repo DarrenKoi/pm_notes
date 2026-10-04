@@ -2,11 +2,18 @@
 tags: [langgraph, react-agent, create-react-agent, human-in-the-loop, scenario]
 level: advanced
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 08. 사용자 시나리오 기반 LangGraph Agent 구축
 
-> 실제 업무 시나리오를 하나 잡아, LangGraph prebuilt `create_react_agent`와 커스텀 그래프를 함께 써서 메모리·승인(HITL)까지 갖춘 Agent를 만든다.
+> 실제 업무 시나리오를 하나 잡아, LangChain v1 `create_agent`(LangGraph 기반)와 커스텀 그래프를 함께 써서 메모리·승인(HITL)까지 갖춘 Agent를 만든다.
+
+
+> [!info] 적용 조건과 실행 순서
+> 2026-10-04 개별 검토. [공통 적용 조건](./verified-conditions.md)의 판본·설정·검증 경계를 먼저 확인한다. 같은 문서의 코드 조각은 위에서 아래로 이어 실행하며 개념 조각은 별도로 표시한다. 이전 문서의 vs/chunks/embeddings 등은 관련 절의 선행 예제가 필요하다. 공개·사내 API/실제 데이터·운영 실행은 미확인이며 예제 출력은 보장이 아니다.
 
 ## 왜 필요한가? (Why)
 
@@ -16,8 +23,8 @@ last_updated: 2026-07-06
 
 ## 핵심 개념 (What)
 
-### `create_react_agent` (가장 빠른 길)
-07번의 "agent ↔ tools 루프"를 LangGraph 그래프로 만든다. 일반 Agent는 [03번](./03-chain-agent-tool.md)의 LangChain `create_agent`가 더 단순하지만, checkpointer, HITL, 조건 분기, 상태 조회/수정이 필요한 시나리오는 LangGraph로 설계한다.
+### `create_agent` (v1 진입점)
+기존 create_react_agent는 v1에서 deprecated이므로 model/tools/system_prompt/checkpointer를 갖는 create_agent로 이관했다. [03번](./03-chain-agent-tool.md)의 create_agent도 checkpointer와 HITL을 지원한다. 업무 노드·승인 위치를 직접 정의할 때는 아래 커스텀 그래프를 사용한다.
 
 ### Human-in-the-loop (HITL)
 `interrupt`로 그래프를 특정 지점에서 **일시정지**하고 사람 입력을 기다린다. 승인/거부/수정 후 `Command(resume=...)`로 재개한다. 삭제·변경 같은 부작용 도구 앞에 둔다.
@@ -26,28 +33,29 @@ last_updated: 2026-07-06
 
 ### 시나리오 A: prebuilt ReAct Agent + 메모리
 ```python
-from langgraph.prebuilt import create_react_agent
+import os
+from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="Kimi-K2.5", base_url="http://llm-gateway.internal/v1",
-                 api_key="EMPTY", temperature=0)
+llm = ChatOpenAI(model=os.environ["LLM_MODEL"], base_url=os.environ["LLM_BASE_URL"],
+                 api_key=os.environ["LLM_API_KEY"], temperature=0)
 
 @tool
 def get_status(eqp_id: str) -> str:
     """설비 상태/알람 조회."""
-    return f"{eqp_id}: DOWN, 알람=온도과열"
+    return f"{eqp_id}: DOWN, 알람=온도과열 (가상 fixture)"
 
 @tool
 def get_manual(alarm: str) -> str:
     """알람명으로 대응 매뉴얼 조회."""
     return f"{alarm}: 1) 쿨링 확인 2) 팬 점검 3) 재기동"
 
-agent = create_react_agent(
-    llm,
+agent = create_agent(
+    model=llm,
     tools=[get_status, get_manual],
-    prompt="너는 반도체 설비 이상 대응 어시스턴트다. 도구로 사실을 확인한 뒤 조치를 제안해.",
+    system_prompt="너는 반도체 설비 이상 대응 어시스턴트다. 도구로 사실을 확인한 뒤 조치를 제안해.",
     checkpointer=InMemorySaver(),
 )
 
@@ -62,6 +70,8 @@ print(out2["messages"][-1].content)
 ```
 
 ### 시나리오 B: 승인 게이트(HITL)가 있는 커스텀 그래프
+
+이 예제는 승인 후 메시지만 기록하며 실제 조치를 실행하지 않는다. interrupt는 checkpointer/동일 thread가 필요하고 재개 시 해당 node가 처음부터 다시 실행된다. interrupt 전에 부작용을 두지 않는다. 승인자의 인증·제안 binding·idempotency는 운영 구현이 필요하다.
 "조치 요청(부작용)" 전에 사람이 승인해야 하는 흐름.
 ```python
 from typing import Annotated
@@ -82,7 +92,7 @@ def analyze(state):
 def approval(state):
     decision = interrupt({"proposed_action": state["proposed_action"]})  # ⏸️ 사람 대기
     if decision == "approve":
-        return {"messages": [("assistant", f"조치 실행 요청: {state['proposed_action']}")]}
+        return {"messages": [("assistant", f"승인된 제안(미실행): {state['proposed_action']}")]}
     return {"messages": [("assistant", "조치가 거부되었습니다.")]}
 
 b = StateGraph(State)
@@ -103,7 +113,7 @@ print(result["messages"][-1].content)
 
 ### 시나리오 설계 팁
 1. **도구를 먼저 정의**하고, 각 도구의 docstring을 시나리오 언어로 쓴다.
-2. **읽기 도구는 자유롭게, 쓰기 도구는 HITL 뒤에** 둔다.
+2. **읽기도 권한/데이터 범위를 확인하고, 쓰기 도구는 HITL 뒤에** 둔다.
 3. 프롬프트에 "반드시 도구로 사실을 확인한 뒤 답하라"를 명시해 환각을 줄인다.
 4. `thread_id`를 근무조/케이스 단위로 설계해 대화 맥락을 분리한다.
 5. 관측성: `graph.stream(..., stream_mode="updates")`로 각 스텝을 로깅한다.

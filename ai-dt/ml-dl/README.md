@@ -2,16 +2,21 @@
 tags: [ml, dl, scikit-learn, pytorch, pipeline]
 level: beginner-to-advanced
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
 ---
 
 # ML/DL 실전 가이드
 
-> 데이터 전처리부터 모델 배포까지, 복사-붙여넣기로 바로 쓸 수 있는 ML/DL 실전 레시피 모음
+> [!info] 검토 진행 범위
+> 데이터 처리 4개 문서는 [해당 목차](./data-processing/README.md)의 결과를 확인하세요. 클래식 ML 6개는 [해당 목차](./classic-ml/README.md)에 개별 검토 결과와 실행·화면 미확인을 기록했습니다. 딥러닝5개는 [해당 목차](./deep-learning/README.md)에 CPU 검증 범위를 기록했습니다. 배포 3개는 [배포 목차](./deployment/README.md)에 CPU·TestClient·SQL/registry 검증 범위를 기록했습니다. 원래 19개 모두 개별 검토했고 전체 29개의 링크·메타데이터·Obsidian CLI 확인을 수행했습니다. 실제 읽기 화면의 일부와 Claude 협의는 미완료입니다. 원래 작성일 2026-02-14와 검토일을 구분합니다.
+
+> 데이터 전처리부터 모델 배포까지, 입력·의존성·평가 조건을 확인하며 실행하는 ML/DL 교육용 레시피 모음
 
 ## 왜 필요한가? (Why)
 
 - ML/DL 프로젝트는 매번 비슷한 패턴이 반복된다 (데이터 로드 → 전처리 → 학습 → 평가 → 배포)
-- 검증된 코드 템플릿을 모아두면 새 프로젝트 시작 시간을 크게 단축할 수 있다
+- 조건과 검증 범위를 기록한 코드 템플릿을 모아두면 새 프로젝트 시작 시간을 크게 단축할 수 있다
 - scikit-learn(클래식 ML)과 PyTorch(딥러닝) 중심으로 실무에서 바로 활용 가능한 레시피를 정리한다
 
 ## 학습 로드맵
@@ -62,5 +67,5 @@ last_updated: 2026-02-14
 
 ## 관련 문서
 - [상위: AI/DT 학습 노트](../README.md)
-- [FastAPI 웹 개발](../../web-development/python/fastapi/)
+- FastAPI 관련 구현은 다른 독립 주제의 자료이며 이 목차에서 깨진 외부 폴더 참조를 제거했다.
 - [RAG 파이프라인](../rag/langgraph/)

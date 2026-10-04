@@ -2,7 +2,14 @@
 tags: [llmops, lifecycle, mlops, overview]
 level: beginner
 last_updated: 2026-07-06
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning
 ---
+
+> [!info] 검토 범위 — 2026-10-04
+> 공식·일차 근거와 로컬 검증은 [공통 적용 조건](./verified-conditions.md), 변경·미확인은 [정리 기록](./organization-log.md)에 있다. 실제 사내 접속·모델 품질·운영 승인과 Claude 협의는 미확인이다. 원래17개를 개별 검토했다. 실제 운영·읽기 화면 검증은 미완료다.
+
 
 # 01. LLMOps 개요 및 라이프사이클
 
@@ -11,19 +18,19 @@ last_updated: 2026-07-06
 ## 왜 필요한가? (Why)
 
 - 데모는 프롬프트 몇 줄로 되지만, **운영**은 다르다. 모델이 바뀌고(Kimi-K2.5 → Qwen 등), 프롬프트를 고치고, 검색 문서가 늘어날 때마다 "**정말 좋아졌는가**"에 답할 수 없으면 개선이 도박이 된다.
-- LLM 출력은 **비결정적**이고 정답이 하나가 아니다. 그래서 전통적 소프트웨어의 "테스트 통과=OK"가 성립하지 않고 **점수 분포로 관리**해야 한다.
-- 사내에서는 모델·프롬프트를 자주 교체한다. 교체할 때마다 회귀(regression)를 자동으로 잡아내는 **평가 파이프라인**이 없으면 어제 잘 되던 케이스가 조용히 망가진다.
+- LLM 출력은 **비결정적**이고 정답이 하나가 아니다. 형식·권한·도구 동작의 결정적 테스트와 응답 품질의 **점수 분포·실패 사례**를 함께 관리한다.
+- 모델·프롬프트를 자주 교체하는 서비스를 가정한다. 교체할 때마다 회귀(regression)를 자동으로 잡아내는 **평가 파이프라인**이 없으면 어제 잘 되던 케이스가 조용히 망가진다.
 
 ## 핵심 개념 (What)
 
 ### 1) LLMOps란
-LLM 기반 애플리케이션을 **개발 → 배포 → 운영 → 개선**하는 전 과정을 자동화·표준화하는 실무 체계. MLOps의 하위/변형이지만 강조점이 다르다.
+LLM 기반 애플리케이션을 **개발 → 배포 → 운영 → 개선**하는 전 과정을 자동화·표준화하는 실무 체계. MLOps와 겹치는 실무 용어이며 공식적인 배타 분류는 아니다. 아래 표는 이 노트의 애플리케이션 개선 중심 관점을 비교한다.
 
 | 구분 | MLOps | LLMOps |
 |------|-------|--------|
 | 중심 자산 | 학습된 **모델 가중치** | **프롬프트·검색·도구·평가셋** (모델은 보통 그대로 사용) |
 | 반복 대상 | 데이터 → 재학습 | 프롬프트/컨텍스트/파이프라인 개선 |
-| 품질 판단 | accuracy/F1 등 명확한 지표 | **정답이 여럿** → LLM-as-Judge·rubric 필요 |
+| 품질 판단 | 과제별 지표·분포·운영 검증 | 과제별 규칙/사람/LLM-judge를 선택 |
 | 핵심 루프 | train-eval-deploy | **eval-improve** (거의 매 커밋마다 평가) |
 
 ### 2) LLM 앱 라이프사이클 (평가가 관통한다)
@@ -36,7 +43,7 @@ LLM 기반 애플리케이션을 **개발 → 배포 → 운영 → 개선**하�
 
 - **오프라인 평가**: 고정된 `eval_set.jsonl`로 배포 전 채점 → [04](./04-llm-evaluation-overview.md)
 - **온라인 평가**: 실제 트래픽에서 A/B·피드백·모니터링 → [11](./11-online-eval-deployment.md), [12](./12-monitoring-drift.md)
-- 둘 사이를 **개선 루프**가 잇는다. 이 루프의 회전 속도가 곧 LLMOps 성숙도다.
+- 둘 사이를 **개선 루프**가 잇는다. 빠른 반복만으로 성숙도를 판단하지 않는다. 데이터 대표성·안전·재현 조건과 변경 승인도 필요하다.
 
 ### 3) 3개의 관측 대상
 운영 중 반드시 붙잡아야 할 3가지 — **품질**(맞았나), **비용**(토큰·요금), **지연**(latency). 세 축을 함께 봐야 "품질은 올랐는데 비용이 3배"를 잡아낸다. → [03. 트레이싱](./03-tracing-observability.md)
@@ -48,9 +55,10 @@ LLM 기반 애플리케이션을 **개발 → 배포 → 운영 → 개선**하�
 
 ```python
 # app.py — 평가 대상 시스템 (프롬프트/검색/모델을 이 안에서 조립)
+import os
 from openai import OpenAI
-client = OpenAI(base_url="http://llm-gateway.internal/v1", api_key="EMPTY")
-TARGET_MODEL = "Kimi-K2.5"
+client = OpenAI(base_url=os.environ["LLM_BASE_URL"], api_key=os.environ["LLM_API_KEY"])
+TARGET_MODEL = os.environ["LLM_MODEL"]
 
 PROMPT_VERSION = "v3"   # 프롬프트도 버전으로 관리 → 02번 문서
 def answer(question: str) -> str:
@@ -59,21 +67,29 @@ def answer(question: str) -> str:
         {"role": "user", "content": question},
     ]
     r = client.chat.completions.create(model=TARGET_MODEL, messages=msgs, temperature=0)
+    if not r.choices or not isinstance(r.choices[0].message.content, str):
+        raise ValueError("텍스트 응답 없음")
     return r.choices[0].message.content
 ```
 
 ```python
 # run_eval.py — 고정 데이터셋으로 매번 같은 방식으로 채점
-import json
+import json, math
 def load_set(path="eval_set.jsonl"):
     with open(path, encoding="utf-8") as f:
         return [json.loads(l) for l in f]
 
 def evaluate(answer_fn, dataset, score_fn):
+    dataset = list(dataset)
+    if not dataset:
+        raise ValueError("빈 평가셋: 점수 미확인")
     rows = []
     for c in dataset:
         pred = answer_fn(c["question"])
-        rows.append({"id": c["id"], "pred": pred, "score": score_fn(c, pred)})
+        score = float(score_fn(c, pred))
+        if not math.isfinite(score):
+            raise ValueError("유한 점수 필요: 실패를 0으로 변환하지 않음")
+        rows.append({"id": c["id"], "pred": pred, "score": score})
     avg = sum(r["score"] for r in rows) / len(rows)
     return avg, rows
 
@@ -83,6 +99,8 @@ def evaluate(answer_fn, dataset, score_fn):
 > 이 뼈대만 갖춰도 "프롬프트 v3 vs v4", "Kimi vs Qwen"을 **같은 데이터·같은 채점**으로 비교할 수 있다. 이것이 LLMOps의 출발점이다.
 
 ### 성숙도 단계 (자가진단)
+
+다음 Level 0~3은 작성자의 학습용 분류이며 공인 성숙도 표준이 아니다.
 1. **Level 0** — 눈으로 확인(“돌려보니 되네”). 회귀 못 잡음.
 2. **Level 1** — 고정 eval set + 자동 채점(오프라인). 배포 전 점수 비교.
 3. **Level 2** — 트레이싱·비용·지연까지 기록, CI에 평가 게이트.
@@ -94,5 +112,5 @@ def evaluate(answer_fn, dataset, score_fn):
 - [13. Mini Project](./13-mini-project.md) — 위 뼈대를 실제 파이프라인으로 확장
 
 ## 참고 자료 (References)
-- LLMOps 개념 개요(일반): "LLMOps = MLOps for LLM apps, eval-centric"
+- 이 문서의 운영 관점은 작성자의 설명이다. 공통 판본·검증 경계는 [공통 적용 조건](./verified-conditions.md) 참고.
 - OpenAI Evals(평가 루프 사고방식): https://github.com/openai/evals

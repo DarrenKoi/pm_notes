@@ -2,19 +2,25 @@
 tags: [model-saving, joblib, torch-save, onnx]
 level: beginner
 last_updated: 2026-02-14
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: learning_note
 ---
 
 # 모델 저장과 로딩 (Model Saving & Loading)
 
-> 학습된 모델을 직렬화(Serialization)하여 저장하고, 배포/추론 시 다시 불러오는 방법을 정리한다.
+> 학습 결과를 파일로 옮기는 과정과 추론용 가중치·재개용 checkpoint·교환용 그래프의 차이를 정리한다.
+
+> [!info] 실행 순서와 확인 범위
+> 1절의 학습→pickle 비교→Pipeline을 순서대로 실행한다. 2절부터 새 SimpleClassifier 변수로 바뀌며 A/B/C→3절→4·5절이 앞 정의를 사용한다. SimpleClassifier는 구조/직렬화 학습용 랜덤 모델이며 높은 분류 성능을 보여주는 예제가 아니다. 파일은 작업용 디렉토리에 생성한다. PyTorch2.14·scikit-learn1.9.1·joblib1.6.0 공식 계약을2026-10-04 확인했다. 실제 CPU 판본과 ONNX/safetensors 검증 조건은 아래 근거에 남겼다. 장치·판본 변경/운영 배포·Claude 협의·Obsidian 읽기 화면은 미확인이다.
 
 ---
 
 ## 왜 필요한가? (Why)
 
 - **배포(Deployment)**: 학습은 GPU 서버에서 하지만, 추론은 API 서버나 엣지 디바이스에서 수행한다. 학습된 가중치를 파일로 저장해야 다른 환경에서 로딩할 수 있다.
-- **재현성(Reproducibility)**: 실험 결과를 재현하려면 모델 가중치 + 하이퍼파라미터 + 전처리 파이프라인을 함께 저장해야 한다.
-- **체크포인트(Checkpoint)**: 학습 중 서버 장애가 발생해도 중간 지점부터 재개할 수 있다.
+- **재현성(Reproducibility)**: 실험 결과를 재현하려면 모델 가중치·구조/하이퍼파라미터·전처리·데이터/분할 식별자·의존성 판본과 실행 조건을 기록해야 한다. 이것만으로 RNG/worker/장치까지 동일한 replay를 보장하지 않는다.
+- **체크포인트(Checkpoint)**: 필요한 model/optimizer/scheduler/RNG 등의 상태를 실제 저장했을 때 지원 범위 안에서 재개할 수 있다. 아래 최소 checkpoint는 모든 상태를 저장하지 않는다.
 - **모델 공유**: 팀원 간, 또는 학습 서버 → 서빙 서버 간 모델을 전달해야 한다.
 
 ---
@@ -26,19 +32,19 @@ last_updated: 2026-02-14
 | 항목 | pickle / joblib | state_dict (PyTorch) | ONNX | safetensors |
 |------|----------------|---------------------|------|-------------|
 | **대상 프레임워크** | scikit-learn, 일반 Python 객체 | PyTorch | 크로스 플랫폼 | PyTorch, HuggingFace |
-| **저장 내용** | 모델 객체 전체 | 가중치(텐서)만 | 계산 그래프 + 가중치 | 가중치(텐서)만 |
+| **저장 내용** | 모델/전처리 객체 | 파라미터 + persistent buffer 등 | 계산 그래프 + 가중치; 외부 파일 가능 | dense tensor + 선택 metadata |
 | **파일 확장자** | `.pkl`, `.joblib` | `.pt`, `.pth` | `.onnx` | `.safetensors` |
-| **보안** | pickle 취약점 있음 | pickle 기반 (취약) | 안전 | 안전 (설계 목표) |
-| **추론 속도** | 보통 | 보통 | 최적화 가능 (빠름) | 보통 |
+| **보안** | 신뢰한 파일만 load | weights_only 제한 로더; 완전 안전 아님 | parser/runtime·자원/외부 참조 검증 필요 | pickle 코드 실행을 피하는 설계; 자원/출처 검증 필요 |
+| **추론 속도** | 포맷 자체가 속도 보장 안 함 | 실행 모델/장치에 의존 | EP/연산 지원·최적화별 측정 | 실행 모델/장치에 의존 |
 | **크로스 플랫폼** | Python 전용 | PyTorch 전용 | C++, Java, JS 등 지원 | 다중 프레임워크 |
-| **용량** | 보통 | 작음 (가중치만) | 보통 | 작음 |
+| **용량** | 압축/배열/객체에 의존 | dtype/텐서/공유에 의존 | dtype/graph/외부 파일에 의존 | dtype/텐서에 의존 |
 
 ### 핵심 용어
 
 - **Serialization**: Python 객체를 바이트 스트림으로 변환하여 파일에 저장하는 것
-- **state_dict**: PyTorch 모델의 학습 가능한 파라미터(가중치, 바이어스)를 담은 딕셔너리
+- **state_dict**: PyTorch 모델의 파라미터와 persistent buffer(예: BatchNorm running statistics)를 담은 매핑; 모델 구조·전처리·optimizer는 별도
 - **ONNX (Open Neural Network Exchange)**: 딥러닝 모델의 표준 교환 포맷. 프레임워크 간 호환성 제공
-- **safetensors**: HuggingFace가 만든 안전한 텐서 직렬화 포맷. pickle 보안 문제 없음
+- **safetensors**: HuggingFace가 만든 안전한 텐서 직렬화 포맷. pickle의 임의 객체 역직렬화 코드 실행 경로를 피하는 설계; 모델 출처·자원·후속 실행까지 안전을 보장하지 않음
 
 ---
 
@@ -84,11 +90,11 @@ with open("random_forest_v1.pkl", "rb") as f:
     loaded_model = pickle.load(f)
 ```
 
-> **joblib vs pickle**: joblib은 내부적으로 numpy 배열을 효율적으로 압축하므로, 대용량 모델(특히 앙상블 모델)에서 joblib이 더 빠르고 파일 크기도 작다. sklearn 공식 문서에서도 joblib을 권장한다.
+> **joblib vs pickle**: joblib은 NumPy 배열을 다루는 pickle 기반 대안이며 기본 dump compress=0은 무압축이다. 압축을 선택하면 파일 크기/CPU·로딩 시간/mmap 조건이 달라진다. 어느 쪽이 더 빠르고 작은지는 측정한다. 공식 scikit-learn 문서는 목적에 따라 joblib/pickle/cloudpickle/skops/ONNX를 비교하며 하나를 무조건 권장하지 않는다. 신뢰한 파일과 학습 때의 의존성 판본을 사용한다; 다른 sklearn 판본 로딩은 지원하지 않는다.
 
 #### 전체 파이프라인 저장
 
-실무에서는 전처리(Scaler, Encoder 등)와 모델을 Pipeline으로 묶어서 통째로 저장하는 것이 안전하다.
+실무에서는 전처리(Scaler, Encoder 등)와 모델을 Pipeline으로 묶어서 묶어 저장하면 학습/추론 전처리 불일치를 줄인다. 직렬화 보안과는 별개이며 입력 컬럼·순서·dtype·unknown 처리/커스텀 transformer의 import 경로도 계약으로 보존한다.
 
 ```python
 from sklearn.pipeline import Pipeline
@@ -124,6 +130,7 @@ import torch.nn as nn
 class SimpleClassifier(nn.Module):
     def __init__(self, input_dim: int, hidden_dim: int, output_dim: int):
         super().__init__()
+        self.config = {"input_dim": input_dim, "hidden_dim": hidden_dim, "output_dim": output_dim}
         self.net = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
@@ -146,8 +153,8 @@ torch.save(model.state_dict(), "classifier_v1.pt")
 # ── 로딩 ──
 # 반드시 동일한 모델 클래스를 먼저 정의/임포트해야 한다
 loaded_model = SimpleClassifier(input_dim=20, hidden_dim=64, output_dim=2)
-loaded_model.load_state_dict(torch.load("classifier_v1.pt", weights_only=True))
-loaded_model.eval()  # 추론 모드 전환 (Dropout, BatchNorm 비활성화)
+loaded_model.load_state_dict(torch.load("classifier_v1.pt", map_location="cpu", weights_only=True))
+loaded_model.eval()  # 추론 모드 전환 (Dropout을 끄고 BatchNorm은 저장된 running stats를 사용; grad 비활성화는 별도)
 
 # 추론
 with torch.no_grad():
@@ -159,8 +166,8 @@ with torch.no_grad():
 
 > **왜 state_dict가 권장인가?**
 > - 모델 구조(코드)와 가중치(데이터)를 분리하여 관리할 수 있다
-> - Python/PyTorch 버전이 바뀌어도 가중치 로딩이 안정적이다
-> - 파일 크기가 더 작다 (클래스 메타데이터 미포함)
+> - 호환되는 구조·키/shape·dtype·의존성 판본을 확인한다. 판본 변경 로딩을 무조건 보장하지 않는다
+> - 구조 객체의 pickle 의존성을 줄인다. 파일 크기는 텐서·공유/압축 조건에 따라 측정한다
 
 #### 방법 B: 전체 모델 저장
 
@@ -169,8 +176,8 @@ with torch.no_grad():
 torch.save(model, "classifier_full_v1.pt")
 
 # ── 로딩 ──
-# 모델 클래스 정의가 필요 없다 (파일에 포함됨)
-loaded_model = torch.load("classifier_full_v1.pt", weights_only=False)
+# 동일 클래스의 import 가능한 모듈 경로/정의가 필요; 소스가 통째로 포함되지 않음
+loaded_model = torch.load("classifier_full_v1.pt", map_location="cpu", weights_only=False)
 loaded_model.eval()
 ```
 
@@ -178,7 +185,7 @@ loaded_model.eval()
 
 #### 방법 C: 체크포인트 저장 (학습 재개용)
 
-학습 중간 상태를 모두 저장하여 장애 시 이어서 학습할 수 있다.
+model/Adam optimizer/완료 epoch/loss/config만 저장하는 최소 예제다. 아래100epoch 루프의 loss=0.5는 placeholder이며 실제 학습·재개 결과가 아니다. scheduler·early stopping·RNG·sampler/worker·AMP scaler·원자적 파일 저장은 구현하지 않아 동일 replay/장애 무손실 복구를 보장하지 않는다. 이 조각은 전체 모델 파라미터를 같은 순서의 단일 group으로 전달한 Adam만 재생성한다. 여러 group·일부 파라미터·다른 optimizer/모델 클래스의 재생성은 별도 계약이 필요하다.
 
 ```python
 import torch.optim as optim
@@ -187,16 +194,17 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # ── 학습 루프 중 체크포인트 저장 ──
 def save_checkpoint(model, optimizer, epoch, loss, path):
+    if not isinstance(optimizer, optim.Adam):
+        raise ValueError("이 예제는 Adam 재생성만 지원")
+    if len(optimizer.param_groups) != 1 or [id(p) for p in optimizer.param_groups[0]["params"]] != [id(p) for p in model.parameters()]:
+        raise ValueError("전체 모델 파라미터와 같은 순서의 단일 optimizer group만 지원")
     checkpoint = {
         "epoch": epoch,
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(),
         "loss": loss,
-        "model_config": {  # 모델 재생성에 필요한 하이퍼파라미터
-            "input_dim": 20,
-            "hidden_dim": 64,
-            "output_dim": 2,
-        }
+        "model_config": dict(model.config),  # 실제 모델 구조와 일치
+        "optimizer_type": "Adam",
     }
     torch.save(checkpoint, path)
     print(f"Checkpoint saved: epoch={epoch}, loss={loss:.4f}")
@@ -210,7 +218,9 @@ for epoch in range(100):
 
 # ── 체크포인트에서 학습 재개 ──
 def load_checkpoint(path):
-    checkpoint = torch.load(path, weights_only=False)
+    checkpoint = torch.load(path, map_location="cpu", weights_only=True)
+    if checkpoint["optimizer_type"] != "Adam":
+        raise ValueError("지원하지 않는 optimizer")
     config = checkpoint["model_config"]
 
     model = SimpleClassifier(**config)
@@ -232,7 +242,7 @@ model, optimizer, start_epoch = load_checkpoint("checkpoint_epoch50.pt")
 
 ### 3. ONNX 변환 및 추론
 
-ONNX로 변환하면 PyTorch 없이도 `onnxruntime`만으로 추론이 가능하다. 서빙 서버에 PyTorch를 설치하지 않아도 되므로 배포 환경이 가벼워진다.
+지원 연산/입력 dtype·shape/opset·IR·Execution Provider(EP)가 맞으면 PyTorch 없이 ONNX Runtime에서 실행할 수 있다. 커스텀 연산/지원하지 않는 연산은 별도 변환·runtime 구현이 필요하다. 패키지 용량·속도는 배포 환경에서 측정한다. 아래는 작은 Linear/ReLU/Dropout(eval) 모델의 CPU 예시다. 변환에는 onnx/onnxscript, 비교에는 onnxruntime가 필요하다. PyTorch2.14의 dynamo=True exporter에서는 dynamic_shapes를 사용한다; 원래 dynamic_axes/opset17 조각은 legacy 조건과 혼합하지 않는다. 이 예제는 opset18/단일 파일 저장을 명시한다; 큰 가중치의 external data는 모든 관련 파일을 함께 전달해야 한다.
 
 #### PyTorch → ONNX 변환
 
@@ -242,7 +252,8 @@ import torch
 model.eval()
 
 # 더미 입력 (모델의 입력 shape과 동일해야 함)
-dummy_input = torch.randn(1, 20)
+dummy_input = torch.randn(2, 20)  # 1은 shape 특수화될 수 있어 예시 batch2
+batch_dim = torch.export.Dim("batch_size", min=1, max=128)
 
 torch.onnx.export(
     model,
@@ -250,11 +261,10 @@ torch.onnx.export(
     "classifier_v1.onnx",
     input_names=["input"],
     output_names=["output"],
-    dynamic_axes={
-        "input": {0: "batch_size"},   # 배치 크기를 동적으로 설정
-        "output": {0: "batch_size"},
-    },
-    opset_version=17,
+    dynamo=True,
+    dynamic_shapes={"x": {0: batch_dim}},  # forward 인자명 x; ONNX input 이름과 구분
+    opset_version=18,
+    external_data=False,  # 이 작은 모델은 단일 파일; >2GB 가중치는 별도 조건 필요
 )
 print("ONNX export complete.")
 ```
@@ -266,7 +276,7 @@ import onnxruntime as ort
 import numpy as np
 
 # 세션 생성
-session = ort.InferenceSession("classifier_v1.onnx")
+session = ort.InferenceSession("classifier_v1.onnx", providers=["CPUExecutionProvider"])
 
 # 입력 데이터 준비 (numpy 배열)
 input_data = np.random.randn(5, 20).astype(np.float32)  # batch=5
@@ -280,6 +290,11 @@ outputs = session.run(
 logits = outputs[0]
 predictions = np.argmax(logits, axis=1)
 print(f"Predictions: {predictions}")
+
+# checker 통과와 수치 동등성은 다른 검사
+with torch.no_grad():
+    torch_logits = model(torch.from_numpy(input_data)).cpu().numpy()
+np.testing.assert_allclose(logits, torch_logits, rtol=1e-4, atol=1e-5)
 ```
 
 #### ONNX 모델 검증
@@ -295,10 +310,12 @@ print("ONNX model is valid.")
 print(f"IR version: {onnx_model.ir_version}")
 print(f"Opset version: {onnx_model.opset_import[0].version}")
 for inp in onnx_model.graph.input:
-    print(f"Input: {inp.name}, shape={[d.dim_value for d in inp.type.tensor_type.shape.dim]}")
+    print(f"Input: {inp.name}, shape={[d.dim_param or d.dim_value for d in inp.type.tensor_type.shape.dim]}")
 ```
 
 ---
+
+onnx.checker는 모델 형식 검증이며 정확도·속도·입력 범위/도메인 적합성·파일 안전성을 보장하지 않는다. ONNX Runtime가 symbolic batch의 min/max 계약을 자동 검사한다고 가정하지 말고 서빙 입력에서 범위1~128/feature20/float32를 검사한다.
 
 ### 4. 버전 관리 팁
 
@@ -308,16 +325,23 @@ for inp in onnx_model.graph.input:
 
 ```python
 import json
-from datetime import datetime
+from datetime import datetime, timezone
+import hashlib
+
+with open("classifier_v1.pt", "rb") as weights_file:
+    weights_sha256 = hashlib.sha256(weights_file.read()).hexdigest()
 
 metadata = {
     "model_name": "simple_classifier",
     "version": "1.0.0",
     "framework": "pytorch",
-    "created_at": datetime.now().isoformat(),
+    "created_at": datetime.now(timezone.utc).isoformat(),
+    "framework_version": str(torch.__version__),
+    "model_config": dict(model.config),
+    "metrics_status": "unmeasured_example",
     "metrics": {
-        "accuracy": 0.95,
-        "f1_score": 0.93,
+        "accuracy": None,
+        "f1_score": None,
     },
     "training_config": {
         "epochs": 100,
@@ -328,15 +352,19 @@ metadata = {
         "shape": [None, 20],
         "dtype": "float32",
     },
+    "output_schema": {"shape": [None, 2], "class_ids": [0, 1]},
+    "weights_sha256": weights_sha256,
     "files": {
         "weights": "classifier_v1.pt",
         "onnx": "classifier_v1.onnx",
     }
 }
 
-with open("classifier_v1_metadata.json", "w") as f:
+with open("classifier_v1_metadata.json", "w", encoding="utf-8") as f:
     json.dump(metadata, f, indent=2, ensure_ascii=False)
 ```
+
+원래 metadata의 accuracy0.95/F1=0.93은 미측정 예시였으므로 현재는 null로 표시했다. epochs100도 설정 예시이며 위 placeholder를 실제 학습 이력으로 취급하지 않는다. hash는 내용 동일성 검사로 출처 신뢰를 증명하지 않는다. 전처리·라벨 사전·데이터/코드/환경 식별자는 실제 프로젝트에서 추가해야 한다.
 
 #### 디렉토리 구조 패턴
 
@@ -373,6 +401,8 @@ models/
 !**/config.json
 ```
 
+위 패턴은 모델 확장자를 제외하며 JSON은 원래 제외 대상이 아니다. ! 규칙은 이미 무시된 부모 디렉토리를 자동 복구하지 않는다. metadata/config에 비밀이나 내부 endpoint가 있으면 Git에 넣지 않는다.
+
 > **대용량 모델 관리**: DVC(Data Version Control)나 MLflow Artifacts를 사용하면 모델 바이너리도 버전 관리가 가능하다.
 
 ---
@@ -389,50 +419,59 @@ import pickle
 
 class MaliciousPayload:
     def __reduce__(self):
-        import os
-        return (os.system, ("echo HACKED > /tmp/pwned",))
+        return (print, ("역직렬화가 callable을 실행하는 무해한 시연",))
 
-# 이런 객체가 pickle로 저장되어 있으면, load 시 os.system이 실행됨
+# load가 callable을 실행할 수 있음을 보여준다. 원래 shell/file 생성 payload 대신 print 사용
 ```
 
 #### 안전한 로딩 방법
 
 ```python
-# PyTorch 2.6+ 기본값: weights_only=True (안전)
-state_dict = torch.load("model.pt", weights_only=True)
+# PyTorch2.6+: pickle_module을 지정하지 않을 때 weights_only=True가 기본
+# 허용 객체 제한으로 공격 표면 감소; DoS/메모리/후속 실행까지 안전 보장은 아님
+state_dict = torch.load("classifier_v1.pt", map_location="cpu", weights_only=True)
 
-# weights_only=False는 신뢰할 수 있는 파일에만 사용
-checkpoint = torch.load("checkpoint.pt", weights_only=False)
+# 이 최소 checkpoint는 tensor/basic 타입으로 구성돼 weights_only=True로 로딩
+checkpoint = torch.load("checkpoint_epoch50.pt", map_location="cpu", weights_only=True)
 ```
 
-#### safetensors 사용 (가장 안전)
+#### safetensors 사용 (텐서 데이터 분리)
 
 ```python
 from safetensors.torch import save_file, load_file
 
-# 저장 (state_dict의 텐서만 저장, 코드 실행 불가)
+# 이 모델은 dense/contiguous·공유 없는 텐서; tied/shared weights는 별도 API 조건 확인
 save_file(model.state_dict(), "classifier_v1.safetensors")
 
 # 로딩
 state_dict = load_file("classifier_v1.safetensors")
 model.load_state_dict(state_dict)
+model.eval()
 ```
 
-> **실무 권장**: 프로덕션 환경에서는 safetensors 또는 ONNX를 사용하고, pickle 기반 포맷은 신뢰할 수 있는 내부 환경에서만 사용한다.
+> **선택 조건**: Python 객체/전처리가 필요하면 신뢰한 동일 환경의 joblib, 텐서만 옮기면 state_dict 제한 로더 또는 safetensors, runtime 교환이 필요하면 검증한 ONNX를 검토한다. 어느 포맷도 출처·의존성·입력/자원 조건을 자동 보증하지 않는다. 내부 파일이라는 이유만으로 신뢰하지 않는다.
 
 ---
 
 ## 참고 자료 (References)
 
-- [PyTorch - Saving and Loading Models](https://pytorch.org/tutorials/beginner/saving_loading_models.html)
-- [scikit-learn - Model Persistence](https://scikit-learn.org/stable/model_persistence.html)
-- [ONNX Runtime Documentation](https://onnxruntime.ai/docs/)
-- [safetensors GitHub](https://github.com/huggingface/safetensors)
-- [DVC (Data Version Control)](https://dvc.org/)
+2026-10-04 공식 자료 대조. PyTorch2.14·scikit-learn1.9.1·joblib1.6.0 문서 판본과 로컬 Python3.14.2/torch2.14.1·onnx1.23.1/onnxscript0.7.2/onnxruntime1.30.0/safetensors0.8.0 실행 판본을 구분한다. 판본 간 호환과 운영 성능은 미검증이다. safetensors의 main 문서는 설치 판본 번호의 근거가 아니다.
+
+- [PyTorch 저장/복원 튜토리얼](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html): state_dict/전체 pickle/재개 상태 구분.
+- [PyTorch2.14 serialization](https://docs.pytorch.org/docs/2.14/notes/serialization.html): weights_only 기본 조건과 남은 위험.
+- [PyTorch2.14 Module](https://docs.pytorch.org/docs/2.14/generated/torch.nn.Module.html): persistent buffer/state_dict/eval 계약.
+- [scikit-learn1.9.1 persistence](https://scikit-learn.org/stable/model_persistence.html): pickle 계열/판본 호환·ONNX/skops 목적 비교.
+- [joblib1.6.0 dump](https://joblib.readthedocs.io/en/stable/generated/joblib.dump.html): compress=0 기본·압축/mmap tradeoff.
+- [PyTorch2.14 ONNX](https://docs.pytorch.org/docs/2.14/onnx.html): dynamo/dynamic_shapes·opset/external_data.
+- [ONNX Runtime Python](https://onnxruntime.ai/docs/get-started/with-python.html): InferenceSession/EP 실행.
+- [ONNX Runtime 검증 책임](https://onnxruntime.ai/docs/): 악의적 모델의 자원 소모와 정확도/성능 검증 책임.
+- [safetensors Torch API](https://huggingface.co/docs/safetensors/api/torch): dense/contiguous 텐서 저장/로딩 조건.
+- [DVC 시작 안내](https://doc.dvc.org/start): 데이터/아티팩트 버전 관리. 여기서 실제 DVC 사용을 검증하지 않았다.
+- [MLflow tracking](https://mlflow.org/docs/latest/ml/tracking/): artifact 저장 역할. 서버/registry 검증은 별도다.
 
 ---
 
 ## 관련 문서
 
-- [FastAPI 모델 서빙](./fastapi-model-serving.md) - 저장된 모델을 API로 서빙하는 방법
-- [상위: ML/DL Deployment](../deployment/)
+- [FastAPI 모델 서빙](./fastapi-model-serving.md): 저장된 모델을 API로 서빙; 이 문서와 목적 차이.
+- [배포 읽기 순서](./README.md): 저장→서빙→실험 기록.

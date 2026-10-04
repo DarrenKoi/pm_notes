@@ -2,16 +2,22 @@
 tags: [encoder, decoder, transformer, bert, gpt, t5]
 level: beginner-to-intermediate
 last_updated: 2026-03-14
+reviewed_on: 2026-10-04
+review_status: partial
+type: learning
 ---
 
 # Encoder와 Decoder란 무엇인가?
 
 > Encoder는 입력을 읽어 문맥 표현으로 바꾸는 쪽이고, Decoder는 그 표현 또는 이전 출력들을 바탕으로 다음 출력을 생성하는 쪽이다.
 
+> [!info] 검토 범위 · 2026-10-04
+> 공개 원 논문에 근거한 학습 문서다. 논문의 발표·개정 연도와 오늘의 제품 구현은 구분한다. 최신 제품의 구조·학습 공정·시장 점유율은 미확인이다. [정리 기록](./organization-log.md)에 근거와 검증 한계를 남겼다.
+
 ## 가장 짧은 정의
 
 - **Encoder**: 입력 시퀀스를 읽고 contextual representation으로 변환한다
-- **Decoder**: 그 표현을 사용해 출력 시퀀스를 한 토큰씩 생성한다
+- **Decoder**: encoder 표현이 있으면 참고하고, 이전 출력·프롬프트를 조건으로 출력 시퀀스를 생성한다
 
 Transformer에서는 이 둘이 각각 attention block의 조합으로 구현된다.
 
@@ -39,12 +45,12 @@ Transformer에서는 이 둘이 각각 attention block의 조합으로 구현된
 
 ## Transformer Encoder는 무엇을 하나?
 
-Transformer encoder block은 보통 다음 순서로 생각하면 된다.
+2017 Transformer의 **post-LN** encoder를 기준으로 한다. 임베딩과 위치 정보는 stack에 들어갈 때 구성하고, 각 block에서는 다음을 반복한다.
 
-1. 입력 토큰 임베딩 + 위치 정보
-2. self-attention
-3. feed-forward network
-4. residual connection + layer normalization
+1. self-attention → residual 더하기 → layer normalization
+2. feed-forward network → residual 더하기 → layer normalization
+
+Residual과 normalization은 두 sublayer 각각에 적용한다. 모델별 배치는 다를 수 있으므로 이 순서를 모든 후속 모델의 구현으로 일반화하지 않는다. 근거: [원 논문 §3.1, v7](https://arxiv.org/html/1706.03762v7), 확인 2026-10-04.
 
 encoder의 핵심 성질:
 
@@ -64,7 +70,7 @@ Transformer decoder block은 보통 세 부분으로 생각하면 된다.
 
 decoder의 핵심 성질:
 
-- 현재 위치는 과거 토큰만 볼 수 있다
+- masked self-attention은 현재 입력 위치까지 볼 수 있다. 학습 시 정답 출력을 한 칸 이동해 입력하므로 예측할 다음 정답은 보이지 않는다
 - 미래 토큰은 causal mask로 가린다
 - 필요하면 encoder 출력도 cross-attention으로 참고한다
 
@@ -88,7 +94,7 @@ decoder의 핵심 성질:
 
 - encoder만 사용
 - 양방향 문맥 이해에 강함
-- 보통 문장 분류, 토큰 분류, retrieval embedding 같은 작업에 적합
+- 문장·토큰 분류 등에 태스크별 추가 학습하여 사용한다. 검색용 문장 벡터는 pooling과 유사도 학습 조건을 따로 확인한다
 
 학습 목표 예:
 
@@ -191,9 +197,13 @@ LLM을 이해할 때 "이 모델이 encoder인가, decoder인가?"를 먼저 구
 - 학습 목표가 무엇인지
 - 문맥을 어떤 방식으로 보는지
 - 어떤 작업에 강한지
-- 왜 chat LLM 대부분이 decoder-only인지
+- GPT 계열이 다음 토큰 생성 인터페이스와 어떻게 연결되는지
 
 즉 encoder / decoder는 단순 용어가 아니라 **모델의 행동 방식**을 결정하는 핵심 분류다.
+
+## 검색에 적용할 때의 조건
+
+BERT의 토큰 표현을 평균했다고 바로 좋은 검색용 문장 벡터가 되는 것은 아니다. [Sentence-BERT (2019, v1)](https://arxiv.org/abs/1908.10084v1)은 의미 유사도 비교를 위한 별도 학습 구조를 제시한다. 모델 카드에서 pooling, 학습 목표, 언어와 도메인을 확인하고 실제 검색 평가로 선택한다. 위 표의 BERT “검색”은 추가 학습·구성 가능성을 뜻한다. 확인 2026-10-04.
 
 ## 참고 자료 (Primary Sources)
 

@@ -4,11 +4,17 @@ level: drafting
 last_updated: 2026-05-15
 version: 0.1
 related: [./itc-aix-roadmap-outline.md, ./CONTEXT.md, ./ch2-vision-draft.md]
+reviewed_on: 2026-10-04
+review_status: historical-with-open-questions
+document_type: historical_record
 ---
 
 # Ch.1 배경 & As-Is 진단 — 슬라이드 드래프트 (v0.1)
 
-> [Outline §Ch.1](./itc-aix-roadmap-outline.md#chapter-1-배경--as-is-진단--우리는-왜-변해야-하고-지금-어디-있나-3p) 본문 드래프트. **3슬라이드 분량**.
+> [!info] 2026-10-04 검토 — 외부 변화·현황 진단 초안
+> 아래는 2026년 5월의 설계 기록입니다. 목표·예시·조직 결정은 현재 실측 성과나 승인 상태로 인증하지 않았습니다. [목차](./README.md)와 [검토 안내](./review-notes.md)에서 역할·불일치·적용 조건을 먼저 확인하세요.
+
+> [Outline §Ch.1](./itc-aix-roadmap-outline.md#Chapter%201.%20%EB%B0%B0%EA%B2%BD%20%26%20As-Is%20%EC%A7%84%EB%8B%A8%20%E2%80%94%20%EC%9A%B0%EB%A6%AC%EB%8A%94%20%EC%99%9C%20%EB%B3%80%ED%95%B4%EC%95%BC%20%ED%95%98%EA%B3%A0%2C%20%EC%A7%80%EA%B8%88%20%EC%96%B4%EB%94%94%20%EC%9E%88%EB%82%98%20%283p%29) 본문 드래프트. **3슬라이드 분량**.
 > 작성 원칙: 본문 팀명·도메인 라벨 ✕. As-Is anchor 수치는 SLOT으로 유지 (사내 비공개 문서에서 실값 주입).
 
 ## 슬라이드 흐름
@@ -174,7 +180,7 @@ Slide 1 — 외부 변화         Slide 2 — 내부 진단 ★★         Slide
 
 ### 본문 우측 (1/2) — 다음 1년의 과제
 
-> **이 진단표가 그대로 [Enabler 5축](./itc-aix-roadmap-outline.md#chapter-5-enabler--거버넌스--조직-역량-강화-34p)의 우선순위가 된다.**
+> **이 진단표가 그대로 [Enabler 5축](./itc-aix-roadmap-outline.md#Chapter%205.%20Enabler%20%26%20%EA%B1%B0%EB%B2%84%EB%84%8C%EC%8A%A4%20%E2%80%94%20%EC%A1%B0%EC%A7%81%20%EC%97%AD%EB%9F%89%20%EA%B0%95%ED%99%94%20%283~4p%29)의 우선순위가 된다.**
 
 | 우선순위 | 축 | 1년 핵심 행동 |
 |---------|----|--------------|
