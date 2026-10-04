@@ -1,18 +1,30 @@
-# Context Map
+---
+tags: [domain-context, index]
+aliases: [도메인 문맥 지도]
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: domain_index
+---
 
-Index of domain contexts in this repo. Each entry points to a `CONTEXT.md` that defines the vocabulary, relationships, and example dialogue for one subproject.
+# 도메인 문맥 지도
 
-Skills like `/grill-with-docs`, `/diagnose`, `/tdd`, and `/improve-codebase-architecture` read this file first to find the relevant glossary for the area they're working in.
+하위 주제의 용어·관계·대화 예시를 정의한 문맥 문서의 전역 목차다. 기술 개념을 통합하는 문서가 아니며 같은 단어라도 각 주제의 정의를 따로 읽는다.
 
-## Contexts
+도메인 인터뷰·진단·테스트·구조 개선을 시작할 때 해당 문맥을 찾는 입구로 사용한다. 스킬의 실제 설치 여부/호출명은 현재 실행 환경에서 확인하며 이 목차가 특정 스킬의 존재를 보증하지 않는다.
 
-| Subproject | CONTEXT.md | Scope |
+## 문맥 목록
+
+| 주제 | 문맥 문서 | 당시 정의한 범위 |
 | --- | --- | --- |
 | ITC AI/DT Roadmap | [ai-dt/roadmap/CONTEXT.md](ai-dt/roadmap/CONTEXT.md) | 기반기술센터(ITC) 3~4년향 AI/DT 로드맵 수립 — Biz·5 stream·암묵지 순환고리 등 도메인 언어 |
-| LLM Report Contest | [ai-dt/llm_question/codex/CONTEXT_CODEX.md](ai-dt/llm_question/codex/CONTEXT_CODEX.md) | 기내식 RAG-LLM을 활용한 45분 리포트 작성 경진대회 출제·평가 언어 |
+| LLM Report Contest | [ai-dt/llm_question/CONTEXT_CODEX.md](ai-dt/llm_question/CONTEXT_CODEX.md) | 기내식 RAG-LLM을 활용한 45분 리포트 작성 경진대회 출제·평가 언어 |
 
-## Adding a new context
+## 새 문맥을 추가하는 조건
 
-When a subproject's vocabulary starts mattering (terms get reused, ambiguity surfaces, the same concept gets named differently in different places), run `/grill-with-docs` from inside that subproject. It'll create a `CONTEXT.md` at the subproject root. Add a row to the table above pointing at it.
+용어가 반복되거나 뜻이 모호해지고,같은 개념을 다른 이름으로 부르게 되면 해당 주제 안에서 도메인 인터뷰로 정의를 확정한다. 그 결과가 실제로 생겼을 때 주제 루트의 문맥 문서를 이 표에 등록한다. 인터뷰 도구/스킬을 사용할 경우 현재 환경의 설치/동작 조건을 먼저 확인한다.
 
-Don't pre-create empty `CONTEXT.md` files — they earn their existence by being written during a real grilling session.
+빈 `CONTEXT.md`를 미리 만들지 않는다. 문맥의 범위·사용 예·결정 근거가 확보돼야 등록할 수 있다.
+
+## 검토 결과 — 2026-10-04
+
+기존 두 문맥의 고유한 당시 범위는 보존했다. 존재하지 않던경진대회 `codex/` 경로를실제 `llm_question/CONTEXT_CODEX.md`로수정해경로존재를확인했으며 업무 로드맵/경진대회의 현재 승인·진행 상태를 이 목차에서 재검증하지 않는다. 개별 문맥의 역사/미확인 검토는 해당 주제의 정리 기록을 따른다. 전역 입구를 유지하고 주제 간 새 크로스 링크는 만들지 않았다.

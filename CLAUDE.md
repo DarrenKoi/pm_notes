@@ -1,3 +1,10 @@
+---
+tags: [repository-rules, agent-guidance]
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: agent_instructions
+---
+
 # pm_notes - CLAUDE.md
 
 > 이 파일은 Claude Code가 이 repository의 컨텍스트를 이해하고 일관된 방식으로 문서를 생성/관리하기 위한 가이드입니다.
@@ -21,6 +28,8 @@
 | `Codes/python/` | 실행 가능한 파이썬 예제 (opensearch_handler, drm-pptx-extraction 등) |
 | `dev-environment/` | 개발 환경·툴링 노트 (codex, pi, terminal, vlm) |
 | `my-task/` | 진행 중인 업무 산출물 (AIX_POC, 2026_report) — 자체 CLAUDE.md 있음 |
+| `harness/` | 코딩 에이전트 실행/평가·하니스 설계와 모델 자료 |
+| `platform/` | 플랫폼 연구·기획·티켓/검토 기록 |
 | `RAG/` | RAG 관련 단발 분석 문서 |
 | `orchestration/` | pi 코딩 에이전트 기반 멀티 에이전트 오케스트레이션 (역할·모델 티어링, 사내 HCP) |
 | `docs/` | 에이전트 운영 문서 (issue-tracker, triage-labels, domain) |
@@ -184,3 +193,6 @@ Multi-context layout — `CONTEXT-MAP.md` at the repo root points to per-subproj
 
 *Last updated: 2026-09-03*
 
+## 문서 검토 — 2026-10-04
+
+폴더 독립성·한국어 설명·목적/개념/사용법·상대 링크·기밀 보호의 기존 규칙을 보존했다. 실제 최상위 주제는11개이며 누락됐던harness/platform을 목록에 추가했다. 예제 프로젝트 이름·과거 갱신일은 전체 구현/배포의 최신성을 증명하지 않는다. 기술 문서와 역사적 업무/원문/지침은 역할에 맞게 구분한다. 이번 요청의 저장소 전체 정리는 폴더별로 수행했고,사용자 지시에 따라 질문·커밋·푸시 없이 진행했다. 일반적인 이후 작업의 허가를 새로 부여하는 문구가 아니다. 실행한 검증과 Claude/Obsidian 읽기 미완료는 루트 정리 기록에 남긴다.
