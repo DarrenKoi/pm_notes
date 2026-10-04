@@ -3,9 +3,16 @@ tags: [cd-sem, auto-recipe-creation, ax-실행기획, design-camp, itc, index]
 level: intermediate
 last_updated: 2026-06-29
 type: 적용사례-실행기획
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: historical_project_plan
 ---
 
 # CD-SEM Auto Recipe Creation — 단계별 실행기획 세트
+
+> [!note] 당시 설계와 현재 확인
+> 2026-06의 기획/범위 합의 기록이다. `확정`·✅는 당시 문서 작성/합의 상태이며 현재 장비 성능·실시간성·승인을 증명하지 않는다. 업무/수치·모델/DRM의 현재 조건과 실제 PoC는 미확인이다. 기존 구조/판정은 보존하고 검토 결과를 아래에 남긴다.
+
 
 > [03 기획(Discovery)](../03-적용_CDSEM기획.md)·[04 기술(Track B)](../04-적용_CDSEM기술.md)에 통합돼 있던 CD-SEM 사례를, **New AI Design Camp 단계별로 하나씩 분리·구체화**한 실행기획 산출물 묶음이다. 목표는 내년(2027) **실제 실행 가능한 기획** — Discovery·Design에 더해 Validation(가치 검증)·Execution(실행 로드맵)까지 채운다.
 
@@ -69,3 +76,7 @@ type: 적용사례-실행기획
 - 재사용 템플릿 키트: [`_가이드/00-템플릿_AI과제발굴/`](../../_가이드/00-템플릿_AI과제발굴/)
 - 작성 브리프(내부): [SPEC.md](./_internal/SPEC.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24). 회사 기밀은 제외하고 적용 골격만 정리함.
+
+## 검토 결과 — 2026-10-04
+
+11단계/12-Step 대응·흐름·발표 링크·placeholder 사전을 보존했다. 전체양식상세/발표18개는 후속 개별검토 대기이며 현재 통합/승인 완료를 뜻하지 않는다. HTML은CSS font-family로 설치된 폰트를 요청하고시스템fallback이 있다. font파일을첨부한 것은 아니며 현재 소스에외부URL/font-import는 없지만 실제 브라우저 렌더링/네트워크/인쇄는 미확인이다. [현재 폴더 목차](./README.md)와 [정리 기록](../../../organization-log.md) 참조. Claude 협의와 실제 PoC/Obsidian 읽기는 미완료다.

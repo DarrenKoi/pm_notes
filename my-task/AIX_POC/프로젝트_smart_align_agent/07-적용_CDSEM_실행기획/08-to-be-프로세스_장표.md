@@ -3,9 +3,16 @@ tags: [cdsem, to-be, process, swimlane, work-event, design-camp, presentation]
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-실행기획-발표장표
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_presentation_derivative
 ---
 
 # 08 · To-Be 프로세스 정의 — 발표 장표 (2매)
+
+> [!note] 당시 발표용 축약본
+> 기존 두 장표는 고유 발표 구성을 보존했다. 본문의 현재/실측/통과/확정은 당시 서술이다. 현재 적용에는 아래 검토 절과 상세 본문의 검토 결과를 함께 읽는다. 기존PPTX/HTML은 재생성하지 않았다.
+
 
 > [08-to-be-프로세스.md](./08-to-be-프로세스.md) 산출물을 발표용 2장으로 압축한다. 템플릿 3산출물(① 🤖/🧑 레인 플로우차트 · ② As-Is→To-Be 확장 테이블 · ③ 운영 기준 θ/τ/r)을 **장표 1 = ①+③**, **장표 2 = ②** 로 나눈다. 시각화 형식은 원문 07(Swimlane: 가로 Phase 헤더 + 🤖/🧑 레인)을 따른다. 수치(`s′`/θ/τ/r/N)는 캠프·PoC 확정 placeholder. `## 장표 N` = 슬라이드 1장.
 
@@ -59,3 +66,9 @@ type: 적용사례-실행기획-발표장표
 
 - 본문: [08-to-be-프로세스.md](./08-to-be-프로세스.md) · 대비 기준: [07-as-is-프로세스.md](./07-as-is-프로세스.md)
 - 시각화 형식 출처: [원문 07 — AI Agent 대상영역 분석 Template](../../lectures/captures/07-ai-agent-scope-template.md) · 틀: [_가이드 08 템플릿](../../_가이드/00-템플릿_AI과제발굴/08-to-be-프로세스.md)
+
+## 검토 결과 — 2026-10-04
+
+레인·확장 표·운영 기준을 보존했다. GUI/물리 장비 제어는 설계 목표다. θ 점수와 정확도·오차를 구분하고 r_retry/τ_recall을 분리한다. ΔS×N은 절감 시간이며 금전 ROI가 아니다. 목표 To-Be 시간을 실측 성과로 읽지 않는다. 사내 배포/액션 계약은 미확인이다.
+
+이 문서는 발표용2매이고 [상세 본문](./08-to-be-프로세스.md)은 근거·추적성·적용 조건을 제공하므로 서로 대체하지 않는다. 상세 본문의 2026-10-04 검토 절을 현재 설명의 대표로 사용하고 역사적 장표의 전체 내용은 유지한다. [목차](./README.md) · [정리 기록](../../../organization-log.md). Claude 연결 불가로 통합/분류 협의는 보류했다.

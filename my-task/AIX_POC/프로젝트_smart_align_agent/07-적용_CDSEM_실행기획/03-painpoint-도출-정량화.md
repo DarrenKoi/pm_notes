@@ -3,9 +3,16 @@ tags: [aix, cd-sem, recipe-creation, pain-point, quantification, discovery, desi
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-실행기획
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # 03 · Pain Point 도출 및 정량화 (Step4 / Discovery)
+
+> [!note] 과거 기록과 현재 적용 조건
+> 2026-06의 실행기획 기록을 보존했다. 본문의 확정·즉시 착수·실측·체크 완료는 당시 서술이며 현재 회사 승인이나 PoC 성과를 확인한 결과가 아니다. 아래 검토 결과를 함께 읽는다.
+
 
 > 대상 L3(Recipe Creation)을 As-Is 셋업 스텝(L4 ①~⑦)으로 분해하고, 각 L4 활동의 Pain Point를 빠짐없이 깐 뒤, **빈도·심각성·주요성 3축으로 정량화**해 우선순위를 매긴다. 정량 컬럼은 뒤이은 과제 적정성 검토(#05)와 기대효과 산정(#10)의 백데이터가 된다.
 
@@ -117,3 +124,9 @@ L2-A Recipe Management
 - 요약/내러티브층: [03-적용_CDSEM기획.md](../03-적용_CDSEM기획.md) Phase 2(망라 Pain)·Phase 4(정량 우선순위)
 - 원문 전사: [원문 01 — 과제 선별 3-STEP](../../lectures/captures/01-kakao-3step-pain-point.md), [원문 08 — Pain→근본원인→아이디어 양식](../../lectures/captures/08-final-output-example.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24). 1~5 정량 점수는 캠프에서 엔지니어 확정(placeholder τ). 회사 기밀(구체 장비 수치·시스템 상세)은 제외.
+
+## 검토 결과 — 2026-10-04
+
+Pain 점수는 당시 우선순위를 나타내는 순서척도다. 점수의 곱/합이 실제 손실시간·원인의 크기·재무 효과를 입증하지 않는다. 표의 미입력 값과 예시 점수를 실측으로 바꾸지 않았다. 현장 운영 수치를 실측이라고 기록한 부분은 당시 기록으로 보존하지만, 원시 측정 로그·관측 기간·대상 모집단·현재 재현성은 이번 검토에서 확인하지 못했다. R&D 셋업 영향과 양산 이관 후 영향도 서로 다른 적용 문맥이다.
+
+[상세 목차](./README.md) · [정리 기록](../../../organization-log.md) · [현재 PoC 적용 조건](../05-적용_CDSEM_PoC실험설계.md). 기술 조건은 NIST AI RMF1.0의 시험 조건/한계 기록과 대조했으며 실제 PoC·장비·회사 시스템은 실행하지 않았다. 금전/시간 구분의 근거와 확인일은 정리 기록에 남긴다. Claude 협의 및 Obsidian 읽기 화면 검증은 미완료다.

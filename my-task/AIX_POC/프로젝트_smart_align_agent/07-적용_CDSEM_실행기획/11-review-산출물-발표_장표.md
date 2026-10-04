@@ -3,9 +3,16 @@ tags: [cdsem, review, check-review, design-audit, design-camp, presentation]
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-실행기획-발표장표
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_presentation_derivative
 ---
 
 # 11 · Review — 발표 장표 (2매)
+
+> [!note] 당시 발표용 축약본
+> 기존 두 장표는 고유 발표 구성을 보존했다. 본문의 현재/실측/통과/확정은 당시 서술이다. 현재 적용에는 아래 검토 절과 상세 본문의 검토 결과를 함께 읽는다. 기존PPTX/HTML은 재생성하지 않았다.
+
 
 > [11-review-산출물-발표.md](./11-review-산출물-발표.md) 산출물을 발표용 2장으로 압축한다. 템플릿 2부(A 설계 검증 체크리스트 6질문 · B 마무리)를 **장표 1 = A 체크리스트**, **장표 2 = 교차 정합성 + B 마무리(피드백 루프)** 로 나눈다. Review는 신규 생성이 아니라 **검산** — ✅ 미충족 = 출처 파일 부실 신호. `## 장표 N` = 슬라이드 1장.
 
@@ -57,3 +64,9 @@ type: 적용사례-실행기획-발표장표
 
 - 본문: [11-review-산출물-발표.md](./11-review-산출물-발표.md) · 인덱스: [00-README.md](./00-README.md)
 - 틀: [_가이드 11 템플릿](../../_가이드/00-템플릿_AI과제발굴/11-review-산출물-발표.md) · 출처: [원문 10 — Check & Review](../../lectures/captures/10-check-and-review.md)
+
+## 검토 결과 — 2026-10-04
+
+여섯 질문·교차 검산·피드백 루프를 보존했다. ✅5/△1은 당시 문서 작성 판정이며 실제 성능/승인/가치가 검증됐다는 뜻이 아니다. 시간량/ROI·기호·게이트·KSF 대응에 발견된 모순이 있어 “모순 없이”를 현재 결론으로 사용하지 않는다. 값 입력만으로 가설을 실측으로 바꾸지 않는다.
+
+이 문서는 발표용2매이고 [상세 본문](./11-review-산출물-발표.md)은 근거·추적성·적용 조건을 제공하므로 서로 대체하지 않는다. 상세 본문의 2026-10-04 검토 절을 현재 설명의 대표로 사용하고 역사적 장표의 전체 내용은 유지한다. [목차](./README.md) · [정리 기록](../../../organization-log.md). Claude 연결 불가로 통합/분류 협의는 보류했다.

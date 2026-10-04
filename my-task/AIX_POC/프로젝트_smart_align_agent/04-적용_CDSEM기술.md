@@ -3,9 +3,16 @@ tags: [aix, cd-sem, auto-recipe-creation, vlm, computer-use, to-be-process, ksf,
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-기술
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # AIX 적용 사례 — CD-SEM Auto Recipe Creation (기술/To-Be 설계)
+
+> [!note] 설계 당시 기록과 현재 확인의 경계
+> 2026-06월 기획/설계 문맥을 보존한 문서다. VLM의 좌표 정밀도·실시간 동작·24시간 무중단·Skew Zero는 목표/가설이며 검증된 성과가 아니다. 회사 API 차단·모델 별칭·DRM 비율·GUI/좌표 계약은 현재 환경에서 미확인이다. 체크 완료와 `통과`는 문서 작성/설계 점검이며 실제 PoC·장비 검증/승인을 뜻하지 않는다. 원래 본문은 남기고 아래 검토 절에 현재 적용 조건을 추가했다.
+
 
 > [기술 방법론 틀(02)](../_가이드/02-기술문서_AI과제정의구현.md)을 ITC AIX 실제 과제에 적용한 **두 번째 사례**. [03 기획(Discovery)](./03-적용_CDSEM기획.md)에서 발굴·구조화한 **CD-SEM Auto Recipe Creation** 과제를, New AI Design Camp Track B(실행 구체화, 8~12단계) — AI 과제 정의서 · To-Be Swimlane · KSF/제약 — 로 구체화한다.
 >
@@ -174,3 +181,7 @@ As-Is 최대 병목 = ⑥ 오인식 수정 반복. To-Be에서 ⑥을 VLM 실시
 - 방법론 틀: [02-기술문서_AI과제정의구현.md](../_가이드/02-기술문서_AI과제정의구현.md)
 - 원문 전사: [`source/`](../lectures/captures/) (특히 07·09·10)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-19). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.
+
+## 검토 결과 — 2026-10-04
+
+정의서·7단계 Swimlane·4측면 KSF/제약·Phase0~3·설계 점검표를 보존했다. 이 문서의 `실시간`·자동 샘플 로드·정밀 계측·예외만 개입은 설계 목표이며 실제 장비 권한/안전성·성능을 증명하지 않는다. ②~⑥ 전체 계획과 1차 Align fail PoC를 구분하고05의 오프라인 판정만으로 GUI/샘플/실웨이퍼 제어를 승인하지 않는다. 사람/GUI 좌표·SEM 이미지·물리 장비 좌표의 변환 계약과 중단/복구·최종승인은 별도 확정한다. [05의 보완 판정](./05-적용_CDSEM_PoC실험설계.md)과 [정리 기록](../../organization-log.md) 참조.

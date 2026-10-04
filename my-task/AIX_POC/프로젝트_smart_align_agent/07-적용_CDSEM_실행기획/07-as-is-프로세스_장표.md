@@ -3,9 +3,16 @@ tags: [cdsem, as-is, process, activity-flow, work-event, design-camp, presentati
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-실행기획-발표장표
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_presentation_derivative
 ---
 
 # 07 · As-Is 프로세스 정의 — 발표 장표 (2매)
+
+> [!note] 당시 발표용 축약본
+> 기존 두 장표는 고유 발표 구성을 보존했다. 본문의 현재/실측/통과/확정은 당시 서술이다. 현재 적용에는 아래 검토 절과 상세 본문의 검토 결과를 함께 읽는다. 기존PPTX/HTML은 재생성하지 않았다.
+
 
 > [07-as-is-프로세스.md](./07-as-is-프로세스.md) 산출물을 발표용 2장으로 압축한다. **장표 1 = 프로세스 정의·Activity Flow·Work/Event 기록**, **장표 2 = 각 Activity 상세 테이블**. `## 장표 N` = 슬라이드 1장. 소요시간(`s₁..s₇`)은 캠프에서 엔지니어가 확정할 placeholder.
 
@@ -66,3 +73,11 @@ type: 적용사례-실행기획-발표장표
 
 - 본문: [07-as-is-프로세스.md](./07-as-is-프로세스.md)
 - 다음: [08-to-be-프로세스.md](./08-to-be-프로세스.md)
+
+## 검토 결과 — 2026-10-04
+
+Work/Event와 업무 시간 요약을 보존했다. ◆는 이 장표의 자체 표기다. BPMN2.0.2의 Event는 원,Gateway는 마름모이며 분기 Gateway를 Event로 분류하지 않는다. 표의 Event(Gateway)는 자체 용어와 표준 용어가 섞인 부분이다. 순차 비중복 구간만 경과시간으로 합하고 인적 공수·장비 점유·대기를 구분한다. 현장 기준/시간의 현재 근거는 미확인이다.
+
+이 문서는 발표용2매이고 [상세 본문](./07-as-is-프로세스.md)은 근거·추적성·적용 조건을 제공하므로 서로 대체하지 않는다. 상세 본문의 2026-10-04 검토 절을 현재 설명의 대표로 사용하고 역사적 장표의 전체 내용은 유지한다. [목차](./README.md) · [정리 기록](../../../organization-log.md). Claude 연결 불가로 통합/분류 협의는 보류했다.
+
+표준 표기 근거: [OMG BPMN2.0.2 공식 사양](https://www.omg.org/spec/BPMN/2.0.2/PDF),Event§10.5/Gateway§10.6(확인2026-10-04). 이 ASCII 그림을 표준BPMN 다이어그램으로 검증했다는 뜻이 아니다.

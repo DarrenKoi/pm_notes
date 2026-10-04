@@ -3,9 +3,16 @@ tags: [aix, cd-sem, recipe-creation, vlm, computer-use, to-be-process, design, i
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-실행기획
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # 08 · To-Be 업무 프로세스 정의 (Step10 / Design) — VLM GUI-제어 셋업 흐름
+
+> [!note] 과거 기록과 현재 적용 조건
+> 2026-06의 실행기획 기록을 보존했다. 본문의 확정·즉시 착수·실측·체크 완료는 당시 서술이며 현재 회사 승인이나 PoC 성과를 확인한 결과가 아니다. 아래 검토 결과를 함께 읽는다.
+
 
 > As-Is ①~⑦와 **같은 축** 위에서, ①·⑦은 사람(🧑)이, ②~⑥은 VLM(🤖)이 SEM 화면을 판독하며 GUI를 직접 제어해 연속 수행하고, 임계값을 넘는 예외만 엔지니어에게 핸드오프하는 **Human-in-the-loop 프로세스**를 1장의 플로우차트와 확장 테이블로 못 박는다.
 
@@ -121,3 +128,11 @@ As-Is 수행·소요시간(s)·시스템은 #07에서 상속받고, To-Be 재정
 - 방법론 틀: [02-기술문서_AI과제정의구현.md](../../_가이드/02-기술문서_AI과제정의구현.md)
 - 원문 전사: [원문 07 — AI Agent 대상영역 분석 Template](../../lectures/captures/07-ai-agent-scope-template.md) · [원문 10 — Check & Review](../../lectures/captures/10-check-and-review.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.
+
+## 검토 결과 — 2026-10-04
+
+②~⑥ 전체 GUI/장비 제어는 설계 목표이고 1차 Align fail 오프라인 PoC와 범위가 다르다. 물리 샘플 로드·GUI 제어·Recipe 등록은 별도 권한/중단·복구/최종 승인 계약이 필요하며 문서 작성 완료로 실행을 승인하지 않는다. ① 사람 레인에 자동 플래깅이 들어간 부분은 책임 주체와 보조 도구의 구분으로 읽되 상세 담당 경계는 미확인이다.
+
+θ는 개별 화면 매칭 점수인지 보정된 신뢰도인지,τ는 오차 상한인지 정확도 하한인지 정의해야 비교 방향을 정할 수 있다. VLM 자기 보고 점수는 정확도 보증이 아니다. 미확인 입력은 자동 통과시키지 않는다. 원문 r은 재시도 횟수지만 PoC 원문의 r은 recall 임계라 동일 기호라는 주장이 성립하지 않는다. 적용판에서는 `r_retry`와 `τ_recall`을 분리한다. 오차에는 단위와 상한,비율에는 분모와 하한을 적는다. 사내 Kimi/Qwen 별칭·배포/GUI 성능은 미확인이다. 목표 To-Be 시간으로 계산한 절감은 관측 성과가 아니다.
+
+[상세 목차](./README.md) · [정리 기록](../../../organization-log.md) · [현재 PoC 적용 조건](../05-적용_CDSEM_PoC실험설계.md). 기술 조건은 NIST AI RMF1.0의 시험 조건/한계 기록과 대조했으며 실제 PoC·장비·회사 시스템은 실행하지 않았다. 금전/시간 구분의 근거와 확인일은 정리 기록에 남긴다. Claude 협의 및 Obsidian 읽기 화면 검증은 미완료다.

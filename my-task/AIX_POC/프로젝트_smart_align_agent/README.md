@@ -3,9 +3,16 @@ tags: [aix, cd-sem, smart-align-agent, auto-recipe-creation, vlm, itc]
 level: intermediate
 last_updated: 2026-06-30
 type: project-index
+reviewed_on: 2026-10-04
+review_status: partial
+document_type: project_index
 ---
 
 # Align Agent — CD-SEM Align Fail 대응 자동화
+
+> [!note] 설계 당시 기록과 현재 확인의 경계
+> 2026-06월 기획/설계 문맥을 보존한 문서다. VLM의 좌표 정밀도·실시간 동작·24시간 무중단·Skew Zero는 목표/가설이며 검증된 성과가 아니다. 회사 API 차단·모델 별칭·DRM 비율·GUI/좌표 계약은 현재 환경에서 미확인이다. 체크 완료와 `통과`는 문서 작성/설계 점검이며 실제 PoC·장비 검증/승인을 뜻하지 않는다. 원래 본문은 남기고 아래 검토 절에 현재 적용 조건을 추가했다.
+
 
 > **Align Agent** = CD-SEM **Auto Recipe Creation**(셋업 ②~⑥) 중 **1차 PoC = Align Fail 대응 자동화**. VLM이 SEM 화면을 판독하고 GUI를 직접 제어해, Recipe Setup 후 **공정 variation으로 실측 이미지가 달라져 발생하는 좌표 shift · align 실패 · 오인식을 실시간 재정합**한다. ①(의뢰 검토)·⑦(최종 승인)은 사람이 유지 — **완전자동화가 아닌 Human-in-the-loop**.
 
@@ -37,3 +44,11 @@ type: project-index
 
 ---
 *테스트 실행은 범위 밖 — 설계·계획까지만. 미확정 수치는 플레이스홀더(`<담당 임원>`, τ/s/r/N)로 둔다. 회사 기밀(구체 장비 수치)은 제외하고 방법론 적용 골격만 정리함.*
+
+## 검토 결과와 후속 읽기 — 2026-10-04
+
+03은 선정 이유,04는 역할/흐름,05는 핵심 가정만 격리하는 시험 설계여서 서로 대체하지 않는다. 07세트는 단계별 상세/발표 파생본이며 개별 검토는 진행 중이다. 2026-10-04 현재 이 저장소의 실행 결과·현재 장비 SW/모델·회사 승인을 확인하지 못했다.
+
+[PPTX 발표 요약](./07-적용_CDSEM_실행기획_발표요약.pptx) · [상세 발표 세트](./07-적용_CDSEM_실행기획_세트.pptx)는 기존 첨부로 보호한다. 아래 추가 검토 절은 기존PPTX에 반영하지 않았고 재생성/재배포하지 않았다. [가이드 목차](../_가이드/README.md)와 [정리 기록](../../organization-log.md)을 함께 읽는다.
+
+첨부 검증2026-10-04: PPTX ZIP의`ppt/slides/slideN.xml`개수는 발표 요약14개·상세 세트79개다. 당시 표의 상세76장 설명과 현재 첨부가 다르므로 현재 파일 수량은79장으로 읽는다. 원본PPTX는 수정하지 않았고 실제Office렌더링/내용 일치는 미검증이다.

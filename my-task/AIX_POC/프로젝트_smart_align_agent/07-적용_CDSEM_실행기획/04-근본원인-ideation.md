@@ -1,11 +1,18 @@
 ---
-tags: [aix, cd-sem, recipe-creation, vlm, root-cause, 3-why, ideation, design-camp, itc, critical-pain, m4]
+tags: [aix, cd-sem, recipe-creation, vlm, root-cause, why-3, ideation, design-camp, itc, critical-pain, m4]
 level: intermediate
 last_updated: 2026-06-29
 type: 적용사례-실행기획
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # 04 · 근본원인 분석 + 문제해결 Ideation (Step5+6 / Discovery)
+
+> [!note] 과거 기록과 현재 적용 조건
+> 2026-06의 실행기획 기록을 보존했다. 본문의 확정·즉시 착수·실측·체크 완료는 당시 서술이며 현재 회사 승인이나 PoC 성과를 확인한 결과가 아니다. 아래 검토 결과를 함께 읽는다.
+
 
 > [#03 Pain Point 도출·정량화](./03-painpoint-도출-정량화.md)에서 받은 L4(=As-Is ①~⑦) Pain 중 **M3에서 빨간 dot으로 찍힌 Critical Pain 3개(②·⑥·①)** 에 집중해, **근본원인(3-Why)** 까지 파고들어 **6유형 분류 라벨**을 달고 각각을 **해결 아이디어와 1:1로 페어링**한다. 이 단계의 결론 — **집중 근본원인 (A)=(a) 패턴 인식 실패 [시스템] · (B)=(b) 측정박스/좌표 오류 [시스템]** — 이 단일 **"VLM 실시간 재정합 Agent"** 로 수렴하며, 이후 [#09 KSF](./09-ksf-제약-정의.md)와 [05 PoC 리스크](../05-적용_CDSEM_PoC실험설계.md)의 출처가 된다. (상류 데이터 갈래 Pain①은 (A)(B)에 포함되지 않아 **후순위 과제로 분리**.)
 
@@ -150,3 +157,9 @@ M3에서 빨간 dot으로 찍힌 3개를 각각 "왜?"를 세 번 물어 내려�
 - 상위 내러티브: [03-적용_CDSEM기획.md](../03-적용_CDSEM기획.md) Phase 3 (근본원인 3-Why) · Phase 4 (정량 우선순위·남는 리스크)
 - 작성 기준: [SPEC.md](./_internal/SPEC.md) §0·§2·§3(04-근본원인-ideation.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24 / M4 심화 2026-06-29). 회사 기밀(구체 장비 수치·시스템 상세) 제외, 미확정 수치는 placeholder(τ/r).
+
+## 검토 결과 — 2026-10-04
+
+3-Why의 인과 사슬과 해결 아이디어는 당시 원인 가설이다. 수정 작업이 필요한 이유와 실패를 발생시킨 원인은 구분해야 하며, 관측 로그/비교 시험 없이 근본원인이 증명됐다고 해석하지 않는다. 이 문서의 Critical Pain 번호는 As-Is 업무 단계 번호와 다른 식별자다. 같은 원문자 숫자를 같은 단계로 연결하지 말고 대응표를 별도 확인한다. 여기의 여섯 원인 분류는 이 사례의 분류로 보존하며 상위 가이드의 분류와 임의로 통일하지 않는다. 분류/통합 결정은 Claude 협의가 불가능하여 보류했다.
+
+[상세 목차](./README.md) · [정리 기록](../../../organization-log.md) · [현재 PoC 적용 조건](../05-적용_CDSEM_PoC실험설계.md). 기술 조건은 NIST AI RMF1.0의 시험 조건/한계 기록과 대조했으며 실제 PoC·장비·회사 시스템은 실행하지 않았다. 금전/시간 구분의 근거와 확인일은 정리 기록에 남긴다. Claude 협의 및 Obsidian 읽기 화면 검증은 미완료다.

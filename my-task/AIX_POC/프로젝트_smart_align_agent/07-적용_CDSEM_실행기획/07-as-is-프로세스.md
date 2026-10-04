@@ -3,9 +3,16 @@ tags: [cdsem, as-is, process, swimlane, design-camp, step9]
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-실행기획
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # 07 · As-Is 업무 프로세스 정의 (Step9 / Design)
+
+> [!note] 과거 기록과 현재 적용 조건
+> 2026-06의 실행기획 기록을 보존했다. 본문의 확정·즉시 착수·실측·체크 완료는 당시 서술이며 현재 회사 승인이나 PoC 성과를 확인한 결과가 아니다. 아래 검토 결과를 함께 읽는다.
+
 
 > CD-SEM Recipe Creation 셋업을 현재 어떻게 사람이 수행하는지 ①~⑦ 플로우차트와 단계별 테이블(소요시간·사용 시스템)로 고정해, To-Be 설계(#08)·수익성(#05)·기대효과(#10)의 백데이터로 삼는다.
 
@@ -122,3 +129,9 @@ To-Be를 설계하려면 **무엇을 바꾸는지의 기준선(baseline)**이 �
 - 다음: [08 · To-Be 프로세스](./08-to-be-프로세스.md) (Step10 / Design — 🤖/🧑 레인 + s′ 대비)
 
 > 참고 틀·출처: [원문 07 AI Agent 대상영역 분석 Template](../../lectures/captures/07-ai-agent-scope-template.md) · [04 적용 CD-SEM 기술 Step 9~10 Swimlane](../04-적용_CDSEM기술.md) · 사실 베이스: 본 폴더 `SPEC.md` §2.
+
+## 검토 결과 — 2026-10-04
+
+As-Is 표의 단계별 시간은 미입력 변수이며 최대 병목 판단은 당시 현장 가설/기록이다. `ΣS`가 경과시간이 되려면 같은 대상 건의 순차적이고 겹치지 않는 구간을 합해야 한다. 사람 공수,장비 점유시간,대기시간을 따로 측정하고 반복 횟수/실패 처리 범위를 명시한다. Align fail 한 건과 Recipe 전체 셋업 한 건은 분모가 다르므로 각 처리량과 시간 기준을 섞지 않는다. 시간×처리량은 절감 시간이며 ROI가 아니다. 소요시간이 미확인이면 절감량/재무 효과도 미확인으로 둔다.
+
+[상세 목차](./README.md) · [정리 기록](../../../organization-log.md) · [현재 PoC 적용 조건](../05-적용_CDSEM_PoC실험설계.md). 기술 조건은 NIST AI RMF1.0의 시험 조건/한계 기록과 대조했으며 실제 PoC·장비·회사 시스템은 실행하지 않았다. 금전/시간 구분의 근거와 확인일은 정리 기록에 남긴다. Claude 협의 및 Obsidian 읽기 화면 검증은 미완료다.

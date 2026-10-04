@@ -3,9 +3,16 @@ tags: [aix, cd-sem, vlm, poc, validation, ksf, coordinate-realignment, itc]
 level: intermediate
 last_updated: 2026-06-19
 type: 적용사례-검증
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # AIX 적용 사례 — CD-SEM 좌표 재정합 PoC 실험 설계 (KSF#1 검증)
+
+> [!note] 설계 당시 기록과 현재 확인의 경계
+> 2026-06월 기획/설계 문맥을 보존한 문서다. VLM의 좌표 정밀도·실시간 동작·24시간 무중단·Skew Zero는 목표/가설이며 검증된 성과가 아니다. 회사 API 차단·모델 별칭·DRM 비율·GUI/좌표 계약은 현재 환경에서 미확인이다. 체크 완료와 `통과`는 문서 작성/설계 점검이며 실제 PoC·장비 검증/승인을 뜻하지 않는다. 원래 본문은 남기고 아래 검토 절에 현재 적용 조건을 추가했다.
+
 
 > [04 기술문서](./04-적용_CDSEM기술.md)에서 **1순위 선결 조건(KSF#1)** 으로 못 박은 *"VLM 좌표 재정합 정확도가 엔지니어 수용 기준 이상"* 을 실제로 검증하기 위한 실험 설계서. 04의 개발 일정 **Phase 0**에 해당하며, 통과해야 Phase 1(GUI 제어 통합)으로 넘어간다.
 
@@ -121,3 +128,37 @@ type: 적용사례-검증
 - 기획(Discovery): [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md)
 - 점검 기준: [원문 10](../lectures/captures/10-check-and-review.md) (시간 병목 개선·제약 다각도)
 - 출처: ITC AIX 브레인스토밍 합의(2026-06-19) 기반. 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 실험 골격만 정리함.
+
+## 2026-10-04 검토 보완 — 실행 전 적용 조건
+
+원래 실험 설계/체크리스트는 당시 기록으로 보존했다. 아래는 현재 문서 검토에서 발견한 누락을 보완한 조건이며 이번 작업에서 PoC를 수행한 결과가 아니다.
+
+### 데이터·정답·분할
+
+- Recipe에 기록된 좌표는 출처 후보이며 곧바로 영상 정답이 아니다. 숙련자 라벨/합의 기준·영상 좌표계·오차 단위와 실제 유효성 확인을 별도로 남긴다. 평가 대상VLM이 추출한 좌표를 같은VLM의 정답으로 사용하지 않는다.
+- 같은 Recipe/웨이퍼·연속 캡처의 근접 이미지가 학습·조정·평가 양쪽에 섞이지 않도록 출처 단위로 분할한다. 분할 정책·표본 수/정상·실패 분포·라벨/이미지 버전을 고정하고 hard set 성능과 대표 운영 분포 성능을 구분한다.
+- 크로스헤어/오버레이가 정답을 직접 노출하는지 확인한다. 누출 있는 입력과 실제 추론 입력을 구분하며,샘플 몇 건으로 모델 일반화를 주장하지 않는다.
+
+### 좌표와 지표 정의
+
+| 항목 | 현재 적용 시 필요한 정의 |
+|---|---|
+| 좌표 계약 | 원본/crop·resize·padding·화면DPI·점/bbox·원점/축/정규화 범위·역변환을 API별로 확인. 픽셀→nm/장비 좌표는 배율·캘리브레이션 근거 없으면 미확인 |
+| P95 | 유효 오차의 단위/노름·표본 수·percentile method·실패 출력 처리를 고정. 파싱 실패/범위 밖/무응답을 조용히 제외해 성능을 올리지 않음 |
+| 검출 | 양성=실제 오인식으로 고정. precision=TP/(TP+FP),recall=TP/(TP+FN),false-alarm을FPR로 쓰면FP/(FP+TN). 분모0은 정의 불가/표본 부재로 표시 |
+| 재정합 성공률 | 동일 실패 모집단에서 오차 기준 충족 건수/평가 대상 실패 건수. 정합 실패·무응답·핸드오프 포함 여부를 명시 |
+| 자율 처리율 | 평가 대상 전체 중 사람 개입 없이 종료한 비율. 처리율뿐 아니라 잘못된 자동 통과 건수/전체와 자동 통과 중 오류도 함께 기록 |
+| 기호 | 이 문서의r은recall임계로 쓰였고04/양식의r은재시도 횟수다. 적용 계획에서는 `τ_recall`과 `r_retry`로 분리하고s성공률과공수s도 분리 |
+
+### 보완 게이트
+
+원래PASS표는P95와recall만 요구해 본문의재정합 성공률·false-alarm조건을 누락했다. 현재 실행판정은 확정된 **P95오차·재정합성공률·recall·false-alarm조건을 모두** 대조해야 한다. 값·단위·표본·출력실패처리·라벨·계약이 미확정이면 `UNCONFIRMED`로 두며PASS/CONDITIONAL로 진행하지 않는다. 조건부 통과도 해당layer/패턴/입력조건·근거·담당자승인으로 범위를 제한한다. 오프라인통과가 장비/GUI통합통과를 대신하지 않는다. H1/H0는 현재 운영 가설이며 통계검정 절차/유의수준을 정의하지 않아 통계적 기각으로 해석하지 않는다.
+
+### 버전·출처와 미확인
+
+- [Qwen 공식 저장소](https://github.com/QwenLM/Qwen3-VL): 8B와30B-A3B의Instruct/Thinking를 구분한다(확인2026-10-04). 원문30B는 당시사내별칭으로 보존했다. 실제weight/revision·양자화·API배포/입출력 계약·장비 성능은 미확인이다. 공개grounding지원은 SEM계측정밀도 검증 결과가 아니다.
+- [scikit-learn 지표 문서](https://scikit-learn.org/stable/modules/model_evaluation.html)(확인시표시1.9.1,2026-10-04): precision/recall의분모 정의를 대조했다. 로컬scikit-learn이나모델을 실행했다는 뜻이 아니다.
+- [NumPy1.26 percentile](https://numpy.org/doc/1.26/reference/generated/numpy.percentile.html): percentile의method를명시해야 같은 P95계산을 재현한다(확인2026-10-04). 로컬검사는 별도의 가상수열산술만 허용하며 실제PoC는 실행하지 않았다.
+- [NIST AI RMF1.0](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf),MEASURE2.1/2.3/2.5의시험조건·한계 기록과 대조했다. 회사 승인/임계값을 대신하는 규칙은 아니다.
+
+Claude협의와실제PoC·장비·Obsidian읽기검증은미완료다. [목차](./README.md)와[정리기록](../../organization-log.md)에서 당시기록/현재검토를구분한다.

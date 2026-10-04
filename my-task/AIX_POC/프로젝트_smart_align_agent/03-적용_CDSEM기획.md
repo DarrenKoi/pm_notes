@@ -3,9 +3,16 @@ tags: [aix, cd-sem, auto-recipe-creation, vlm, computer-use, design-camp, itc]
 level: intermediate
 last_updated: 2026-06-30
 type: 적용사례-기획
+reviewed_on: 2026-10-04
+review_status: reviewed_with_limits
+document_type: historical_project_plan
 ---
 
 # AIX 적용 사례 — CD-SEM Auto Recipe Creation (기획/Discovery)
+
+> [!note] 설계 당시 기록과 현재 확인의 경계
+> 2026-06월 기획/설계 문맥을 보존한 문서다. VLM의 좌표 정밀도·실시간 동작·24시간 무중단·Skew Zero는 목표/가설이며 검증된 성과가 아니다. 회사 API 차단·모델 별칭·DRM 비율·GUI/좌표 계약은 현재 환경에서 미확인이다. 체크 완료와 `통과`는 문서 작성/설계 점검이며 실제 PoC·장비 검증/승인을 뜻하지 않는다. 원래 본문은 남기고 아래 검토 절에 현재 적용 조건을 추가했다.
+
 
 > [기획 방법론 틀(01)](../_가이드/01-기획문서_AX서비스기획.md)을 ITC AIX 실제 과제에 적용한 **첫 번째 사례**. New AI Design Camp Track A(Discovery, 1~7단계)를 따라 **CD-SEM Auto Recipe Creation** 과제를 발굴·구조화한다. 실행/To-Be 설계(Track B)는 후속 문서 `04-적용_CDSEM기술.md`에서 다룬다.
 >
@@ -174,3 +181,7 @@ Recipe Creation 셋업만이 아니라 **의뢰 접수부터 검증·등록·후
 - 후속 기술 설계: [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) (Track B)
 - 원문 전사: [`source/`](../lectures/captures/) (특히 01·04·05·08)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-19). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.
+
+## 검토 결과 — 2026-10-04
+
+조직 목표/SOP/Pain·원인·후보 비교·Human-AI 경계의 고유 내용을 보존했다. 예비高/中/低·1순위와 KSF는 당시 선택 가설이며 처리량/가동률·Skew Zero의 실측 증거가 아니다. 입력자료가 존재한다는 주장과 라벨·접근·운영에 실제 사용 가능하다는 사실을 구분하고 확인 책임/근거를 추가해야 한다. ③④⑥의 원인과 `비교적 간단`한 Align fail 범위도 담당 엔지니어 검증 전 가설이다. 현재 모델/DRM/회사 정책은 외부 자료로 확인할 수 없다. [프로젝트 목차](./README.md)와 [정리 기록](../../organization-log.md) 참조.
