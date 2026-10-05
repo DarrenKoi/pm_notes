@@ -4,6 +4,11 @@ tags: [python, maintenance]
 document_type: maintenance
 reviewed_on: 2026-10-04
 status: partial
+category_major: "Python 실행 예제"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # Python 예제 문서 정리 기록

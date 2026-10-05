@@ -5,6 +5,11 @@ aliases: [DRM PPTX extraction]
 document_type: learning
 reviewed_on: 2026-10-04
 verification_status: source-verified-windows-unverified
+category_major: "Python 실행 예제"
+category_middle: "문서 처리"
+category_minor: "PowerPoint 이미지 추출"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # PowerPoint 슬라이드를 PNG로 내보내기

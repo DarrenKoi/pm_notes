@@ -4,6 +4,11 @@ tags: [python, transfer, safetensors]
 document_type: learning
 reviewed_on: 2026-10-04
 verification_status: local-smoke-verified
+category_major: "Python 실행 예제"
+category_middle: "파일 처리"
+category_minor: "분할·전송·복원"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # zip-split-transfer

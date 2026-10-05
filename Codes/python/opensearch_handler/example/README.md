@@ -4,6 +4,11 @@ tags: [python, opensearch, examples]
 document_type: learning
 reviewed_on: 2026-10-04
 verification_status: source-verified-live-unverified
+category_major: "Python 실행 예제"
+category_middle: "검색·메모리"
+category_minor: "OpenSearch 헬퍼"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # OpenSearch 헬퍼 주제별 예제 읽기 순서
