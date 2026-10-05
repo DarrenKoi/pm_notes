@@ -5,6 +5,11 @@ document_type: learning
 tags: [vlm, ui-grounding, gui-agent, models]
 level: beginner
 last_updated: 2026-03-10
+category_major: "개발 환경"
+category_middle: "비전 모델 실행"
+category_minor: "UI 모델 선택"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # UI 특화 VLM 모델 메모

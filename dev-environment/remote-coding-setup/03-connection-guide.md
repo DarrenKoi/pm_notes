@@ -3,6 +3,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
 tags: [dev-environment]
+category_major: "개발 환경"
+category_middle: "원격 개발"
+category_minor: "서버·클라이언트·연결"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 연결 테스트 및 트러블슈팅 가이드

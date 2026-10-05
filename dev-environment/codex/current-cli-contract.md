@@ -3,6 +3,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
 tags: [codex, cli, verification]
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex CLI"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # Codex CLI 버전별 실행 계약

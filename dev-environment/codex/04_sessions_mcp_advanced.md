@@ -5,6 +5,11 @@ document_type: learning
 tags: [codex, cli, resume, mcp, advanced]
 level: advanced
 last_updated: 2026-03-07
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex CLI"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 세션 재사용, MCP, 고급 기능 (Sessions, MCP, Advanced)

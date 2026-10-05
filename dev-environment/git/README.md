@@ -2,6 +2,11 @@
 tags: [git, gitlab, collaboration]
 level: beginner
 last_updated: 2026-09-30
+category_major: "개발 환경"
+category_middle: "터미널·협업"
+category_minor: "Git·GitLab 협업"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 회사에서 Git과 GitLab으로 협업하기

@@ -5,6 +5,11 @@ document_type: learning
 tags: [vlm, ocr, ppt, pdf, document-extraction, structured-output, company-api]
 level: intermediate
 last_updated: 2026-03-11
+category_major: "개발 환경"
+category_middle: "비전 모델 실행"
+category_minor: "문서 OCR·추출"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # PPT/PDF 슬라이드 이미지 -> 구조화 텍스트 추출을 위한 OCR-first 파이프라인

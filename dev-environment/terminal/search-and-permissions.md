@@ -5,6 +5,11 @@ document_type: learning
 tags: [terminal, zsh, grep, find, chmod, chown, xargs, permissions]
 level: beginner
 last_updated: 2026-02-09
+category_major: "개발 환경"
+category_middle: "터미널·협업"
+category_minor: "파일·셸 명령"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 검색과 권한 (Search & Permissions)

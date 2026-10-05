@@ -5,6 +5,11 @@ document_type: learning
 tags: [codex, harness, checklist, prompts]
 level: practical
 last_updated: 2026-04-28
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex 하네스·작업 규율"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 체크리스트와 프롬프트 템플릿

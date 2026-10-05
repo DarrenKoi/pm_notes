@@ -5,6 +5,11 @@ document_type: learning
 tags: [vlm, vllm, private-cloud, requests, h200]
 level: beginner
 last_updated: 2026-03-10
+category_major: "개발 환경"
+category_middle: "비전 모델 실행"
+category_minor: "실험 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 사내 VLM 실험 목차

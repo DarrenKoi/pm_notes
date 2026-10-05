@@ -3,6 +3,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: organization-log
 tags: [dev-environment, documentation-review]
+category_major: "개발 환경"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # 개발 환경 문서 정리 기록

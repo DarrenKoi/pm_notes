@@ -3,6 +3,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
 tags: [ocr, document-extraction, vlm]
+category_major: "개발 환경"
+category_middle: "비전 모델 실행"
+category_minor: "문서 OCR·추출"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # PPT/PDF 이미지 OCR 읽기 순서

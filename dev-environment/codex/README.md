@@ -5,6 +5,11 @@ document_type: learning
 tags: [codex, cli, ai-agent, productivity]
 level: intermediate
 last_updated: 2026-03-07
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex CLI"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Codex CLI 실전 가이드

@@ -5,6 +5,11 @@ document_type: learning
 tags: [pi, durable, agent, typescript]
 level: intermediate
 last_updated: 2026-10-04
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Pi Durable"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Pi Durable 1.0.1 사용 가이드

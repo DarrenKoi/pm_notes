@@ -5,6 +5,11 @@ document_type: learning
 tags: [codex, cli, agents, skills, instructions]
 level: intermediate
 last_updated: 2026-03-07
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex CLI"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 에이전트와 스킬 (Agents & Skills)

@@ -3,6 +3,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
 tags: [remote-development, tailscale, ssh]
+category_major: "개발 환경"
+category_middle: "원격 개발"
+category_minor: "서버·클라이언트·연결"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 원격 개발 환경 읽기 순서

@@ -5,6 +5,11 @@ document_type: learning
 tags: [codex, harness, vibe-coding, governance]
 level: intermediate
 last_updated: 2026-04-28
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex 하네스·작업 규율"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 바이브 코딩 하네스 가이드

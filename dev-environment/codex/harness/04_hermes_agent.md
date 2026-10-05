@@ -5,6 +5,11 @@ document_type: research
 tags: [hermes, agent, harness, local-llm, openai-compatible, claude-code, nous-research]
 level: intermediate
 last_updated: 2026-07-01
+category_major: "개발 환경"
+category_middle: "코딩 에이전트 도구"
+category_minor: "Codex 하네스·작업 규율"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Hermes Agent — 설명, 사용법, 사내 LLM/Claude Code 연동

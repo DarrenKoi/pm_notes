@@ -5,6 +5,11 @@ document_type: learning
 tags: [vlm, vllm, private-cloud, h200, requests]
 level: beginner
 last_updated: 2026-03-10
+category_major: "개발 환경"
+category_middle: "비전 모델 실행"
+category_minor: "vLLM 서빙·이미지 요청"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Private Cloud에서 `vLLM` 시작
