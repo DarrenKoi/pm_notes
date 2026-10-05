@@ -3,6 +3,11 @@ tags: [agents, archive]
 document_type: historical-plan
 reviewed_on: 2026-10-04
 verification_status: historical-not-reexecuted
+category_major: "에이전트 운영 문서"
+category_middle: "과거 설계 기록"
+category_minor: "AI 용어 HTML 리더"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 > [!warning] 과거 설계·계획 기록

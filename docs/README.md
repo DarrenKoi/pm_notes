@@ -3,9 +3,18 @@ title: 에이전트 운영 안내와 과거 설계 기록
 tags: [agents, index]
 document_type: index
 reviewed_on: 2026-10-04
+category_major: "에이전트 운영 문서"
+category_middle: "주제 안내"
+category_minor: "전체 목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 에이전트 운영 안내와 과거 설계 기록
+
+## 대·중·소분류로 찾기
+
+[주제별 분류 목차](./taxonomy-index.md)에서 **에이전트 운영 문서 → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
 
 이 폴더는 에이전트 작업의 운영 규칙과 과거 설계·구현 계획을 보관한다. 학습 순서와 당시 실행 계획을 구분해 읽는다.
 

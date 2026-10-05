@@ -4,6 +4,11 @@ tags: [agents, maintenance]
 document_type: maintenance
 reviewed_on: 2026-10-04
 status: partial
+category_major: "에이전트 운영 문서"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # 에이전트 문서 정리 기록

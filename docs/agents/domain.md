@@ -5,6 +5,11 @@ aliases: [Domain Docs]
 document_type: operations
 reviewed_on: 2026-10-04
 verification_status: local-convention
+category_major: "에이전트 운영 문서"
+category_middle: "작업 운영"
+category_minor: "도메인 문맥"
+note_kind: "운영 지침"
+classified_on: "2026-10-05"
 ---
 
 # 주제별 도메인 문서를 읽는 방법

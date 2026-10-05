@@ -5,6 +5,11 @@ aliases: [Issue tracker]
 document_type: operations
 reviewed_on: 2026-10-04
 verification_status: partially-verified
+category_major: "에이전트 운영 문서"
+category_middle: "작업 운영"
+category_minor: "이슈 추적"
+note_kind: "운영 지침"
+classified_on: "2026-10-05"
 ---
 
 # GitHub 이슈 추적 운영 안내
