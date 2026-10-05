@@ -5,6 +5,11 @@ last_updated: 2026-09-21
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: template
+category_major: "에이전트 오케스트레이션"
+category_middle: "무인 실행"
+category_minor: "원샷 작업"
+note_kind: "템플릿"
+classified_on: "2026-10-05"
 ---
 
 # 퇴근 원샷 프롬프트

@@ -5,6 +5,11 @@ last_updated: 2026-09-22
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: template
+category_major: "에이전트 오케스트레이션"
+category_middle: "협업 규율"
+category_minor: "저장소 작업 규칙"
+note_kind: "템플릿"
+classified_on: "2026-10-05"
 ---
 
 # 작업 저장소의 `AGENTS.md` 에 넣을 것

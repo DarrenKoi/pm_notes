@@ -5,6 +5,11 @@ last_updated: 2026-09-22
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: template
+category_major: "에이전트 오케스트레이션"
+category_middle: "실행 환경"
+category_minor: "사내 PC 세팅"
+note_kind: "템플릿"
+classified_on: "2026-10-05"
 ---
 
 # 사내 PC 세팅 — 프롬프트 모음

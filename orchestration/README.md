@@ -5,9 +5,18 @@ last_updated: 2026-09-22
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "에이전트 오케스트레이션"
+category_middle: "주제 안내"
+category_minor: "전체 목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Pi 오케스트레이션
+
+## 대·중·소분류로 찾기
+
+[주제별 분류 목차](./taxonomy-index.md)에서 **에이전트 오케스트레이션 → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
 
 > [!info] 적용 조건 — 2026-10-04
 > 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.

@@ -3,6 +3,11 @@ tags: [orchestration, organization-log]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: maintenance
+category_major: "에이전트 오케스트레이션"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # orchestration 정리 기록 — 2026-10-04

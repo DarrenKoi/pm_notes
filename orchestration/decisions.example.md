@@ -5,6 +5,11 @@ last_updated: 2026-09-21
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: template
+category_major: "에이전트 오케스트레이션"
+category_middle: "협업 규율"
+category_minor: "결정 위임"
+note_kind: "템플릿"
+classified_on: "2026-10-05"
 ---
 
 # 결정 정책 (사전 승인)

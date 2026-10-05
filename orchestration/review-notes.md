@@ -4,6 +4,11 @@ aliases: [Pi 오케스트레이션 적용 조건]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "에이전트 오케스트레이션"
+category_middle: "실행 환경"
+category_minor: "버전·적용 조건"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 실행 전에 읽는 검토 보충
