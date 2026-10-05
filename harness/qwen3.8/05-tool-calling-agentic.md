@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "학습"
+classified_on: "2026-10-05"
+---
 # 툴 콜링 & 에이전트 운영 노하우
 
 Qwen3.8-27B는 코딩/에이전트 벤치마크(Terminal Bench 73, SWE-bench Pro 61.7, OSWorld 84.3)가 강점이다. 에이전트 하네스에서 쓸 때가 이 모델의 최대 효율 구간.

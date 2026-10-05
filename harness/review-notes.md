@@ -4,6 +4,11 @@ aliases: [하네스 적용 조건]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "에이전트 하네스"
+category_middle: "하네스 설계"
+category_minor: "적용 조건"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 하네스 노트를 현재 환경에 적용하는 방법

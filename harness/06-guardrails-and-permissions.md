@@ -5,6 +5,11 @@ last_updated: 2026-09-12
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "에이전트 하네스"
+category_middle: "하네스 설계"
+category_minor: "검증·안전"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 06. 가드레일과 권한 (Guardrails & Permissions)

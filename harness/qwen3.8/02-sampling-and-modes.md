@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "학습"
+classified_on: "2026-10-05"
+---
 # 샘플링 파라미터와 모드 전환
 
 ## thinking vs instruct(비-thinking) 모드

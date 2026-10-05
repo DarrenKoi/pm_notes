@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "학습"
+classified_on: "2026-10-05"
+---
 # RAG & 긴 컨텍스트 설계
 
 소형 모델 RAG의 병목은 **검색 품질이 아니라 컨텍스트 활용 능력**이라는 게 2026년 연구의 일관된 결론이다.

@@ -5,6 +5,11 @@ last_updated: 2026-09-12
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "에이전트 하네스"
+category_middle: "하네스 설계"
+category_minor: "관측·비용"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 08. 관측과 비용 (Observability & Cost)

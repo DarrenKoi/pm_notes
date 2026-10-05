@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "학습"
+classified_on: "2026-10-05"
+---
 # Qwen3.8-27B 모델 개요
 
 > 2026-08-14 공개 (Apache 2.0). Qwen 오픈 모델 계열 중 "가장 유능한 세대(Qwen3.8)"의 소형 dense 멤버.

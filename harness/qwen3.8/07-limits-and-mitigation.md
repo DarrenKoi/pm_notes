@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "학습"
+classified_on: "2026-10-05"
+---
 # 알려진 한계와 극복 전략
 
 ## 1. 무한 반복 / 반복 루프

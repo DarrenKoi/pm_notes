@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "학습"
+classified_on: "2026-10-05"
+---
 # 소형 모델 프롬프팅 플레이북
 
 소형/중형 모델은 "지능으로 때우는" 게 안 된다. 구조가 곧 품질이다.

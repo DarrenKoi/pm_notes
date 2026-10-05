@@ -1,3 +1,10 @@
+---
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "목차"
+classified_on: "2026-10-05"
+---
 # qwen3.8-27b 실무 활용 가이드
 
 회사에서 셀프호스팅으로 운용 중인 **Qwen3.8-27B**(소형/중형 dense 모델)의 최대 효율 추출 노하우 정리.

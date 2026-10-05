@@ -4,6 +4,11 @@ aliases: [Qwen3.8 설정 검토]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "에이전트 하네스"
+category_middle: "모델별 적용"
+category_minor: "Qwen 모델 검토·운영"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # Qwen3.8 원문을 읽기 전 확인할 조건
