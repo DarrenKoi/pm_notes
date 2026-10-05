@@ -7,6 +7,11 @@ related: [./itc-aix-roadmap-outline.md, ./CONTEXT.md, ./docs/adr/0001-aix-tf-ax-
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 document_type: historical_record
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "실행 과제 카드"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # Quick Win 5선 상세 카드 (v0.1 드래프트)

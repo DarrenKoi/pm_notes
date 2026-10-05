@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "토큰·컨텍스트·환각"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 08. 토큰, 컨텍스트 윈도우, 환각

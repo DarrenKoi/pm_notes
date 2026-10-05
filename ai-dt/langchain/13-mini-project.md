@@ -5,6 +5,11 @@ last_updated: 2026-07-06
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "통합 프로젝트"
+note_kind: "실습"
+classified_on: "2026-10-05"
 ---
 
 # 13. 실전 Mini Project — 주제 선정부터 발표까지

@@ -5,6 +5,11 @@ last_updated: 2026-07-06
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "LangChain 기초"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 01. OpenAI API 및 LangChain 구조 이해

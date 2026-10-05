@@ -5,6 +5,11 @@ last_updated: 2026-03-14
 reviewed_on: 2026-10-04
 review_status: partial
 type: learning
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "파운데이션 모델"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Attention이란 무엇인가?

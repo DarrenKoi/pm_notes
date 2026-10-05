@@ -3,6 +3,11 @@ type: review-log
 tags: [ai-coding, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # AI 코딩 용어집 정리 기록

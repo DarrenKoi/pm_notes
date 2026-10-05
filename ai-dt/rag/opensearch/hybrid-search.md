@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
 aliases: [하이브리드 검색과 RRF]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "OpenSearch 검색"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # OpenSearch 하이브리드 검색 (Hybrid Search)

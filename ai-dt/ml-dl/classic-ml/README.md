@@ -3,6 +3,11 @@ tags: [ml, classical-ml, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "클래식 머신러닝"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 클래식 ML 읽기 순서

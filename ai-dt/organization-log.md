@@ -4,6 +4,11 @@ aliases: [AI DT 문서 정리 기록]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: organization_log
+category_major: "AI·DT"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # AI/DT 문서 정리 기록

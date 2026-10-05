@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_tutorial
 aliases: [Airflow MinIO 연결 사례]
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "Airflow 파이프라인"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Airflow + MinIO 파이프라인 튜토리얼

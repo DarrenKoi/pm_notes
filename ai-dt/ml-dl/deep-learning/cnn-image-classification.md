@@ -5,6 +5,11 @@ last_updated: 2026-02-14
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "딥러닝 학습"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # CNN 이미지 분류 (Image Classification)

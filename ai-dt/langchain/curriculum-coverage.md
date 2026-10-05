@@ -3,6 +3,11 @@ tags: [langchain, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: curriculum_review
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "커리큘럼 안내"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # LangChain 커리큘럼 커버리지 점검

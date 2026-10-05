@@ -4,6 +4,11 @@ tags: [aix, llm-report-contest, archive]
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 aliases: ["50분 개정 기록 — contest-spec"]
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "리포트 경진대회 50분 개정판"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # ITC AIX 리포트 경진대회 — 출제 spec (v0.2)

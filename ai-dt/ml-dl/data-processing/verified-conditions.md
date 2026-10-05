@@ -3,6 +3,11 @@ tags: [ml, data-processing, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "ML 데이터 처리"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 데이터 처리의 근거와 적용 조건

@@ -3,6 +3,11 @@ tags: [langchain, langgraph, compatibility, sources]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: reference
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "커리큘럼 안내"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 공통 적용 조건과 근거

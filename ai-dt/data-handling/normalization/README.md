@@ -5,6 +5,11 @@ last_updated: 2026-05-02
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: topic_index
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "정규화·모델링"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 정규화 학습 노트

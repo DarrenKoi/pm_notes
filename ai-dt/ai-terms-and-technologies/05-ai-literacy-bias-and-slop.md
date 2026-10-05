@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 리터러시"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 05. AI 리터러시, AI 편향과 AI 슬롭

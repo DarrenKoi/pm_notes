@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 입문 안내"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # AI 용어 및 기술 소개: 한 편으로 읽는 통합본

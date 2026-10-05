@@ -4,6 +4,11 @@ tags: [ai-coding, source-verification, glossary]
 aliases: [AI 코딩 용어의 적용 조건]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 코딩 용어"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # AI 코딩 용어의 검증된 적용 조건

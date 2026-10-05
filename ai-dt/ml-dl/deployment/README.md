@@ -3,6 +3,11 @@ tags: [model-deployment, serialization, experiment-tracking, documentation-revie
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "모델 저장·배포"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 모델 배포 읽기 순서

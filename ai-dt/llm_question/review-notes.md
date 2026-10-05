@@ -3,6 +3,11 @@ type: review
 tags: [aix, llm-report-contest]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "리포트 경진대회 초안"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 출제 기록 검토 안내

@@ -8,6 +8,11 @@ tags: [governance, organization, itc, aix]
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 document_type: historical_record
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "역할·의사결정"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # ADR-0001. AIX TF ↔ ITC AX Part ↔ ITC AI 실행 TF 역할 경계

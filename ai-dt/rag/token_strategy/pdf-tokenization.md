@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
 aliases: [PDF 추출과 구조 기반 청킹]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "문서 추출·청킹"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # PDF 문서 토큰화 전략 (PDF Tokenization Strategy)

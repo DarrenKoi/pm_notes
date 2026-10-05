@@ -6,6 +6,11 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 코딩 용어"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Section 1 — The Model (모델)

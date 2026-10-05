@@ -5,6 +5,11 @@ last_updated: 2026-02-12
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_proposal
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "DRM 문서 추출"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # VLM 추출 결과물의 청킹 전략

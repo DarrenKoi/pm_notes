@@ -3,6 +3,11 @@ type: index
 tags: [mcp, learning-index]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "MCP 도구 연동"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # MCP (Model Context Protocol) 학습 노트

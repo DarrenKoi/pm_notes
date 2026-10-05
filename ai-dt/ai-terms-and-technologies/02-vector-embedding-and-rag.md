@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "벡터·임베딩·RAG"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 02. 벡터, 임베딩, RAG와 온톨로지

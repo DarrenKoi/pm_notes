@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: historical_strategy
 aliases: [2026년 3월 사내 RAG 전략 메모]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "문서 추출·청킹"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 최근 RAG 전략 정리 (2026) - 사내 구축 관점

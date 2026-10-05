@@ -4,6 +4,11 @@ level: beginner-to-advanced
 last_updated: 2026-02-14
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "학습 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # ML/DL 실전 가이드
@@ -68,4 +73,4 @@ review_status: partial
 ## 관련 문서
 - [상위: AI/DT 학습 노트](../README.md)
 - FastAPI 관련 구현은 다른 독립 주제의 자료이며 이 목차에서 깨진 외부 폴더 참조를 제거했다.
-- [RAG 파이프라인](../rag/langgraph/)
+- [RAG 파이프라인](../rag/langgraph/README.md)

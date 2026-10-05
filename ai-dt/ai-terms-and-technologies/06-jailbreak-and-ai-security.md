@@ -6,6 +6,11 @@ source: primary-sources
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 보안"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 06. 탈옥과 AI 보안: 지시와 데이터를 구분하는 법

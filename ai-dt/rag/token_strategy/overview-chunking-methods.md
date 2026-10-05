@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
 aliases: [문서 청킹 방법 비교]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "문서 추출·청킹"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 청킹 방법론 총론 (Overview of Chunking Methods)

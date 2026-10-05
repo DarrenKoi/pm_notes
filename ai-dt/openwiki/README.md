@@ -5,6 +5,11 @@ last_updated: 2026-07-07
 reviewed_on: 2026-10-04
 review_status: partial
 type: learning
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "코드 문서화"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # OpenWiki 사용법

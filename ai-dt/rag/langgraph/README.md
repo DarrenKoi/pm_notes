@@ -5,6 +5,11 @@ last_updated: 2026-01-31
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "LangGraph RAG"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # LangGraph 학습 시리즈

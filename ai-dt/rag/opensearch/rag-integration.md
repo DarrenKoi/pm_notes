@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
 aliases: [OpenSearch 검색 후보와 LangGraph 생성 흐름]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "OpenSearch 검색"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # OpenSearch RAG 파이프라인 연동 (RAG Integration)

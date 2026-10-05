@@ -5,6 +5,11 @@ last_updated: 2026-02-14
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "클래식 머신러닝"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 분류(Classification) 실전 레시피
@@ -483,7 +488,7 @@ class_weight/scale_pos_weight는 불균형을 해결했다는 증명이 아니�
 
 ## 관련 문서
 
-- [데이터 전처리 기초](../../data-handling/)
+- [데이터 전처리 기초](../../data-handling/README.md)
 - [하이퍼파라미터 튜닝 (Optuna)](./hyperparameter-tuning.md)
 - [회귀 모델 레시피](./regression-recipes.md)
 - [모델 평가 지표 가이드](./model-evaluation.md)

@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "방법 선택·평가"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 09. 프롬프트, RAG, 파인튜닝 중 무엇을 선택할까

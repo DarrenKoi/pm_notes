@@ -5,6 +5,11 @@ last_updated: 2026-07-16
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "고급 RAG·멀티에이전트"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # RAG 확장 기법

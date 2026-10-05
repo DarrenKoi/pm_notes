@@ -4,6 +4,11 @@ tags: [aix, llm-report-contest, archive]
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 aliases: ["50분 개정 기록 — exam-paper"]
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "리포트 경진대회 50분 개정판"
+note_kind: "템플릿"
+classified_on: "2026-10-05"
 ---
 
 # ITC AIX 리포트 경진대회 — 답안지 (50분 개정판)

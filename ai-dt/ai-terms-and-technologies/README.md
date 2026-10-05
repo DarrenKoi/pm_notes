@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: index
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 입문 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AI 용어 및 기술 소개
@@ -89,6 +94,6 @@ AI를 처음 접하신다면 01을 읽은 뒤 08을 먼저 보시길 권합니�
 
 - [Foundation Model / LLM 기초](../foundation%20model/README.md)
 - [AI Coding Dictionary](../ai-coding-dictionary/README.md)
-- [RAG 학습 자료](../rag/)
+- [RAG 학습 자료](../rag/README.md)
 - [LangChain / LangGraph 학습 노트](../langchain/README.md)
 - [MCP 기초](../mcp/README.md)

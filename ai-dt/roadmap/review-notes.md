@@ -3,6 +3,11 @@ tags: [itc, aix, roadmap, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: review
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "로드맵 기록 안내"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 로드맵 기록 검토 안내

@@ -7,6 +7,11 @@ related: [./itc-aix-roadmap-outline.md, ./ch3-tobe-draft.md, ./quick-win-cards.m
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 document_type: historical_record
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "보고·발표 초안"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # Ch.4 추진 트랙 — 5 능력 × 3 트랙 매트릭스 — 슬라이드 드래프트 (v0.1)

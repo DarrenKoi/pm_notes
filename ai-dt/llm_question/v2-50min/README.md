@@ -3,6 +3,11 @@ type: index
 tags: [aix, llm-report-contest]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "리포트 경진대회 50분 개정판"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 50분 개정 자료

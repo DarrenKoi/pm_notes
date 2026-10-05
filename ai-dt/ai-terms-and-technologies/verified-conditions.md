@@ -4,6 +4,11 @@ tags: [ai, glossary, source-verification]
 aliases: [AI 입문 자료의 적용 조건]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 입문 안내"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # AI 입문 자료의 근거와 적용 조건

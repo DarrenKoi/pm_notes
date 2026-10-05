@@ -6,6 +6,11 @@ source: https://github.com/mattpocock/dictionary-of-ai-coding
 type: index
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AI 코딩 용어"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AI Coding Dictionary (한국어 학습 노트)

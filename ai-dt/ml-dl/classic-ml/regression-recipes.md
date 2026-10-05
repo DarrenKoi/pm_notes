@@ -5,6 +5,11 @@ last_updated: 2026-02-14
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "클래식 머신러닝"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 회귀(Regression) 실전 레시피
@@ -482,8 +487,8 @@ for res in results:
 ## 관련 문서
 
 - [Classic ML 목차](./README.md)
-- [데이터 전처리](../../data-handling/)
-- [딥러닝 회귀](../deep-learning/)
+- [데이터 전처리](../../data-handling/README.md)
+- [딥러닝 회귀](../deep-learning/README.md)
 
 ---
 

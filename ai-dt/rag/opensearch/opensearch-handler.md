@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: implementation_note
 aliases: [공유 OpenSearch 래퍼의 책임과 적용 조건]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "OpenSearch 검색"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # opensearch_handler — 범용 OpenSearch 핸들러

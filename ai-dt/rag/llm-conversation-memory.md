@@ -5,6 +5,11 @@ last_updated: 2026-02-03
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "대화 메모리"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # LLM 대화 메모리 시스템 (Conversation Memory)
@@ -350,5 +355,5 @@ class VectorMemory:
 
 ## 관련 문서
 
-- [LangGraph 기본 개념](./langgraph/)
-- [Milvus 벡터 DB](./milvus/)
+- [LangGraph 기본 개념](./langgraph/README.md)
+- [Milvus 벡터 DB](./milvus/README.md)

@@ -3,6 +3,11 @@ type: learning
 tags: [unsloth, finetuning]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "모델 학습"
+category_minor: "sLLM 파인튜닝"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 로컬 sLLM 파인튜닝 워크플로우

@@ -5,6 +5,11 @@ last_updated: 2026-05-02
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: topic_index
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "Airflow 파이프라인"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Airflow 기초부터 고급까지

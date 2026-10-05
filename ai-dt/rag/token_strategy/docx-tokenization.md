@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
 aliases: [Word 추출과 구조 청킹]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "문서 추출·청킹"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Word 문서 토큰화 전략 (DOCX Tokenization Strategy)

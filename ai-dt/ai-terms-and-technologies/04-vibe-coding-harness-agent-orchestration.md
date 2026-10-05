@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "코딩 에이전트 개념"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 04. 바이브 코딩에서 하네스, 에이전트와 오케스트레이션까지

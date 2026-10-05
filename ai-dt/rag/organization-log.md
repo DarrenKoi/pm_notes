@@ -3,6 +3,11 @@ tags: [rag, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: maintenance_record
+category_major: "AI·DT"
+category_middle: "문서 관리"
+category_minor: "정리·검증 기록"
+note_kind: "관리 기록"
+classified_on: "2026-10-05"
 ---
 
 # RAG 정리 기록

@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
 aliases: [문서 추출과 청킹 학습 목차]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "문서 추출·청킹"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 문서 토큰화 전략 (Document Tokenization Strategy)

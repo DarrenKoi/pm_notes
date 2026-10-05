@@ -6,6 +6,11 @@ version: 0.3
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 document_type: historical_record
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "보고·발표 초안"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # ITC AIX 로드맵 — 보고서 Outline (v0.3)

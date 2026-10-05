@@ -4,6 +4,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: topic_index
 aliases: [데이터 처리 학습 목차]
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "데이터 처리 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 데이터 처리 학습 목차

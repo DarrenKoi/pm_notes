@@ -7,6 +7,11 @@ purpose: AX Part 팀원과 ITC AI/DT 로드맵 v0.2를 함께 검증·확장하�
 reviewed_on: 2026-10-04
 review_status: historical-with-open-questions
 document_type: historical_record
+category_major: "AI·DT"
+category_middle: "AI·DT 적용 기획"
+category_minor: "회의·인계"
+note_kind: "회의·인계 기록"
+classified_on: "2026-10-05"
 ---
 
 # ITC AI/DT 로드맵 — 팀 브레인스토밍 준비

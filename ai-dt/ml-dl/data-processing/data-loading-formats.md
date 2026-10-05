@@ -4,6 +4,11 @@ level: beginner
 last_updated: 2026-02-14
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "ML 데이터 처리"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 데이터 로딩 포맷 가이드 (CSV, JSON, Parquet, Excel)

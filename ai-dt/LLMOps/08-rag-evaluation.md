@@ -5,6 +5,11 @@ last_updated: 2026-07-06
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "LLM 평가·운영"
+category_minor: "RAG·Agent 평가"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 > [!info] 검토 범위 — 2026-10-04

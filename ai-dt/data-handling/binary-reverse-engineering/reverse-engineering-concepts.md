@@ -5,6 +5,11 @@ last_updated: 2026-07-10
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: learning_note
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "바이너리 역공학"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 역공학이란 무엇인가 — 개념 입문

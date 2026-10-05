@@ -3,6 +3,11 @@ tags: [langchain, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "커리큘럼 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # LangChain / LangGraph / RAG 학습 노트

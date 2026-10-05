@@ -6,6 +6,11 @@ reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
 aliases: [OpenSearch 대화 메모리]
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "OpenSearch 검색"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # OpenSearch 대화 메모리 구현 (Conversation Memory with OpenSearch)

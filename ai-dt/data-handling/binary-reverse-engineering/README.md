@@ -5,6 +5,11 @@ last_updated: 2026-07-10
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: learning_note
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "바이너리 역공학"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Binary 파일 역공학 (Binary Reverse Engineering)
@@ -74,7 +79,7 @@ python3 bre.py stamps  yourfile.dat --max-bytes 8192
 | [04-coordinate-and-recipe-files.md](./04-coordinate-and-recipe-files.md) | **좌표·recipe 파일** — 가변 TLV/offset 테이블/문자열 테이블/직렬화 대응(`tlv`·`offsets`·`strtab`·`serial`) |
 | [03-legal-and-first-moves.md](./03-legal-and-first-moves.md) | 역공학 적법성(DMCA 1201(f)/EU), NDA 주의, "벤더에 먼저 요청" |
 | [agent-tasks.md](./agent-tasks.md) | 복사해서 subagent에 던지는 task 프롬프트 모음 |
-| [scripts/](./scripts/) | `bre.py` toolkit, `make_fixture.py`, `selftest.py` (12구간·28개 합성 회귀검사) |
+| [scripts/](./scripts/README.md) | `bre.py` toolkit, `make_fixture.py`, `selftest.py` (12구간·28개 합성 회귀검사) |
 
 ## 참고 자료 (References)
 

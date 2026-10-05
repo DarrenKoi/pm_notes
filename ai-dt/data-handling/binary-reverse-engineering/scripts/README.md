@@ -4,6 +4,11 @@ reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: toolkit_reference
 aliases: [바이너리 역공학 도구 사용법]
+category_major: "AI·DT"
+category_middle: "데이터 엔지니어링"
+category_minor: "바이너리 역공학"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # scripts/ — bre.py toolkit

@@ -4,6 +4,11 @@ tags: [mcp, sdk-version, langchain, integration]
 aliases: [MCP 버전과 실행 조건]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "에이전트 개발"
+category_minor: "MCP 도구 연동"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # MCP 버전과 실행 조건

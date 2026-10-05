@@ -3,9 +3,18 @@ tags: [ai-dt, study-index]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: index
+category_major: "AI·DT"
+category_middle: "주제 안내"
+category_minor: "전체 목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AI/DT 학습 노트
+
+## 대·중·소분류로 찾기
+
+[주제별 분류 목차](./taxonomy-index.md)에서 **AI·DT → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
 
 > AI/DT 시스템 개발 관련 학습 내용을 정리한다.
 

@@ -5,6 +5,11 @@ review_status: partial
 document_type: learning_note
 level: intermediate
 last_updated: 2026-02-07
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "OpenSearch 검색"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # OpenSearch Python 클라이언트 활용 (Advanced Python Client)

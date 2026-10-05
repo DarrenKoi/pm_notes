@@ -4,6 +4,11 @@ tags: [unsloth, finetuning, verification]
 aliases: [Unsloth 적용 조건]
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "모델 학습"
+category_minor: "sLLM 파인튜닝"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # Unsloth 적용 조건

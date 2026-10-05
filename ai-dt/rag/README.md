@@ -3,6 +3,11 @@ tags: [rag, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "RAG 학습 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # RAG 학습 목차

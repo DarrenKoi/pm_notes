@@ -3,6 +3,11 @@ tags: [rag, langchain, langgraph]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "LangChain·Tool Calling"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # LangChain + LangGraph 기초 사용법

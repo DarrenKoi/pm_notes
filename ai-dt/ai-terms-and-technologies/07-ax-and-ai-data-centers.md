@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "AX·인프라"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 07. AX와 AI 데이터 센터

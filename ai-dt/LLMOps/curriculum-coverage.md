@@ -3,6 +3,11 @@ tags: [llmops, evaluation]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "LLM 평가·운영"
+category_minor: "커리큘럼 안내"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 > [!info] 검토 범위 — 2026-10-04

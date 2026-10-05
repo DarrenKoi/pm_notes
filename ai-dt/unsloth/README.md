@@ -5,6 +5,11 @@ last_updated: 2026-03-11
 reviewed_on: 2026-10-04
 review_status: partial
 type: index
+category_major: "AI·DT"
+category_middle: "모델 학습"
+category_minor: "sLLM 파인튜닝"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Unsloth 기반 sLLM 파인튜닝 가이드

@@ -5,6 +5,11 @@ last_updated: 2026-07-28
 type: learning
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "AI 기초"
+category_minor: "프롬프트 기초"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 03. 제로샷과 퓨샷

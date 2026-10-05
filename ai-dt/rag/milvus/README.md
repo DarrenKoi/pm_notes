@@ -3,6 +3,11 @@ tags: [milvus, rag, documentation-review]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "AI·DT"
+category_middle: "RAG"
+category_minor: "Milvus 벡터 검색"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Milvus Vector DB 시리즈

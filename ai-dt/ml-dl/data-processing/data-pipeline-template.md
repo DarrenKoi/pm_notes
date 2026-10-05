@@ -4,6 +4,11 @@ level: intermediate
 last_updated: 2026-02-14
 reviewed_on: 2026-10-04
 review_status: partial
+category_major: "AI·DT"
+category_middle: "머신러닝·딥러닝"
+category_minor: "ML 데이터 처리"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # sklearn 데이터 파이프라인 템플릿
@@ -590,4 +595,4 @@ print(f"Loaded pipeline test accuracy: {loaded_pipe.score(X_test, y_test):.4f}")
 ## 관련 문서
 
 - [상위 폴더](../README.md)
-- [데이터 처리 개요](../../data-handling/)
+- [데이터 처리 개요](../../data-handling/README.md)
