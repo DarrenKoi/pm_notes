@@ -5,6 +5,11 @@ last_updated: 2026-09-03
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: research_record
+category_major: "Agent·Skill 플랫폼"
+category_middle: "기술 조사"
+category_minor: "대규모 인가"
+note_kind: "참고 자료"
+classified_on: "2026-10-05"
 ---
 
 # 대규모 인가(Authorization) 1차 자료 조사 — Google 은 어떻게 수만 명에게 권한을 주는가

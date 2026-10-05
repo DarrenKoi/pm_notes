@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: specification
+category_major: "Agent·Skill 플랫폼"
+category_middle: "플랫폼 설계"
+category_minor: "요구사항"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # 사내 AI Agent·Skill 공유 관리 플랫폼 요구사항 정의서

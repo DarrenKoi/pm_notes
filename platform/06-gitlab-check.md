@@ -5,6 +5,11 @@ last_updated: 2026-09-03
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: specification
+category_major: "Agent·Skill 플랫폼"
+category_middle: "플랫폼 운영"
+category_minor: "도입 전 실측"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 사내 GitLab 실측 체크리스트

@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: implementation_ticket
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "Endpoint Broker"
+note_kind: "구현 티켓"
+classified_on: "2026-10-05"
 ---
 
 # PLAT-L6B-003 연속 장애를 degraded로 자동 전환한다

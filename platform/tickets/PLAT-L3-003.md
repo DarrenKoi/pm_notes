@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: implementation_ticket
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "검색"
+note_kind: "구현 티켓"
+classified_on: "2026-10-05"
 ---
 
 # PLAT-L3-003 권한 범위 안에서 검색 결과를 반환한다

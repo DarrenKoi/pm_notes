@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: implementation_ticket
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "텔레메트리"
+note_kind: "구현 티켓"
+classified_on: "2026-10-05"
 ---
 
 # PLAT-L8-003 자산별 사용량 집계를 조회한다

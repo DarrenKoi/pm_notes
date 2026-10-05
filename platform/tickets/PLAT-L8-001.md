@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: implementation_ticket
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "텔레메트리"
+note_kind: "구현 티켓"
+classified_on: "2026-10-05"
 ---
 
 # PLAT-L8-001 텔레메트리 속성과 이벤트 계약을 확정한다

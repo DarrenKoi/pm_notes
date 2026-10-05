@@ -4,6 +4,11 @@ aliases: [플랫폼 사전 조사 목차]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "Agent·Skill 플랫폼"
+category_middle: "기술 조사"
+category_minor: "조사 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 플랫폼 사전 조사 읽기 안내

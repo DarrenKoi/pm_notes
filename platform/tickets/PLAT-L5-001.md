@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: implementation_ticket
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "인증"
+note_kind: "구현 티켓"
+classified_on: "2026-10-05"
 ---
 
 # PLAT-L5-001 OIDC 액세스 토큰 검증을 구현한다

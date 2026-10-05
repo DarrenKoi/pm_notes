@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: template
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "티켓 규약·목차"
+note_kind: "운영 지침"
+classified_on: "2026-10-05"
 ---
 
 # 티켓 공통 규약 (구현 저장소)

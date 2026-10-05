@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "Agent·Skill 플랫폼"
+category_middle: "구현 준비"
+category_minor: "티켓 규약·목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 구현 티켓

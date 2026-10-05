@@ -3,9 +3,18 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "Agent·Skill 플랫폼"
+category_middle: "주제 안내"
+category_minor: "전체 목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 사내 AI Agent·Skill 공유 관리 플랫폼
+
+## 대·중·소분류로 찾기
+
+[주제별 분류 목차](./taxonomy-index.md)에서 **Agent·Skill 플랫폼 → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
 
 > [!info] 2026-10-04 검토 범위
 > 설계·양식 또는 별도 구현 저장소의 티켓이다. 현재 구현·사내 운영 증거로 간주하지 않는다. [현재 검토와 적용 조건](./review-notes.md)을 먼저 확인한다. 과거 완료 보고와 승인 전제는 당시 기록으로 유지하며, 이번 검증은 [정리 기록](./organization-log.md)에 구분한다.

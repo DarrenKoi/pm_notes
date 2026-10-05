@@ -5,6 +5,11 @@ last_updated: 2026-09-03
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: specification
+category_major: "Agent·Skill 플랫폼"
+category_middle: "플랫폼 설계"
+category_minor: "아키텍처"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # 아키텍처 설계서 — 사내 AI Agent·Skill 공유 플랫폼 (1차/사업부)

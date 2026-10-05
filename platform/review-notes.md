@@ -4,6 +4,11 @@ aliases: [플랫폼 현재 적용 조건]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: technical_review
+category_major: "Agent·Skill 플랫폼"
+category_middle: "플랫폼 운영"
+category_minor: "적용 조건"
+note_kind: "검토 기록"
+classified_on: "2026-10-05"
 ---
 
 # 플랫폼 현재 검토와 적용 조건

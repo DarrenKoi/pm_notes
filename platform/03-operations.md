@@ -3,6 +3,11 @@ tags: [platform]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: specification
+category_major: "Agent·Skill 플랫폼"
+category_middle: "플랫폼 운영"
+category_minor: "운영·거버넌스"
+note_kind: "운영 지침"
+classified_on: "2026-10-05"
 ---
 
 # 사내 AI Agent·Skill 플랫폼 운영·거버넌스

@@ -5,6 +5,11 @@ last_updated: 2026-09-03
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: research_record
+category_major: "Agent·Skill 플랫폼"
+category_middle: "기술 조사"
+category_minor: "자산 레지스트리"
+note_kind: "참고 자료"
+classified_on: "2026-10-05"
 ---
 
 # 사내 Agent/Skill 레지스트리 - 1차 자료 조사
