@@ -4,6 +4,11 @@ aliases: [Python 환경과 Redis 읽기 안내]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "웹 개발"
+category_middle: "백엔드 개발"
+category_minor: "Python 환경·패키지"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Python 환경과 Redis 읽기 안내

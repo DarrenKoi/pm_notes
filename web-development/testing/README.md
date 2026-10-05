@@ -4,6 +4,11 @@ aliases: [테스트 학습 목차]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "웹 개발"
+category_middle: "품질 검증"
+category_minor: "소프트웨어 테스트"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 테스트 학습 목차

@@ -5,6 +5,11 @@ last_updated: 2026-01-31
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "웹 개발"
+category_middle: "백엔드 개발"
+category_minor: "Python 환경·패키지"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # pip에서 uv로 마이그레이션 가이드

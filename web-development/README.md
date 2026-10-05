@@ -4,9 +4,18 @@ aliases: [웹 개발 지식 목차]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "웹 개발"
+category_middle: "주제 안내"
+category_minor: "전체 목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 웹 개발 지식 목차
+
+## 대·중·소분류로 찾기
+
+[주제별 분류 목차](./taxonomy-index.md)에서 **웹 개발 → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
 
 이 폴더는 Python 환경·캐시, TypeScript 프론트엔드와 테스트를 함께 학습하는 독립 주제다. 각 문서의 목적·예제 조건·확인일을 함께 읽는다. [정리 기록](./organization-log.md)은 수정 근거와 미확인을 제공한다. 원본 문서의 개별 검토와 로컬·Obsidian 검증을 마쳤으며, 외부 실행과 Claude 협의 대기는 기록에 구분했다.
 

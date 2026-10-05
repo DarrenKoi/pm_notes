@@ -3,6 +3,11 @@ tags: [web-development, typescript]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "웹 개발"
+category_middle: "프론트엔드·런타임"
+category_minor: "Bun·API 실습"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # Bun + TypeScript Task API 예제

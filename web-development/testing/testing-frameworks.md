@@ -5,6 +5,11 @@ last_updated: 2026-02-19
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "웹 개발"
+category_middle: "품질 검증"
+category_minor: "소프트웨어 테스트"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # 테스트 프레임워크 비교 및 사용법

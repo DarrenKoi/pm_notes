@@ -5,6 +5,11 @@ last_updated: 2026-01-31
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: index
+category_major: "웹 개발"
+category_middle: "프론트엔드·런타임"
+category_minor: "TypeScript·빌드 도구"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # TypeScript 웹 개발 학습 로드맵

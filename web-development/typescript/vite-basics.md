@@ -5,6 +5,11 @@ last_updated: 2026-02-01
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_note
+category_major: "웹 개발"
+category_middle: "프론트엔드·런타임"
+category_minor: "TypeScript·빌드 도구"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # Vite 기초 가이드
