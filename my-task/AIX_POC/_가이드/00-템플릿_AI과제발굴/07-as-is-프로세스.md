@@ -6,6 +6,11 @@ type: 템플릿
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: learning_template
+category_major: "업무 기획·산출물"
+category_middle: "AIX 방법론"
+category_minor: "과제 발굴 양식"
+note_kind: "템플릿"
+classified_on: "2026-10-05"
 ---
 
 # 07 · As-Is 업무 프로세스 정의 — 템플릿 (Step9 / Design)

@@ -6,6 +6,11 @@ type: 적용사례-실행기획
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: historical_project_plan
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "단계별 실행기획"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # CD-SEM Auto Recipe Creation — 단계별 실행기획 세트
@@ -20,7 +25,7 @@ document_type: historical_project_plan
 
 - 기존 03/04가 "한 흐름으로 읽는 내러티브"였다면, 본 폴더는 **단계 = 산출물 1개**로 쪼개 각 단계를 독립적으로 작성·검토·발표할 수 있게 만든 것이다.
 - 모든 사실은 03/04 또는 `../source/NN`을 인용하거나 브레인스토밍 합의(2026-06-24)임을 명시한다. **미확정 수치는 placeholder**(τ=임계/점수, s·s′=소요시간, r=재시도, N=처리량, `<담당 임원>`)로 두고 지어내지 않는다.
-- 재사용 가능한 **빈 양식 + 퍼실리테이션 키트**는 [`_가이드/00-템플릿_AI과제발굴/`](../../_가이드/00-템플릿_AI과제발굴/)에 있다. 본 폴더는 그 양식을 CD-SEM으로 채운 **worked example**이다.
+- 재사용 가능한 **빈 양식 + 퍼실리테이션 키트**는 [`_가이드/00-템플릿_AI과제발굴/`](../../_가이드/00-템플릿_AI과제발굴/README.md)에 있다. 본 폴더는 그 양식을 CD-SEM으로 채운 **worked example**이다.
 
 ## 산출물 인덱스
 
@@ -73,7 +78,7 @@ document_type: historical_project_plan
 - 발표물: [실행기획 세트 PPTX](../07-적용_CDSEM_실행기획_세트.pptx) · [발표 요약](../07-적용_CDSEM_실행기획_발표요약.md) · [As-Is 발표 장표(2매) MD](./07-as-is-프로세스_장표.md) → [PPTX](./07-as-is-프로세스.pptx) · [To-Be 발표 장표(2매) MD](./08-to-be-프로세스_장표.md) → [PPTX](./08-to-be-프로세스.pptx) · [KSF·제약 발표 장표(2매) MD](./09-ksf-제약-정의_장표.md) → [PPTX](./09-ksf-제약-정의.pptx) · [개발일정 발표 장표(2매) MD](./10-개발일정-수립_장표.md) → [PPTX](./10-개발일정-수립.pptx) · [Review 발표 장표(2매) MD](./11-review-산출물-발표_장표.md) → [PPTX](./11-review-산출물-발표.pptx)
 - **통합 발표 덱(07~11, 10매)**: [실행기획_발표장표_통합 MD](./실행기획_발표장표_통합.md) → [PPTX](./실행기획_발표장표_통합.pptx) — 5단계 장표를 `[07]`~`[11]` 태그·연번으로 한 덱에 묶음
 - **HTML 발표 덱(표지+10매)**: [실행기획_발표덱.html](./실행기획_발표덱.html) — 브라우저용 16:9 슬라이드(단계별 컬러·Swimlane·칸반을 CSS로 표현), ←/→ 이동·`P` 인쇄(PDF). 로컬 폰트(Pretendard·Fraunces·IBM Plex Mono) 사용, 네트워크 의존 없음
-- 재사용 템플릿 키트: [`_가이드/00-템플릿_AI과제발굴/`](../../_가이드/00-템플릿_AI과제발굴/)
+- 재사용 템플릿 키트: [`_가이드/00-템플릿_AI과제발굴/`](../../_가이드/00-템플릿_AI과제발굴/README.md)
 - 작성 브리프(내부): [SPEC.md](./_internal/SPEC.md)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-24). 회사 기밀은 제외하고 적용 골격만 정리함.
 

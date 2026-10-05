@@ -3,6 +3,11 @@ tags: [aix, cd-sem, project, index]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: project_index
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "단계별 실행기획"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # CD-SEM 단계별 실행기획 읽기 안내

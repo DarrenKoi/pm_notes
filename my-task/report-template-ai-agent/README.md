@@ -3,6 +3,11 @@ tags: [report, ai-agent, index, template]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: topic_index
+category_major: "업무 기획·산출물"
+category_middle: "업무 보고"
+category_minor: "AI Agent 보고 양식"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AI Agent 보고 양식 읽기 순서

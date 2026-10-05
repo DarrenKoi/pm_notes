@@ -3,6 +3,11 @@ tags: [aix, template, index]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: learning_index
+category_major: "업무 기획·산출물"
+category_middle: "AIX 방법론"
+category_minor: "과제 발굴 양식"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AI 과제 발굴 입력 양식 목차

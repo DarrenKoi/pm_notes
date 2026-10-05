@@ -3,6 +3,11 @@ tags: [aix, cd-sem, historical-brief]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_authoring_brief
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "단계별 실행기획"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 > [!note] 당시 작성 브리프

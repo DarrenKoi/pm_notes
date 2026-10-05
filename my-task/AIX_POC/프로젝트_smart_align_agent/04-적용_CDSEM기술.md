@@ -6,6 +6,11 @@ type: 적용사례-기술
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_project_plan
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "기술·To-Be 설계"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # AIX 적용 사례 — CD-SEM Auto Recipe Creation (기술/To-Be 설계)
@@ -179,7 +184,7 @@ As-Is 최대 병목 = ⑥ 오인식 수정 반복. To-Be에서 ⑥을 VLM 실시
 ## 참고 자료 (References)
 - 기획(Discovery): [03-적용_CDSEM기획.md](./03-적용_CDSEM기획.md)
 - 방법론 틀: [02-기술문서_AI과제정의구현.md](../_가이드/02-기술문서_AI과제정의구현.md)
-- 원문 전사: [`source/`](../lectures/captures/) (특히 07·09·10)
+- 원문 전사: [`source/`](../lectures/captures/README.md) (특히 07·09·10)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-19). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.
 
 ## 검토 결과 — 2026-10-04

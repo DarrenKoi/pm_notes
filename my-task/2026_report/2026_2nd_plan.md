@@ -1,3 +1,10 @@
+---
+category_major: "업무 기획·산출물"
+category_middle: "업무 보고"
+category_minor: "2026 회고·계획"
+note_kind: "업무 기록"
+classified_on: "2026-10-05"
+---
 # 2026년 하반기 계획 (2nd Plan)
 
 > 작성자: Daeyoung (SK Hynix AI/DT TF) | 작성일: 2026-06-08

@@ -3,6 +3,11 @@ tags: [aix, lecture, source-index]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: source_index
+category_major: "업무 기획·산출물"
+category_middle: "AIX 방법론"
+category_minor: "강의 캡처 전사"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 초기 강의 캡처 전사 목차

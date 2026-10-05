@@ -6,6 +6,11 @@ type: 적용사례-검증
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_project_plan
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "PoC 실험 설계"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # AIX 적용 사례 — CD-SEM 좌표 재정합 PoC 실험 설계 (KSF#1 검증)

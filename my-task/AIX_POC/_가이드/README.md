@@ -3,6 +3,11 @@ tags: [aix, guide, index]
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: learning_index
+category_major: "업무 기획·산출물"
+category_middle: "AIX 방법론"
+category_minor: "기획·기술 가이드"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AIX 재사용 가이드

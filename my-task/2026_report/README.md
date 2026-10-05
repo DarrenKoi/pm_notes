@@ -3,6 +3,11 @@ tags: [report, work-record, index]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_index
+category_major: "업무 기획·산출물"
+category_middle: "업무 보고"
+category_minor: "2026 회고·계획"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 2026 업무 보고 기록

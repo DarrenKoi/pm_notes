@@ -4,9 +4,18 @@ reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: topic_index
 aliases: [업무 산출물 목차]
+category_major: "업무 기획·산출물"
+category_middle: "주제 안내"
+category_minor: "전체 목차"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # 업무 산출물 목차
+
+## 대·중·소분류로 찾기
+
+[주제별 분류 목차](./taxonomy-index.md)에서 **업무 기획·산출물 → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
 
 업무 보고 기록, AI 과제의 설계·기획, 보고용 빈 양식과 예시를 구분해 읽는 작업공간이다. 기술 학습 문서와 달리 이곳의 계획·회고는 작성 당시의 업무 문맥을 보존한다. 기획서의 목표나 실험 설계를 완료된 실측 결과로 읽지 않는다.
 

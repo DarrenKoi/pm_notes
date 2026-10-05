@@ -3,6 +3,11 @@ tags: [aix, template, historical-brief]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_brief
+category_major: "업무 기획·산출물"
+category_middle: "AIX 방법론"
+category_minor: "과제 발굴 양식"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # SPEC — AI 과제 발굴 템플릿 키트 (작성 브리프)

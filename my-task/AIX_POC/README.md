@@ -3,6 +3,11 @@ tags: [aix, project, index]
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: project_index
+category_major: "업무 기획·산출물"
+category_middle: "AIX 과제 기획"
+category_minor: "방법론·사례 안내"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # AIX POC — AX 서비스 기획 방법론 + 부문 프로젝트

@@ -6,6 +6,11 @@ type: 적용사례-발표요약
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_presentation_derivative
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "발표 자료"
+note_kind: "발표 자료"
+classified_on: "2026-10-05"
 ---
 
 # AIX 실행기획 발표 요약 — CD-SEM Auto Recipe Creation (11단계 압축)

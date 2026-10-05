@@ -6,6 +6,11 @@ type: source-reference
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: source_index
+category_major: "업무 기획·산출물"
+category_middle: "AIX 방법론"
+category_minor: "강의·원본 양식"
+note_kind: "목차"
+classified_on: "2026-10-05"
 ---
 
 # lectures/ — New AI Design Camp 강의자료 (V2.7)

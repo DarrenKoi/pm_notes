@@ -6,6 +6,11 @@ type: 적용사례-기획
 reviewed_on: 2026-10-04
 review_status: reviewed_with_limits
 document_type: historical_project_plan
+category_major: "업무 기획·산출물"
+category_middle: "AIX 적용 사례"
+category_minor: "기획·Discovery"
+note_kind: "설계·계획"
+classified_on: "2026-10-05"
 ---
 
 # AIX 적용 사례 — CD-SEM Auto Recipe Creation (기획/Discovery)
@@ -179,7 +184,7 @@ Recipe Creation 셋업만이 아니라 **의뢰 접수부터 검증·등록·후
 ## 참고 자료 (References)
 - 방법론 틀: [01-기획문서_AX서비스기획.md](../_가이드/01-기획문서_AX서비스기획.md)
 - 후속 기술 설계: [04-적용_CDSEM기술.md](./04-적용_CDSEM기술.md) (Track B)
-- 원문 전사: [`source/`](../lectures/captures/) (특히 01·04·05·08)
+- 원문 전사: [`source/`](../lectures/captures/README.md) (특히 01·04·05·08)
 - 출처: SK Hynix New AI Design Camp 방법론 + ITC AIX 브레인스토밍 합의(2026-06-19). 회사 기밀(구체 장비 수치·시스템 상세)은 제외하고 적용 골격만 정리함.
 
 ## 검토 결과 — 2026-10-04
