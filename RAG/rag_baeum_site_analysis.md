@@ -6,6 +6,11 @@ document_type: observation
 observed_on: 2026-07-09
 reviewed_on: 2026-10-04
 verification_status: partially-verified
+category_major: "RAG 사례 분석"
+category_middle: "벤치마크 해석"
+category_minor: "사이트 관찰 기록"
+note_kind: "관찰 기록"
+classified_on: "2026-10-05"
 ---
 
 > [!warning] 과거 관찰 기록 · 수치 재검증 미완료

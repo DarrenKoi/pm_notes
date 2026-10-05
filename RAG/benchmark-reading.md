@@ -5,6 +5,11 @@ aliases: [RAG 평가 해석]
 document_type: learning
 reviewed_on: 2026-10-04
 verification_status: partially-verified
+category_major: "RAG 사례 분석"
+category_middle: "벤치마크 해석"
+category_minor: "평가 적용 조건"
+note_kind: "학습"
+classified_on: "2026-10-05"
 ---
 
 # RAG 벤치마크를 읽고 적용하는 방법
