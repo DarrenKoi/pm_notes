@@ -13,6 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `AIX_POC/` | SK Hynix "New AI Design Camp" 방법론 표준 + 우리 부문 AIX POC 프로젝트. **3축 구조** — `lectures/`(표준 강의 덱·captures) · `_가이드/`(재사용 틀 01·02 + 00-템플릿) · `프로젝트_<이름>/`(과제별 폴더, 현재 `프로젝트_smart_align_agent`). 무게중심이 여기 있다. | **반드시 [`AIX_POC/CLAUDE.md`](AIX_POC/CLAUDE.md) 먼저 읽기** |
 | `2026_report/` | 상반기 리뷰 + 하반기 계획 등 분기 보고 문서 (Align Fail 자동화·SKEWNONO·OSS-Cube 추진 현황) | (단순 보고 문서, 별도 규칙 없음) |
 
+## 1순위 원칙 — 임팩트가 보스에게 납득돼야 한다
+
+이 폴더의 보고·기획 산출물은 "무엇을 만들었나"보다 **"그게 회사에 어떤 임팩트·영향·효과를 줬나(줄 것인가)"** 가 보스에게 납득돼야 한다. 기능 설명만 있고 "왜 해야 하는가"가 빠진 항목은 미완성이다.
+
+- 과제·성과 항목은 기능(What)보다 **문제 → 안 하면 생기는 일 → 효과 → 측정 지표**를 먼저 쓴다.
+- 근거 수치가 없으면 지어내지 않고 `⟨확인: 무엇을⟩` 자리로 남긴다.
+
 ## 명령어 (마크다운 → PPTX)
 
 이 디렉터리의 유일한 실행 코드는 `AIX_POC/tools/`의 두 변환기다. **`AIX_POC/`에서 실행한다** (상대 경로 입력 기준). `python-pptx` 필요, 한글 폰트는 맑은 고딕.
