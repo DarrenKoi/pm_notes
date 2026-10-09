@@ -26,6 +26,7 @@ classified_on: "2026-10-05"
 | AIX 방법론과 과제 설계 | [AIX POC 목차](./AIX_POC/README.md) | 강의 출처 → 재사용 가이드/빈 양식 → 프로젝트 기획 → 기술 설계 → 실험 설계 → 상세 실행기획/발표 |
 | 업무 진행과 계획 기록 | [상반기 회고](./2026_report/2026_1st_lookback.md) | [중간 리뷰](./2026_report/2026_상반기_리뷰_및_하반기_계획.md) → [하반기 계획](./2026_report/2026_2nd_plan.md) → [하반기 회고·2027 계획](./2026_report/2026_2nd_lookback.md) |
 | AI Agent 보고 양식 사용 | [작성 가이드](./report-template-ai-agent/작성가이드.md) | [빈 서식](./report-template-ai-agent/템플릿_빈서식.md) → [채워진 예시](./report-template-ai-agent/예시_채워진샘플.md); 예시의 수치는 실제 업무 실적으로 사용하지 않음 |
+| 장비 데이터 매핑 Agent 기획 | [기획 목차](./equipment-data-mapping/README.md) | [왜 해야 하는가](./equipment-data-mapping/01-why-proposal.md) → [지도 만들기 설계](./equipment-data-mapping/02-map-design.md) → [비교·관리·운영 설계](./equipment-data-mapping/03-compare-operate-design.md) → [단계별 실행 계획](./equipment-data-mapping/04-phased-plan.md); 전부 초안, 수치는 ⟨확인⟩ 자리 |
 
 사내용 하반기 회고는 Git에서 제외된 로컬 전용 문서이며 별도 독자·용도로 보존한다. 유사 제목만으로 회고를 합치거나 공개용과 사내용 정보를 섞지 않는다. 작성일·승인 상태·실적의 확인 여부는 각 기록의 문맥과 정리 기록을 따른다. 제목의 연도만으로 보고의 최종 승인이나 현 실적을 확정하지 않는다.
 
