@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 본인 성과 Review</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--fg:#1d1d1f;--muted:#6b6b70;--line:#e3e3e0;--accent:#c8102e;--accent-soft:#fbe9ec;--chk:#a15c00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1e1e21;--fg:#ececee;--muted:#9a9aa2;--line:#2e2e33;--accent:#ff5a6e;--accent-soft:#3a1d22;--chk:#f0b35a}}
+:root[data-theme="dark"]{--bg:#141416;--card:#1e1e21;--fg:#ececee;--muted:#9a9aa2;--line:#2e2e33;--accent:#ff5a6e;--accent-soft:#3a1d22;--chk:#f0b35a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 "Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}
+main{max-width:960px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:19px;margin:40px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+h3{font-size:16px;margin:24px 0 8px}
+.meta{color:var(--muted);font-size:13px}
+.lead{background:var(--accent-soft);border-left:4px solid var(--accent);padding:14px 16px;border-radius:6px;margin:20px 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi b{display:block;font-size:20px;color:var(--accent);line-height:1.3}
+.kpi span{font-size:13px;color:var(--muted)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:8px;font-size:14px}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{width:110px;color:var(--muted);font-weight:600;white-space:nowrap}
+thead th{width:auto;background:var(--bg)}
+.award{display:inline-block;background:var(--accent);color:#fff;border-radius:4px;padding:1px 8px;font-size:13px;font-weight:700}
+.chk{color:var(--chk);font-weight:600}
+ol li,ul li{margin:6px 0}
+footer{margin-top:40px;color:var(--muted);font-size:13px}
+@media print{body{background:#fff}h2{break-after:avoid}table,.kpi{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>2026년 본인 성과 Review (승격 자기 추천)</h1>
+<blockquote>
+<p>작성자: Daeyoung (AI/DT TF) | 작성일: 2026-10-19
+주업무: <strong>AI/DT 확산</strong> — 현장 솔루션을 직접 만들고, 현업에 정착시키고, 부문 단위로 퍼뜨리는 일
+공개용 버전 — 사내 시스템·조직·행사명은 일반 명칭으로 바꾸고 규모·수치는 상대값으로만 적었다. 근거 문서: <a href="../2026_report/2026_1st_lookback.md">상반기 회고</a> · <a href="../2026_report/2026_2nd_lookback.md">하반기 회고</a></p>
+</blockquote>
+<hr />
+<h2>한 줄 요약</h2>
+<p><strong>혼자 만든 두 개의 솔루션이 회사의 공식 포상과 타 조직 TF의 업무 기반이 되었다.</strong> 만들어서 끝난 것이 아니라, 회사와 동료들이 매일 그 위에서 일하고 있다.</p>
+<table>
+<thead>
+<tr>
+<th>핵심 지표</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대외 인정</td>
+<td><strong>사내 AI 행사 AX 혁신 공모전 수상</strong> (정렬 실패 대응 Agent)</td>
+</tr>
+<tr>
+<td>타 조직 의존</td>
+<td><strong>계측 효율화 TF</strong> — 계측 포인트 간소화에 계측 플랫폼이 필수. 측정 대기 시간 약 1/4 단축 목표</td>
+</tr>
+<tr>
+<td>장비 확보 효과</td>
+<td>계측 포인트 간소화로 <strong>추가 구매 필요 장비의 약 29%</strong> 확보 목표, 10월 현재 <strong>약 10%</strong> 확보 추정</td>
+</tr>
+<tr>
+<td>일상 사용</td>
+<td>계측 플랫폼 <strong>현업 일상 사용 중</strong></td>
+</tr>
+<tr>
+<td>자동화 효과</td>
+<td>정렬 실패 건당 처리 시간 <strong>80% 단축</strong> 목표 (전체 측정의 약 10%가 대상)</td>
+</tr>
+<tr>
+<td>플랫폼 규모</td>
+<td>코드 약 40배 규모로 재구축, 대상 장비 약 1.5배, 사내 실데이터 연결</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>1. 회사에 기여한 것 (Company Impact)</h2>
+<h3>1-1. 정렬 실패 대응 Agent — 수작업 손실 제거, 회사 공식 포상</h3>
+<p><strong>전략적 위치 — 의뢰 통합 처리(One Stop) 체계 → 레시피 자동 생성 파이프라인의 첫 PoC.</strong> 센터는 모든 의뢰를 한 곳에서 처리하는 One Stop 체계를 추진 중이고, 그 핵심은 일괄 접수한 의뢰를 받아 <strong>레시피를 자동 생성·튜닝하는 파이프라인</strong>이다. 정렬 실패 처리에는 이미지 처리·VLM 자동화·소규모 레시피 튜닝이 모두 들어가므로, 파이프라인 요소 기술을 한 번에 검증할 수 있는 과제로 골라 PoC로 진행했다. 따라서 이 과제의 성과는 정렬 실패 한 건에 그치지 않고 <strong>센터 중점 과제의 기술 검증 결과</strong>이기도 하다.</p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문제</td>
+<td>계측 장비 정렬 실패가 전체 측정의 약 10%에서 발생, 엔지니어가 매번 화면을 보고 수동 재정렬 → 수작업 손실 + 대응 지연 동안 장비 정지</td>
+</tr>
+<tr>
+<td>안 하면</td>
+<td>장비 대수가 늘수록 손실이 비례해 커지고, 야간·교대 시간대 대응 공백이 계속된다</td>
+</tr>
+<tr>
+<td>한 일</td>
+<td>VLM 판단 → 애매한 건만 사람에게 에스컬레이션하는 무인 처리 구조 설계·구현. GUI 클릭 자동화, 기준 표식 없이 주변을 훑는 Search Around 개발</td>
+</tr>
+<tr>
+<td>PoC 결과</td>
+<td>CV 정렬 성공률 <strong>약 25%p 향상(저배율)</strong>, 클릭 성공률 <strong>99% 수준</strong></td>
+</tr>
+<tr>
+<td>배포 시 기대효과</td>
+<td>건당 처리 시간 <strong>80% 단축</strong>, 절감 시간만큼 측정 가능량·장비 가동률 증가. 정성: 야간·주말 공백 없는 24h 대응, 숙련도 의존 제거 <em>(배포 전 목표값)</em></td>
+</tr>
+<tr>
+<td>인정</td>
+<td><strong>사내 AI 행사 AX 혁신 공모전 수상</strong></td>
+</tr>
+</tbody>
+</table>
+<p>추가로, 사내 AI 과제 기획 방법론으로 이 과제의 <strong>실행기획 11단계를 직접 완주</strong>했다. 개발자가 기획 산출물(Pain 정량화·As-Is/To-Be·기대효과)까지 쓴 사례라서, 부문의 다른 AI 과제가 따라 쓸 수 있는 기준 사례가 되었다.</p>
+<h3>1-2. 계측 장비 관리·분석 플랫폼 — 타 조직 TF가 기대는 데이터 기반</h3>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문제</td>
+<td>계측 장비 데이터·통계를 얻으려면 담당자에게 묻고, 받고, 다시 확인하는 소통 왕복이 반복됐다</td>
+</tr>
+<tr>
+<td>안 하면</td>
+<td>엔지니어 업무가 "데이터 기다리기"에 묶이고, 계측 효율화 같은 부문 과제는 근거 데이터를 매번 수작업으로 모아야 한다</td>
+</tr>
+<tr>
+<td>한 일</td>
+<td>v3 전면 재구축 (코드 약 40배, 엔터프라이즈급). 대상 장비 약 1.5배, 사내 실데이터 연결. 디바이스 통계·통합 분석 대시보드·장비 간 편차 분석·실시간 알람·RAG 어시스턴트 신규 개발</td>
+</tr>
+<tr>
+<td>효과 ① (대표 사례)</td>
+<td><strong>계측 효율화 TF의 계측 포인트 간소화는 이 플랫폼 없이는 할 수 없다</strong> (아래 1-3 상세). <strong>플랫폼이 있어야 가능한 일을 보여주는 단적인 예이며, 아래 기능들도 각 현업에서 함께 쓰이고 있다</strong></td>
+</tr>
+<tr>
+<td>효과 ②</td>
+<td>데이터 요청·확인용 소통 왕복을 줄여, 엔지니어가 필요한 정보를 스스로 바로 찾고 업무를 진행한다</td>
+</tr>
+<tr>
+<td>그 밖의 기능</td>
+<td>• <strong>디바이스 통계 서비스</strong> — 디바이스별 계측 통계 (TF 사례의 기반)<br>• <strong>통합 분석 대시보드</strong><br>• <strong>장비 간 편차 분석</strong><br>• <strong>실시간 알람</strong> — 현업 교대 인력 상시 사용<br>• <strong>RAG 어시스턴트</strong> — 매뉴얼·알람 코드 질의<br>• <strong>사내 실데이터 연결</strong> — 모든 기능이 같은 데이터 위에서 동작</td>
+</tr>
+<tr>
+<td>지표</td>
+<td><strong>현업 일상 사용 중</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>1-3. [플랫폼 활용 대표 사례] 계측 효율화 TF — 장비 구매 전에 효율로 메운다</h3>
+<p>플랫폼의 여러 기능 중 디바이스 통계 서비스가 타 조직 과제의 성패를 좌우하는 단적인 예다. 플랫폼의 기여는 이 사례에 한정되지 않는다(1-2 「그 밖의 기능」 참고).</p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문제</td>
+<td>공정 중 wafer가 계속 늘면서 <strong>장비 측정 대기 시간이 크게 증가</strong> → 전체 흐름이 느려져 <strong>연구 개발에 큰 악영향</strong></td>
+</tr>
+<tr>
+<td>목표</td>
+<td><strong>측정 대기 시간 약 1/4로 단축</strong> — 과거 lot flow가 원활했던 시기 수준</td>
+</tr>
+<tr>
+<td>안 하면</td>
+<td>현재 기준으로 목표를 맞추려면 <strong>계측 장비를 추가로 구매</strong>해야 한다</td>
+</tr>
+<tr>
+<td>합의된 방향</td>
+<td>계측 효율화를 먼저 최대한 달성하고, <strong>부족한 장비 수만 구매</strong>한다. TF는 ① 레시피 최적화와 ② 계측 포인트 간소화를 병행 (9월 착수)</td>
+</tr>
+<tr>
+<td>내 기여</td>
+<td><strong>② 계측 포인트 간소화에는 이 플랫폼이 반드시 필요하다</strong> — 디바이스 통계 등으로 어떤 포인트를 줄여도 되는지 판단한다</td>
+</tr>
+<tr>
+<td>효과</td>
+<td>계측 포인트 간소화 달성 시 <strong>추가 구매 필요 장비의 약 29%</strong> 확보, <strong>10월 현재 약 10% 확보 추정</strong> <em>(측정이 빨라진 만큼을 장비 대수로 환산한 값)</em></td>
+</tr>
+</tbody>
+</table>
+<h3>1-4. 확산 기반 — 한 건씩 전달하던 방식을 체계로</h3>
+<ul>
+<li><strong>메신저 연동 → 웹 Application 선회</strong>: 메신저 챗봇이 단답형 응답에만 유효하다는 걸 확인하고 방향을 빠르게 바꿔, 솔루션을 현업에 전달하는 공통 통로를 다시 잡았다.</li>
+<li><strong>부문별 AI/DT 로드맵 실체화 지원</strong>: 만드는 일을 넘어 부문 전체의 추진 방향을 맞추는 데 기여했다.</li>
+<li><strong>장비 데이터 매핑 Agent 기획(2027)</strong>: 과제마다 "데이터가 어디 있나"를 다시 찾는 반복을 없애는 공통 기반을 직접 제안했다.</li>
+</ul>
+<hr />
+<h2>2. 동료·타 조직에 기여한 것 (Coworker Impact)</h2>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>기여</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>계측 효율화 TF</strong></td>
+<td>디바이스 통계 등 플랫폼 서비스로 계측 포인트 간소화를 지원 → 10월 현재 추가 구매 필요 장비의 약 10% 확보 추정</td>
+</tr>
+<tr>
+<td><strong>현업 교대 인력</strong></td>
+<td>실시간 알람을 상시 사용, RAG 어시스턴트로 매뉴얼·알람 코드를 직접 질의 → 담당자 호출 없이 스스로 대응</td>
+</tr>
+<tr>
+<td><strong>현장 엔지니어</strong></td>
+<td>불필요한 소통을 없애 업무 진행 속도를 높임</td>
+</tr>
+<tr>
+<td><strong>현업 부서</strong></td>
+<td>계측 데이터 뷰어·이미지 분석 툴 공동 개발, 레시피 자동 생성 기술 교류</td>
+</tr>
+<tr>
+<td><strong>부서 간 AI 협의체</strong></td>
+<td>부서 간 의견 조율·협업, Agent 과제 진척 관리와 사례 공유</td>
+</tr>
+<tr>
+<td><strong>부문 전체</strong></td>
+<td>AI Agent 리뷰 표준 양식·과제발굴 템플릿 제작 → 다른 부서가 같은 틀로 보고·발굴</td>
+</tr>
+<tr>
+<td><strong>AI/DT 교육 커리큘럼</strong></td>
+<td>Expert 분과 담당 — 커리큘럼과 인증 체계 설계 → "1인 1Agent" 확산의 인재 양성 경로</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. 역량 성장 — 다음 레벨에서 일할 준비</h2>
+<ul>
+<li><strong>1인이 엔터프라이즈급 시스템을 만드는 방식 체득</strong>: Vibe Coding + Harness Engineering으로, 전문 개발 조직 없이 엔터프라이즈급 플랫폼을 구축·운영했다.</li>
+<li><strong>개발 → 기획 확장</strong>: 실행기획 11단계 완주, 교육 커리큘럼·인증 체계 설계, 장비 데이터 매핑 Agent 제안까지. 만드는 사람에서 <strong>과제를 정의하고 사람을 키우는 사람</strong>으로 범위를 넓혔다.</li>
+<li><strong>타 조직을 움직이는 협업</strong>: TF·협의체·현업 부서 공동 개발 등 조직 경계를 넘는 일을 주도했다.</li>
+</ul>
+<hr />
+<h2>4. 잘한 점 / 보완할 점</h2>
+<h3>잘한 점</h3>
+<ul>
+<li><strong>회사 공식 인정</strong>: 정렬 실패 대응 Agent로 AX 혁신 공모전 수상, 센터 중점 과제(레시피 자동 생성)의 첫 PoC</li>
+<li><strong>타 조직의 업무 기반</strong>: 계측 플랫폼 현업 일상 사용, 계측 효율화 TF의 필수 기반</li>
+<li><strong>조직 경계를 넘는 협업</strong>: 현업 부서 공동 개발, 부서 간 AI 협의체, 부문 공용 양식, 교육 커리큘럼 설계</li>
+<li><strong>역량 확장</strong>: 1인 엔터프라이즈급 개발, 실행기획 11단계 완주</li>
+</ul>
+<h3>보완할 점과 2027 조치</h3>
+<table>
+<thead>
+<tr>
+<th>보완할 점</th>
+<th>원인</th>
+<th>2027 조치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정렬 실패 대응 Agent 현업 투입 지연</td>
+<td>고배율 정확도 개선 중, 종단 검증·단일 장비 시범이 남음</td>
+<td>단일 장비 시범 → 확대</td>
+</tr>
+<tr>
+<td>플랫폼 오픈 지연 (당초 계획 대비)</td>
+<td>1인 개발·운영 병행</td>
+<td>팀 단위 운영 체계</td>
+</tr>
+<tr>
+<td>메신저 연동 계획 변경</td>
+<td>메신저 챗봇이 단답형 응답에만 유효 → 웹 Application으로 선회</td>
+<td>방향 전환 완료</td>
+</tr>
+<tr>
+<td>1인 구조, 운영 부담이 신규 개발을 잠식</td>
+<td>백업 인력 부재, 요청이 개인에게 몰림</td>
+<td>요청 창구 일원화·우선순위 체계</td>
+</tr>
+<tr>
+<td>노하우 개인 편중</td>
+<td>에이전트 개발 방식을 팀에 전파하지 못함</td>
+<td>가이드·교류회로 팀 전파</td>
+</tr>
+<tr>
+<td>기획 학습 부족</td>
+<td>개발과 병행</td>
+<td>기획 리드 1건 이상</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. 승격 추천 사유</h2>
+<ol>
+<li><strong>성과가 회사 공식 인정으로 검증됐다</strong> — 사내 AX 혁신 공모전 수상. 이 과제는 센터 One Stop 체계의 레시피 자동 생성 파이프라인 첫 PoC로, 센터 중점 과제의 기술 가능성을 직접 증명했다.</li>
+<li><strong>내가 만든 것이 다른 조직의 업무 기반이 됐다</strong> — 계측 효율화 TF가 장비 추가 구매 대신 효율화로 측정 대기를 줄이는 작업에서 계측 포인트 간소화가 이 플랫폼에 의존한다. 현업이 매일 사용한다. 개인 과제가 아니라 회사 인프라다.</li>
+<li><strong>혼자서 고유 과제 3건 + 지원 업무를 끝까지 밀었다</strong> — 백업 인력 없이 개발·운영·기획을 함께 감당했다.</li>
+<li><strong>이미 상위 레벨의 일을 하고 있다</strong> — 부문 표준 양식, 교육·인증 체계 설계, 협의체 조율, 2027 공통 기반 과제 제안. 개인 실행을 넘어 조직의 방식을 바꾸는 일이다.</li>
+</ol>
+<h2>6. 2027년 다짐</h2>
+<ul>
+<li><strong>기획 리드 1건 이상</strong> — 신규 AI 과제 발굴부터 실행기획까지 직접 리드</li>
+<li><strong>에이전트 개발 방식 팀 전파</strong> — 가이드·교류회로 노하우를 개인에서 팀 자산으로</li>
+<li><strong>정렬 실패 대응 Agent 확대 · 플랫폼 확장(추가 계측 장비군 연계 + 분석 AI Agent) · 장비 데이터 매핑 Agent</strong></li>
+</ul>
+</main>
+</body>
+</html>
