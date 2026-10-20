@@ -36,7 +36,7 @@ last_updated: 2026-10-09
 | [Expert 인증 체계 정리본](./expert-certification.md) | Builder·Guide 심사, 마켓 1차 승인, 갱신 | 확정 |
 | [Expert 분과 브레인스토밍](./expert-curriculum-brainstorm.md) | 결정 기록과 초안 가설 | 논의 종료 |
 | [Expert 양성 실행 제안](./expert-curriculum-proposal.md) | 방향성·7개 시나리오·Builder/Guide 교육·인증·운영안 | 검토용 제안 |
-| [AI Agent 고급 과정 교육 요청서](./advanced-course-vendor-request.md) | 팀 챔피언 양성 2주 고급 과정(팀 협업 개발·GitLab CI/CD·LLMOps·파인튜닝) 업체 요청, 평가·레드팀 심화 후보 | 초안 |
+| [AI Agent 고급 과정 교육 요청서](./advanced-course-vendor-request.md) | 팀 챔피언 양성 고급 과정(10일안·5일안) 업체 요청, 평가·레드팀 심화 후보. 미팅용 [HTML](./advanced-course-vendor-request.html) | 초안 |
 | [공개 커리큘럼 벤치마크 종합](./public-curriculum-benchmark-summary.md) | 세 조사자의 독립 조사 대조. 원본 세 문서로 연결 | 조사 완료 |
 
 ## 남은 산출물
