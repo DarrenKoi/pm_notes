@@ -94,7 +94,7 @@ section h2:first-child{margin-top:24px}
 <tr><td>LLM</td><td>open-weight 모델을 OpenAI 호환 엔드포인트로 제공해 주십시오. 모델 종류는 상관없습니다. 외부 상용 API(OpenAI·Anthropic·Google) 기준 실습은 사내에서 재현할 수 없으므로 제외합니다. 실습 코드는 <code>base_url</code>·키·모델 이름만 바꿔 사내로 옮길 수 있어야 합니다.</td></tr>
 <tr><td>코딩 Agent</td><td>OpenAI 호환 엔드포인트에 붙일 수 있는 오픈소스 코딩 Agent 도구를 사용합니다.</td></tr>
 <tr><td>GitLab</td><td>GitLab.com(공개 클라우드)으로 실습해도 됩니다. 단, 사내 폐쇄망 GitLab과의 차이를 교육에서 명시적으로 다뤄 주십시오(아래 표).</td></tr>
-<tr><td>관측 도구</td><td>Langfuse를 셀프호스팅 방식으로 실습합니다. 사내에서 같은 방식으로 구축하기 위해서입니다.</td></tr>
+<tr><td>관측 도구</td><td>Phoenix(Arize)를 셀프호스팅 방식으로 실습합니다. 사내에서 같은 방식으로 구축하기 위해서입니다. Langfuse는 사내 라이선스 문제로 사용하지 않습니다.</td></tr>
 <tr><td>사전 점검</td><td>개강 1주 전에 실습 환경을 미리 점검해 주십시오. 집중 과정에서 첫날을 설치로 잃지 않기 위해서입니다.</td></tr>
 </tbody></table></div>
 
@@ -115,13 +115,13 @@ section h2:first-child{margin-top:24px}
 <h2>4. 모듈 구성 — 10일안과 5일안 비교</h2>
 <p>10일안이 기본안입니다. 5일안은 같은 목표를 유지하되 파인튜닝(A4)을 후속 과정으로 돌리고, 나머지 모듈은 핵심만 남겼습니다.</p>
 <div class="tbl"><table>
-<thead><tr><th>모듈</th><th>다뤄야 할 것</th><th>수료생이 할 수 있어야 하는 것</th><th>10일</th><th>5일</th></tr></thead>
+<thead><tr><th>모듈</th><th>다뤄야 할 것</th><th>수료생이 할 수 있어야 하는 것</th><th>10일안<br>(시간)</th><th>5일안<br>(시간)</th></tr></thead>
 <tbody>
 <tr><td>오리엔테이션</td><td>환경 접속 확인, 팀·조 편성</td><td></td><td class="n">2</td><td class="n">1</td></tr>
 <tr><td>A0. 팀 개발을 위한 Git·GitLab</td><td>커밋·브랜치·원격·merge와 rebase·충돌 해결, GitLab 브랜치 전략과 MR 흐름, 이슈↔브랜치↔MR 연결, worktree, 팀 개발 규칙</td><td>이슈에서 브랜치를 따고 worktree에서 작업해 MR을 올리고 리뷰를 받아 머지. 충돌 직접 해결</td><td class="n">6</td><td class="n">5</td></tr>
 <tr><td>A1. 팀 단위 Agent 협업 개발<span class="core">핵심</span></td><td>공유 컨텍스트 파일(AGENTS.md 류), 팀 공용 rule·skill, 결정 기록과 이력 관리, 이슈 트래커를 Agent 작업 큐로 쓰기, 한 사람의 Agent가 남긴 기록을 다른 사람의 Agent가 이어받기, MR 리뷰 Agent, 사람↔Agent 인수인계</td><td>2인 1조가 각자의 코딩 Agent로 한 저장소를 함께 개발. 다른 조 수강생과 그의 Agent가 컨텍스트 파일만 읽고 합류</td><td class="n">12</td><td class="n">8</td></tr>
 <tr><td>A2. AI 시스템을 위한 GitLab CI/CD</td><td>CI 파이프라인, Agent 테스트(도구 단위 테스트, LLM 응답 고정), 프롬프트·설정 버전관리, MR마다 평가 세트를 돌리는 품질 게이트, 배포·롤백, 폐쇄망 차이</td><td>프롬프트를 바꾼 MR이 평가 점수 하락으로 자동 차단되는 시연. 폐쇄망으로 옮길 때 바꿀 부분 설명</td><td class="n">12</td><td class="n">8</td></tr>
-<tr><td>A3. LLMOps: 운영·최적화</td><td>Langfuse 셀프호스팅·추적·프롬프트 관리, 지연·토큰·비용 지표, 캐싱, 모델 라우팅, 서빙 최적화 개념, 장애 탐지·알람</td><td>팀 Agent에 추적을 붙여 병목을 찾고 최적화 전후 비교</td><td class="n">14</td><td class="n">8</td></tr>
+<tr><td>A3. LLMOps: 운영·최적화</td><td>Phoenix 셀프호스팅·추적·프롬프트 관리, 지연·토큰·비용 지표, 캐싱, 모델 라우팅, 서빙 최적화 개념, 장애 탐지·알람</td><td>팀 Agent에 추적을 붙여 병목을 찾고 최적화 전후 비교</td><td class="n">14</td><td class="n">8</td></tr>
 <tr><td>A4. 소형 LLM 파인튜닝 (2인 1조)</td><td>파인튜닝·RAG·프롬프트 중 선택 판단, 큰 모델로 학습 데이터를 만드는 증류, LoRA/QLoRA, 결과 평가, OpenAI 호환 엔드포인트로 서빙</td><td>조별 가상 과제에서 소형 모델을 튜닝해 기준 모델과 비교 평가, 발표</td><td class="n">12</td><td class="off">후속</td></tr>
 <tr><td>A5. RAG 최신 트렌드</td><td>짧은 동향 강의: Hybrid 검색·Reranking, Agentic RAG, GraphRAG, 멀티모달 RAG, 각 기법이 효과 있는 조건</td><td>자기 팀 과제에 적용할 기법 하나를 고르고 근거 설명</td><td class="n">2</td><td class="n">2</td></tr>
 <tr><td>A6. Agent 권한·도구 통제</td><td>도구별 허용 범위 정책, 실행 샌드박스, 사람 승인 흐름, MCP 서버 권한, 감사 로그</td><td>팀 공용 Agent의 도구 권한 정책을 정의하고 공격 시나리오로 우회 시험 (5일안은 시험을 시연으로 대체)</td><td class="n">8</td><td class="n">4</td></tr>
@@ -141,7 +141,7 @@ section h2:first-child{margin-top:24px}
 <tr><td>3</td><td>A1</td><td>A7 조별 저장소 개설 2h · A2 2h</td></tr>
 <tr><td>4</td><td>A2</td><td>A2 품질 게이트</td></tr>
 <tr><td>5</td><td>A2 폐쇄망 차이 2h · A6 2h</td><td>A6</td></tr>
-<tr><td>6</td><td>A6 2h · A7 중간 점검 2h</td><td>A3 Langfuse</td></tr>
+<tr><td>6</td><td>A6 2h · A7 중간 점검 2h</td><td>A3 Phoenix</td></tr>
 <tr><td>7</td><td>A3</td><td>A3 최적화</td></tr>
 <tr><td>8</td><td>A3 2h · A5 2h</td><td>A4 과제 판단·증류 데이터·학습 시작(밤새 실행)</td></tr>
 <tr><td>9</td><td>A4 평가·서빙</td><td>A4 조별 발표</td></tr>
@@ -156,7 +156,7 @@ section h2:first-child{margin-top:24px}
 <tr><td>1</td><td>오리엔테이션 1h · A0 3h</td><td>A0 2h · A1 2h</td></tr>
 <tr><td>2</td><td>A1</td><td>A1 2h · A7 조별 저장소 개설 2h</td></tr>
 <tr><td>3</td><td>A2 CI·Agent 테스트</td><td>A2 품질 게이트·폐쇄망 차이</td></tr>
-<tr><td>4</td><td>A3 Langfuse 추적</td><td>A3 지표·최적화</td></tr>
+<tr><td>4</td><td>A3 Phoenix 추적</td><td>A3 지표·최적화</td></tr>
 <tr><td>5</td><td>A6</td><td>A5 2h · A7 전파 키트·발표 2h</td></tr>
 </tbody></table></div>
 <p class="meta">5일안에서 줄어드는 것: 파인튜닝 전체(후속 과정), A3 서빙 최적화·알람, A6 직접 공격 시험(시연으로 대체), A7 중간 점검. 전파 키트는 5일안에서도 필수입니다.</p>
@@ -199,7 +199,7 @@ section h2:first-child{margin-top:24px}
   <li>A1을 어떤 도구와 방식으로 가르칩니까? 팀이 각자의 LLM으로 같은 저장소를 개발하는 사례를 보여주실 수 있습니까?</li>
   <li>GitLab CI에 LLM 평가 게이트를 넣은 실습 예시가 있습니까? 폐쇄망 GitLab 환경에 적용해 본 경험이 있습니까?</li>
   <li>가상 프로젝트와 평가 세트를 제조 업무와 비슷하게 만들 수 있습니까?</li>
-  <li>Langfuse 셀프호스팅을 실습 환경에 포함할 수 있습니까?</li>
+  <li>Phoenix 셀프호스팅을 실습 환경에 포함할 수 있습니까?</li>
   <li>파인튜닝 실습에 쓸 GPU를 5개 조에 동시에 제공할 수 있습니까?</li>
   <li>교육 후 사내 강사가 재운영할 수 있도록 교재·코드·평가 세트를 넘겨받을 수 있습니까?</li>
 </ol>
@@ -234,7 +234,7 @@ section h2:first-child{margin-top:24px}
 </div>
 </div>
 </section>
-<footer>본 자료의 시간 배분은 제안이며 업체와 협의해 조정합니다.</footer>
+<footer>본 자료의 시간 배분은 예시이며 교육 업체가 조정합니다.</footer>
 </main>
 <script>
 (function(){
