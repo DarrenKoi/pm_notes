@@ -204,7 +204,7 @@ footer p{margin:0}
 <tbody>
 <tr><td>팀 표준 도입</td><td>수료생 소속 팀 중 공유 컨텍스트 파일·CI 품질 게이트·추적을 도입한 팀 수</td><td>수료 6개월 후</td></tr>
 <tr><td>챔피언 활동</td><td>수료생 1인이 팀 안에서 지원(리뷰·이전·개선)한 Agent 수</td><td>수료 6개월 후</td></tr>
-<tr><td>운영 가시성</td><td>수료생 팀의 운영 Agent 중 추적이 연결된 비율</td><td>수료 6개월 후</td></tr></tbody></table></div>
+<tr><td>모니터링 적용</td><td>수료생 팀이 운영하는 Agent 중 Phoenix로 질문·응답·오류를 확인할 수 있는 Agent 비율</td><td>수료 6개월 후</td></tr></tbody></table></div>
 </section>
 <section id="s2" role="tabpanel" aria-labelledby="t2" hidden>
 <h2>대상과 편성</h2>
@@ -223,7 +223,7 @@ footer p{margin:0}
 <tr><td>데이터</td><td>보안 정책상 회사 데이터·코드는 외부로 가져갈 수 없습니다. <strong>조별 협업 저장소 5개, 평가 세트와 기준선 점수, 파인튜닝 과제·데이터, 공격 시나리오를 업체가 준비</strong>해 주십시오. 조별 저장소는 A1이 시작되는 2일차 전까지 준비해 주십시오. 제조 현장 업무와 비슷한 형태(문서 검색, 장비 로그 요약 등)면 좋습니다.</td></tr>
 <tr><td>LLM</td><td>open-weight 모델을 OpenAI 호환 엔드포인트로 제공해 주십시오. 모델 종류는 상관없습니다. 외부 상용 API(OpenAI·Anthropic·Google) 기준 실습은 사내에서 재현할 수 없으므로 제외합니다. 실습 코드는 <code>base_url</code>·키·모델 이름만 바꿔 사내로 옮길 수 있어야 합니다.</td></tr>
 <tr><td>코딩 Agent</td><td>OpenAI 호환 엔드포인트에 붙일 수 있는 오픈소스 코딩 Agent 도구를 사용합니다.</td></tr>
-<tr><td>GitLab</td><td>GitLab.com(공개 클라우드)으로 실습해도 됩니다. 단, 사내 폐쇄망 GitLab과의 차이를 교육에서 명시적으로 다뤄 주십시오(아래 표).</td></tr>
+<tr><td>GitLab</td><td><strong>모든 실습은 수강생이 GitLab에서 직접 이슈·MR·리뷰·파이프라인을 다루는 형태로 진행해 주십시오.</strong> 실습 코드는 조별 저장소에 쌓습니다. GitLab.com(공개 클라우드)으로 실습해도 됩니다. 단, 사내 폐쇄망 GitLab과의 차이를 교육에서 명시적으로 다뤄 주십시오(아래 표).</td></tr>
 <tr><td>관측 도구</td><td>Phoenix(Arize)를 셀프호스팅 방식으로 실습합니다. 사내에서 같은 방식으로 구축하기 위해서입니다.</td></tr>
 <tr><td>사전 점검</td><td>개강 1주 전에 실습 환경을 미리 점검해 주십시오. 집중 과정에서 첫날을 설치로 잃지 않기 위해서입니다.</td></tr>
 </tbody></table></div>
@@ -239,7 +239,7 @@ footer p{margin:0}
 <tr><td>Phoenix</td><td>업체</td><td>셀프호스팅 인스턴스</td></tr>
 <tr><td>가상 프로젝트·평가 세트·데이터</td><td>업체</td><td>위 데이터 항목 참조</td></tr>
 <tr><td>교육 후 실습 환경 접근</td><td>업체</td><td>수료 후 접근 가능 기간을 제안에 포함</td></tr>
-<tr><td>교육장·수강생 데스크탑 PC</td><td>회사</td><td>06 제안 요청 탭의 견적 가정 참조</td></tr>
+<tr><td>교육장·수강생 데스크탑 PC</td><td>업체</td><td>06 제안 요청 탭의 견적 가정 참조</td></tr>
 </tbody></table></div>
 
 <h3>GitLab.com과 사내 폐쇄망 GitLab의 차이 — 교육에서 다룰 것</h3>
@@ -263,7 +263,7 @@ footer p{margin:0}
 <tr><td>오리엔테이션</td><td>환경 접속 확인, 팀·조 편성</td><td></td><td class="h"><b>2</b><span class="bar" style="--h:2"></span></td></tr>
 <tr><td><span class="mid">A0</span>팀 개발을 위한 Git·GitLab</td><td>커밋·브랜치·원격·merge와 rebase·충돌 해결, GitLab 브랜치 전략과 MR 흐름, 이슈↔브랜치↔MR 연결, worktree, 팀 개발 규칙</td><td>이슈에서 브랜치를 따고 worktree에서 작업해 MR을 올리고 리뷰를 받아 머지. 충돌 직접 해결</td><td class="h"><b>6</b><span class="bar" style="--h:6"></span></td></tr>
 <tr><td><span class="mid">A1</span>팀 단위 Agent 협업 개발<span class="core">핵심</span></td><td>공유 컨텍스트 파일(AGENTS.md 류), 팀 공용 rule·skill, 결정 기록과 이력 관리, 이슈 트래커를 Agent 작업 큐로 쓰기, 한 사람의 Agent가 남긴 기록을 다른 사람의 Agent가 이어받기, MR 리뷰 Agent, 사람↔Agent 인수인계</td><td>2인 1조가 각자의 코딩 Agent로 한 저장소를 함께 개발. 다른 조 수강생과 그의 Agent가 컨텍스트 파일만 읽고 합류</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
-<tr><td><span class="mid">A2</span>AI 시스템을 위한 GitLab CI/CD</td><td>CI 파이프라인, Agent 테스트(도구 단위 테스트, LLM 응답 고정), 프롬프트·설정 버전관리, MR마다 평가 세트를 돌리는 품질 게이트, 배포·롤백, 폐쇄망 차이</td><td>프롬프트를 바꾼 MR이 평가 점수 하락으로 자동 차단되고, 배포 버전을 되돌리는 시연. 폐쇄망으로 옮길 때 바꿀 부분 설명</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
+<tr><td><span class="mid">A2</span>AI 시스템을 위한 GitLab CI/CD</td><td>CI 파이프라인, Agent 테스트(도구 단위 테스트, LLM 응답 고정), 프롬프트·설정 버전관리, MR마다 평가 세트를 돌리는 품질 게이트, 배포·롤백, 폐쇄망 차이</td><td>조별 저장소에 평가 게이트 파이프라인을 직접 구성. 프롬프트를 바꾼 MR이 점수 하락으로 차단되는 것을 확인하고 배포 버전을 되돌림. 폐쇄망으로 옮길 때 바꿀 부분 정리</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
 <tr><td><span class="mid">A3</span>LLMOps: 운영·최적화</td><td>Phoenix 셀프호스팅·추적·프롬프트 관리, 지연·토큰·비용 지표, 캐싱, 모델 라우팅, 서빙 최적화 개념, 장애 탐지·알람</td><td>팀 Agent에 추적을 붙여 병목을 찾고 최적화 전후 비교</td><td class="h"><b>14</b><span class="bar" style="--h:14"></span></td></tr>
 <tr><td><span class="mid">A4</span>소형 LLM 파인튜닝 (2인 1조)</td><td>파인튜닝·RAG·프롬프트 중 선택 판단, 큰 모델로 학습 데이터를 만드는 증류, LoRA/QLoRA, 결과 평가, OpenAI 호환 엔드포인트로 서빙</td><td>조별 가상 과제에서 소형 모델을 튜닝해 기준 모델과 비교 평가, 발표</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
 <tr><td><span class="mid">A5</span>RAG 최신 트렌드</td><td>짧은 동향 강의: Hybrid 검색·Reranking, Agentic RAG, GraphRAG, 멀티모달 RAG, 각 기법이 효과 있는 조건</td><td>자기 팀 과제에 적용할 기법 하나를 고르고 근거 설명</td><td class="h"><b>2</b><span class="bar" style="--h:2"></span></td></tr>
@@ -320,13 +320,13 @@ footer p{margin:0}
 <tr><td>기간</td><td>연속 2주(10일), 하루 8시간 교육. 점심·휴식 시간은 8시간에 포함하지 않습니다</td></tr>
 <tr><td>인원</td><td>10명, 2인 1조 5개 조</td></tr>
 <tr><td>개강 시기</td><td>협의</td></tr>
-<tr><td>방식·장소</td><td>대면 교육, 장소 협의</td></tr>
-<tr><td>수강생 장비</td><td>회사가 수강생용 데스크탑 PC를 제공합니다</td></tr>
+<tr><td>방식·장소</td><td>대면 교육, 귀사 교육장</td></tr>
+<tr><td>수강생 장비</td><td>귀사 교육장의 데스크탑 PC를 사용합니다</td></tr>
 </tbody></table></div>
 
 <h3>제안서 항목</h3>
 <ul>
-  <li><strong>견적</strong>: 10명·5개 조·80시간 기준 총액. 강사·조교 인건비, 맞춤 교재·가상 프로젝트·평가 세트 제작, LLM 엔드포인트·GPU, GitLab·Runner·Phoenix 환경, 교육 후 실습 환경 유지, 부가세·출장비의 포함 여부를 나눠 적어 주십시오. 추가 기수 단가와 견적 유효기간도 함께 부탁드립니다.</li>
+  <li><strong>견적</strong>: 10명·5개 조·80시간 기준 총액. 강사·조교 인건비, 맞춤 교재·가상 프로젝트·평가 세트 제작, LLM 엔드포인트·GPU, GitLab·Runner·Phoenix 환경, 교육 후 실습 환경 유지, 교육장·PC 사용료, 부가세의 포함 여부를 나눠 적어 주십시오. 추가 기수 단가와 견적 유효기간도 함께 부탁드립니다.</li>
   <li><strong>선택 견적</strong>: 07 후속 과정 탭의 챔피언 심화 과정(평가 설계 12시간 + 레드팀 12시간)은 기본 견적과 분리해 적어 주십시오.</li>
   <li>투입 강사·조교 인원과 준비 기간 (계약 후 개강까지 필요한 기간)</li>
   <li>모듈별 세부 커리큘럼과 시간 배분 (위 제안과 다르면 이유)</li>
