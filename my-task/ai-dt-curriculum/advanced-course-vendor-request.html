@@ -34,6 +34,13 @@ code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em}
 ol li,ul li{margin:6px 0}
 footer{margin-top:40px;color:var(--muted);font-size:13px}
 @media print{body{background:#fff}h2,h3{break-after:avoid}tr,.kpi,pre{break-inside:avoid}}
+.tabs{position:sticky;top:0;z-index:1;display:flex;gap:4px;overflow-x:auto;background:var(--bg);border-bottom:1px solid var(--line);margin:24px -16px 0;padding:8px 16px 0}
+.tabs button{flex:none;border:1px solid transparent;border-bottom:none;background:none;color:var(--muted);font:inherit;font-size:14px;padding:8px 12px;border-radius:6px 6px 0 0;cursor:pointer}
+.tabs button:hover{color:var(--fg)}
+.tabs button[aria-selected="true"]{background:var(--card);border-color:var(--line);color:var(--accent);font-weight:700;margin-bottom:-1px}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+section h2:first-child{margin-top:24px}
+@media print{.tabs{display:none}section[hidden]{display:block}}
 </style>
 </head>
 <body>
@@ -50,8 +57,10 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
   <div class="kpi"><b>전파 키트</b><span>수료생이 팀에 가져갈 산출물</span></div>
 </div>
 
+<nav class="tabs" role="tablist"><button role="tab" id="t1" aria-controls="s1" aria-selected="true">1. 배경</button><button role="tab" id="t2" aria-controls="s2" aria-selected="false">2. 대상·편성</button><button role="tab" id="t3" aria-controls="s3" aria-selected="false">3. 실습 환경</button><button role="tab" id="t4" aria-controls="s4" aria-selected="false">4. 모듈·일정</button><button role="tab" id="t5" aria-controls="s5" aria-selected="false">5. 팀 규칙</button><button role="tab" id="t6" aria-controls="s6" aria-selected="false">6. 제안 요청</button><button role="tab" id="t7" aria-controls="s7" aria-selected="false">7. 후속 과정</button></nav>
+<section id="s1" role="tabpanel" aria-labelledby="t1">
 <h2>1. 왜 이 과정이 필요한가</h2>
-<p>사내 AI Agent는 팀마다 만들어 운영하고 있고, 그 수가 계속 늘고 있습니다. 중앙 조직이 모든 Agent를 직접 챙길 수 없는 규모라서, 각 팀 안에 품질을 지킬 사람이 있어야 합니다.</p>
+<p>사내 AI Agent는 팀마다 만들어 운영하고 있고 그 수가 계속 늘고 있습니다. 중앙 조직이 모든 Agent를 직접 챙길 수 없는 규모라서, 각 팀 안에 품질을 지킬 사람이 있어야 합니다.</p>
 <p>수강 대상은 이미 혼자 Agent를 만들 수 있습니다. 부족한 것은 그다음 단계입니다.</p>
 <ul>
   <li><strong>팀 개발</strong> — 여러 사람이 각자 코딩 Agent를 쓰며 같은 저장소를 고칩니다. 컨텍스트와 결정 이력이 개인의 대화창에만 남아 팀원끼리, 그리고 팀원들의 Agent끼리 이어지지 않습니다.</li>
@@ -65,18 +74,18 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <thead><tr><th>지표</th><th>기준</th><th>시점</th></tr></thead>
 <tbody>
 <tr><td>팀 표준 도입</td><td>수료생 소속 팀 중 공유 컨텍스트 파일·CI 품질 게이트·추적을 도입한 팀 수</td><td>수료 3개월 후</td></tr>
-<tr><td>챔피언 활동</td><td>수료생 1인이 팀 안에서 지원(리뷰·이전·개선)한 Agent 수</td><td>수료 3개월 후</td></tr>
-<tr><td>회귀 차단</td><td>수료생 팀 파이프라인에서 품질 게이트가 차단한 머지 건수</td><td>도입 후 누적</td></tr>
-</tbody></table></div>
-
+<tr><td>챔피언 활동</td><td>수료생 1인이 팀 안에서 지원(리뷰·이전·개선)한 Agent 수</td><td>수료 3개월 후</td></tr></tbody></table></div>
+</section>
+<section id="s2" role="tabpanel" aria-labelledby="t2" hidden>
 <h2>2. 대상과 편성</h2>
 <ul>
   <li><strong>대상</strong>: 혼자 Agent를 설계·배포·운영해 본 개발자. 서로 다른 팀에서 1명씩 선발합니다.</li>
   <li><strong>선수 역량</strong>: Python, LLM API 호출, RAG·MCP·평가 기초. 이 내용은 다시 가르치지 않습니다.</li>
   <li><strong>Git은 예외</strong>: 혼자 커밋·푸시만 해 본 사람이 많습니다. 브랜치·MR·worktree 같은 팀 개발용 Git은 과정 안에서 처음부터 가르쳐 주십시오(A0). 개강 전에 2~3시간 분량의 자율 학습 자료도 부탁드립니다.</li>
-  <li><strong>편성</strong>: 팀 실습은 3·3·4명 3개 팀, 파인튜닝 실습(10일안)은 2인 1조 5개 조.</li>
+  <li><strong>편성</strong>: 수료생 수가 많지 않으므로 모든 실습을 2인 1조 5개 조로 편성합니다.</li>
 </ul>
-
+</section>
+<section id="s3" role="tabpanel" aria-labelledby="t3" hidden>
 <h2>3. 실습 환경과 업체 준비 사항</h2>
 <div class="tbl"><table>
 <thead><tr><th>항목</th><th>요청 사항</th></tr></thead>
@@ -101,7 +110,8 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <tr><td>외부 연동</td><td>웹훅·외부 SaaS 연동 자유</td><td>외부 연동 불가</td><td>사내 메신저 등으로 대체</td></tr>
 <tr><td>시크릿</td><td>CI/CD 변수</td><td>사내 보안 정책 적용</td><td>키를 저장소에 남기지 않는 원칙</td></tr>
 </tbody></table></div>
-
+</section>
+<section id="s4" role="tabpanel" aria-labelledby="t4" hidden>
 <h2>4. 모듈 구성 — 10일안과 5일안 비교</h2>
 <p>10일안이 기본안입니다. 5일안은 같은 목표를 유지하되 파인튜닝(A4)을 후속 과정으로 돌리고, 나머지 모듈은 핵심만 남겼습니다.</p>
 <div class="tbl"><table>
@@ -109,13 +119,13 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <tbody>
 <tr><td>오리엔테이션</td><td>환경 접속 확인, 팀·조 편성</td><td></td><td class="n">2</td><td class="n">1</td></tr>
 <tr><td>A0. 팀 개발을 위한 Git·GitLab</td><td>커밋·브랜치·원격·merge와 rebase·충돌 해결, GitLab 브랜치 전략과 MR 흐름, 이슈↔브랜치↔MR 연결, worktree, 팀 개발 규칙</td><td>이슈에서 브랜치를 따고 worktree에서 작업해 MR을 올리고 리뷰를 받아 머지. 충돌 직접 해결</td><td class="n">6</td><td class="n">5</td></tr>
-<tr><td>A1. 팀 단위 Agent 협업 개발<span class="core">핵심</span></td><td>공유 컨텍스트 파일(AGENTS.md 류), 팀 공용 rule·skill, 결정 기록과 이력 관리, 이슈 트래커를 Agent 작업 큐로 쓰기, 한 사람의 Agent가 남긴 기록을 다른 사람의 Agent가 이어받기, MR 리뷰 Agent, 사람↔Agent 인수인계</td><td>3~4명이 각자의 코딩 Agent로 한 저장소를 함께 개발. 새 팀원과 그의 Agent가 컨텍스트 파일만 읽고 합류</td><td class="n">12</td><td class="n">8</td></tr>
+<tr><td>A1. 팀 단위 Agent 협업 개발<span class="core">핵심</span></td><td>공유 컨텍스트 파일(AGENTS.md 류), 팀 공용 rule·skill, 결정 기록과 이력 관리, 이슈 트래커를 Agent 작업 큐로 쓰기, 한 사람의 Agent가 남긴 기록을 다른 사람의 Agent가 이어받기, MR 리뷰 Agent, 사람↔Agent 인수인계</td><td>2인 1조가 각자의 코딩 Agent로 한 저장소를 함께 개발. 다른 조 수강생과 그의 Agent가 컨텍스트 파일만 읽고 합류</td><td class="n">12</td><td class="n">8</td></tr>
 <tr><td>A2. AI 시스템을 위한 GitLab CI/CD</td><td>CI 파이프라인, Agent 테스트(도구 단위 테스트, LLM 응답 고정), 프롬프트·설정 버전관리, MR마다 평가 세트를 돌리는 품질 게이트, 배포·롤백, 폐쇄망 차이</td><td>프롬프트를 바꾼 MR이 평가 점수 하락으로 자동 차단되는 시연. 폐쇄망으로 옮길 때 바꿀 부분 설명</td><td class="n">12</td><td class="n">8</td></tr>
 <tr><td>A3. LLMOps: 운영·최적화</td><td>Langfuse 셀프호스팅·추적·프롬프트 관리, 지연·토큰·비용 지표, 캐싱, 모델 라우팅, 서빙 최적화 개념, 장애 탐지·알람</td><td>팀 Agent에 추적을 붙여 병목을 찾고 최적화 전후 비교</td><td class="n">14</td><td class="n">8</td></tr>
 <tr><td>A4. 소형 LLM 파인튜닝 (2인 1조)</td><td>파인튜닝·RAG·프롬프트 중 선택 판단, 큰 모델로 학습 데이터를 만드는 증류, LoRA/QLoRA, 결과 평가, OpenAI 호환 엔드포인트로 서빙</td><td>조별 가상 과제에서 소형 모델을 튜닝해 기준 모델과 비교 평가, 발표</td><td class="n">12</td><td class="off">후속</td></tr>
 <tr><td>A5. RAG 최신 트렌드</td><td>짧은 동향 강의: Hybrid 검색·Reranking, Agentic RAG, GraphRAG, 멀티모달 RAG, 각 기법이 효과 있는 조건</td><td>자기 팀 과제에 적용할 기법 하나를 고르고 근거 설명</td><td class="n">2</td><td class="n">2</td></tr>
 <tr><td>A6. Agent 권한·도구 통제</td><td>도구별 허용 범위 정책, 실행 샌드박스, 사람 승인 흐름, MCP 서버 권한, 감사 로그</td><td>팀 공용 Agent의 도구 권한 정책을 정의하고 공격 시나리오로 우회 시험 (5일안은 시험을 시연으로 대체)</td><td class="n">8</td><td class="n">4</td></tr>
-<tr><td>A7. 통합 과제와 팀 전파 키트</td><td>팀 저장소에 매 모듈 실습을 누적, 발표. 챔피언이 자기 팀에 가져갈 전파 키트 작성</td><td>CI 게이트와 추적을 갖춘 팀 Agent. 전파 키트: 컨텍스트 파일 템플릿, CI 템플릿, 추적 연결 가이드, 폐쇄망 이전 체크리스트, 팀 규칙 문서, 팀원 대상 1시간 설명 자료</td><td class="n">12</td><td class="n">4</td></tr>
+<tr><td>A7. 통합 과제와 팀 전파 키트</td><td>조별 저장소에 매 모듈 실습을 누적, 발표. 챔피언이 자기 팀에 가져갈 전파 키트 작성</td><td>CI 게이트와 추적을 갖춘 조별 Agent. 전파 키트: 컨텍스트 파일 템플릿, CI 템플릿, 추적 연결 가이드, 폐쇄망 이전 체크리스트, 팀 규칙 문서, 팀원 대상 1시간 설명 자료</td><td class="n">12</td><td class="n">4</td></tr>
 </tbody>
 <tfoot><tr><td colspan="3">합계 (시간)</td><td class="n">80</td><td class="n">40</td></tr></tfoot>
 </table></div>
@@ -128,7 +138,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <tbody>
 <tr><td>1</td><td>오리엔테이션 2h · A0 2h</td><td>A0</td></tr>
 <tr><td>2</td><td>A1</td><td>A1</td></tr>
-<tr><td>3</td><td>A1</td><td>A7 팀 저장소 개설 2h · A2 2h</td></tr>
+<tr><td>3</td><td>A1</td><td>A7 조별 저장소 개설 2h · A2 2h</td></tr>
 <tr><td>4</td><td>A2</td><td>A2 품질 게이트</td></tr>
 <tr><td>5</td><td>A2 폐쇄망 차이 2h · A6 2h</td><td>A6</td></tr>
 <tr><td>6</td><td>A6 2h · A7 중간 점검 2h</td><td>A3 Langfuse</td></tr>
@@ -144,7 +154,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <thead><tr><th>일차</th><th>오전</th><th>오후</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>오리엔테이션 1h · A0 3h</td><td>A0 2h · A1 2h</td></tr>
-<tr><td>2</td><td>A1</td><td>A1 2h · A7 팀 저장소 개설 2h</td></tr>
+<tr><td>2</td><td>A1</td><td>A1 2h · A7 조별 저장소 개설 2h</td></tr>
 <tr><td>3</td><td>A2 CI·Agent 테스트</td><td>A2 품질 게이트·폐쇄망 차이</td></tr>
 <tr><td>4</td><td>A3 Langfuse 추적</td><td>A3 지표·최적화</td></tr>
 <tr><td>5</td><td>A6</td><td>A5 2h · A7 전파 키트·발표 2h</td></tr>
@@ -152,24 +162,10 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <p class="meta">5일안에서 줄어드는 것: 파인튜닝 전체(후속 과정), A3 서빙 최적화·알람, A6 직접 공격 시험(시연으로 대체), A7 중간 점검. 전파 키트는 5일안에서도 필수입니다.</p>
 </div>
 </div>
-
-<h2>5. A0에서 다룰 브랜치 전략·worktree·팀 규칙</h2>
-<h3>브랜치 전략</h3>
-<p>복잡한 Git Flow 대신, 보호된 <code>main</code> 하나와 짧게 살다 사라지는 작업 브랜치로 가르쳐 주십시오. 처음 배우는 팀이 쓰기에 가장 단순하고, 모든 변경이 MR을 거치므로 품질 게이트가 빠짐없이 걸립니다.</p>
-<pre>main (보호됨: 직접 push 금지, MR로만 머지)
- ├── 12-add-search-tool      ← 이슈 #12에서 딴 작업 브랜치, 머지 후 삭제
- ├── 15-fix-timeout
- └── 18-update-prompt
-
-이슈 → 브랜치 → 작업·커밋 → MR → CI 통과 + 리뷰 승인 → main 머지 → 브랜치 삭제</pre>
-<h3>worktree</h3>
-<p>한 저장소에서 여러 브랜치를 서로 다른 폴더에 동시에 꺼내 두는 기능입니다. 한 사람이 코딩 Agent 여러 개를 동시에 돌릴 때 Agent마다 worktree를 하나씩 주면 서로 파일을 덮어쓰지 않습니다.</p>
-<pre>git worktree add ../repo-12 -b 12-add-search-tool   # 이슈 12용 폴더·브랜치 생성
-git worktree add ../repo-15 -b 15-fix-timeout       # 다른 Agent는 이 폴더에서 작업
-git worktree list                                    # 현재 worktree 목록
-git worktree remove ../repo-12                       # 머지 후 정리</pre>
-
-<h3>팀 개발에서 반드시 지킬 규칙</h3>
+</section>
+<section id="s5" role="tabpanel" aria-labelledby="t5" hidden>
+<h2>5. 팀 개발에서 반드시 지킬 규칙 (A0 필수 내용)</h2>
+<p>브랜치 전략과 worktree 사용법은 업체에서 구성해 주십시오. 다만 아래 규칙은 교육에 반드시 넣어 주십시오.</p>
 <div class="tbl"><table>
 <thead><tr><th>구분</th><th>규칙</th><th>이유</th></tr></thead>
 <tbody>
@@ -185,7 +181,8 @@ git worktree remove ../repo-12                       # 머지 후 정리</pre>
 <tr><td>Agent</td><td>Agent가 만든 변경도 사람이 읽고 MR을 올린다. 작성자 책임은 사람에게 있다</td><td>리뷰 없이 쌓인 Agent 코드는 아무도 이해하지 못한다</td></tr>
 <tr><td>Agent</td><td>공유 컨텍스트 파일과 팀 rule 변경은 MR로 팀 합의를 거친다</td><td>모든 팀원의 Agent 행동이 함께 바뀐다</td></tr>
 </tbody></table></div>
-
+</section>
+<section id="s6" role="tabpanel" aria-labelledby="t6" hidden>
 <h2>6. 제안서에 담아 주실 내용</h2>
 <ul>
   <li>10일안·5일안 각각의 모듈별 세부 커리큘럼과 시간 배분 (위 제안과 다르면 이유)</li>
@@ -206,7 +203,8 @@ git worktree remove ../repo-12                       # 머지 후 정리</pre>
   <li>파인튜닝 실습에 쓸 GPU를 5개 조에 동시에 제공할 수 있습니까?</li>
   <li>교육 후 사내 강사가 재운영할 수 있도록 교재·코드·평가 세트를 넘겨받을 수 있습니까?</li>
 </ol>
-
+</section>
+<section id="s7" role="tabpanel" aria-labelledby="t7" hidden>
 <h2>7. 후속 과정 후보 — 챔피언 심화 (3일)</h2>
 <p>2주 과정에 넣으면 깊이가 무너지는 주제입니다. 아래 두 과정은 챔피언 역할에 바로 필요해서 이어서 요청할 예정입니다. 5일안을 택하면 파인튜닝(A4)도 후속 과정이 됩니다.</p>
 <div class="cols">
@@ -224,7 +222,7 @@ git worktree remove ../repo-12                       # 머지 후 정리</pre>
 </div>
 <div>
 <h3>Agent 보안 레드팀 (12시간)</h3>
-<p>공격자 입장에서 직접 뚫어 보고, 뚫린 사례를 평가 세트에 넣어 다시 뚫리지 않게 만듭니다.</p>
+<p>공격자 입장에서 직접 뚫어 보고 뚫린 사례를 평가 세트에 넣어 다시 뚫리지 않게 만듭니다.</p>
 <ul>
   <li>직접·간접 프롬프트 주입, 탈옥, 도구를 이용한 권한 상승</li>
   <li>시스템 프롬프트·타 사용자 데이터 유출, 악성 MCP 서버</li>
@@ -235,8 +233,26 @@ git worktree remove ../repo-12                       # 머지 후 정리</pre>
 </ul>
 </div>
 </div>
-
+</section>
 <footer>본 자료의 시간 배분은 제안이며 업체와 협의해 조정합니다.</footer>
 </main>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tabs button'));
+  function show(i){
+    tabs.forEach(function(t,k){var on=k===i;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById('s'+(k+1)).hidden=!on;});
+    try{history.replaceState(null,'','#s'+(i+1));}catch(e){}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(i);window.scrollTo(0,0);});
+    t.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
+      if(d){var n=(i+d+tabs.length)%tabs.length;show(n);tabs[n].focus();}
+    });
+  });
+  var m=/^#s(\d)$/.exec(location.hash);
+  show(m&&tabs[m[1]-1]?m[1]-1:0);
+})();
+</script>
 </body>
 </html>
