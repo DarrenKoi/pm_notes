@@ -2,63 +2,193 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AI Agent 고급 과정 교육 요청</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--fg:#1d1d1f;--muted:#6b6b70;--line:#e3e3e0;--accent:#c8102e;--accent-soft:#fbe9ec;--off:#a15c00}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1e1e21;--fg:#ececee;--muted:#9a9aa2;--line:#2e2e33;--accent:#ff5a6e;--accent-soft:#3a1d22;--off:#f0b35a}}
-:root[data-theme="dark"]{--bg:#141416;--card:#1e1e21;--fg:#ececee;--muted:#9a9aa2;--line:#2e2e33;--accent:#ff5a6e;--accent-soft:#3a1d22;--off:#f0b35a}
+/* Theme tokens and projector-friendly typography */
+:root{
+  color-scheme:light;
+  --bg:#f1f4f8; --surface:#fff; --ink:#172638; --muted:#526276; --line:#ced7e2;
+  --accent:#b51e36; --accent-weak:#fbeef1; --chip:#e7edf4;
+  --head:#e8eef5; --stripe:#f7f9fc; --shadow:0 8px 28px #17263808;
+  --sans:"IBM Plex Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --fs:22px; --fs-sm:19px; --fs-xs:17px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#111923;--surface:#192431;--ink:#eef3f9;--muted:#b4c2d3;--line:#3b4b5e;
+  --accent:#ff8799;--accent-weak:#392531;--chip:#2b394b;
+  --head:#253345;--stripe:#1e2b3b;--shadow:0 8px 28px #00000020;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111923;--surface:#192431;--ink:#eef3f9;--muted:#b4c2d3;--line:#3b4b5e;
+  --accent:#ff8799;--accent-weak:#392531;--chip:#2b394b;
+  --head:#253345;--stripe:#1e2b3b;--shadow:0 8px 28px #00000020;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 "Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}
-main{max-width:1000px;margin:0 auto;padding:32px 16px 64px}
-h1{font-size:26px;margin:0 0 4px}
-h2{font-size:19px;margin:40px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
-h3{font-size:16px;margin:24px 0 8px}
-.meta{color:var(--muted);font-size:13px}
-.lead{background:var(--accent-soft);border-left:4px solid var(--accent);padding:14px 16px;border-radius:6px;margin:20px 0}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
-.kpi b{display:block;font-size:20px;color:var(--accent);line-height:1.3}
-.kpi span{font-size:13px;color:var(--muted)}
-.tbl{overflow-x:auto;margin:8px 0}
-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:14px}
-th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-thead th{background:var(--bg);color:var(--muted);font-weight:600;white-space:nowrap}
-td.n{text-align:right;white-space:nowrap;font-weight:600}
-tfoot td{font-weight:700}
-.core{display:inline-block;background:var(--accent);color:#fff;border-radius:4px;padding:0 6px;font-size:12px;font-weight:700;margin-left:4px}
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
-pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5}
-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em}
-ol li,ul li{margin:6px 0}
-footer{margin-top:40px;color:var(--muted);font-size:13px}
-@media print{body{background:#fff}h2,h3{break-after:avoid}tr,.kpi,pre{break-inside:avoid}}
-.tabs{position:sticky;top:0;z-index:1;display:flex;gap:4px;overflow-x:auto;background:var(--bg);border-bottom:1px solid var(--line);margin:24px -16px 0;padding:8px 16px 0}
-.tabs button{flex:none;border:1px solid transparent;border-bottom:none;background:none;color:var(--muted);font:inherit;font-size:14px;padding:8px 12px;border-radius:6px 6px 0 0;cursor:pointer}
-.tabs button:hover{color:var(--fg)}
-.tabs button[aria-selected="true"]{background:var(--card);border-color:var(--line);color:var(--accent);font-weight:700;margin-bottom:-1px}
-.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-section h2:first-child{margin-top:24px}
-@media print{.tabs{display:none}section[hidden]{display:block}}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:100px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs)/1.8 var(--sans);word-break:keep-all;overflow-wrap:anywhere}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{width:100%;max-width:1360px;margin:0 auto;padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
+
+/* Masthead */
+header{background:var(--surface);border-top:6px solid var(--accent);border-bottom:1px solid var(--line)}
+header .wrap{padding-block:48px 36px}
+.eyebrow{font:600 var(--fs-xs)/1.5 var(--sans);letter-spacing:.08em;color:var(--accent);margin:0 0 18px}
+h1{font-size:clamp(34px,3.8vw,50px);line-height:1.3;font-weight:700;letter-spacing:-.04em;margin:0 0 22px;text-wrap:balance}
+.lead{font-size:24px;line-height:1.8;max-width:48em;margin:0;color:var(--muted)}
+.lead strong{color:var(--ink);font-weight:600}
+.facts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--line)}
+.facts div{padding:0 24px;min-width:0;border-left:1px solid var(--line)}
+.facts div:first-child{padding-left:0;border-left:0}
+.facts dt{font-size:var(--fs-xs);color:var(--muted);margin:0 0 8px}
+.facts dd{margin:0;font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.5}
+
+/* Navigation scrolls independently on small screens. */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 3px 12px #00000006}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line) var(--surface)}
+.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:500 20px/1.5 var(--sans);padding:20px 14px 17px;border-bottom:4px solid transparent;cursor:pointer;white-space:nowrap}
+.tabs button span{font-family:var(--mono);font-size:16px;margin-right:8px;color:var(--muted)}
+.tabs button:hover{background:var(--stripe);color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--accent-weak);color:var(--accent);font-weight:700;border-bottom-color:var(--accent)}
+.tabs button[aria-selected="true"] span{color:var(--accent)}
+.tabs button:focus-visible{outline:3px solid var(--accent);outline-offset:-6px;border-radius:4px}
+
+/* Content */
+main .wrap{padding-block:40px 80px}
+section{max-width:100%;min-width:0}
+h2{font-size:clamp(28px,2.7vw,36px);line-height:1.45;font-weight:700;letter-spacing:-.03em;margin:0 0 28px;padding-bottom:20px;border-bottom:2px solid var(--line);text-wrap:balance}
+h3{font-size:26px;line-height:1.5;font-weight:700;letter-spacing:-.02em;margin:44px 0 18px;text-wrap:balance}
+p,ul,ol{max-width:54em}
+p{margin:0 0 20px}
+ul,ol{padding-left:1.4em;margin:0 0 24px}
+li{margin:14px 0;padding-left:4px}
+li::marker{color:var(--accent);font-weight:600}
+strong{font-weight:700}
+code{font-family:var(--mono);font-size:.9em;background:var(--chip);padding:2px 6px;border-radius:4px}
+.note{color:var(--muted)}
+
+/* Tables retain readable column widths inside scrollable frames. */
+.tbl{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;margin:18px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow);scrollbar-width:thin;scrollbar-color:var(--muted) var(--head)}
+table{width:100%;min-width:680px;border-collapse:collapse;font-size:20px;line-height:1.8}
+th,td{padding:20px 22px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+thead th{font-size:19px;font-weight:700;color:var(--ink);background:var(--head);white-space:nowrap;border-bottom:2px solid var(--line)}
+tbody tr:nth-child(even){background:var(--stripe)}
+td:first-child{font-weight:600}
+tfoot td{background:var(--head);border-top:2px solid var(--ink);border-bottom:0;font-weight:700}
+.mid{display:inline-block;font:600 17px/1.3 var(--mono);background:var(--ink);color:var(--surface);padding:5px 8px;border-radius:4px;margin-right:8px;vertical-align:2px}
+.core{display:inline-block;font-size:16px;font-weight:700;color:var(--accent);background:var(--accent-weak);border:1px solid var(--accent);border-radius:4px;padding:0 8px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+td.h{width:160px;white-space:nowrap}
+td.h b{font:600 22px/1 var(--mono);font-variant-numeric:tabular-nums;display:inline-block;width:2.2em}
+.bar{display:inline-block;height:8px;width:calc(var(--h) / 14 * 72px);background:var(--accent);border-radius:2px;vertical-align:middle}
+.modules{min-width:1120px}
+.modules td:first-child{width:23%;min-width:240px}
+.modules td:nth-child(2),.modules td:nth-child(3){min-width:300px}
+#s3 .tbl:last-child table{min-width:960px}
+
+/* Schedule and rules */
+.sched td:first-child{width:88px;font:600 20px/1.8 var(--mono);color:var(--muted);white-space:nowrap}
+.sched tr.wk td{background:var(--head);font:700 18px/1.5 var(--sans);color:var(--accent);letter-spacing:.06em;padding:14px 22px}
+.chip{display:inline-block;font:600 17px/1.3 var(--mono);background:var(--chip);color:var(--ink);padding:4px 7px;border-radius:4px;margin-right:4px;vertical-align:1px}
+.rules{min-width:860px}
+.rules td:first-child{width:112px;color:var(--accent);white-space:nowrap}
+.rules td:last-child{color:var(--muted)}
+
+/* Follow-up courses */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:24px;margin-top:28px}
+.panel{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:8px;padding:28px;min-width:0;box-shadow:var(--shadow)}
+.panel h3{margin:0 0 20px}
+.panel ul{margin-bottom:0}
+footer .wrap{padding-block:24px 44px;color:var(--muted);font-size:var(--fs-sm);border-top:1px solid var(--line)}
+footer p{margin:0}
+
+@media (max-width:1000px){
+  .facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 0}
+  .facts div:nth-child(4){padding-left:0;border-left:0}
+}
+@media (max-width:600px){
+  :root{--fs:20px;--fs-sm:18px}
+  .wrap{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  header .wrap{padding-block:30px 28px}
+  .eyebrow{letter-spacing:.03em}
+  .lead{font-size:21px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 0;margin-top:24px}
+  .facts div{padding:0 12px}
+  .facts div:nth-child(odd){padding-left:0;border-left:0}
+  .facts div:nth-child(4){padding-left:12px;border-left:1px solid var(--line)}
+  .facts dd{font-size:23px}
+  .tabs button{padding:17px 12px 14px}
+  main .wrap{padding-block:28px 48px}
+  h2{padding-bottom:16px;margin-bottom:24px}
+  h3{font-size:24px;margin-top:32px}
+  th,td{padding:16px 18px}
+  .panel{padding:22px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+@media print{
+  :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{
+    color-scheme:light;--bg:#fff;--surface:#fff;--ink:#000;--muted:#333;--line:#bbb;
+    --accent:#862036;--accent-weak:#fff;--chip:#eee;--head:#eee;--stripe:#fff;--shadow:none;
+    --fs:12pt;--fs-sm:10pt;--fs-xs:10pt;
+  }
+  body{background:#fff;color:#000;font-size:12pt;line-height:1.6}
+  body::before,.tabs{display:none}
+  .wrap{max-width:none;padding-inline:0}
+  header{border:0}
+  header .wrap{padding-block:0 20px}
+  h1{font-size:26pt}
+  .lead{font-size:12pt}
+  .facts{grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:16px;padding-top:12px}
+  .facts div,.facts div:nth-child(4){padding:0 8px;border-left:1px solid var(--line)}
+  .facts div:first-child{padding-left:0;border-left:0}
+  .facts dd{font-size:12pt}
+  main .wrap{padding-block:0}
+  section[hidden]{display:block!important}
+  h2{font-size:19pt;break-after:avoid;margin:28px 0 14px;padding-bottom:8px}
+  h3{font-size:14pt;break-after:avoid;margin:22px 0 10px}
+  p,ul,ol{max-width:none}
+  li{margin:6px 0}
+  .tbl{overflow:visible;box-shadow:none;margin:10px 0;border-radius:0}
+  table,.modules,.rules,#s3 .tbl:last-child table{min-width:0;font-size:10pt;line-height:1.5;table-layout:fixed}
+  th,td{padding:8px;overflow-wrap:anywhere}
+  thead{display:table-header-group}
+  thead th{font-size:10pt;white-space:normal}
+  tr,.panel{break-inside:avoid}
+  .modules td:first-child,.modules td:nth-child(2),.modules td:nth-child(3){min-width:0;width:auto}
+  td.h,.rules td:first-child,.sched td:first-child{width:auto;white-space:normal}
+  td.h b,.sched td:first-child{font-size:10pt}
+  .bar{display:none}
+  .mid,.chip,.core,.sched tr.wk td{font-size:9pt;line-height:1.5}
+  .cols{display:block}
+  .panel{margin:14px 0;padding:14px;box-shadow:none}
+  .panel h3{margin-top:0}
+  footer .wrap{padding-block:16px}
+}
 </style>
 </head>
 <body>
-<main>
+<header><div class="wrap">
+<p class="eyebrow">업체 미팅 자료 · 2026-10-20</p>
 <h1>AI Agent 고급 과정 교육 요청</h1>
-<p class="meta">팀 챔피언 양성 과정 · 업체 미팅 자료 · 2026-10-20</p>
-
-<div class="lead"><strong>계속 늘어나는 팀별 AI Agent를 각 팀 안에서 이끌 챔피언을 기르는 과정을 요청합니다.</strong> 혼자 Agent를 만들 수 있는 개발자가, 그 Agent를 팀이 함께 개발·배포·운영·개선하는 체계로 올리도록 가르치는 것이 목표입니다.</div>
-
-<div class="kpis">
-  <div class="kpi"><b>10명</b><span>첫 기수 총 인원</span></div>
-  <div class="kpi"><b>10일</b><span>2주 집중 과정 (하루 8시간)</span></div>
-  <div class="kpi"><b>실습 70%</b><span>강의 30% · 실습 70% 희망</span></div>
-  <div class="kpi"><b>전파 키트</b><span>수료생이 팀에 가져갈 산출물</span></div>
-</div>
-
-<nav class="tabs" role="tablist"><button role="tab" id="t1" aria-controls="s1" aria-selected="true">1. 배경</button><button role="tab" id="t2" aria-controls="s2" aria-selected="false">2. 대상·편성</button><button role="tab" id="t3" aria-controls="s3" aria-selected="false">3. 실습 환경</button><button role="tab" id="t4" aria-controls="s4" aria-selected="false">4. 모듈·일정</button><button role="tab" id="t5" aria-controls="s5" aria-selected="false">5. 팀 규칙</button><button role="tab" id="t6" aria-controls="s6" aria-selected="false">6. 제안 요청</button><button role="tab" id="t7" aria-controls="s7" aria-selected="false">7. 후속 과정</button></nav>
+<p class="lead"><strong>계속 늘어나는 팀별 AI Agent를 각 팀 안에서 이끌 챔피언을 기르는 과정을 요청합니다.</strong> 혼자 Agent를 만들 수 있는 개발자가, 그 Agent를 팀이 함께 개발·배포·운영·개선하는 체계로 올리도록 가르치는 것이 목표입니다.</p>
+<dl class="facts">
+  <div><dt>인원</dt><dd>첫 기수 10명</dd></div>
+  <div><dt>기간</dt><dd>10일 · 80시간</dd></div>
+  <div><dt>편성</dt><dd>2인 1조 5개 조</dd></div>
+  <div><dt>방식</dt><dd>실습 중심 (70% 제안)</dd></div>
+  <div><dt>핵심 산출물</dt><dd>팀 전파 키트</dd></div>
+</dl>
+</div></header>
+<nav class="tabs"><div class="wrap" role="tablist"><button role="tab" id="t1" aria-controls="s1" aria-selected="true"><span>01</span>배경</button><button role="tab" id="t2" aria-controls="s2" aria-selected="false"><span>02</span>대상·편성</button><button role="tab" id="t3" aria-controls="s3" aria-selected="false"><span>03</span>실습 환경</button><button role="tab" id="t4" aria-controls="s4" aria-selected="false"><span>04</span>모듈·일정</button><button role="tab" id="t5" aria-controls="s5" aria-selected="false"><span>05</span>팀 규칙</button><button role="tab" id="t6" aria-controls="s6" aria-selected="false"><span>06</span>제안 요청</button><button role="tab" id="t7" aria-controls="s7" aria-selected="false"><span>07</span>후속 과정</button></div></nav>
+<main><div class="wrap">
 <section id="s1" role="tabpanel" aria-labelledby="t1">
-<h2>1. 왜 이 과정이 필요한가</h2>
+<h2>왜 이 과정이 필요한가</h2>
 <p>사내 AI Agent는 팀마다 만들어 운영하고 있고 그 수가 계속 늘고 있습니다. 중앙 조직이 모든 Agent를 직접 챙길 수 없는 규모라서, 각 팀 안에 품질을 지킬 사람이 있어야 합니다.</p>
 <p>수강 대상은 이미 혼자 Agent를 만들 수 있습니다. 부족한 것은 그다음 단계입니다.</p>
 <ul>
@@ -73,10 +203,11 @@ section h2:first-child{margin-top:24px}
 <thead><tr><th>지표</th><th>기준</th><th>시점</th></tr></thead>
 <tbody>
 <tr><td>팀 표준 도입</td><td>수료생 소속 팀 중 공유 컨텍스트 파일·CI 품질 게이트·추적을 도입한 팀 수</td><td>수료 6개월 후</td></tr>
-<tr><td>챔피언 활동</td><td>수료생 1인이 팀 안에서 지원(리뷰·이전·개선)한 Agent 수</td><td>수료 6개월 후</td></tr></tbody></table></div>
+<tr><td>챔피언 활동</td><td>수료생 1인이 팀 안에서 지원(리뷰·이전·개선)한 Agent 수</td><td>수료 6개월 후</td></tr>
+<tr><td>운영 가시성</td><td>수료생 팀의 운영 Agent 중 추적이 연결된 비율</td><td>수료 6개월 후</td></tr></tbody></table></div>
 </section>
 <section id="s2" role="tabpanel" aria-labelledby="t2" hidden>
-<h2>2. 대상과 편성</h2>
+<h2>대상과 편성</h2>
 <ul>
   <li><strong>대상</strong>: 혼자 Agent를 설계·배포·운영해 본 개발자.</li>
   <li><strong>선수 역량</strong>: Python, LLM API 호출, RAG·MCP·평가 기초. 이 내용은 다시 가르치지 않습니다.</li>
@@ -85,16 +216,30 @@ section h2:first-child{margin-top:24px}
 </ul>
 </section>
 <section id="s3" role="tabpanel" aria-labelledby="t3" hidden>
-<h2>3. 실습 환경과 업체 준비 사항</h2>
+<h2>실습 환경과 업체 준비 사항</h2>
 <div class="tbl"><table>
 <thead><tr><th>항목</th><th>요청 사항</th></tr></thead>
 <tbody>
-<tr><td>데이터</td><td>보안 정책상 회사 데이터·코드는 외부로 가져갈 수 없습니다. <strong>가상 프로젝트, 평가 세트, 파인튜닝 과제·데이터, 공격 시나리오를 업체가 준비</strong>해 주십시오. 제조 현장 업무와 비슷한 형태(문서 검색, 장비 로그 요약 등)면 좋습니다.</td></tr>
+<tr><td>데이터</td><td>보안 정책상 회사 데이터·코드는 외부로 가져갈 수 없습니다. <strong>조별 협업 저장소 5개, 평가 세트와 기준선 점수, 파인튜닝 과제·데이터, 공격 시나리오를 업체가 준비</strong>해 주십시오. 조별 저장소는 A1이 시작되는 2일차 전까지 준비해 주십시오. 제조 현장 업무와 비슷한 형태(문서 검색, 장비 로그 요약 등)면 좋습니다.</td></tr>
 <tr><td>LLM</td><td>open-weight 모델을 OpenAI 호환 엔드포인트로 제공해 주십시오. 모델 종류는 상관없습니다. 외부 상용 API(OpenAI·Anthropic·Google) 기준 실습은 사내에서 재현할 수 없으므로 제외합니다. 실습 코드는 <code>base_url</code>·키·모델 이름만 바꿔 사내로 옮길 수 있어야 합니다.</td></tr>
 <tr><td>코딩 Agent</td><td>OpenAI 호환 엔드포인트에 붙일 수 있는 오픈소스 코딩 Agent 도구를 사용합니다.</td></tr>
 <tr><td>GitLab</td><td>GitLab.com(공개 클라우드)으로 실습해도 됩니다. 단, 사내 폐쇄망 GitLab과의 차이를 교육에서 명시적으로 다뤄 주십시오(아래 표).</td></tr>
 <tr><td>관측 도구</td><td>Phoenix(Arize)를 셀프호스팅 방식으로 실습합니다. 사내에서 같은 방식으로 구축하기 위해서입니다.</td></tr>
 <tr><td>사전 점검</td><td>개강 1주 전에 실습 환경을 미리 점검해 주십시오. 집중 과정에서 첫날을 설치로 잃지 않기 위해서입니다.</td></tr>
+</tbody></table></div>
+
+<h3>자원 제공 주체</h3>
+<p>실습 자원은 모두 업체가 제공하는 것을 기본으로 합니다. 아래 자원을 견적에 포함해 주십시오.</p>
+<div class="tbl"><table>
+<thead><tr><th>자원</th><th>제공</th><th>조건</th></tr></thead>
+<tbody>
+<tr><td>LLM 엔드포인트</td><td>업체</td><td>open-weight 모델, OpenAI 호환. 10명이 교육 기간 내내 동시에 사용</td></tr>
+<tr><td>GPU</td><td>업체</td><td>5개 조가 정해진 실습 시간 안에 학습·평가·서빙을 마칠 규모. 기종은 지정하지 않습니다. 8일차 야간 학습 포함</td></tr>
+<tr><td>GitLab·Runner</td><td>업체</td><td>GitLab.com 그룹과 Runner. 조별 저장소는 비공개</td></tr>
+<tr><td>Phoenix</td><td>업체</td><td>셀프호스팅 인스턴스</td></tr>
+<tr><td>가상 프로젝트·평가 세트·데이터</td><td>업체</td><td>위 데이터 항목 참조</td></tr>
+<tr><td>교육 후 실습 환경 접근</td><td>업체</td><td>수료 후 접근 가능 기간을 제안에 포함</td></tr>
+<tr><td>교육장·수강생 데스크탑 PC</td><td>회사</td><td>06 제안 요청 탭의 견적 가정 참조</td></tr>
 </tbody></table></div>
 
 <h3>GitLab.com과 사내 폐쇄망 GitLab의 차이 — 교육에서 다룰 것</h3>
@@ -111,43 +256,45 @@ section h2:first-child{margin-top:24px}
 </tbody></table></div>
 </section>
 <section id="s4" role="tabpanel" aria-labelledby="t4" hidden>
-<h2>4. 모듈 구성과 일정</h2>
-<div class="tbl"><table>
+<h2>모듈 구성과 일정</h2>
+<div class="tbl"><table class="modules">
 <thead><tr><th>모듈</th><th>다뤄야 할 것</th><th>수료생이 할 수 있어야 하는 것</th><th>시간</th></tr></thead>
 <tbody>
-<tr><td>오리엔테이션</td><td>환경 접속 확인, 팀·조 편성</td><td></td><td class="n">2</td></tr>
-<tr><td>A0. 팀 개발을 위한 Git·GitLab</td><td>커밋·브랜치·원격·merge와 rebase·충돌 해결, GitLab 브랜치 전략과 MR 흐름, 이슈↔브랜치↔MR 연결, worktree, 팀 개발 규칙</td><td>이슈에서 브랜치를 따고 worktree에서 작업해 MR을 올리고 리뷰를 받아 머지. 충돌 직접 해결</td><td class="n">6</td></tr>
-<tr><td>A1. 팀 단위 Agent 협업 개발<span class="core">핵심</span></td><td>공유 컨텍스트 파일(AGENTS.md 류), 팀 공용 rule·skill, 결정 기록과 이력 관리, 이슈 트래커를 Agent 작업 큐로 쓰기, 한 사람의 Agent가 남긴 기록을 다른 사람의 Agent가 이어받기, MR 리뷰 Agent, 사람↔Agent 인수인계</td><td>2인 1조가 각자의 코딩 Agent로 한 저장소를 함께 개발. 다른 조 수강생과 그의 Agent가 컨텍스트 파일만 읽고 합류</td><td class="n">12</td></tr>
-<tr><td>A2. AI 시스템을 위한 GitLab CI/CD</td><td>CI 파이프라인, Agent 테스트(도구 단위 테스트, LLM 응답 고정), 프롬프트·설정 버전관리, MR마다 평가 세트를 돌리는 품질 게이트, 배포·롤백, 폐쇄망 차이</td><td>프롬프트를 바꾼 MR이 평가 점수 하락으로 자동 차단되는 시연. 폐쇄망으로 옮길 때 바꿀 부분 설명</td><td class="n">12</td></tr>
-<tr><td>A3. LLMOps: 운영·최적화</td><td>Phoenix 셀프호스팅·추적·프롬프트 관리, 지연·토큰·비용 지표, 캐싱, 모델 라우팅, 서빙 최적화 개념, 장애 탐지·알람</td><td>팀 Agent에 추적을 붙여 병목을 찾고 최적화 전후 비교</td><td class="n">14</td></tr>
-<tr><td>A4. 소형 LLM 파인튜닝 (2인 1조)</td><td>파인튜닝·RAG·프롬프트 중 선택 판단, 큰 모델로 학습 데이터를 만드는 증류, LoRA/QLoRA, 결과 평가, OpenAI 호환 엔드포인트로 서빙</td><td>조별 가상 과제에서 소형 모델을 튜닝해 기준 모델과 비교 평가, 발표</td><td class="n">12</td></tr>
-<tr><td>A5. RAG 최신 트렌드</td><td>짧은 동향 강의: Hybrid 검색·Reranking, Agentic RAG, GraphRAG, 멀티모달 RAG, 각 기법이 효과 있는 조건</td><td>자기 팀 과제에 적용할 기법 하나를 고르고 근거 설명</td><td class="n">2</td></tr>
-<tr><td>A6. Agent 권한·도구 통제</td><td>도구별 허용 범위 정책, 실행 샌드박스, 사람 승인 흐름, MCP 서버 권한, 감사 로그</td><td>팀 공용 Agent의 도구 권한 정책을 정의하고 공격 시나리오로 우회 시험</td><td class="n">8</td></tr>
-<tr><td>A7. 통합 과제와 팀 전파 키트</td><td>조별 저장소에 매 모듈 실습을 누적, 발표. 챔피언이 자기 팀에 가져갈 전파 키트 작성</td><td>CI 게이트와 추적을 갖춘 조별 Agent. 전파 키트: 컨텍스트 파일 템플릿, CI 템플릿, 추적 연결 가이드, 폐쇄망 이전 체크리스트, 팀 규칙 문서, 팀원 대상 1시간 설명 자료</td><td class="n">12</td></tr>
+<tr><td>오리엔테이션</td><td>환경 접속 확인, 팀·조 편성</td><td></td><td class="h"><b>2</b><span class="bar" style="--h:2"></span></td></tr>
+<tr><td><span class="mid">A0</span>팀 개발을 위한 Git·GitLab</td><td>커밋·브랜치·원격·merge와 rebase·충돌 해결, GitLab 브랜치 전략과 MR 흐름, 이슈↔브랜치↔MR 연결, worktree, 팀 개발 규칙</td><td>이슈에서 브랜치를 따고 worktree에서 작업해 MR을 올리고 리뷰를 받아 머지. 충돌 직접 해결</td><td class="h"><b>6</b><span class="bar" style="--h:6"></span></td></tr>
+<tr><td><span class="mid">A1</span>팀 단위 Agent 협업 개발<span class="core">핵심</span></td><td>공유 컨텍스트 파일(AGENTS.md 류), 팀 공용 rule·skill, 결정 기록과 이력 관리, 이슈 트래커를 Agent 작업 큐로 쓰기, 한 사람의 Agent가 남긴 기록을 다른 사람의 Agent가 이어받기, MR 리뷰 Agent, 사람↔Agent 인수인계</td><td>2인 1조가 각자의 코딩 Agent로 한 저장소를 함께 개발. 다른 조 수강생과 그의 Agent가 컨텍스트 파일만 읽고 합류</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
+<tr><td><span class="mid">A2</span>AI 시스템을 위한 GitLab CI/CD</td><td>CI 파이프라인, Agent 테스트(도구 단위 테스트, LLM 응답 고정), 프롬프트·설정 버전관리, MR마다 평가 세트를 돌리는 품질 게이트, 배포·롤백, 폐쇄망 차이</td><td>프롬프트를 바꾼 MR이 평가 점수 하락으로 자동 차단되고, 배포 버전을 되돌리는 시연. 폐쇄망으로 옮길 때 바꿀 부분 설명</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
+<tr><td><span class="mid">A3</span>LLMOps: 운영·최적화</td><td>Phoenix 셀프호스팅·추적·프롬프트 관리, 지연·토큰·비용 지표, 캐싱, 모델 라우팅, 서빙 최적화 개념, 장애 탐지·알람</td><td>팀 Agent에 추적을 붙여 병목을 찾고 최적화 전후 비교</td><td class="h"><b>14</b><span class="bar" style="--h:14"></span></td></tr>
+<tr><td><span class="mid">A4</span>소형 LLM 파인튜닝 (2인 1조)</td><td>파인튜닝·RAG·프롬프트 중 선택 판단, 큰 모델로 학습 데이터를 만드는 증류, LoRA/QLoRA, 결과 평가, OpenAI 호환 엔드포인트로 서빙</td><td>조별 가상 과제에서 소형 모델을 튜닝해 기준 모델과 비교 평가, 발표</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
+<tr><td><span class="mid">A5</span>RAG 최신 트렌드</td><td>짧은 동향 강의: Hybrid 검색·Reranking, Agentic RAG, GraphRAG, 멀티모달 RAG, 각 기법이 효과 있는 조건</td><td>자기 팀 과제에 적용할 기법 하나를 고르고 근거 설명</td><td class="h"><b>2</b><span class="bar" style="--h:2"></span></td></tr>
+<tr><td><span class="mid">A6</span>Agent 권한·도구 통제</td><td>도구별 허용 범위 정책, 실행 샌드박스, 사람 승인 흐름, MCP 서버 권한, 감사 로그</td><td>팀 공용 Agent의 도구 권한 정책을 정의하고 공격 시나리오로 우회 시험</td><td class="h"><b>8</b><span class="bar" style="--h:8"></span></td></tr>
+<tr><td><span class="mid">A7</span>통합 과제와 팀 전파 키트</td><td>업체가 준비한 조별 저장소에서 3일차에 통합 과제 구조를 확정하고 매 모듈 실습을 누적, 발표. 챔피언이 자기 팀에 가져갈 전파 키트 작성</td><td>CI 게이트와 추적을 갖춘 조별 Agent. 전파 키트: 컨텍스트 파일 템플릿, CI 템플릿, 추적 연결 가이드, 폐쇄망 이전 체크리스트, 팀 규칙 문서, 팀원 대상 1시간 설명 자료</td><td class="h"><b>12</b><span class="bar" style="--h:12"></span></td></tr>
 </tbody>
-<tfoot><tr><td colspan="3">합계 (시간)</td><td class="n">80</td></tr></tfoot>
+<tfoot><tr><td colspan="3">합계</td><td class="h"><b>80</b>시간</td></tr></tfoot>
 </table></div>
 
 <h3>10일 일정</h3>
-<div class="tbl"><table>
+<div class="tbl"><table class="sched">
 <thead><tr><th>일차</th><th>오전</th><th>오후</th></tr></thead>
 <tbody>
-<tr><td>1</td><td>오리엔테이션 2h · A0 2h</td><td>A0</td></tr>
-<tr><td>2</td><td>A1</td><td>A1</td></tr>
-<tr><td>3</td><td>A1</td><td>A7 조별 저장소 개설 2h · A2 2h</td></tr>
-<tr><td>4</td><td>A2</td><td>A2 품질 게이트</td></tr>
-<tr><td>5</td><td>A2 폐쇄망 차이 2h · A6 2h</td><td>A6</td></tr>
-<tr><td>6</td><td>A6 2h · A7 중간 점검 2h</td><td>A3 Phoenix</td></tr>
-<tr><td>7</td><td>A3</td><td>A3 최적화</td></tr>
-<tr><td>8</td><td>A3 2h · A5 2h</td><td>A4 과제 판단·증류 데이터·학습 시작(밤새 실행)</td></tr>
-<tr><td>9</td><td>A4 평가·서빙</td><td>A4 조별 발표</td></tr>
-<tr><td>10</td><td>A7 마무리·전파 키트</td><td>A7 발표·회고</td></tr>
+<tr class="wk"><td colspan="3">1주차</td></tr>
+<tr><td>D1</td><td>오리엔테이션 2h · <span class="chip">A0</span> 2h</td><td><span class="chip">A0</span></td></tr>
+<tr><td>D2</td><td><span class="chip">A1</span></td><td><span class="chip">A1</span></td></tr>
+<tr><td>D3</td><td><span class="chip">A1</span></td><td><span class="chip">A7</span> 통합 과제 구조 확정 2h · <span class="chip">A2</span> 2h</td></tr>
+<tr><td>D4</td><td><span class="chip">A2</span></td><td><span class="chip">A2</span> 품질 게이트</td></tr>
+<tr><td>D5</td><td><span class="chip">A2</span> 폐쇄망 차이 2h · <span class="chip">A6</span> 2h</td><td><span class="chip">A6</span></td></tr>
+<tr class="wk"><td colspan="3">2주차</td></tr>
+<tr><td>D6</td><td><span class="chip">A6</span> 2h · <span class="chip">A7</span> 중간 점검 2h</td><td><span class="chip">A3</span> Phoenix</td></tr>
+<tr><td>D7</td><td><span class="chip">A3</span></td><td><span class="chip">A3</span> 최적화</td></tr>
+<tr><td>D8</td><td><span class="chip">A3</span> 2h · <span class="chip">A5</span> 2h</td><td><span class="chip">A4</span> 과제 판단·증류 데이터·학습 시작(밤새 실행)</td></tr>
+<tr><td>D9</td><td><span class="chip">A4</span> 평가·서빙</td><td><span class="chip">A4</span> 조별 발표</td></tr>
+<tr><td>D10</td><td><span class="chip">A7</span> 마무리·전파 키트</td><td><span class="chip">A7</span> 발표·회고</td></tr>
 </tbody></table></div>
 </section>
 <section id="s5" role="tabpanel" aria-labelledby="t5" hidden>
-<h2>5. 팀 개발에서 반드시 지킬 규칙 (A0 필수 내용)</h2>
-<p>브랜치 전략과 worktree 사용법은 업체에서 구성해 주십시오. 다만 아래 규칙은 교육에 반드시 넣어 주십시오.</p>
-<div class="tbl"><table>
+<h2>팀 개발에서 반드시 지킬 규칙 (A0 필수 내용)</h2>
+<p class="note">브랜치 전략과 worktree 사용법은 업체에서 구성해 주십시오. 다만 아래 규칙은 교육에 반드시 넣어 주십시오.</p>
+<div class="tbl"><table class="rules">
 <thead><tr><th>구분</th><th>규칙</th><th>이유</th></tr></thead>
 <tbody>
 <tr><td>브랜치</td><td><code>main</code>에 직접 push하지 않는다. <code>main</code>을 보호 브랜치로 설정한다</td><td>리뷰·CI 없이 들어간 변경이 모두를 깨뜨린다</td></tr>
@@ -164,8 +311,24 @@ section h2:first-child{margin-top:24px}
 </tbody></table></div>
 </section>
 <section id="s6" role="tabpanel" aria-labelledby="t6" hidden>
-<h2>6. 제안서에 담아 주실 내용</h2>
+<h2>제안서에 담아 주실 내용</h2>
+<h3>견적 가정</h3>
+<p>확정되지 않은 조건은 아래 가정으로 견적해 주십시오. 확정되면 조정합니다.</p>
+<div class="tbl"><table>
+<thead><tr><th>항목</th><th>가정</th></tr></thead>
+<tbody>
+<tr><td>기간</td><td>연속 2주(10일), 하루 8시간 교육. 점심·휴식 시간은 8시간에 포함하지 않습니다</td></tr>
+<tr><td>인원</td><td>10명, 2인 1조 5개 조</td></tr>
+<tr><td>개강 시기</td><td>협의</td></tr>
+<tr><td>방식·장소</td><td>대면 교육, 장소 협의</td></tr>
+<tr><td>수강생 장비</td><td>회사가 수강생용 데스크탑 PC를 제공합니다</td></tr>
+</tbody></table></div>
+
+<h3>제안서 항목</h3>
 <ul>
+  <li><strong>견적</strong>: 10명·5개 조·80시간 기준 총액. 강사·조교 인건비, 맞춤 교재·가상 프로젝트·평가 세트 제작, LLM 엔드포인트·GPU, GitLab·Runner·Phoenix 환경, 교육 후 실습 환경 유지, 부가세·출장비의 포함 여부를 나눠 적어 주십시오. 추가 기수 단가와 견적 유효기간도 함께 부탁드립니다.</li>
+  <li><strong>선택 견적</strong>: 07 후속 과정 탭의 챔피언 심화 과정(평가 설계 12시간 + 레드팀 12시간)은 기본 견적과 분리해 적어 주십시오.</li>
+  <li>투입 강사·조교 인원과 준비 기간 (계약 후 개강까지 필요한 기간)</li>
   <li>모듈별 세부 커리큘럼과 시간 배분 (위 제안과 다르면 이유)</li>
   <li>가상 프로젝트·평가 세트·파인튜닝 과제의 구성안</li>
   <li>Git 자율 학습 자료와 A0 실습 구성안</li>
@@ -181,15 +344,15 @@ section h2:first-child{margin-top:24px}
   <li>GitLab CI에 LLM 평가 게이트를 넣은 실습 예시가 있습니까? 폐쇄망 GitLab 환경에 적용해 본 경험이 있습니까?</li>
   <li>가상 프로젝트와 평가 세트를 제조 업무와 비슷하게 만들 수 있습니까?</li>
   <li>Phoenix 셀프호스팅을 실습 환경에 포함할 수 있습니까?</li>
-  <li>파인튜닝 실습에 쓸 GPU를 5개 조에 동시에 제공할 수 있습니까?</li>
+  <li>파인튜닝 실습에서 5개 조가 동시에 학습하려면 어느 정도 GPU가 필요하고, 야간 학습이 실패하면 어떻게 대응합니까?</li>
   <li>교육 후 사내 강사가 재운영할 수 있도록 교재·코드·평가 세트를 넘겨받을 수 있습니까?</li>
 </ol>
 </section>
 <section id="s7" role="tabpanel" aria-labelledby="t7" hidden>
-<h2>7. 후속 과정 후보 — 챔피언 심화 (3일)</h2>
-<p>2주 과정에 넣으면 깊이가 무너지는 주제입니다. 아래 두 과정은 챔피언 역할에 바로 필요해서 이어서 요청할 예정입니다.</p>
+<h2>후속 과정 후보: 챔피언 심화 3일</h2>
+<p>2주 과정에 넣으면 깊이가 무너지는 주제입니다. 아래 두 과정은 챔피언 역할에 바로 필요해서 <strong>선택 견적</strong>을 함께 받으려 합니다. 진행 여부는 기본 과정 결과를 보고 정합니다. 기본 과정 A2에는 품질 게이트 운용에 필요한 최소한의 평가 설명이 들어가야 합니다.</p>
 <div class="cols">
-<div>
+<div class="panel">
 <h3>평가 설계 심화 (12시간)</h3>
 <p>평가를 "돌리는" 수준에서 평가를 "믿을 수 있게 만드는" 수준으로 올립니다.</p>
 <ul>
@@ -201,9 +364,9 @@ section h2:first-child{margin-top:24px}
   <li>품질 게이트의 임계값과 허용 하락폭 설정</li>
 </ul>
 </div>
-<div>
+<div class="panel">
 <h3>Agent 보안 레드팀 (12시간)</h3>
-<p>공격자 입장에서 직접 뚫어 보고 뚫린 사례를 평가 세트에 넣어 다시 뚫리지 않게 만듭니다.</p>
+<p>기본 과정 A6은 준비된 공격 시나리오로 방어 정책을 검증하는 데까지 다룹니다. 레드팀은 공격을 직접 설계·자동 생성하고 결과를 분석합니다. 공격자 입장에서 직접 뚫어 보고 뚫린 사례를 평가 세트에 넣어 다시 뚫리지 않게 만듭니다.</p>
 <ul>
   <li>직접·간접 프롬프트 주입, 탈옥, 도구를 이용한 권한 상승</li>
   <li>시스템 프롬프트·타 사용자 데이터 유출, 악성 MCP 서버</li>
@@ -215,8 +378,8 @@ section h2:first-child{margin-top:24px}
 </div>
 </div>
 </section>
-<footer>본 자료의 시간 배분은 예시이며 교육 업체가 조정합니다.</footer>
-</main>
+</div></main>
+<footer><div class="wrap"><p>본 자료의 시간 배분은 예시이며 교육 업체가 조정합니다.</p></div></footer>
 <script>
 (function(){
   var tabs=[].slice.call(document.querySelectorAll('.tabs button'));
@@ -225,7 +388,7 @@ section h2:first-child{margin-top:24px}
     try{history.replaceState(null,'','#s'+(i+1));}catch(e){}
   }
   tabs.forEach(function(t,i){
-    t.addEventListener('click',function(){show(i);window.scrollTo(0,0);});
+    t.addEventListener('click',function(){show(i);var top=document.querySelector('header').offsetHeight;if(window.scrollY>top)window.scrollTo(0,top);});
     t.addEventListener('keydown',function(e){
       var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
       if(d){var n=(i+d+tabs.length)%tabs.length;show(n);tabs[n].focus();}
