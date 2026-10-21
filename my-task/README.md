@@ -25,7 +25,7 @@ classified_on: "2026-10-05"
 |---|---|---|
 | AIX 방법론과 과제 설계 | [AIX POC 목차](./AIX_POC/README.md) | 강의 출처 → 재사용 가이드/빈 양식 → 프로젝트 기획 → 기술 설계 → 실험 설계 → 상세 실행기획/발표 |
 | 업무 진행과 계획 기록 | [상반기 회고](./2026_report/2026_1st_lookback.md) | [중간 리뷰](./2026_report/2026_상반기_리뷰_및_하반기_계획.md) → [하반기 계획](./2026_report/2026_2nd_plan.md) → [하반기 회고·2027 계획](./2026_report/2026_2nd_lookback.md) |
-| 2026 본인 성과 review (승격 자기 추천) | [1페이지 요약](./achievement_review/2026_본인성과_review_요약.md) | [상세본](./achievement_review/2026_본인성과_review.md) · [HTML](./achievement_review/2026_본인성과_review.html); 공개용 — 사내 수치·명칭본은 로컬 전용 |
+| 2026 본인 성과 review (승격 자기 추천) | [1페이지 요약](./achievement_review/2026_본인성과_review_요약.md) · [자기 추천](./achievement_review/2026_자기추천.md) | [상세본](./achievement_review/2026_본인성과_review.md) · [HTML](./achievement_review/2026_본인성과_review.html); 공개용 — 사내 수치·명칭본은 로컬 전용 |
 | AI Agent 보고 양식 사용 | [작성 가이드](./report-template-ai-agent/작성가이드.md) | [빈 서식](./report-template-ai-agent/템플릿_빈서식.md) → [채워진 예시](./report-template-ai-agent/예시_채워진샘플.md); 예시의 수치는 실제 업무 실적으로 사용하지 않음 |
 | AI/DT 교육 커리큘럼 설계 | [커리큘럼 설계 목차](./ai-dt-curriculum/README.md) | [Expert 분과 브레인스토밍](./ai-dt-curriculum/expert-curriculum-brainstorm.md); 2장 이후는 초안 가설 |
 | 장비 데이터 매핑 Agent 기획 | [기획 목차](./equipment-data-mapping/README.md) | [왜 해야 하는가](./equipment-data-mapping/01-why-proposal.md) → [지도 만들기 설계](./equipment-data-mapping/02-map-design.md) → [비교·관리·운영 설계](./equipment-data-mapping/03-compare-operate-design.md) → [단계별 실행 계획](./equipment-data-mapping/04-phased-plan.md); 전부 초안, 수치는 ⟨확인⟩ 자리 |
