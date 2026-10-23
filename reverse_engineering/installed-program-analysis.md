@@ -134,7 +134,7 @@ C:\re-work\recipe-tool\install\RecipeTool.exe 를 ghidra 프로바이더로 열�
 디컴파일은 아직 하지 마라. 질문 "Export 버튼의 CSV 형식"에 쓸 진입점 후보 3~5개를 제안해라.
 ```
 
-대화 상자, 메뉴, 문자열 표 리소스에는 화면 문구와 컨트롤 ID가 들어 있다. 사용자가 보는 버튼 이름에서 출발하면 그 버튼을 처리하는 코드로 가는 길이 짧다. `inspect_pe_resources`는 엔진 없이 리소스의 종류, ID, 위치를 알려주지만 내용은 디코딩하지 않는다. 화면 문구를 읽으려면 Resource Hacker 같은 별도 리소스 도구로 연다. 이렇게 얻은 컨트롤 ID는 상수 검색으로 버튼 처리 코드를 찾는 데 쓴다.
+대화 상자, 메뉴, 문자열 표 리소스에는 화면 문구와 컨트롤 ID가 들어 있다. 사용자가 보는 버튼 이름에서 출발하면 그 버튼을 처리하는 코드로 가는 길이 짧다. `inspect_pe_resources`는 엔진 없이 리소스의 종류, ID, 위치를 알려주지만 내용은 디코딩하지 않는다. 화면 문구를 읽으려면 별도 리소스 도구로 연다. 회사에서는 오픈 소스인 RisohEditor(GPL-3.0)나 PE-bear(GPL-2.0)를 쓴다. 아래 [보조 도구 표](#회사-pc에-보조-도구를-들이는-기준)를 본다. 이렇게 얻은 컨트롤 ID는 상수 검색으로 버튼 처리 코드를 찾는 데 쓴다.
 
 ### 5. 진입점에서 경로를 따라간다
 
@@ -173,17 +173,15 @@ Windows에서는 Ghidra에 함수 이름을 붙일 수 없다. pi에게 매번 "
 
 ### 7. 실행해서 확인한다
 
-Windows에서는 REA의 프로세스 관찰 기능을 쓸 수 없다. 테스트 PC나 VM에서 일반 도구로 확인한다. 실행 전에 [작업 절차 1단계의 경고](./re-process.md#1-범위와-허가를-확인한다)대로 운영망과 운영 계정을 분리한다.
+Windows에서는 REA의 프로세스 관찰 기능을 쓸 수 없다. 테스트 PC나 VM에서 보조 도구로 확인한다. 실행 전에 [작업 절차 1단계의 경고](./re-process.md#1-범위와-허가를-확인한다)대로 운영망과 운영 계정을 분리한다. 도구를 고르는 기준은 아래 "회사 PC에 보조 도구를 들이는 기준"에 있다.
 
-| 확인하고 싶은 것 | 방법 |
-|---|---|
-| 어떤 파일, 레지스트리를 건드리는가 | Sysinternals Process Monitor. 프로그램을 실행하기 전에 캡처를 시작하고, **Process Tree**로 자식 프로세스와 함께 동작하는 서비스까지 확인한 뒤 필터 범위를 정한다. 메인 프로세스 하나만 필터링하면 자식 프로세스가 한 일을 놓친다 |
-| 어떤 DLL을 불러오는가 | Sysinternals Process Explorer, 또는 Process Monitor의 Load Image 이벤트 |
-| 어디로 통신하는가 | `netstat -ano`, Resource Monitor의 네트워크 탭 |
-| 특정 함수에서 값이 무엇인가 | x64dbg 같은 디버거로 Ghidra에서 찾은 주소에 중단점 |
-| 결과 파일이 가설과 같은가 | 같은 입력으로 실행해서 만들어진 파일을 비교 |
-
-이 도구들은 회사 PC에 설치 허가가 필요할 수 있다. Process Monitor, Process Explorer, x64dbg, Resource Hacker의 사용 가능 여부는 ⟨확인⟩ 필요하다(2026-10-24 기준 미확인). 허가가 나기 전에는 결과 파일 비교와 `netstat -ano`처럼 Windows에 기본으로 있는 방법으로 확인한다.
+| 확인하고 싶은 것 | 회사에서 쓸 도구 | 방법 |
+|---|---|---|
+| 어떤 파일, 레지스트리를 건드리는가 | System Informer 4.0 이상(MIT), 또는 Fibratus(Apache-2.0) | 프로그램을 실행하기 전에 기록을 시작한다. 프로세스 트리로 자식 프로세스와 함께 동작하는 서비스까지 확인한 뒤 범위를 정한다. 메인 프로세스 하나만 보면 자식 프로세스가 한 일을 놓친다 |
+| 어떤 DLL을 불러오는가 | System Informer | 프로세스의 **Modules** 탭. 설치 없이 보려면 PowerShell `(Get-Process RecipeTool).Modules` |
+| 어디로 통신하는가 | System Informer의 **Network** 탭, 또는 기본 제공 `netstat -ano`, 리소스 모니터 | 연결과 소유 프로세스를 본다. 패킷 내용까지는 보지 않는다 |
+| 특정 함수에서 값이 무엇인가 | x64dbg(GPL-3.0 기반) | Ghidra에서 찾은 주소에 중단점을 건다 |
+| 결과 파일이 가설과 같은가 | 기본 제공 `fc.exe /b`, PowerShell `Compare-Object` | 같은 입력으로 실행해서 만들어진 파일을 비교한다 |
 
 디버거에서 주소를 맞출 때는 기준 주소(image base)를 확인한다. Ghidra는 PE 헤더의 기준 주소로 주소를 보여주지만, 실행 중에는 ASLR 때문에 다른 주소에 올라갈 수 있다. "Ghidra 주소 - Ghidra 기준 주소 + 실행 중 기준 주소"로 바꾼다.
 
@@ -206,6 +204,30 @@ C:\re-work\v1\RecipeTool.exe 와 C:\re-work\v2\RecipeTool.exe 를 비교해라.
 
 계산 로직을 Python 같은 언어로 옮길 때는 원본 프로그램과 같은 입력을 넣어 결과를 비교하는 테스트를 함께 만든다. 정상 범위만 넣지 말고 0, 음수, 경계값, 빈 입력을 넣는다. 반올림, 정수 나눗셈, 부동소수점 정밀도 차이에서 원본과 어긋나는 경우가 가장 많다.
 
+## 회사 PC에 보조 도구를 들이는 기준
+
+회사 PC에는 설치 금지 목록이 있다. 도구를 들이기 전에 두 가지를 차례로 확인한다.
+
+1. **설치 금지 목록에 없는가.** 목록에 있으면 무료든 오픈 소스든 설치하지 않는다.
+2. **회사에서 써도 되는 라이선스인가.** 무료 도구라도 "개인 사용만 무료"이고 회사 사용에는 유료 라이선스를 요구하는 경우가 많다. 공식 사이트의 라이선스 조항을 직접 확인한다.
+
+OSI가 승인한 오픈 소스 라이선스(MIT, Apache-2.0, GPL 등)는 회사에서 쓰는 것 자체를 막지 않으므로 2번이 가장 쉽게 통과한다. Ghidra(Apache-2.0)도 이 기준으로 설치했다. 그래서 보조 도구는 오픈 소스부터 고른다. 무료이지만 오픈 소스가 아닌 도구는 2번을 따로 확인해야 한다.
+
+| 용도 | 오픈 소스 도구(라이선스) | 비고 |
+|---|---|---|
+| 파일, 레지스트리 접근 추적 | System Informer 4.0 이상(MIT), Fibratus(Apache-2.0) | System Informer는 드라이버를 쓰는 기능이 있다. Fibratus는 ETW 기반이다 |
+| 프로세스, DLL, 네트워크 연결 확인 | System Informer(MIT) | 구 Process Hacker |
+| 디버거 | x64dbg(GPL-3.0 기반, 플러그인 예외 조항 추가) | 표준 GPL-3.0과 문구가 다르므로 신청할 때 LICENSE 파일을 함께 낸다 |
+| PE 구조, 리소스 보기 | PE-bear(GPL-2.0), RisohEditor(GPL-3.0) | RisohEditor는 대화 상자와 문자열 표를 연다 |
+| 런타임, 패커 판별 | Detect It Easy(MIT) | 컴파일러, 패커, 설치 파일 형식을 알려준다 |
+| PE 구조를 스크립트로 읽기 | pefile(MIT, Python) | 사내 Python 환경에서 쓴다 |
+| 헥스 편집기 | ImHex(GPL-2.0) | |
+| .NET 디컴파일 | ILSpy(MIT), dnSpyEx(GPL-3.0) | REA의 `inspect_managed_artifact`를 보완한다 |
+| PyInstaller 풀기, `.pyc` 디컴파일 | pyinstxtractor(GPL-3.0), pycdc(GPL-3.0) | pycdc는 최신 Python 버전에서 일부 구문을 복원하지 못할 수 있다 |
+| 저장된 패킷 캡처 읽기 | Wireshark(GPL-2.0 이상) | 실시간 캡처에 쓰는 Npcap은 오픈 소스가 아니다. Npcap 없이 캡처 파일만 읽는다 |
+
+무료이지만 오픈 소스가 아닌 도구도 있다. Sysinternals Process Monitor와 Process Explorer는 Microsoft 이용 약관을 따른다. Resource Hacker와 HxD는 각자의 프리웨어 라이선스를, Npcap은 자체 라이선스를 따른다. 이 도구들은 금지 목록과 회사 사용 조건을 확인한 뒤에만 쓴다. 이 표의 라이선스는 2026-10-24에 각 공식 저장소에서 확인했다. 설치 패키지에 동봉된 플러그인이나 구성 요소는 라이선스가 다를 수 있다.
+
 ## 참고 자료 (References)
 
 - REA 네이티브 분석: <https://github.com/morluto/rea/blob/main/docs/native-investigation.md>
@@ -213,7 +235,11 @@ C:\re-work\v1\RecipeTool.exe 와 C:\re-work\v2\RecipeTool.exe 를 비교해라.
 - REA 빌드 간 함수 매칭: <https://github.com/morluto/rea/blob/main/docs/native-function-matching.md>
 - REA 네이티브·패키지 분석 지침: <https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md>
 - Microsoft x64 호출 규약: <https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention>
-- Sysinternals Process Monitor: <https://learn.microsoft.com/en-us/sysinternals/downloads/procmon>
+- System Informer: <https://github.com/winsiderss/systeminformer>
+- Fibratus: <https://github.com/rabbitstack/fibratus>
+- x64dbg: <https://github.com/x64dbg/x64dbg>
+- RisohEditor: <https://github.com/katahiromz/RisohEditor>
+- PE-bear: <https://github.com/hasherezade/pe-bear>
 
 ## 관련 문서
 

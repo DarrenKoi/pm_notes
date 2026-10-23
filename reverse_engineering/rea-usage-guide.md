@@ -172,7 +172,7 @@ rea analyze C:\re-work\tool\tool.exe --provider ghidra --snapshot C:\re-work\too
 
 1. `inspect_artifact`로 내부 목록을 본다. Python 버전, 진입 스크립트, 포함된 모듈이 나온다.
 2. 필요한 파일만 `extract_artifact`로 새 빈 폴더에 꺼낸다.
-3. 꺼낸 `.pyc`는 `inspect_python_pyc`로 이름과 구조를 본다. REA는 `.pyc`를 `.py`로 되돌리지 않는다. 소스 복원이 필요하면 해당 Python 버전을 지원하는 별도 디컴파일러를 쓴다.
+3. 꺼낸 `.pyc`는 `inspect_python_pyc`로 이름과 구조를 본다. REA는 `.pyc`를 `.py`로 되돌리지 않는다. 소스 복원이 필요하면 오픈 소스 디컴파일러 pycdc를 쓴다. 최신 Python 버전에서는 일부 구문을 복원하지 못할 수 있다. 회사 PC에 들일 수 있는 도구는 [설치형 프로그램 문서의 보조 도구 기준](./installed-program-analysis.md#회사-pc에-보조-도구를-들이는-기준)을 본다.
 
 #### .NET 도구
 
