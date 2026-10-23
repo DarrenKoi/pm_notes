@@ -1,7 +1,7 @@
 ---
 tags: [orchestration, setup, office, pi-subagents]
 level: intermediate
-last_updated: 2026-09-22
+last_updated: 2026-10-24
 reviewed_on: 2026-10-04
 review_status: partial
 document_type: template
@@ -13,11 +13,6 @@ classified_on: "2026-10-05"
 ---
 
 # 사내 PC 세팅 — 프롬프트 모음
-
-> [!info] 적용 조건 — 2026-10-04
-> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
-> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
-> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
 
 > 각 프롬프트에 `PROMPT-N` 번호가 붙어 있다. pi 에게 **"office-setup.md 의 PROMPT-N 을 실행해라"**
 > 라고 지시하면 된다. 스크립트를 돌리지 않고 전부 pi 로 진행하는 경로다.
@@ -90,6 +85,7 @@ itc-vlm/qwen3.8-27b
 - agentOverrides 안에 이미 있는 역할은 통째로 교체해도 된다. 단 교체 전에 원래 내용을 출력해라.
 - 값을 새로 지어내지 마라. 아래 있는 값을 그대로 써라.
 - tools 는 반드시 JSON 배열로 써라. 쉼표로 이은 문자열은 pi 가 거부한다.
+- reviewer 의 systemPrompt 는 긴 문자열이다. 줄바꿈(\n)까지 글자 그대로 옮겨라. 요약하거나 고쳐 쓰지 마라.
 - 아래 JSON 에 subagents.watchdog.cadence 와 subagents.watchdog.children.cadence 가
   없는 것은 의도적이다. 기존 설정에 그 키가 있으면 "삭제" 해라. 생략은 삭제가 아니다.
   cadence 는 도구 N번마다 추가 모델 호출을 만들어 RPM 을 크게 먹는다.
@@ -138,7 +134,8 @@ itc-vlm/qwen3.8-27b
           "watchdog_diff",
           "contact_supervisor"
         ],
-        "description": "Verification gate (Big). Runs in a separate session from worker. Reads the diff directly and re-runs the verification commands instead of trusting the worker's report."
+        "description": "Verification gate (Big). Runs in a separate session from worker. Reads the diff directly and re-runs the verification commands instead of trusting the worker's report.",
+        "systemPrompt": "You are a review subagent running in a fresh session, separate from the worker. Inspect, evaluate, and report findings with evidence. Do not trust the worker's report; verify from the code and from command output.\n\n## Working rules\n- Start from the exact diff or commits named in the task. For commits, read them with `git show <sha>` and `git diff <base>..<sha>`.\n- Re-run the verification commands named in the task yourself and quote the real output. If no command is named, say so; do not invent one.\n- Shell use is limited to reading and verifying. Do not edit files, and do not run commands that change the repository or its history (commit, add, reset, checkout, clean, stash, push, branch switching).\n- Do not access networks other than the internal model gateway. Do not read or print secrets, keys, or `.env` files.\n- Remember that test scripts the worker just changed run arbitrary code. If a verification script itself changed in the diff, flag it before running it.\n- Report only gaps that affect correctness or the stated requirements. Skip style preferences.\n\n## Output\n## Review\n- Correct: what is already good (with evidence)\n- Finding: P0/P1/P2, issue, file:line, evidence, smallest fix\n- Commands run: each command with its real output\n- Verdict: pass or fail"
       },
       "worker": {
         "model": "my-local-provider/HCP-Medium-Latest",
@@ -154,6 +151,27 @@ itc-vlm/qwen3.8-27b
         "disabled": true
       },
       "evidence-auditor": {
+        "disabled": true
+      },
+      "delegate": {
+        "disabled": true
+      },
+      "claude-code": {
+        "disabled": true
+      },
+      "claude-code-writer": {
+        "disabled": true
+      },
+      "codex-exec": {
+        "disabled": true
+      },
+      "codex-exec-writer": {
+        "disabled": true
+      },
+      "cursor-agent": {
+        "disabled": true
+      },
+      "cursor-agent-writer": {
         "disabled": true
       }
     },
@@ -205,13 +223,15 @@ itc-vlm/qwen3.8-27b
 ```
 ````
 
-**성공 판정** — `agentOverrides` 키가 **6개**로 나와야 한다.
+**성공 판정** — `agentOverrides` 에 아래 13개가 **모두** 있어야 한다. 기존 설정에 다른 역할이 더 있으면 그대로 남는 것이 정상이다.
 
 ```text
-oracle, reviewer, worker, scout, researcher, evidence-auditor
+oracle, reviewer, worker, scout,
+researcher, evidence-auditor, delegate,
+claude-code, claude-code-writer, codex-exec, codex-exec-writer, cursor-agent, cursor-agent-writer
 ```
 
-하나만 남아 있으면 깊은 병합이 아니라 **교체**가 일어난 것이다. `settings.json.bak` 으로
+몇 개만 남아 있으면 깊은 병합이 아니라 **교체**가 일어난 것이다. `settings.json.bak` 으로
 되돌리고 다시 시도한다. `modelScope.enforce` 는 `true` 여야 한다.
 
 **보고할 것** — 추가/덮어쓴 키 목록과 마지막 확인 출력.
@@ -272,8 +292,12 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 1. A 의 최상위에 "providers" 키가 있는가.
    없으면 파일 전체가 무시된다. {"providers": {"<provider>": {...}}} 형태여야 한다.
 
-2. B 의 subagents.agentOverrides 키가 정확히 6개인가.
-   oracle, reviewer, worker, scout, researcher, evidence-auditor
+2. B 의 subagents.agentOverrides 에 아래 13개가 모두 있는가. 이 밖의 키가 더 있는 것은 FAIL 이 아니다.
+   배정 역할: oracle, reviewer, worker, scout
+   꺼야 할 역할: researcher, evidence-auditor, delegate, claude-code, claude-code-writer,
+   codex-exec, codex-exec-writer, cursor-agent, cursor-agent-writer
+   그리고 reviewer 에 systemPrompt 가 있고, 그 안에 "Re-run the verification commands" 문장이 있는가.
+   없으면 빌트인 reviewer 프롬프트가 "셸 명령을 쓰지 마라" 라고 지시하므로 bash 를 줘도 검증을 재실행하지 않는다.
 
 3. agentOverrides 의 각 역할에서 tools 필드가 있으면 그것이 "배열"인가.
    "read, grep, bash" 같은 쉼표 문자열이면 FAIL 이다. 빌트인 frontmatter 는 그 표기를
@@ -297,8 +321,10 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
 
    FAIL 이면 그 모델이 실제로 지원하는 레벨 목록을 함께 알려줘라.
 
-6. researcher 와 evidence-auditor 가 disabled: true 인가. 값이 문자열 "true" 가 아니라
-   불리언 true 여야 한다.
+6. 2번의 "꺼야 할 역할" 9개가 모두 disabled: true 인가. 값이 문자열 "true" 가 아니라
+   불리언 true 여야 한다. researcher·evidence-auditor 는 웹 검색으로, claude-code·codex-exec·
+   cursor-agent 계열은 외부 CLI 로 사내 게이트웨이를 거치지 않는 경로다. delegate 는 모델 제한 없이
+   edit 을 가진 다섯 번째 쓰기 경로라 끈다.
 
 7. subagents.modelScope 가 있는가. enforce 와 strict 가 true 인가.
 
@@ -321,7 +347,8 @@ oracle, reviewer, worker, scout, researcher, evidence-auditor
     429 한 번에 워커가 죽는다. maxRetries 와 baseDelayMs 값도 함께 보여줘라.
 
 14. C 의 globalConcurrencyLimit 값이 얼마인가. 없으면 기본 20 이다.
-    RPM 한도가 50 이면 20 은 즉시 넘는다. 4 이하를 권장한다.
+    동시성만으로 RPM 초과가 정해지지는 않지만, 20 이면 자식들의 요청이 몰려 분당 한도에 닿기 쉽다.
+    4 이하를 권장하고, 최종 값은 rate-limits.md 의 공식(요청당 토큰 q, 요청 주기 L)으로 정한다.
     parallel.concurrency 값도 함께 보여줘라(없으면 기본 4).
     B 의 subagents.watchdog 또는 watchdog.children 에 cadence 키가 남아 있으면 FAIL 이다.
     스니펫에서 생략한 것은 기존 설정에서 자동으로 지워지지 않는다. cadence 는 도구 N번마다
@@ -344,10 +371,14 @@ subagent 도구로 사용 가능한 에이전트 목록을 조회해라 (action:
 
 그다음 다음을 확인해서 알려줘라.
 - oracle, worker, reviewer, scout 네 개가 모두 보이는가
-- researcher 와 evidence-auditor 가 목록에서 빠졌는가 (빠져야 정상이다)
+- researcher, evidence-auditor, delegate, claude-code, claude-code-writer, codex-exec,
+  codex-exec-writer, cursor-agent, cursor-agent-writer 가 목록에서 빠졌는가 (빠져야 정상이다)
+
+subagent 도구가 보이지 않고 subagents_enable 만 보이면, subagents_enable 을 먼저 호출한 뒤 다시 시도해라.
+이것은 배선 오류가 아니다. 모델에 따라 subagent 도구를 처음부터 켜지 않고 필요할 때 켠다.
 ```
 
-**성공 판정** — 네 역할이 보이고 `researcher`·`evidence-auditor` 는 안 보인다.
+**성공 판정** — 네 역할이 보이고 꺼야 할 9개는 안 보인다.
 
 **보고할 것** — 목록 그대로.
 
@@ -359,7 +390,7 @@ subagent 도구로 사용 가능한 에이전트 목록을 조회해라 (action:
 
 ```text
 scout 서브에이전트를 하나 띄워서 현재 디렉터리의 파일 목록을 조사하게 해라.
-네가 직접 하지 말고 반드시 subagent 도구를 써라.
+네가 직접 하지 말고 반드시 subagent 도구를 써라. subagent 도구가 안 보이면 subagents_enable 을 먼저 호출해라.
 
 자식이 끝나면 다음을 알려줘라.
 - 자식이 실제로 떴는가
@@ -393,7 +424,9 @@ scout 으로 <경로> 아래에서 <작은 모듈 이름> 관련 파일과 호�
 이게 scout 모델을 고른 이유이고, 사내 코드베이스에서만 확인할 수 있다.
 부족하면 알려달라 — 더 큰 모델로 올리겠다.
 
-이어서 worker → reviewer 까지 한 바퀴 돌려보고, 끝나면 워크트리째 버린다.
+이어서 worker → reviewer 까지 한 바퀴 돌려본다. reviewer 단계에서는 **검증 명령을 reviewer 가 직접 실행했는지** 전사에서 확인한다.
+보고에 "Commands run" 항목이 없거나 명령 출력이 비어 있으면 PROMPT-4 의 2번(systemPrompt)을 다시 본다.
+끝나면 워크트리째 버린다.
 
 ```powershell
 cd -

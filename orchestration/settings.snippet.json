@@ -35,7 +35,8 @@
           "watchdog_diff",
           "contact_supervisor"
         ],
-        "description": "Verification gate (Big). Runs in a separate session from worker. Reads the diff directly and re-runs the verification commands instead of trusting the worker's report."
+        "description": "Verification gate (Big). Runs in a separate session from worker. Reads the diff directly and re-runs the verification commands instead of trusting the worker's report.",
+        "systemPrompt": "You are a review subagent running in a fresh session, separate from the worker. Inspect, evaluate, and report findings with evidence. Do not trust the worker's report; verify from the code and from command output.\n\n## Working rules\n- Start from the exact diff or commits named in the task. For commits, read them with `git show <sha>` and `git diff <base>..<sha>`.\n- Re-run the verification commands named in the task yourself and quote the real output. If no command is named, say so; do not invent one.\n- Shell use is limited to reading and verifying. Do not edit files, and do not run commands that change the repository or its history (commit, add, reset, checkout, clean, stash, push, branch switching).\n- Do not access networks other than the internal model gateway. Do not read or print secrets, keys, or `.env` files.\n- Remember that test scripts the worker just changed run arbitrary code. If a verification script itself changed in the diff, flag it before running it.\n- Report only gaps that affect correctness or the stated requirements. Skip style preferences.\n\n## Output\n## Review\n- Correct: what is already good (with evidence)\n- Finding: P0/P1/P2, issue, file:line, evidence, smallest fix\n- Commands run: each command with its real output\n- Verdict: pass or fail"
       },
       "worker": {
         "model": "my-local-provider/HCP-Medium-Latest",
@@ -51,6 +52,27 @@
         "disabled": true
       },
       "evidence-auditor": {
+        "disabled": true
+      },
+      "delegate": {
+        "disabled": true
+      },
+      "claude-code": {
+        "disabled": true
+      },
+      "claude-code-writer": {
+        "disabled": true
+      },
+      "codex-exec": {
+        "disabled": true
+      },
+      "codex-exec-writer": {
+        "disabled": true
+      },
+      "cursor-agent": {
+        "disabled": true
+      },
+      "cursor-agent-writer": {
         "disabled": true
       }
     },

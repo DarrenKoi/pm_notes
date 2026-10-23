@@ -10,9 +10,11 @@ note_kind: "관리 기록"
 classified_on: "2026-10-05"
 ---
 
-# orchestration 정리 기록 — 2026-10-04
+# orchestration 정리 기록
 
-## 범위와 결정
+## 2026-10-04 정리
+
+### 범위와 결정
 
 공개 학습/템플릿 Markdown 6개, 숨김 에이전트 기록 Markdown 2개와 실행/설정 파일 5개를 검토했다. Markdown만 수정하고
 [검토 보충](./review-notes.md)과 이 기록을 추가했다. 삭제·이동·폴더 간 링크는 없다.
@@ -25,7 +27,7 @@ classified_on: "2026-10-05"
 남겼고 이번 검증으로 승격하지 않았다. 실행 템플릿은 이번 작업의 명령이 아니다.
 night-run.ps1의 구현 변경·설정 적용·스케줄 등록·commit/push는 수행하지 않았다.
 
-## 근거
+### 근거
 
 확인일 2026-10-04. 로컬 pi-subagents 0.75.0의 package.json과 agents/models/
 configuration 문서, Pi 공식 보안 문서, Microsoft schtasks/Start-Process 설명,
@@ -33,14 +35,14 @@ Git 공식 git-add 설명을 대조했다. 링크와 적용 조건은
 [검토 보충](./review-notes.md)에 모았다. 사내 모델 별칭·성능·한도와 전체
 패키지 릴리스 비교는 미확인이다. npm 웹 조회 403은 설치 패키지의 일차 자료로 보완했다.
 
-## Claude 협의 결과
+### Claude 협의 결과
 
 HERDR_ENV=1에서 현재 pane 조회를 재시도했으나 pane_not_found였다. 전용 Claude
 pane을 연결/제어하지 않았고 다른 주제 pane도 건드리지 않았다. 의견을 받지 못했다.
 야간 래퍼 교체, 엔진 설정·역할 재설계·큰 문서 통합은 보류한다. 변경하지 않은
 코드의 위험을 기록하고 독립적인 문서/로컬 검증을 진행했다.
 
-## 문서별 결과
+### 문서별 결과
 
 | 문서 | 검토 결과 |
 |---|---|
@@ -54,7 +56,7 @@ pane을 연결/제어하지 않았고 다른 주제 pane도 건드리지 않았�
 신규 검토 보충은 버전과 정적 한계의 대표 문서, 이 기록은 유지보수 문서다.
 각 원래 문서에 같은 검토일과 partial 상태를 넣고 보충으로 연결했다.
 
-## 실행/설정 파일 검토 — 수정 없음
+### 실행/설정 파일 검토 — 수정 없음
 
 | 파일 | 결과 |
 |---|---|
@@ -64,12 +66,12 @@ pane을 연결/제어하지 않았고 다른 주제 pane도 건드리지 않았�
 | [settings.snippet.json](./settings.snippet.json) | JSON 파싱·office 템플릿 값 일치. 실제 사내 게이트웨이 미실행. |
 | [subagent-config.snippet.json](./subagent-config.snippet.json) | JSON 파싱·office 템플릿 값 일치. Windows/실 런타임 상한 미실행. |
 
-## 검증 1 — 목록과 고유 내용
+### 검증 1 — 목록과 고유 내용
 
 Markdown 6 → 8. 원래 문서·경로·고유 프롬프트와 JSON 예제 유지, 실행/설정 5개
 시작 시 SHA256 동일. 대규모 재작성 대신 부분 수정·검토 보충으로 손실을 피했다.
 
-## 검증 2 — 기술·실습
+### 검증 2 — 기술·실습
 
 임시 파일로 merge-settings.py preview 무변경, apply 깊은 병합/배열 교체/원래 키
 보존/백업/같은 적용 무변경/깨진 JSON 중단을 확인했다. 스니펫에서 생략한 cadence가
@@ -79,11 +81,11 @@ Markdown 6 → 8. 원래 문서·경로·고유 프롬프트와 JSON 예제 유�
 파싱, 문서 내 JSON 2개와 스니펫 값 비교가 통과했다. 네트워크 모델 호출·사용자
 설정 읽기/쓰기·Windows 실행·pwsh 문법 검증은 하지 않았다.
 
-## 검증 3 — 참조·메타데이터·Obsidian
+### 검증 3 — 참조·메타데이터·Obsidian
 
 최종 확인 결과를 아래에 추가한다.
 
-## 보류
+### 보류
 
 Claude 협의, 실제 사내 모델·속도 제한, Windows PowerShell/Task Scheduler,
 야간 래퍼 구현 수정과 운영 격리 시험이 남아 있다. 구조·로컬 검증을 마치더라도
@@ -95,7 +97,7 @@ partial 상태를 유지하며 전체 저장소 완료로 기록하지 않는다
 숨김 상태·로그·캐시 전체도 시작 시 해시를 보존한다. 공개 Markdown 6 → 8과 별도로
 숨김 기록 2개를 검토·보존했으므로 전체 Markdown 검토 수는 10개다.
 
-## 최종 확인
+### 최종 확인
 
 공개 문서 8개 링크·앵커 새 오류 0, 기존 오류 0, diff --check 통과.
 Obsidian 1.13.7의 확인된 pm_notes vault에서 8개 properties와 reviewed_on을 확인했다.
@@ -103,3 +105,24 @@ Obsidian 1.13.7의 확인된 pm_notes vault에서 8개 properties와 reviewed_on
 정확한 폴더·한국어 본문·버전·날짜·태그·alias를 확인했다. 표는 AX 구조에서 확인했다.
 8개 전 화면과 Windows 터미널 렌더링을 모두 확인한 것은 아니다.
 숨김 에이전트 기록·캐시와 실행/설정 5개 모두 시작 시 해시 동일을 재확인했다.
+
+## 2026-10-24 갱신 — 에이전틱 코딩, 속도 제한, pi-subagents 0.81
+
+사용자 요청: 오래 보지 않은 내용을 최신 흐름으로 갱신하고, 에이전틱 코딩을 넣고, 사내 500K TPM·50 RPM
+한도와 집의 구독 요금제를 고려한 운영법을 넣는다. Codex(별도 herdr 탭)와 웹 조사를 나눠 하고 계획을 검토받았다.
+
+| 변경 | 내용 |
+|---|---|
+| 신규 `agentic-coding.md` | 에이전틱 코딩의 정의, 2025~2026 합의된 실천, 멀티 에이전트 근거(Anthropic·Cognition·Google·Cursor), 실패 모드, 이 폴더 설계와의 대응 |
+| 신규 `rate-limits.md` | TPM/RPM 계산, 자식 수 공식, pi 설정이 막는 것과 못 막는 것, 두 겹 재시도, 운영팀 확인 목록, 집의 구독 요금제 |
+| 신규 `rate-usage.py` | pi 세션 로그에서 분당 요청·토큰을 집계. `--selftest` 포함 |
+| `settings.snippet.json`·`office-setup.md` | `reviewer` `systemPrompt` 덮어쓰기(빌트인이 셸 금지), `delegate`와 외부 CLI 역할 6개 비활성 |
+| `smoke.sh` | 비활성 역할 9개와 reviewer `systemPrompt` 검사 추가 |
+| `README.md` | 읽기 순서 표, 0.81 동작, 속도 제한 절 요약, 모바일 읽기 절 |
+| `review-notes.md` | 기준을 pi 1.4.0 + pi-subagents 0.81.0으로, 0.75→0.81 변화 표 |
+| `night-setup.md` | 내장 스케줄을 미검증 대안으로 기록 |
+| 각 템플릿 | 반복되던 2026-10-04 적용 조건 안내 삭제(검토 보충으로 일원화) |
+
+검증: `bash -n smoke.sh`, 임시 fixture로 `smoke.sh -l 0`의 새 검사 정상·변형 검출 확인, `rate-usage.py --selftest`,
+로컬 세션 로그 집계 실행, JSON 파싱과 `office-setup.md` PROMPT-2 JSON의 스니펫 일치. 사내 PC에서 0.81로
+`PROMPT-4`~`7`을 다시 돌리는 것과 게이트웨이 운영팀 확인은 남아 있다.

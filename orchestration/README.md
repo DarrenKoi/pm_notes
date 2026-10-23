@@ -1,8 +1,8 @@
 ---
-tags: [orchestration, pi, pi-subagents, multi-agent, hcp, llm]
+tags: [orchestration, agentic-coding, pi, pi-subagents, multi-agent, hcp, llm]
 level: intermediate
-last_updated: 2026-09-22
-reviewed_on: 2026-10-04
+last_updated: 2026-10-24
+reviewed_on: 2026-10-24
 review_status: partial
 document_type: learning
 category_major: "에이전트 오케스트레이션"
@@ -14,28 +14,31 @@ classified_on: "2026-10-05"
 
 # Pi 오케스트레이션
 
-## 대·중·소분류로 찾기
-
-[주제별 분류 목차](./taxonomy-index.md)에서 **에이전트 오케스트레이션 → 중분류 → 소분류**로 탐색한다. 각 문서의 `category_major`·`category_middle`·`category_minor`는 주제, `note_kind`는 용도다. 기존 경로와 아래 읽기 순서는 유지한다.
-
-> [!info] 적용 조건 — 2026-10-04
-> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
-> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
-> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
-
 > pi 코딩 에이전트로 역할을 나누고, 모델 크기를 역할에 맞춰 배분하고, 검증을 다른 모델에 맡기는 사내용 구조. 실행은 `pi-subagents` 가 맡고, 이 폴더는 **사내 조건에 맞춘 배선**만 담는다.
 
 ## 목차와 읽기 순서
 
-1. [검토 보충](./review-notes.md): 버전 조건과 실행 전 확인 사항.
-2. 이 개요: 목적, 역할, 설정 파일과 대화형/무인 모드.
-3. [사내 PC 세팅](./office-setup.md): 지정된 단계의 적용·검증 템플릿.
-4. [작업 규칙](./agents-md.snippet.md)과 [결정 정책](./decisions.example.md): 실행 범위와 위임.
-5. [원샷](./oneshot.md): 한 실행의 인수인계; [야간 세팅](./night-setup.md): 반복 실행 준비.
-6. [정리 기록](./organization-log.md): 문서별 변경, 검증과 보류.
+| 순서 | 문서 | 성격 | 언제 읽나 |
+|---|---|---|---|
+| 1 | [에이전틱 코딩: 2026년에 정리된 것들](./agentic-coding.md) | 설명 | 처음 읽을 때. 이 폴더 설정이 왜 이렇게 생겼는지의 배경 |
+| 2 | 이 개요 | 설명 | 역할, 모델 배정, 설정 파일, 대화형과 무인 모드 |
+| 3 | [검토 보충](./review-notes.md) | 참조 | 실행 전에. 기준 버전, 알려진 한계, 미확인 항목 |
+| 4 | [속도 제한 아래에서 오케스트레이션하기](./rate-limits.md) | 설명·사용법 | 자식 수와 동시성을 정할 때. 500K TPM·50 RPM 계산, 측정, 집의 구독 요금제 |
+| 5 | [사내 PC 세팅](./office-setup.md) | 템플릿 | 회사 PC에 처음 배선할 때. `PROMPT-1`~`7` |
+| 6 | [작업 저장소 AGENTS.md 규칙](./agents-md.snippet.md) | 템플릿 | 에이전트가 일할 저장소마다 |
+| 7 | [결정 정책](./decisions.example.md) | 템플릿 | 무인 실행 전에 |
+| 8 | [퇴근 원샷](./oneshot.md) | 템플릿 | 한 번의 무인 실행 |
+| 9 | [야간 세팅](./night-setup.md) | 템플릿 | 매시간 반복하는 무인 실행. 아직 운영 검증 전 |
+| - | [분류 목차](./taxonomy-index.md) · [정리 기록](./organization-log.md) · [분류 검증 기록](./classification-review.md) | 관리 기록 | 문서를 정리하거나 Obsidian에서 찾을 때 |
 
-JSON 스니펫은 설정값의 기준이고 office 문서의 같은 JSON은 복사 가능한 작업 템플릿이다.
-원샷과 야간 세팅은 단일 실행/반복 실행으로 용도가 달라 유지한다.
+JSON 스니펫(`settings.snippet.json`, `subagent-config.snippet.json`)이 설정값의 원본이다. `office-setup.md`의 JSON은 같은 값을 복사해 붙여넣기 좋게 옮긴 것이다. 원샷과 야간 세팅은 한 번 실행과 반복 실행으로 용도가 달라 둘 다 둔다.
+
+## 휴대폰, 태블릿에서 읽기
+
+이 폴더의 문서 전체를 한 페이지로 묶은 HTML이 claude.ai에 있다: <https://claude.ai/artifact/GYzo5pa8TtCdEVKwWj4e3a>
+
+- 비공개 링크다. 본인 claude.ai 계정으로 로그인해야 열린다.
+- `.md`를 고쳐도 자동으로 반영되지 않는다. 저장소 루트에서 `python scripts/build_folder_html.py orchestration`으로 `reading.html`을 다시 만든 뒤, Claude Code에 같은 링크로 다시 게시해 달라고 요청한다.
 
 ## 왜 필요한가 (Why)
 
@@ -43,13 +46,15 @@ JSON 스니펫은 설정값의 기준이고 office 문서의 같은 JSON은 복�
 
 쪼개면 두 문제가 같이 풀린다. 다만 쪼갠 뒤에 새 문제가 생긴다 — 누가 무엇을 하는지, 결과를 어떻게 걷는지, 동시에 같은 파일을 고치면 어떻게 되는지.
 
-이 셋을 처리하는 기계 장치는 **이미 사내에 설치된 `pi-subagents`** 가 갖고 있다. 자식 세션 격리, 역할 정의, 도구 allowlist, 병렬 팬아웃, 결과 수집, 자식→부모 에스컬레이션이 전부 들어 있다. 새로 만들 이유가 없다.
+이 셋을 처리하는 기계 장치는 **이미 사내에 설치된 `pi-subagents`** 가 갖고 있다. pi 본체는 서브에이전트를 일부러 넣지 않았고, 이 기능은 확장 패키지가 맡는다. 자식 세션 격리, 역할 정의, 도구 allowlist, 병렬 팬아웃, 결과 수집, 자식→부모 에스컬레이션이 전부 들어 있다. 새로 만들 이유가 없다.
 
 그래서 이 폴더가 실제로 더하는 것은 **사내 조건 세 가지**뿐이다.
 
 1. 외부 LLM API를 못 쓴다 → 사내 HCP 게이트웨이를 pi에 등록해야 한다.
 2. 크기가 다른 모델 세 개가 있다 → **어느 역할에 어느 크기를 물릴지** 정해야 한다.
-3. 외부로 나가면 안 된다 → 웹 검색을 쓰는 역할을 꺼야 한다.
+3. 외부로 나가면 안 된다 → 웹 검색 역할과 외부 CLI(Claude Code, Codex, Cursor)를 부르는 역할을 꺼야 한다.
+
+이 구조가 업계에서 확인된 패턴 중 어디에 해당하는지는 [에이전틱 코딩 문서](./agentic-coding.md)에 정리했다. 요약하면 **쓰기는 한 줄기로, 읽기와 검토는 나눠서**다.
 
 ## 핵심 개념 (What)
 
@@ -61,11 +66,11 @@ JSON 스니펫은 설정값의 기준이고 office 문서의 같은 JSON은 복�
 
 **모델 ID가 다르다고 오류가 독립적이지는 않다.** Big·Medium 은 둘 다 GLM 계열이라 같은 착각을 공유할 수 있다. 별칭(`HCP-*-Latest`)만 보면 계열이 안 보이므로 실제 모델을 확인해야 한다. 독립성의 실질은 모델 이름이 아니라 ① 새 컨텍스트 ② 워커 보고가 아닌 **코드를 직접 읽는 것** ③ 검증 명령을 **직접 다시 돌리는 것** 에서 나온다. 리뷰어 프롬프트가 이 셋을 요구해야 의미가 있다.
 
-빌트인 `reviewer` 에는 **`bash` 가 없다.** 읽기만 가능해서 검증 명령을 다시 돌리지 못한다. 그러면 워커 보고를 글로만 대조하게 되고, 게이트의 절반이 사라진다. 그래서 이 설정은 `reviewer` 의 `tools` 를 덮어써 `bash` 를 되돌려준다 — 이 폴더가 손대는 유일한 역할 정의다.
+빌트인 `reviewer` 에는 **`bash` 가 없고, 프롬프트도 셸 사용을 금지한다.** 0.81 기준 빌트인 프롬프트는 "셸 명령을 쓰지 말고, 돌려야 할 테스트 명령은 보고만 하라"고 지시한다. 이대로면 워커 보고를 글로만 대조하게 되고, 게이트의 절반이 사라진다. 그래서 이 설정은 `reviewer` 의 `tools` 에 `bash` 를 되돌려주고, `systemPrompt` 도 덮어써 검증 명령을 직접 재실행하게 한다. 도구만 주고 프롬프트를 그대로 두면 모델은 금지 지시를 따른다. 이 폴더가 내용을 고쳐 쓰는 유일한 역할 정의다.
 
 **3. 동시 쓰기는 파일 경계로 막는다.** `oracle` 이 **파일이 겹치지 않게** 쪼갠다. 겹침을 피할 수 없으면 워커마다 별도 워크트리를 준다.
 
-**4. 외부로 나가는 역할은 끈다.** 빌트인 `researcher` 와 `evidence-auditor` 는 `web_search` / `fetch_content` 로 바깥에 나간다. 사내에서는 `disabled: true` 로 막는다.
+**4. 사내 경로를 벗어나는 역할은 끈다.** 빌트인 `researcher` 와 `evidence-auditor` 는 `web_search` / `fetch_content` 로 바깥에 나간다. 0.75 이후 들어온 `claude-code`·`codex-exec`·`cursor-agent`(각각 `-writer` 포함)는 pi가 아니라 외부 CLI를 실행해서, 사내 게이트웨이 설정이 적용되지 않는다. `delegate` 는 `edit` 을 가진 다섯 번째 쓰기 역할인데 역할별 모델 제한이 없다. 사내에서는 이 아홉 개를 `disabled: true` 로 끈다. 끄는 것은 라우팅 정책이지 네트워크 차단이 아니다.
 
 ### 역할과 모델 배정
 
@@ -79,7 +84,9 @@ JSON 스니펫은 설정값의 기준이고 office 문서의 같은 JSON은 복�
 | `worker` | `my-local-provider/HCP-Medium-Latest` | high | 전체 (edit 포함) | 구현, 검증 명령 실행 |
 | `reviewer` | `my-local-provider/HCP-Big-Latest` | high | 읽기 + **bash**(덮어씀) + write | diff 검토, 검증 재현, 판정 |
 | `scout` | `itc-vlm/qwen3.8-27b` | low | 읽기 + bash + write | 전수 검색, 선별, 목록화 |
-| `researcher` / `evidence-auditor` | — | — | — | **꺼둔다** (외부 네트워크) |
+| `researcher` / `evidence-auditor` | — | — | — | **꺼둔다** (웹 검색) |
+| `claude-code`·`codex-exec`·`cursor-agent` 계열 6개 | — | — | — | **꺼둔다** (외부 CLI) |
+| `delegate` | — | — | — | **꺼둔다** (모델 제한 없는 쓰기 역할) |
 
 별칭은 다섯이지만 **실제 모델은 넷**이다. 별칭 뒤의 모델이 계열을 결정하므로 같이 적어 둔다.
 
@@ -362,84 +369,34 @@ worker 로 <작업>을 구현해줘. 끝나면 reviewer 를 띄워서 검증 명
 
 ## 속도 제한 (RPM / TPM)
 
-사내 게이트웨이에 호출 한도가 걸려 있으면 **호출 빈도와 토큰량을 함께 제한해야 한다.** 예로
-`my-local-provider` 가 RPM 50 / TPM 500,000 이면 기본값으로는 감당이 안 된다.
+사내 게이트웨이는 **분당 500,000토큰, 50요청**으로 묶여 있다. 에이전트는 매 요청에 지금까지의 대화를
+(압축 후 남은 만큼) 다시 보내므로, 요청 하나가 10,000토큰을 넘는 순간부터는 요청 수가 아니라 토큰 수가 먼저 찬다. 코딩 에이전트는
+거의 항상 그렇다. 계산 방법, 자식 수 정하는 공식, 측정 스크립트, 재시도 설정, 운영팀 확인 목록은
+[속도 제한 아래에서 오케스트레이션하기](./rate-limits.md)에 따로 정리했다. 집에서 구독 요금제(5시간 창)로
+쓸 때의 차이도 같은 문서에 있다.
+
+요점만 옮기면 이렇다.
+
+- **pi에는 분당 토큰·요청 제한기가 없다.** 아래 값은 "몇 개를 띄울지"를 정할 뿐이다. 다른 pi 세션과 다른 harness는 서로의 사용량을 모른다.
+- **동시성보다 자식의 컨텍스트 크기와 요청 주기가 먼저다.** 요청당 60K 토큰이면 분당 8번이 한계다. 자식 하나가 30초마다 요청하면 둘까지, 10초마다면 하나도 벅차다.
+- **게이트웨이가 캐시 적중 토큰을 세는지 먼저 확인한다.** 에이전트 요청은 대부분이 캐시 적중이라, 이 답에 따라 같은 작업의 집계량이 몇 배씩 달라진다.
+- **재시도는 두 층이 곱해진다.** 현재 값이면 생성 하나에 최악 35번 요청이 나간다.
 
 | 설정 | 파일 | 기본값 | 이 구성 | 왜 |
 |------|------|--------|---------|-----|
-| `globalConcurrencyLimit` | config.json | 20 | **2** | 한 실행 안에서 동시에 도는 자식 수. 동시성 20만으로 RPM 초과를 단정할 수 없으며 요청 빈도를 측정해야 한다 |
+| `globalConcurrencyLimit` | config.json | 20 | **2** | 한 실행 안에서 동시에 도는 자식 수 |
 | `parallel.concurrency` | config.json | 4 | **2** | 병렬 그룹의 동시 실행 수 |
-| `maxActiveAsyncRunsPerSession` | config.json | 4 | **1** | 동시에 도는 최상위 비동기 실행 수 |
+| `maxActiveAsyncRunsPerSession` | config.json | 무제한 | **1** | 동시에 도는 최상위 비동기 실행 수 |
 | `maxSubagentSpawnsPerRun` | config.json | 64 | **12** | 한 실행에서 띄울 수 있는 자식 총량. 폭주 방지 |
 | `retry.maxRetries` | settings.json | 3 | **6** | 429 는 정상적으로 발생한다. 재시도로 넘긴다 |
-| `retry.baseDelayMs` | settings.json | 2000 | **8000** | 2초 후 재시도는 RPM 한도에서 다시 429 를 부른다 |
-| `retry.provider.maxRetries` | settings.json | — | **4** | SDK 계층 재시도. 에이전트 재시도와 별개로 먼저 동작한다 |
+| `retry.baseDelayMs` | settings.json | 2000 | **8000** | 2초 후 재시도는 분당 한도에서 다시 429 를 부른다 |
+| `retry.provider.maxRetries` | settings.json | 0 | **4** | HTTP 계층 재시도. `Retry-After` 헤더를 따른다 |
 
-**429 는 재시도하지 않으면 그대로 실패다.** `pi-subagents` 문서가 명시한다 — 속도 제한을
-포함한 provider 오류는 그 시도에서 그대로 반환되고, 다른 모델로 넘어가지 않는다. 자식이
-죽으면 그 작업 단위가 통째로 날아간다. 무인 야간 실행에서는 치명적이다.
+스니펫은 **업무 중(대화형)** 기준이다. 무인 실행 값과 프로필별 예산은 [속도 제한 문서](./rate-limits.md#3-예산을-나눠서-정한다)에 있다.
 
-**TPM 이 더 빡빡할 수 있다.** 컨텍스트 100만짜리 모델에 긴 세션을 물리면 요청 하나가
-수십만 토큰이 된다. TPM 500,000 이면 그런 요청 몇 개로 분당 한도가 찬다. 대응은 설정이
-아니라 구조다 — 자식마다 fresh context 를 주고, 부모가 자식 전사를 흡수하지 않게 하고,
-보고를 파일로 받는 것이 전부 여기에 기여한다.
-
-### 다른 harness 와 같은 provider 를 나눠 쓴다면
-
-**RPM/TPM 한도의 집계 단위는 게이트웨이 정책에 따라 다르다.** 여기 설정은 pi 세션 하나의 자식 수만 제한할 뿐,
-Claude Code·Codex·다른 pi 세션이 같은 엔드포인트를 치면 **같은 키·계정·모델 버킷인지 운영 정책을 확인해야 한다.**
-pi 에는 프로세스 간 공유 토큰 버킷이 없다 — 서로의 존재를 모른다.
-
-한 세션이 활발히 돌 때의 대략적인 요청 예산이다.
-
-| 소비자 | 요청/분 |
-|--------|---------|
-| 부모 세션 | 5–10 |
-| 자식 2개 | 10–20 |
-| watchdog (경계 검토) | 3–8 |
-| **합계** | **약 20–40** |
-
-RPM 50 이면 **혼자서도 거의 채운다.**
-
-### 프로필 — 기준은 "사람이 보고 있는가"
-
-단독이냐 공유냐보다 이쪽이 중요하다. 업무 중에는 429 가 나면 화면에 보이고 즉시 대응할 수
-있다(pi 가 재시도를 표시한다). 무인 실행에서는 아무도 못 본다. 같은 429 라도 결과가 다르다.
-
-그리고 다른 harness 를 같이 돌리는 것도 **업무 시간에 집중된다.** 경합이 가장 심한 때가
-하필 사람이 있는 때다.
-
-| | **업무 중 (대화형)** ← 기본 | 무인 실행 |
-|---|---|---|
-| `globalConcurrencyLimit` | **2** | 1 |
-| `parallel.concurrency` | **2** | 1 |
-| `retry.maxRetries` | **6** | 8 |
-| `retry.baseDelayMs` | **8000** | 15000 |
-| `watchdog.children.enabled` | false | false |
-
-스니펫은 **업무 중** 기준이다. 무인으로 돌릴 때만 위 오른쪽 값으로 바꾼다.
-
-대화형에서 동시성 2 로 두는 이유는, 평소 작업이 `scout → worker → reviewer` 처럼 **순차**라
-자식이 동시에 둘 이상 도는 경우가 드물기 때문이다. 실제로 2 를 쓰는 건 `/parallel-review`
-같은 팬아웃뿐이다. 1 로 낮추면 그때 직렬화되어 눈에 띄게 느려진다.
-
-**재시도가 눈에 보이면 정상이다.** 429 가 나면 pi 가 재시도를 표시하며 8초쯤 쉬었다 간다.
-멈춘 것처럼 보이지만 실패가 아니다. 이게 자주 보이면 그때 동시성을 1 로 내리거나,
-옆에서 도는 다른 harness 를 잠시 멈춘다.
-
-**watchdog 이 숨은 소비자다.** 턴 경계마다 별도 모델 호출이 들어간다. `cadence.everyNTools`
-를 켜면 도구 N번마다 또 호출해서 요청이 배로 는다. 그래서 cadence 는 끄고 경계 검토만 남겼고,
-자식 watchdog 은 아예 껐다 — 자식이 동시에 돌면 이게 RPM 을 가장 크게 먹는다.
-자식의 품질 통제는 watchdog 이 아니라 `reviewer` 게이트가 맡는다.
-
-### 결국 재시도가 안전망이다
-
-동시성을 아무리 낮춰도 **다른 harness 를 제어할 수는 없다.** 그래서 429 를 막는 게 아니라
-**허용된 예산 안에서 일시적 429를 재시도하는 쪽**을 시험한다. 재시도 횟수·시간을
-소진하면 여전히 실패할 수 있고, 부수효과 재실행에는 멱등성이 필요하다.
-
-근본 해결은 설정이 아니다. 한도가 **키 단위**라면 harness 마다 다른 키를 받는 것이 가장
-깔끔하다. 계정 단위라면 운영팀과 한도 상향을 이야기하는 편이 빠르다.
+**watchdog 이 숨은 소비자다.** 턴 경계마다 별도 모델 호출이 들어가고, 이 호출은 세션 로그에 사용량이
+남지 않는다. 그래서 cadence 는 끄고 경계 검토만 남겼고, 자식 watchdog 은 아예 껐다. 자식의 품질 통제는
+watchdog 이 아니라 `reviewer` 게이트가 맡는다.
 
 ## 알아둘 동작
 
@@ -447,10 +404,18 @@ RPM 50 이면 **혼자서도 거의 채운다.**
 - `agentOverrides` 로 덮어쓸 수 있는 필드에 `tools`, `thinking`, `model`, `description`, `disabled`, `systemPrompt` 가 포함된다. 역할 파일을 통째로 복사할 필요가 없다.
 - 빌트인을 통째로 고쳐야 하면 `subagent({ action: "eject", agent: "reviewer" })` 로 사용자 디렉터리에 복사본을 꺼낸다.
 - 사용자 역할은 `~/.pi/agent/agents/**/*.md`, 프로젝트 역할은 `.pi/agents/**/*.md` 에 둔다.
+- 0.79 이후 같은 Pi 프로세스에서 세션을 넘겨받아도 이전 세션의 백그라운드 실행을 보고, 기다리고, 멈출 수 있다. 끝난 워커를 한 번 더 돌리는 재개도 된다.
+- `/subagents-doctor` 가 설치·설정·비동기 용량을 한 번에 점검한다. `smoke.sh` 와 겹치지만 패키지가 직접 보는 값이라 같이 본다.
+- 새 세션에서 `subagent` 도구 대신 `subagents_enable` 만 보일 수 있다(`toolActivation: "auto"`). 모델이 대화 중 도구 추가를 지원하면 필요할 때 켜는 방식이다. 배선 오류가 아니며, 먼저 `subagents_enable` 을 부르면 된다.
+- 작업 시간 상한 직전에 "정리하고 멈춰라" 신호를 주는 `checkpointBeforeDeadlineMs` 가 있다. 단 **비동기 단일 실행에만** 걸리고, 도구 호출 경계에서만 전달되는 최선 노력 기능이다. 기본 포그라운드 경로는 보호하지 않는다.
+- 자식 도구 권한(`permissions`: `allow`/`ask`/`deny`)은 선택 기능이다. `ask` 는 자식 watchdog 모델이 판정하는데, 이 설정은 자식 watchdog 을 꺼 두었으므로 `ask` 는 전부 거부된다. **`bash` 는 이 기능으로 막을 수 없다.**
 - `pi --list-models <이름>` 은 못 찾으면 `No models matching "이름"` 이라고 답한다. **안내문에 검색어가 그대로 들어 있어서** 단순 grep으로 존재 확인을 하면 항상 통과한다. 표의 provider·model 열로 대조해야 한다.
 
-검증 상태:
+검증 상태 (2026-10-24 갱신):
 
+- **이번 갱신의 기준은 pi 1.4.0 + pi-subagents 0.81.0** 이다. 로컬 설치의 문서·빌트인 역할 파일과 대조했다. 사내 PC에서 0.81로 다시 돌려 본 것은 아니다.
+- 0.81 빌트인 `reviewer` 의 프롬프트가 셸 사용을 금지한다는 것을 로컬 파일(`agents/reviewer.md`)에서 확인했고, 그래서 `systemPrompt` 덮어쓰기를 추가했다. `smoke.sh -l 0` 이 이것을 검사한다.
+- 아래 2026-09-22 사내 통과 기록은 **그 당시 버전**의 기록이다. 0.81 갱신 후에는 `PROMPT-4`~`7` 을 다시 돌려야 한다.
 - `models.json` 스키마(최상위 `providers` 래퍼 필수)와 `--list-models` 동작은 pi 0.86.1 로 직접 확인했다.
 - thinking 레벨 클램프 동작은 pi 소스(`models.js` 의 `getSupportedThinkingLevels` / `clampThinkingLevel`)로 확인했다.
 - `smoke.sh` 는 `PI_CODING_AGENT_DIR` 로 실제 2-provider·5-모델 구성을 흉내 내 **통과(ok 43)** 와 **변형 주입 시 검출** 양방향을 확인했다.
@@ -461,6 +426,7 @@ RPM 50 이면 **혼자서도 거의 채운다.**
   `night-run.ps1` 은 작성 환경에 pwsh 가 없어 문법 검증도 하지 못했다. `NIGHT-4` 의
   1회 수동 실행으로 반드시 확인한다.
 - 설계는 Codex(gpt-6-astra)로 4라운드 검증을 거쳤다. 지적 P1 20건을 반영했다.
+- 2026-10-24 갱신은 Codex와 웹 조사·계획 검토를 나눠 진행했다. 계획 검토의 P1 4건(reviewer 프롬프트, `delegate`, 외부 CLI 역할, 내장 스케줄 과장)을 반영했다.
 
 ## 두 가지 사용 모드
 
@@ -542,12 +508,14 @@ reviewer 를 fresh context 로 띄워서 방금 diff 를 검증해줘.
 
 ## 참고 자료
 
+- [에이전틱 코딩: 2026년에 정리된 것들](./agentic-coding.md) — 이 설계의 근거가 된 연구와 업체 자료 목록
 - [Pi 공식 문서](https://pi.dev/docs/latest) · [Providers](https://pi.dev/docs/latest/providers) · [Security](https://pi.dev/docs/latest/security)
 - `pi-subagents` 문서 — 설치 경로의 `docs/` (`models.md`, `agents.md`, `workflows.md`, `configuration.md`)
 - [6 Multi-Agent Orchestration Patterns for Production (2026)](https://beam.ai/agentic-insights/multi-agent-orchestration-patterns-production)
 
 ## 관련 문서
 
+- [에이전틱 코딩 배경](./agentic-coding.md) · [속도 제한 아래에서 오케스트레이션하기](./rate-limits.md) · [사용량 집계 스크립트](./rate-usage.py)
 - [사내 PC 세팅 프롬프트 (PROMPT-1~7)](./office-setup.md) — 주 경로
 - [세팅 점검 스크립트](./smoke.sh) · [설정 병합 스크립트](./merge-settings.py)
 - [역할별 티어 배선](./settings.snippet.json) · [런타임 상한](./subagent-config.snippet.json)

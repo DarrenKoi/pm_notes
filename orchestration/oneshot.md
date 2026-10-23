@@ -2,7 +2,7 @@
 tags: [orchestration, pi-subagents, oneshot, unattended]
 level: intermediate
 last_updated: 2026-09-21
-reviewed_on: 2026-10-04
+reviewed_on: 2026-10-24
 review_status: partial
 document_type: template
 category_major: "에이전트 오케스트레이션"
@@ -13,11 +13,6 @@ classified_on: "2026-10-05"
 ---
 
 # 퇴근 원샷 프롬프트
-
-> [!info] 적용 조건 — 2026-10-04
-> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
-> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
-> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
 
 > 사람이 자리에 없는 동안 한 번의 프롬프트로 돌리는 템플릿. `<>` 부분만 채워서 pi에 붙여넣는다.
 
@@ -194,6 +189,9 @@ API 키를 환경변수에 두면 `bash` 로 읽을 수 있으므로, 키를 에
 | `retry.baseDelayMs` | settings.json | `15000` |
 
 밤에는 급할 일이 없다. 직렬로 도는 대신 429 로 작업을 날리지 않는 쪽을 택한다.
+
+최악의 경우 이 값(바깥 8회 × 안쪽 4회)은 생성 하나에 45번까지 요청이 나간다. 게이트웨이가 `Retry-After`를 주는지
+확인한 뒤 재시도 층을 하나로 정한다. 기준은 [속도 제한 문서의 "재시도 층을 하나로 정한다"](./rate-limits.md#8-재시도-층을-하나로-정한다)에 있다.
 
 ## 확인할 것
 

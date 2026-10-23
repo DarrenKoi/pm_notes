@@ -133,9 +133,17 @@ ov = sub.get("agentOverrides", {})
 for role in ("oracle", "worker", "reviewer", "scout"):
     if role in ov and ov[role].get("model"): say("OK", f"역할 배정: {role} → {ov[role]['model']}")
     else: say("FAIL", f"역할 배정 없음: agentOverrides.{role}.model")
-for role in ("researcher", "evidence-auditor"):
-    if ov.get(role, {}).get("disabled") is True: say("OK", f"{role} 비활성 (외부 네트워크 차단)")
+# 웹 검색 역할, 외부 CLI 역할, 모델 제한 없는 delegate 는 끈다. 라우팅 정책일 뿐 네트워크 차단은 아니다.
+for role in ("researcher", "evidence-auditor", "delegate",
+             "claude-code", "claude-code-writer", "codex-exec", "codex-exec-writer",
+             "cursor-agent", "cursor-agent-writer"):
+    if ov.get(role, {}).get("disabled") is True: say("OK", f"{role} 비활성")
     else: say("FAIL", f"{role} 가 켜져 있다. 사내에서는 disabled: true")
+# 빌트인 reviewer 프롬프트는 셸 사용을 금지한다. tools 에 bash 를 줘도 systemPrompt 를 바꾸지 않으면 검증을 재실행하지 않는다.
+if "Re-run the verification commands" in (ov.get("reviewer", {}).get("systemPrompt") or ""):
+    say("OK", "reviewer systemPrompt 가 검증 명령 재실행을 지시한다")
+else:
+    say("FAIL", "reviewer systemPrompt 덮어쓰기 없음. 빌트인 프롬프트가 셸 사용을 금지해 검증을 재실행하지 않는다")
 
 # 부모 모델은 최상위 defaultProvider + defaultModel(id 만) 조합으로 해석된다.
 # model-resolver.js 가 getModel(provider, id) 를 호출하므로 id 자리에 "provider/id" 를

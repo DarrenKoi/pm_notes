@@ -1,7 +1,7 @@
 ---
 tags: [orchestration, verification, pi-subagents]
 aliases: [Pi 오케스트레이션 적용 조건]
-reviewed_on: 2026-10-04
+reviewed_on: 2026-10-24
 review_status: partial
 document_type: learning
 category_major: "에이전트 오케스트레이션"
@@ -17,18 +17,32 @@ classified_on: "2026-10-05"
 [목차](./README.md) → [낮 세팅](./office-setup.md) →
 [정책](./decisions.example.md) → [원샷](./oneshot.md) 순으로 읽는다.
 [야간 세팅](./night-setup.md)은 반복 스케줄용이며 아래 래퍼 한계의 확인이 선행한다.
-이번 문서 정리에서는 모델 호출·사용자 설정 병합·스케줄러 등록·커밋을 하지 않았다.
+문서 갱신 작업 중에는 사내 모델 호출·사용자 설정 병합·스케줄러 등록을 하지 않았다.
 
 ## 버전과 근거
 
-2026-10-04 로컬 설치 `pi-subagents` **0.75.0**의 package.json과
-`docs/agents.md`, `docs/models.md`, `docs/configuration.md`를 대조했다.
-역할 override, 모델 우선순위, 프로젝트 컨텍스트 상속, run deadline 설정은
-해당 패키지 설명과 일치한다. 역할 파일은 사용자/프로젝트 override가 가능하므로
+**현재 기준: pi 1.4.0 + pi-subagents 0.81.0 (2026-10-24 로컬 설치).**
+`package.json`, `docs/agents.md`, `docs/models.md`, `docs/configuration.md`,
+`docs/missions.md`, `docs/watchdog.md`, 빌트인 `agents/*.md`를 대조했다.
+이전 기준은 2026-10-04의 0.75.0이었다. 역할 파일은 사용자/프로젝트 override가 가능하므로
 빌트인 이름만 보고 실제 도구와 상속값을 단정하지 않는다.
+
+0.75 → 0.81에서 이 폴더에 영향을 준 변화:
+
+| 변화 | 영향 | 반영 |
+|---|---|---|
+| 빌트인 `reviewer` 프롬프트가 셸 사용을 금지 | `bash` 만 돌려주면 검증을 재실행하지 않는다 | `systemPrompt` 덮어쓰기 추가, `smoke.sh` 검사 |
+| 외부 CLI 역할 6개(`claude-code`·`codex-exec`·`cursor-agent` 와 각 `-writer`) | 사내 게이트웨이를 거치지 않는 실행 경로 | `disabled: true` |
+| `delegate` 역할 | 모델 제한 없는 쓰기 역할. 지정이 없으면 `subagents.defaultModel`(Medium) | `disabled: true` |
+| `oracle` 의 `defaultContext: fork` | 부모 대화를 물려받는다. 새 컨텍스트가 아니다 | README에 명시, `reviewer` 는 fresh를 프롬프트로 요구 |
+| `toolActivation: "auto"` | 새 세션에 `subagents_enable` 만 보일 수 있다 | `PROMPT-5`·`6` 에 대응 안내 |
+| 내장 스케줄(0.76+) | `night-run.ps1` 의 대안 후보 | `night-setup.md` 에 미검증 대안으로만 기록 |
+| `usageBudget`·`toolBudget` | 실행 단위 토큰·도구 호출 상한 | [속도 제한 아래에서 오케스트레이션하기](./rate-limits.md) |
+| 도구 정의 축소(0.77), 프롬프트 캐시 재사용(0.78~0.79) | 부모 요청당 토큰 감소 | 같은 문서 |
+| Windows 시작 속도·임시 폴더 권한 수정(0.80~0.81) | Windows에서 pi 시작이 빨라지고 멈춤이 사라짐 | 해당 없음 |
 [공식 원본 저장소](https://github.com/nicobailon/pi-subagents),
 [모델 설정 문서](https://github.com/nicobailon/pi-subagents/blob/main/docs/models.md).
-main과 설치 0.75.0은 동일 버전이라는 보장이 없다. 최신 릴리스 전체 확인은 미완료다.
+main과 설치 0.81.0은 동일 버전이라는 보장이 없다. 최신 릴리스 전체 확인은 미완료다.
 
 Pi 공식 보안 문서는 도구·확장이 실행 사용자 권한을 사용하고, project trust는
 도구 호출의 샌드박스가 아니라고 설명한다. 작업 폴더·프롬프트 정책·리뷰·워크트리가
@@ -92,7 +106,3 @@ dirty 상태는 사용자의 수정일 수도 있다. 변경 주체를 확인하
 정책 본문을 프롬프트에 고정하면 파일 변조 혼동은 줄일 수 있지만 모델의 정책 준수를
 강제하지는 않는다. 확신도 60% 같은 숫자는 보정된 확률이 아닌 템플릿의 휴리스틱이다.
 복구·전송·삭제를 실제로 제한하려면 실행 환경의 권한 정책이 필요하다.
-
-Herdr 현재 pane이 `pane_not_found`여서 전용 Claude와 협의하지 못했다.
-야간 래퍼 변경, 역할 정의 재설계, 사내 모델별 설정 판단은 보류했다.
-[문서별 결과와 검증](./organization-log.md)에 협의 부재를 기록한다.

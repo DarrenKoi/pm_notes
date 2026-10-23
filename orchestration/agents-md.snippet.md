@@ -2,7 +2,7 @@
 tags: [orchestration, pi-subagents, agents-md]
 level: intermediate
 last_updated: 2026-09-22
-reviewed_on: 2026-10-04
+reviewed_on: 2026-10-24
 review_status: partial
 document_type: template
 category_major: "에이전트 오케스트레이션"
@@ -13,11 +13,6 @@ classified_on: "2026-10-05"
 ---
 
 # 작업 저장소의 `AGENTS.md` 에 넣을 것
-
-> [!info] 적용 조건 — 2026-10-04
-> 이 문서의 프롬프트는 별도로 지정해 실행하는 템플릿이다. 이번 문서 정리에서는 실행하지 않았다.
-> [검토 보충](./review-notes.md)에서 현재 버전·정적 한계·미확인을 먼저 확인한다.
-> 사내 2026-09-22 검증 기록은 당시 기록이며 이번 재검증 결과와 다르다.
 
 > 빌트인 역할 4종은 모두 `inheritProjectContext: true` 다. **작업 대상 저장소**의 `AGENTS.md`
 > (또는 `CLAUDE.md`)는 모든 자식 세션에 그대로 전달된다. 역할별 프롬프트를 따로 관리하는 것보다
