@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 import markdown
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 ROOT = Path(sys.argv[1]) if len(sys.argv) > 1 else sys.exit(__doc__)
 OUT = ROOT / "reading.html"
@@ -43,6 +43,11 @@ def slugify(text, sep="-"):
 	return text.replace(" ", sep)
 
 
+def heading_slug(anchor):
+	# Obsidian writes heading links percent-encoded ("#실행%20환경"); GitHub writes slugs ("#실행-환경").
+	return slugify(unquote(html.unescape(anchor)))
+
+
 def render(path):
 	src = (ROOT / path).read_text(encoding="utf-8")
 	src = re.sub(r"\A---\n.*?\n---\n", "", src, flags=re.S)
@@ -64,10 +69,10 @@ def render(path):
 			repo_path = quote((ROOT.resolve() / resolved).relative_to(REPO).as_posix())
 			return f'href="{GITHUB}/{repo_path}{anchor or ""}"'
 		rid = doc_id(resolved)
-		frag = f"{rid}--{anchor[1:]}" if anchor else rid
+		frag = f"{rid}--{heading_slug(anchor[1:])}" if anchor else rid
 		return f'href="#{frag}"'
 
-	body = re.sub(r'href="#([^"]+)"', rf'href="#{did}--\1"', body)
+	body = re.sub(r'href="#([^"]+)"', lambda m: f'href="#{did}--{heading_slug(m.group(1))}"', body)
 	body = re.sub(r'href="([^"#:]+\.md)(#[^"]*)?"', fix_link, body)
 	body = re.sub(
 		r"<blockquote>\s*<p>\[!(\w+)\]\s*(.*?)</p>",
