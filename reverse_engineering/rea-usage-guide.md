@@ -51,25 +51,17 @@ REA는 Ghidra 전용 도구가 아니다. JavaScript, Electron, .NET, PyInstalle
 
 ### 1단계: 준비 상태를 확인한다
 
-설치는 이미 끝났다고 가정한다. 분석 전에 Ghidra 연결만 확인한다.
+설치는 이미 끝났다고 가정한다. 회사 Windows PC에서 처음 연결한다면 [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md)을 먼저 따른다. 분석 전에는 Ghidra 연결과 pi 등록만 확인한다.
 
-```bash
+```powershell
 rea doctor --provider ghidra --json
+rea doctor --client pi --json
 ```
 
-`healthy`가 `false`면 아래 두 환경 변수부터 확인한다. 둘 다 REA를 띄우는 환경(에이전트의 MCP 등록)에 들어가 있어야 한다. 터미널에서만 `export`하면 이미 떠 있는 MCP 서버에는 반영되지 않는다.
+`healthy`가 `false`면 `GHIDRA_INSTALL_DIR`과 `JAVA_HOME`부터 확인한다. 둘 다 REA를 띄우는 환경(pi의 `mcp.json`에 있는 `rea` 항목의 `env`)에 들어가 있어야 한다. PowerShell에서만 `$env:`로 설정하면 이미 떠 있는 MCP 서버에는 반영되지 않는다. REA는 Ghidra 12.1.x와 JDK 21 이상을 요구한다. 설정을 바꾼 뒤에는 pi에서 `/reload`를 실행한다.
 
-```bash
-export GHIDRA_INSTALL_DIR=/absolute/path/to/ghidra_12.1.4_PUBLIC
-export JAVA_HOME=/absolute/path/to/jdk-21
-```
-
-REA는 Ghidra 12.1.x와 JDK 21 이상을 요구한다. 환경 변수를 바꾼 뒤에는 에이전트를 재시작한다.
-
-> [!note] Windows에서 쓰는 경우
-> Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 이름 붙이기(`annotate_native_function`, `set_address_name`)는 Linux와 macOS에서만 된다. Windows에서는 이름을 분석 기록에 따로 적는다.
-
-에이전트 안에서 REA 도구가 보이지 않으면 `rea doctor --client claude_code --json`으로 등록 상태를 확인한다. Codex라면 `--client codex`를 쓴다.
+> [!note] Windows의 제약
+> Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 이름 붙이기(`annotate_native_function`, `set_address_name`)는 Linux와 macOS에서만 되므로, Windows에서는 이름을 분석 기록에 따로 적는다. 분석 대상은 로컬 NTFS 디스크에 두어야 한다.
 
 ### 2단계: 에이전트에게 좋은 질문을 준다
 
@@ -83,7 +75,7 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 예시 프롬프트:
 
 ```text
-대상: /Users/me/re-work/recipe-tool/RecipeTool.exe (SHA-256은 분석 기록에 있음)
+대상: C:\re-work\recipe-tool\install\RecipeTool.exe (SHA-256은 분석 기록에 있음)
 질문: "Export" 버튼을 누르면 만들어지는 CSV의 열 구성과 각 열의 계산 방법을 알고 싶다.
 방법: 정적 분석만 한다. 프로그램을 실행하지 않는다. 프로바이더는 ghidra.
 진입점 후보: 문자열 "Export completed", "csv".
@@ -121,10 +113,10 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 
 1. 분석 전용 프로필로 Chrome을 원격 디버깅 포트와 함께 띄운다. 디버깅 포트는 반드시 `127.0.0.1`에만 연다.
 
-	```bash
-	"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-		--remote-debugging-port=9222 \
-		--user-data-dir="$HOME/re-work/chrome-profile" \
+	```powershell
+	& "C:\Program Files\Google\Chrome\Application\chrome.exe" `
+		--remote-debugging-port=9222 `
+		--user-data-dir="C:\re-work\chrome-profile" `
 		http://internal-app.example/
 	```
 
@@ -146,10 +138,12 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 
 #### 네이티브 실행 파일 (Ghidra 사용)
 
+아래는 기본 흐름이다. 설치형 프로그램 전체를 분석한다면 [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md)을 따른다. 그 문서에 런타임 판별, 임포트 해석, 값 추적, 실행 확인, 버전 비교가 있다.
+
 1. 정찰부터 시킨다. 함수 하나를 바로 디컴파일하지 않는다.
 
 	```text
-	/abs/path/tool.exe 를 ghidra 프로바이더로 열고, binary_overview와 문자열 검색으로
+	C:\re-work\tool\tool.exe 를 ghidra 프로바이더로 열고, binary_overview와 문자열 검색으로
 	"Export" 관련 문자열과 그 문자열을 참조하는 함수를 찾아라. 아직 디컴파일하지 마라.
 	```
 
@@ -162,14 +156,14 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 큰 바이너리는 Ghidra 첫 가져오기(import)에 시간이 오래 걸린다. 시간 초과에는 주체가 둘 있으므로, 오류가 어느 쪽에서 났는지 먼저 구분한다.
 
 - **REA의 Ghidra 시작 제한**: 기본 330초. `REA_GHIDRA_STARTUP_TIMEOUT_MS`를 늘리고 MCP 서버를 재시작한다.
-- **에이전트(MCP 클라이언트)의 도구 호출 제한**: 클라이언트마다 다르고, REA 제한보다 먼저 끝날 수 있다. 클라이언트 설정에서 도구 호출 제한을 늘린다. Codex 등록은 `rea setup`이 기본으로 450초를 넣어 준다.
+- **에이전트(MCP 클라이언트)의 도구 호출 제한**: 클라이언트마다 다르고, REA 제한보다 먼저 끝날 수 있다. pi의 제한 설정 방법은 [회사 환경 설정 7단계](./rea-windows-pi-setup.md#7-큰-바이너리의-시간-초과를-대비한다)를 본다.
 
 시간 초과 뒤에는 같은 호출을 바로 반복하지 않는다. `close_binary`의 정리 결과를 확인한 뒤 대상을 다시 연다. 메모리가 부족하면 `GHIDRA_HEADLESS_MAXMEM`을 올린다(기본 `2G`).
 
 같은 대상을 여러 날에 걸쳐 분석한다면 CLI의 `--snapshot` 옵션으로 결과를 저장한다. 같은 바이트, 같은 질의는 저장된 결과를 다시 쓴다.
 
-```bash
-rea analyze /abs/path/tool.exe --provider ghidra --snapshot /abs/path/re-work/tool-snapshot.json --json
+```powershell
+rea analyze C:\re-work\tool\tool.exe --provider ghidra --snapshot C:\re-work\tool\tool-snapshot.json --json
 ```
 
 #### Python 도구 (PyInstaller로 묶은 `.exe`)
@@ -208,7 +202,7 @@ REA 결과를 받으면 세 가지를 확인한다.
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
-| 에이전트에 REA 도구가 없다 | MCP 등록이 없거나 재시작을 안 했다 | `rea doctor --client <id> --json` 확인 후 에이전트 재시작 |
+| pi에 REA 도구가 없다 | MCP 등록이 없거나, `mcp.json`이 엄격한 JSON이 아니거나, 다시 불러오지 않았다 | `rea doctor --client pi --json` 확인 후 pi에서 `/reload` |
 | Ghidra 프로바이더를 못 찾는다 | `GHIDRA_INSTALL_DIR`이 MCP 등록 환경에 없다 | MCP 등록의 환경 변수에 넣고 재시작 |
 | JDK가 거부된다 | Rosetta 아래의 x86 JDK, 또는 JDK 21 미만 | 호스트 아키텍처와 같은 JDK 21 이상을 `JAVA_HOME`으로 지정 |
 | 큰 바이너리가 시간 초과된다 | Ghidra 시작이 330초를 넘었거나, 에이전트의 도구 호출 제한이 먼저 끝났다 | 주체를 구분한 뒤 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 또는 클라이언트 제한을 늘린다 |
@@ -227,6 +221,8 @@ REA 결과를 받으면 세 가지를 확인한다.
 
 ## 관련 문서
 
+- [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md)
+- [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md)
 - [리버스 엔지니어링 작업 절차](./re-process.md)
 - [REA 명령·도구 참조](./rea-reference.md)
 - [분석 기록 양식](./templates/investigation-log.md)

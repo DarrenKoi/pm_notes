@@ -41,7 +41,7 @@ note_kind: "참조"
 | `rea update` | 전역 설치한 REA를 업데이트한다 |
 | `rea --version --json` | 버전과 런타임 정보 |
 
-`--client` 값: `claude_code`, `claude_desktop`, `codex`, `cursor`, `gemini_cli`, `windsurf`, `devin`, `opencode`, `antigravity`, `copilot_cli`, `commandcode`, `vscode`, `grok_build`, `omp`. Grok Bot은 setup이 아니라 수동으로 연결한다.
+`--client` 값: 회사에서는 `pi`를 쓴다. 그 밖에 `claude_code`, `claude_desktop`, `codex`, `cursor`, `gemini_cli`, `windsurf`, `devin`, `opencode`, `antigravity`, `copilot_cli`, `commandcode`, `qwen_code`, `kimi`, `vscode`, `grok_build`, `omp`, `hermes`, `qoder`, `droid`, `trae`, `workbuddy`, `zcode`, `dsh`가 있다. `droid`, `dsh`, `kimi`, `qoder`, `trae`, `workbuddy`, `zcode`는 `rea-agents` 6.5.0 이상이 필요하다. Grok Bot은 setup이 아니라 수동으로 연결한다.
 
 ### 네이티브 분석 (Ghidra)
 
@@ -56,8 +56,14 @@ note_kind: "참조"
 | `rea xrefs PATH 0x1000 --provider ghidra --json` | 상호 참조 |
 | `rea trace PATH "text" --provider ghidra --json` | 시작점에서 정적 경로 추적 |
 | `rea analyze PATH --provider ghidra --snapshot SNAP.json` | 결과를 스냅샷 파일에 저장하고 재사용 |
+| `rea trace-native-values PATH PROCEDURE --provider ghidra` | 값의 출처와 흐름을 함수 경계를 넘어 추적 |
+| `rea resolve-native-call-targets PATH CALL_SITE --provider ghidra` | 간접 호출의 대상 후보 |
+| `rea inspect-native-instruction PATH ADDR --provider ghidra` | 명령어 하나의 상세 |
+| `rea inspect-native-data-type PATH --type /MyStruct --provider ghidra` | 복원된 구조체, 타입 |
+| `rea inspect-pe-resources PATH --json` | PE 리소스의 종류, ID, 위치. 내용은 디코딩하지 않는다. 엔진 불필요 |
+| `rea inspect-native-exports PATH --json` | DLL 익스포트 목록. 엔진 불필요 |
 
-자주 쓰는 MCP 도구: `open_binary`, `binary_overview`, `list_procedures`, `analyze_function`, `read_function_instructions`, `trace_native_values`, `annotate_native_function`, `set_address_name`, `close_binary`.
+자주 쓰는 MCP 도구: `open_binary`, `binary_overview`, `list_procedures`, `analyze_function`, `read_function_instructions`, `trace_native_values`, `match_native_functions`(두 빌드의 함수 대응), `inspect_pe_resources`, `inspect_native_exports`, `close_binary`. `annotate_native_function`, `set_address_name`은 Linux, macOS에서만 된다. Windows에서 실제로 쓸 수 있는 도구는 `binary_session`의 `tool_availability`로 확인한다.
 
 ### 정적 분석 (엔진 불필요)
 
@@ -73,7 +79,7 @@ note_kind: "참조"
 | Go 바이너리 | `rea inspect-go-binary PATH --json` | `inspect_go_binary` |
 | Rust 바이너리 | `rea inspect-rust-binary PATH --json` | `inspect_rust_binary` |
 | PE 서명 인증서 | `rea inspect-pe-certificates PATH --json` | `inspect_pe_certificates` |
-| SQLite DB | `rea inspect-sqlite-database PATH --json` | `inspect_sqlite_database` |
+| SQLite DB(Node.js 24.15 이상 또는 26 이상 필요) | `rea inspect-sqlite-database PATH --json` | `inspect_sqlite_database` |
 | 모델 파일(GGUF, safetensors) | `rea inspect-model-artifact PATH --json` | `inspect_model_artifact` |
 
 ### 웹 분석
@@ -140,3 +146,5 @@ REA를 띄우는 환경(MCP 등록)에 넣어야 한다. 바꾼 뒤에는 MCP �
 ## 관련 문서
 
 - [REA + Ghidra로 분석하는 방법](./rea-usage-guide.md)
+- [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md)
+- [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md)
