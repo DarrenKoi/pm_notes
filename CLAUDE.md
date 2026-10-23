@@ -143,6 +143,17 @@ last_updated: 2025-01-31
 
 ---
 
+## 📱 모바일 읽기용 HTML (claude.ai Artifact)
+
+폴더 문서를 새로 쓰거나 크게 고치면, 휴대폰과 태블릿에서 읽을 수 있도록 폴더 단위 HTML 한 페이지를 만들어 claude.ai Artifact로 게시한다. GitHub는 `.html`을 화면으로 보여주지 않기 때문이다.
+
+1. `python scripts/build_folder_html.py <폴더>`로 `<폴더>/reading.html`을 만든다. 문서 순서는 그 폴더 `README.md`의 링크 순서를 따른다. 페이지에 없는 문서로 가는 링크는 GitHub 파일 링크로 바뀐다.
+2. `reading.html`을 Artifact로 게시한다. 폴더 README의 "휴대폰, 태블릿에서 읽기" 절에 링크가 이미 있으면 그 URL로 갱신해서 링크를 유지한다. 없으면 새로 게시하고 그 절을 추가한다.
+3. Artifact는 비공개로 둔다. 공유 설정은 바꾸지 않는다. `my-task/`처럼 회사 업무 산출물이 있는 폴더는 게시하기 전에 사용자에게 확인한다.
+4. `.md`가 원본이다. `reading.html`은 손으로 고치지 않고 다시 생성한다.
+
+예: `reverse_engineering/README.md`의 "휴대폰, 태블릿에서 읽기" 절.
+
 ## 🎯 품질 기준
 
 ### 좋은 문서의 조건
