@@ -67,7 +67,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#rea-usage-guide"><span class="num">04</span>REA + Ghidra로 분석하는 방법</a></li>
 <li><a href="#installed-program-analysis"><span class="num">05</span>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
 <li><a href="#rea-reference"><span class="num">06</span>REA 명령·도구 참조</a></li>
-<li><a href="#investigation-log"><span class="num">07</span>분석 기록: ⟨대상 이름⟩</a></li>
+<li><a href="#templates-investigation-log"><span class="num">07</span>분석 기록: ⟨대상 이름⟩</a></li>
 </ol></nav>
 <section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>리버스 엔지니어링(Reverse Engineering) 노트</h1>
 <blockquote>
@@ -125,7 +125,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>-</td>
-<td><a href="#investigation-log">분석 기록 양식</a></td>
+<td><a href="#templates-investigation-log">분석 기록 양식</a></td>
 <td>양식</td>
 <td>분석 하나를 시작할 때 복사해서 쓴다</td>
 </tr>
@@ -136,7 +136,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>이 폴더의 문서 전체를 한 페이지로 묶은 HTML이 claude.ai에 있다: <a href="https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE">https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE</a></p>
 <ul>
 <li>비공개 링크다. 본인 claude.ai 계정으로 로그인해야 열린다. 저장소가 공개라서 링크는 누구나 볼 수 있지만, 공유 설정을 바꾸지 않는 한 다른 사람은 열 수 없다.</li>
-<li><code>.md</code>를 고쳐도 자동으로 반영되지 않는다. <code>python build_html.py</code>로 <code>reverse-engineering-guide.html</code>을 다시 만든 뒤, Claude Code에 "이 HTML을 같은 링크에 다시 게시해줘"라고 요청한다. 링크는 그대로 유지된다.</li>
+<li><code>.md</code>를 고쳐도 자동으로 반영되지 않는다. 저장소 루트에서 <code>python scripts/build_folder_html.py reverse_engineering</code>으로 <code>reading.html</code>을 다시 만든 뒤, Claude Code에 "이 HTML을 같은 링크에 다시 게시해줘"라고 요청한다. 링크는 그대로 유지된다.</li>
 </ul>
 <h2 id="readme--먼저-알아둘-세-가지">먼저 알아둘 세 가지</h2>
 <ol>
@@ -348,7 +348,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </code></pre>
 <p>에이전트와 REA를 쓰면 3~6단계의 손작업이 크게 줄어든다. 1, 2, 7단계는 줄지 않는다. 그 세 단계가 사람이 하는 일이다.</p>
 <h2 id="re-process--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
-<p>분석을 시작할 때 <a href="#investigation-log">분석 기록 양식</a>을 복사해서 단계마다 채운다.</p>
+<p>분석을 시작할 때 <a href="#templates-investigation-log">분석 기록 양식</a>을 복사해서 단계마다 채운다.</p>
 <h3 id="re-process--1-범위와-허가를-확인한다">1. 범위와 허가를 확인한다</h3>
 <p>동료가 만든 도구라도 바로 분석하지 않는다. 아래 네 가지를 먼저 확인하고 기록 양식에 적는다.</p>
 <ul>
@@ -454,7 +454,7 @@ file /absolute/path/to/target.exe</code></p>
 <ul>
 <li><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></li>
 <li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
-<li><a href="#investigation-log">분석 기록 양식</a></li>
+<li><a href="#templates-investigation-log">분석 기록 양식</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="rea-windows-pi-setup"><p class="file"><span class="num">03</span>rea-windows-pi-setup.md</p><h1>회사 Windows + pi 환경에서 REA를 설정하고 쓰는 방법</h1>
 <blockquote>
@@ -600,7 +600,7 @@ rea doctor --client hermes --json
 Copy-Item &quot;\\shared\tools\RecipeTool\RecipeTool.exe&quot; C:\re-work\recipe-tool\
 Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
 </code></pre>
-<p>해시를 <a href="#investigation-log">분석 기록 양식</a>에 적고, <a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a>의 프롬프트 형식으로 pi에게 묻는다. 경로는 <code>C:\re-work\recipe-tool\RecipeTool.exe</code>처럼 절대 경로로 쓴다.</p>
+<p>해시를 <a href="#templates-investigation-log">분석 기록 양식</a>에 적고, <a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a>의 프롬프트 형식으로 pi에게 묻는다. 경로는 <code>C:\re-work\recipe-tool\RecipeTool.exe</code>처럼 절대 경로로 쓴다.</p>
 <p>함수 이름을 붙일 수 없으므로, pi에게 "따라간 함수의 주소와 제안 이름을 표로 정리하라"고 요청해서 분석 기록 5절에 붙인다.</p>
 <h3 id="rea-windows-pi-setup--6-웹-앱은-windows-chrome으로-관찰한다">6. 웹 앱은 Windows Chrome으로 관찰한다</h3>
 <pre><code class="language-powershell">&amp; &quot;C:\Program Files\Google\Chrome\Application\chrome.exe&quot; `
@@ -905,7 +905,7 @@ C:\re-work\tool\tool.exe 를 ghidra 프로바이더로 열고, binary_overview�
 <li><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
 <li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
 <li><a href="#rea-reference">REA 명령·도구 참조</a></li>
-<li><a href="#investigation-log">분석 기록 양식</a></li>
+<li><a href="#templates-investigation-log">분석 기록 양식</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="installed-program-analysis"><p class="file"><span class="num">05</span>installed-program-analysis.md</p><h1>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</h1>
 <blockquote>
@@ -1180,7 +1180,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </tbody>
 </table></div>
 <p>계산 로직이 질문이면 <code>trace_native_values</code>가 특히 쓸모 있다. 결과값 하나를 정하고, 그 값이 어느 입력과 상수에서 어떤 연산을 거쳐 만들어지는지 함수 경계를 넘어 추적한다. 메모리 별칭(alias)이나 전역 상태를 거치는 값은 미확인으로 남는다. 그 부분은 어셈블리를 직접 보거나 실행해서 확인한다.</p>
-<p>Windows에서는 Ghidra에 함수 이름을 붙일 수 없다. pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 <a href="#investigation-log">분석 기록</a> 5절에 붙인다.</p>
+<p>Windows에서는 Ghidra에 함수 이름을 붙일 수 없다. pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 <a href="#templates-investigation-log">분석 기록</a> 5절에 붙인다.</p>
 <h3 id="installed-program-analysis--6-설정과-데이터-파일을-함께-읽는다">6. 설정과 데이터 파일을 함께 읽는다</h3>
 <p>코드만 보면 동작의 절반만 보인다. 설정 값과 데이터 형식이 동작을 바꾸기 때문이다.</p>
 <ul>
@@ -1703,18 +1703,18 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <li><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></li>
 <li><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="investigation-log"><p class="file"><span class="num">07</span>templates/investigation-log.md</p><h1>분석 기록: ⟨대상 이름⟩</h1>
+<section class="doc" id="templates-investigation-log"><p class="file"><span class="num">07</span>templates/investigation-log.md</p><h1>분석 기록: ⟨대상 이름⟩</h1>
 <blockquote>
 <p>분석 하나를 시작할 때 이 파일을 복사해서 채운다. 디컴파일 코드 원문, 장비명, 내부 시스템 상세는 적지 않는다.</p>
 </blockquote>
-<h2 id="investigation-log--1-범위와-허가">1. 범위와 허가</h2>
+<h2 id="templates-investigation-log--1-범위와-허가">1. 범위와 허가</h2>
 <ul>
 <li>대상 소유자 또는 부서:</li>
 <li>목적: 유지보수 / 연동 / 재구현 / 버전 확인</li>
 <li>허가받은 사람과 날짜:</li>
 <li>실행 허용 여부와 환경: 정적 분석만 / 테스트 환경에서 실행 가능</li>
 </ul>
-<h2 id="investigation-log--2-질문">2. 질문</h2>
+<h2 id="templates-investigation-log--2-질문">2. 질문</h2>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -1739,7 +1739,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </tr>
 </tbody>
 </table></div>
-<h2 id="investigation-log--3-대상-식별">3. 대상 식별</h2>
+<h2 id="templates-investigation-log--3-대상-식별">3. 대상 식별</h2>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -1780,14 +1780,14 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </tr>
 </tbody>
 </table></div>
-<h2 id="investigation-log--4-정찰-결과">4. 정찰 결과</h2>
+<h2 id="templates-investigation-log--4-정찰-결과">4. 정찰 결과</h2>
 <ul>
 <li>진입점 후보 문자열:</li>
 <li>주요 임포트:</li>
 <li>의존성, 라이브러리:</li>
 <li>설정 파일, 리소스:</li>
 </ul>
-<h2 id="investigation-log--5-정적-분석-경로">5. 정적 분석 경로</h2>
+<h2 id="templates-investigation-log--5-정적-분석-경로">5. 정적 분석 경로</h2>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -1808,7 +1808,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </tr>
 </tbody>
 </table></div>
-<h2 id="investigation-log--6-동적-확인">6. 동적 확인</h2>
+<h2 id="templates-investigation-log--6-동적-확인">6. 동적 확인</h2>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -1827,7 +1827,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </tr>
 </tbody>
 </table></div>
-<h2 id="investigation-log--7-결론">7. 결론</h2>
+<h2 id="templates-investigation-log--7-결론">7. 결론</h2>
 <div class="tbl"><table>
 <thead>
 <tr>

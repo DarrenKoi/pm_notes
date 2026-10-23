@@ -1,31 +1,39 @@
-"""Build reverse-engineering-guide.html from the Markdown docs in this folder.
+"""Build one mobile-friendly HTML page from a pm_notes folder's Markdown docs.
 
-Usage: python build_html.py  (needs the `markdown` package)
+Usage: python scripts/build_folder_html.py <folder>   (needs the `markdown` package)
+
+Reads <folder>/README.md, then every .md file it links inside the folder, in link
+order. Writes <folder>/reading.html, which is published as a claude.ai artifact.
 """
 import html
 import re
+import sys
 from pathlib import Path
 
 import markdown
+from urllib.parse import quote
 
-HERE = Path(__file__).parent
-OUT = HERE / "reverse-engineering-guide.html"
+ROOT = Path(sys.argv[1]) if len(sys.argv) > 1 else sys.exit(__doc__)
+OUT = ROOT / "reading.html"
+REPO = Path(__file__).resolve().parent.parent
+GITHUB = "https://github.com/DarrenKoi/pm_notes/blob/main"
 
-# Reading order follows README.md.
-DOCS = [
-	"README.md",
-	"re-fundamentals.md",
-	"re-process.md",
-	"rea-windows-pi-setup.md",
-	"rea-usage-guide.md",
-	"installed-program-analysis.md",
-	"rea-reference.md",
-	"templates/investigation-log.md",
-]
+
+def readme_order():
+	readme = (ROOT / "README.md").read_text(encoding="utf-8")
+	docs = ["README.md"]
+	for target in re.findall(r"\]\((?:\./)?([^)#:\s]+\.md)(?:#[^)]*)?\)", readme):
+		target = Path(target).as_posix()
+		if target not in docs and (ROOT / target).is_file() and ".." not in target:
+			docs.append(target)
+	return docs
+
+
+DOCS = readme_order()
 
 
 def doc_id(path):
-	return "readme" if path == "README.md" else Path(path).stem
+	return re.sub(r"[^\w.-]", "-", path.removesuffix(".md").replace("/", "-")).lower()
 
 
 def slugify(text, sep="-"):
@@ -36,7 +44,7 @@ def slugify(text, sep="-"):
 
 
 def render(path):
-	src = (HERE / path).read_text(encoding="utf-8")
+	src = (ROOT / path).read_text(encoding="utf-8")
 	src = re.sub(r"\A---\n.*?\n---\n", "", src, flags=re.S)
 	did = doc_id(path)
 	md = markdown.Markdown(
@@ -52,7 +60,9 @@ def render(path):
 		resolved = (Path(path).parent / target).as_posix().removeprefix("./")
 		resolved = re.sub(r"[^/]+/\.\./", "", resolved)
 		if resolved not in DOCS:
-			return m.group(0)
+			# Not on this page: link to the file on GitHub instead.
+			repo_path = quote((ROOT.resolve() / resolved).relative_to(REPO).as_posix())
+			return f'href="{GITHUB}/{repo_path}{anchor or ""}"'
 		rid = doc_id(resolved)
 		frag = f"{rid}--{anchor[1:]}" if anchor else rid
 		return f'href="#{frag}"'
@@ -83,12 +93,13 @@ def main():
 			f"<h1>{html.escape(title)}</h1>{body}"
 			f'<p class="back"><a href="#top">목차로</a></p></section>'
 		)
-	page = TEMPLATE.replace("{{NAV}}", "\n".join(nav)).replace("{{DOCS}}", "\n".join(parts))
+	site = html.escape(re.sub(r"\(.*?\)", "", render("README.md")[1]).strip())
+	page = TEMPLATE.replace("{{NAV}}", "\n".join(nav)).replace("{{DOCS}}", "\n".join(parts)).replace("{{SITE}}", site)
 	OUT.write_text(page, encoding="utf-8")
 	print(f"wrote {OUT}")
 
 
-TEMPLATE = """<title>리버스 엔지니어링 노트</title>
+TEMPLATE = """<title>{{SITE}}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
@@ -147,7 +158,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 @media (max-width: 480px) { body { font-size: 15.5px; } h1 { font-size: 1.4rem; } th, td { padding: 8px 10px; } }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
-<header class="bar"><div class="bar-inner"><strong>리버스 엔지니어링 노트</strong><a href="#top">목차</a></div></header>
+<header class="bar"><div class="bar-inner"><strong>{{SITE}}</strong><a href="#top">목차</a></div></header>
 <main id="top">
 <nav class="toc" aria-label="문서 목록"><h2>문서 · 읽는 순서</h2><ol>
 {{NAV}}
