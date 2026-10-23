@@ -57,7 +57,7 @@ REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어
 - Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm. SQLite 분석(`inspect_sqlite_database`)까지 쓰려면 24.x나 26 이상을 고른다
 - Ghidra 12.1.x(검증된 버전은 12.1.4)
 - 64비트 JDK 21 이상
-- REA 자체. 회사에서 승인한 배포 경로로 설치한다. npm을 쓸 수 있으면 `npm install --global rea-agents`다. 사내망의 npm 접근 경로는 ⟨확인⟩ 필요하다
+- REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 `npm install --global rea-agents`로 설치한다
 
 ### 2. 환경 변수를 정하고 진단한다
 
@@ -144,7 +144,7 @@ Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
 
 ### 7. 큰 바이너리의 시간 초과를 대비한다
 
-Ghidra의 첫 가져오기는 기본 330초까지 기다린다. 에이전트의 도구 호출 제한이 이보다 짧으면 REA보다 에이전트가 먼저 포기한다. pi의 MCP 도구 호출 제한이 어떻게 설정되는지는 ⟨확인⟩ 필요하다. 큰 대상에서 시간 초과가 반복되면 pi의 MCP 설정 문서에서 요청 제한 항목을 찾는다. 그동안에는 CLI로 먼저 분석하고 `--snapshot`으로 결과를 저장해 두는 방법이 있다.
+Ghidra의 첫 가져오기는 기본 330초까지 기다린다. 에이전트의 도구 호출 제한이 이보다 짧으면 REA보다 에이전트가 먼저 포기한다. 회사에서 pi로 REA를 쓸 때 지금까지 이 문제는 없었다(2026-10-24 기준). 아주 큰 대상에서 시간 초과가 반복되면 pi의 MCP 설정 문서에서 요청 제한 항목을 찾는다. 그동안에는 CLI로 먼저 분석하고 `--snapshot`으로 결과를 저장해 두는 방법이 있다.
 
 ```powershell
 rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C:\re-work\recipe-tool\snapshot.json --json
@@ -154,7 +154,7 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 
 pi는 사내 OpenAI 호환 엔드포인트의 모델(Kimi-K2.5 등)로 동작한다. 두 가지를 확인한다.
 
-- **도구 정의 크기**: REA는 도구가 170개 넘게 있다. 도구 정의를 매 요청에 모두 보내는 클라이언트라면 간략형 스키마로도 약 68k 토큰(cl100k 기준)을 차지한다는 측정이 있다. pi가 도구 정의를 어떻게 보내는지와 사용 중인 모델의 컨텍스트 창 크기는 ⟨확인⟩ 필요하다. 컨텍스트가 빨리 차면 `env`에 `"REA_MCP_INPUT_SCHEMA_PROFILE": "compact"`가 있는지 본다(현재 기본값이 `compact`이고, `full`로 바꿔 두었다면 되돌린다).
+- **도구 정의 크기**: REA는 도구가 170개 넘게 있다. 도구 정의를 매 요청에 모두 보내는 클라이언트라면 간략형 스키마로도 약 68k 토큰(cl100k 기준)을 차지한다는 측정이 있다. 회사의 pi + 사내 모델 조합에서는 지금까지 문제가 없었다(2026-10-24 기준). 나중에 컨텍스트가 빨리 차면 `env`에 `"REA_MCP_INPUT_SCHEMA_PROFILE": "compact"`가 있는지 본다(현재 기본값이 `compact`이고, `full`로 바꿔 두었다면 되돌린다).
 - **스키마 거부**: 일부 Kimi 게이트웨이가 REA의 이전 버전 입력 스키마를 "infinite recursion"으로 거부한 사례가 있다. 같은 오류가 나면 `rea update`로 REA를 최신으로 올리고 `compact` 프로필을 확인한다.
 
 도구 결과는 사내 모델로만 간다. 외부 LLM API는 사내망에서 차단되어 있으므로, 외부 모델에 연결된 에이전트로 사내 도구를 분석하지 않는다.
