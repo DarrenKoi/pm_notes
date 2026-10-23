@@ -11,7 +11,7 @@ note_kind: "사용법"
 
 # 회사 Windows + pi 환경에서 REA를 설정하고 쓰는 방법
 
-> 회사 PC는 Windows이고 에이전트는 pi다. REA는 둘 다 지원하지만 Windows의 Ghidra 연동은 실험 단계이고 읽기 전용이다. 이 문서는 그 환경에서 막히는 지점과 해결 방법을 정리한다.
+> 회사 PC는 Windows이고 에이전트는 주로 pi, 가끔 Hermes다. REA는 둘 다 지원하지만 Windows의 Ghidra 연동은 실험 단계이고 읽기 전용이다. 이 문서는 그 환경에서 막히는 지점과 해결 방법을 정리한다.
 
 ## 왜 필요한가? (Why)
 
@@ -119,6 +119,24 @@ REA MCP 도구 목록이 보이는지 확인하고, binary_session 도구를 {}�
 ghidra 프로바이더가 사용 가능한지 알려줘.
 ```
 
+### Hermes를 쓸 때
+
+가끔 Hermes를 쓴다면 같은 REA를 Hermes에도 등록한다. 두 에이전트의 등록은 서로 독립이다.
+
+```powershell
+rea setup --client hermes --dry-run --json
+rea setup --client hermes --yes --json
+rea doctor --client hermes --json
+```
+
+pi와 다른 점은 아래와 같다.
+
+- 설정 파일은 Hermes 홈의 `config.yaml`이고, `mcp_servers.rea` 항목에 등록된다. Windows의 기본 홈은 `%LOCALAPPDATA%\hermes`이고, `HERMES_HOME`이 있으면 그 폴더를 따른다.
+- YAML이라 기존 주석과 다른 설정은 보존된다. setup은 `enabled: true`를 명시한다.
+- 스킬은 Hermes 홈의 `skills` 폴더에 설치된다.
+- Hermes 프로필을 쓰면 현재 선택된 프로필(`active_profile`)에 등록된다. 선택된 프로필이 없거나 깨져 있으면 setup이 오류를 보고하므로, `hermes profile use default`로 고친 뒤 다시 실행한다.
+- Ghidra 환경 변수(`GHIDRA_INSTALL_DIR`, `JAVA_HOME`)가 `rea` 항목의 `env`에 들어갔는지 pi와 같은 방법으로 확인한다.
+
 ### 5. 대상을 복사하고 분석한다
 
 ```powershell
@@ -163,6 +181,7 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 
 - REA Windows Ghidra P0: <https://github.com/morluto/rea/blob/main/docs/windows-ghidra-p0.md>
 - REA 클라이언트 설정(Pi 절): <https://github.com/morluto/rea/blob/main/docs/client-configuration.md#pi>
+- REA 클라이언트 설정(Hermes 절): <https://github.com/morluto/rea/blob/main/docs/client-configuration.md#hermes>
 - REA 지원 에이전트 목록: <https://github.com/morluto/rea/blob/main/docs/installation.md#supported-agents>
 - pi MCP 문서: <https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md>
 

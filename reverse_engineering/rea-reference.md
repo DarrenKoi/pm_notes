@@ -41,7 +41,7 @@ note_kind: "참조"
 | `rea update` | 전역 설치한 REA를 업데이트한다 |
 | `rea --version --json` | 버전과 런타임 정보 |
 
-`--client` 값: 회사에서는 `pi`를 쓴다. 그 밖에 `claude_code`, `claude_desktop`, `codex`, `cursor`, `gemini_cli`, `windsurf`, `devin`, `opencode`, `antigravity`, `copilot_cli`, `commandcode`, `qwen_code`, `kimi`, `vscode`, `grok_build`, `omp`, `hermes`, `qoder`, `droid`, `trae`, `workbuddy`, `zcode`, `dsh`가 있다. `droid`, `dsh`, `kimi`, `qoder`, `trae`, `workbuddy`, `zcode`는 `rea-agents` 6.5.0 이상이 필요하다. Grok Bot은 setup이 아니라 수동으로 연결한다.
+`--client` 값: 회사에서는 `pi`와 `hermes`를 쓴다. 그 밖에 `claude_code`, `claude_desktop`, `codex`, `cursor`, `gemini_cli`, `windsurf`, `devin`, `opencode`, `antigravity`, `copilot_cli`, `commandcode`, `qwen_code`, `kimi`, `vscode`, `grok_build`, `omp`, `hermes`, `qoder`, `droid`, `trae`, `workbuddy`, `zcode`, `dsh`가 있다. `droid`, `dsh`, `kimi`, `qoder`, `trae`, `workbuddy`, `zcode`는 `rea-agents` 6.5.0 이상이 필요하다. Grok Bot은 setup이 아니라 수동으로 연결한다.
 
 ### 네이티브 분석 (Ghidra)
 

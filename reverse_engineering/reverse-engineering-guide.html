@@ -1,0 +1,1852 @@
+<title>리버스 엔지니어링 노트</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column; a sticky bar names the docs, each doc is a section headed by its file path like a listing header. */
+:root {
+	--bg: #f3f5f4; --surface: #ffffff; --ink: #18201d; --muted: #5b6862; --line: #d5ddd9;
+	--accent: #a63a2b; --code-bg: #e8edea; --note: #2f6690; --warn: #a65e00;
+	--sans: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+	--mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+	--bg: #121715; --surface: #1a201e; --ink: #e3e9e6; --muted: #98a59f; --line: #2c3532;
+	--accent: #e07a62; --code-bg: #222a27; --note: #7fb3dd; --warn: #e3a54a; color-scheme: dark } }
+:root[data-theme="dark"] {
+	--bg: #121715; --surface: #1a201e; --ink: #e3e9e6; --muted: #98a59f; --line: #2c3532;
+	--accent: #e07a62; --code-bg: #222a27; --note: #7fb3dd; --warn: #e3a54a; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.75 var(--sans); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
+	padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bar-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bar strong { font-size: 15px; }
+.bar a { color: var(--accent); font-size: 14px; text-decoration: none; }
+main { max-width: 760px; margin: 0 auto; padding-block: 24px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.toc { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; }
+.toc h2 { margin: 0 0 8px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border: 0; padding: 0; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a { display: flex; gap: 12px; padding: 8px 4px; color: var(--ink); text-decoration: none; border-radius: 4px; }
+.toc a:hover, .toc a:focus-visible { background: var(--code-bg); }
+.num { font-family: var(--mono); color: var(--accent); font-size: 13px; padding-top: 3px; flex: none; }
+.doc { margin-top: 56px; scroll-margin-top: 64px; }
+.file { font-family: var(--mono); font-size: 13px; color: var(--muted); margin: 0; display: flex; gap: 10px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.35; scroll-margin-top: 64px; }
+h1 { font-size: 1.65rem; margin: 14px 0 8px; }
+h2 { font-size: 1.3rem; margin: 40px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+h4 { font-size: 1rem; margin: 22px 0 6px; color: var(--muted); }
+p, li { max-width: 68ch; }
+a { color: var(--accent); overflow-wrap: anywhere; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: var(--mono); font-size: .88em; background: var(--code-bg); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+pre { background: var(--code-bg); border-radius: 6px; padding: 14px 16px; overflow-x: auto; tab-size: 4; line-height: 1.55; }
+pre code { background: none; padding: 0; font-size: 13.5px; overflow-wrap: normal; }
+.tbl { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; line-height: 1.55; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); min-width: 7em; }
+th { background: var(--code-bg); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--line); color: var(--muted); }
+.callout { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--note); border-radius: 6px; color: var(--ink); }
+.callout-warning { border-left-color: var(--warn); }
+.callout-label { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; margin: 0 0 2px; color: var(--note); }
+.callout-warning .callout-label { color: var(--warn); }
+.callout p { margin: 6px 0; }
+.back { margin-top: 32px; font-size: 14px; }
+@media (max-width: 480px) { body { font-size: 15.5px; } h1 { font-size: 1.4rem; } th, td { padding: 8px 10px; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+<header class="bar"><div class="bar-inner"><strong>리버스 엔지니어링 노트</strong><a href="#top">목차</a></div></header>
+<main id="top">
+<nav class="toc" aria-label="문서 목록"><h2>문서 · 읽는 순서</h2><ol>
+<li><a href="#readme"><span class="num">00</span>리버스 엔지니어링(Reverse Engineering) 노트</a></li>
+<li><a href="#re-fundamentals"><span class="num">01</span>리버스 엔지니어링 기초 개념</a></li>
+<li><a href="#re-process"><span class="num">02</span>리버스 엔지니어링 작업 절차</a></li>
+<li><a href="#rea-windows-pi-setup"><span class="num">03</span>회사 Windows + pi 환경에서 REA를 설정하고 쓰는 방법</a></li>
+<li><a href="#rea-usage-guide"><span class="num">04</span>REA + Ghidra로 분석하는 방법</a></li>
+<li><a href="#installed-program-analysis"><span class="num">05</span>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
+<li><a href="#rea-reference"><span class="num">06</span>REA 명령·도구 참조</a></li>
+<li><a href="#investigation-log"><span class="num">07</span>분석 기록: ⟨대상 이름⟩</a></li>
+</ol></nav>
+<section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>리버스 엔지니어링(Reverse Engineering) 노트</h1>
+<blockquote>
+<p>동료 엔지니어가 만든 프로그램과 웹 앱을 소스 없이 이해하기 위한 지식, 절차, 그리고 REA + Ghidra 사용법.</p>
+</blockquote>
+<h2 id="readme--왜-이-폴더가-있는가">왜 이 폴더가 있는가</h2>
+<p>사내 도구는 만든 사람이 떠나거나 소스가 흩어지면 실행 파일만 남는다. 그 도구를 고치거나, 다른 시스템과 연동하거나, 같은 기능을 새로 만들려면 "이 프로그램이 실제로 무엇을 하는가"를 바이너리와 번들에서 다시 읽어내야 한다. 이 폴더는 그 작업을 반복 가능한 절차로 정리한다.</p>
+<p>도구는 <a href="https://github.com/morluto/rea">REA(Reverse Engineer Anything)</a>를 쓴다. REA는 코딩 에이전트에 MCP 서버로 붙어서 Ghidra 같은 분석 엔진을 대신 호출하고, 결론마다 근거(Evidence)를 함께 돌려준다.</p>
+<h2 id="readme--읽는-순서">읽는 순서</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>순서</th>
+<th>문서</th>
+<th>성격</th>
+<th>언제 읽나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></td>
+<td>설명</td>
+<td>처음 시작할 때. 정적·동적 분석, 디컴파일, 대상별 특징</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="#re-process">리버스 엔지니어링 작업 절차</a></td>
+<td>절차</td>
+<td>새 분석을 시작할 때마다. 범위 확인부터 보고까지 7단계</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></td>
+<td>사용법</td>
+<td>회사 PC에 REA를 처음 연결할 때. Windows 제약과 pi 등록</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></td>
+<td>사용법</td>
+<td>실제로 에이전트에 일을 시킬 때. 프롬프트 패턴과 대상별 경로</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></td>
+<td>사용법</td>
+<td>설치형 프로그램을 분석할 때. 런타임 판별부터 버전 비교까지</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="#rea-reference">REA 명령·도구 참조</a></td>
+<td>참조</td>
+<td>명령어, MCP 도구 이름, 환경 변수를 찾을 때</td>
+</tr>
+<tr>
+<td>-</td>
+<td><a href="#investigation-log">분석 기록 양식</a></td>
+<td>양식</td>
+<td>분석 하나를 시작할 때 복사해서 쓴다</td>
+</tr>
+</tbody>
+</table></div>
+<p>회사 환경은 Windows PC + pi 에이전트(사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 5번 문서를 가장 자주 본다.</p>
+<h2 id="readme--휴대폰-태블릿에서-읽기">휴대폰, 태블릿에서 읽기</h2>
+<p>이 폴더의 문서 전체를 한 페이지로 묶은 HTML이 claude.ai에 있다: <a href="https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE">https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE</a></p>
+<ul>
+<li>비공개 링크다. 본인 claude.ai 계정으로 로그인해야 열린다. 저장소가 공개라서 링크는 누구나 볼 수 있지만, 공유 설정을 바꾸지 않는 한 다른 사람은 열 수 없다.</li>
+<li><code>.md</code>를 고쳐도 자동으로 반영되지 않는다. <code>python build_html.py</code>로 <code>reverse-engineering-guide.html</code>을 다시 만든 뒤, Claude Code에 "이 HTML을 같은 링크에 다시 게시해줘"라고 요청한다. 링크는 그대로 유지된다.</li>
+</ul>
+<h2 id="readme--먼저-알아둘-세-가지">먼저 알아둘 세 가지</h2>
+<ol>
+<li><strong>허가 범위 안에서만 분석한다.</strong> 동료가 만든 도구라도 소유 부서와 목적을 먼저 확인한다. 절차는 <a href="#re-process--1-범위와-허가를-확인한다">작업 절차 1단계</a>에 있다.</li>
+<li><strong>관찰, 추론, 미확인을 구분한다.</strong> 디컴파일 결과는 원본 소스가 아니다. REA 결과도 이 셋을 나눠서 돌려주므로, 기록할 때 그 구분을 지운다면 REA를 쓰는 이유가 사라진다.</li>
+<li><strong>분석 결과는 회사 밖으로 내보내지 않는다.</strong> REA는 분석을 로컬에서 하지만, 도구 결과는 에이전트의 모델로 넘어간다. 사내 LLM 엔드포인트에 연결된 에이전트에서만 쓴다. 이 저장소에도 장비명, 내부 시스템 상세, 디컴파일 코드 원문은 넣지 않는다.</li>
+</ol>
+<h2 id="readme--참고-자료">참고 자료</h2>
+<ul>
+<li>REA 저장소: <a href="https://github.com/morluto/rea">https://github.com/morluto/rea</a></li>
+<li>REA 가이드 사이트: <a href="https://rea.tools/guides/">https://rea.tools/guides/</a></li>
+<li>Ghidra: <a href="https://github.com/NationalSecurityAgency/ghidra">https://github.com/NationalSecurityAgency/ghidra</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="re-fundamentals"><p class="file"><span class="num">01</span>re-fundamentals.md</p><h1>리버스 엔지니어링 기초 개념</h1>
+<blockquote>
+<p>완성된 결과물(바이너리, 번들, 네트워크 트래픽)에서 거꾸로 설계와 동작을 읽어내는 일. 무엇을 볼 수 있고 무엇은 볼 수 없는지를 아는 것이 기술의 절반이다.</p>
+</blockquote>
+<h2 id="re-fundamentals--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>사내에서 리버스 엔지니어링이 필요한 상황은 대개 넷 중 하나다.</p>
+<ul>
+<li><strong>소스가 없다.</strong> 만든 사람이 퇴사했거나, 저장소 없이 실행 파일만 공유 폴더에 남았다.</li>
+<li><strong>소스와 배포본이 다르다.</strong> 저장소의 코드와 실제로 돌고 있는 <code>.exe</code>가 같은 버전인지 아무도 모른다.</li>
+<li><strong>연동해야 한다.</strong> 웹 앱이 어떤 API를 어떤 형식으로 부르는지 문서가 없다.</li>
+<li><strong>같은 기능을 새로 만들어야 한다.</strong> 기존 도구의 계산식이나 판정 로직을 그대로 옮겨야 한다.</li>
+</ul>
+<p>넷 다 질문이 같다. "이 프로그램은 실제로 무엇을 하는가?" 리버스 엔지니어링은 그 질문에 근거를 붙여 답하는 방법이다.</p>
+<h2 id="re-fundamentals--핵심-개념-what">핵심 개념 (What)</h2>
+<h3 id="re-fundamentals--컴파일은-정보를-버린다">컴파일은 정보를 버린다</h3>
+<p>소스 코드가 실행 파일이 될 때 많은 정보가 사라진다. 리버스 엔지니어링의 난이도는 어떤 정보가 얼마나 사라졌는지로 정해진다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>사라지는 것</th>
+<th>결과</th>
+<th>남는 단서</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>변수 이름, 주석</td>
+<td>디컴파일 결과에 <code>local_18</code>, <code>param_1</code> 같은 이름이 붙는다</td>
+<td>문자열, 로그 메시지, 에러 문구</td>
+</tr>
+<tr>
+<td>함수 이름(스트립된 바이너리)</td>
+<td>함수가 <code>FUN_00401a20</code> 같은 주소로만 보인다</td>
+<td>외부 라이브러리 호출(import), 내보낸 함수(export)</td>
+</tr>
+<tr>
+<td>타입과 구조체</td>
+<td>포인터 연산이 <code>*(int *)(param_1 + 0x10)</code>처럼 보인다</td>
+<td>오프셋 패턴, 디버그 정보(DWARF, PDB)가 남은 경우</td>
+</tr>
+<tr>
+<td>제어 구조</td>
+<td>최적화로 반복문과 분기가 원래 모양과 달라진다</td>
+<td>어셈블리, 제어 흐름 그래프(CFG)</td>
+</tr>
+</tbody>
+</table></div>
+<p>반대로 언어마다 남는 정보가 많은 경우도 있다. 아래 "대상별 난이도"에서 다룬다.</p>
+<h3 id="re-fundamentals--정적-분석과-동적-분석">정적 분석과 동적 분석</h3>
+<ul>
+<li><strong>정적 분석(Static Analysis)</strong>: 실행하지 않고 파일을 읽는다. 디스어셈블, 디컴파일, 문자열 검색, 상호 참조 추적이 여기에 속한다. 안전하고 반복할 수 있지만, 실제로 어느 경로가 실행되는지는 모른다.</li>
+<li><strong>동적 분석(Dynamic Analysis)</strong>: 실행하면서 관찰한다. 브라우저 DevTools, 네트워크 캡처, 디버거, 프로세스 출력 기록이 여기에 속한다. 실제 값을 볼 수 있지만, 실행한 경로만 보인다.</li>
+</ul>
+<p>정적 분석으로 후보를 좁히고, 동적 분석으로 확인하는 순서가 기본이다. 정적 분석만으로 "이 함수가 호출된다"고 말하면 추론이다. 실행 중에 호출을 관찰해야 관찰이 된다.</p>
+<h3 id="re-fundamentals--꼭-알아야-할-용어">꼭 알아야 할 용어</h3>
+<ul>
+<li><strong>디스어셈블(Disassemble)</strong>: 기계어 바이트를 어셈블리 명령어로 바꾼다. 정확하지만 읽기 어렵다.</li>
+<li><strong>디컴파일(Decompile)</strong>: 어셈블리를 C 비슷한 의사 코드(Pseudocode)로 바꾼다. 읽기 쉽지만 원본 소스가 아니다. 디컴파일러가 타입을 잘못 추정하면 결과도 틀린다.</li>
+<li><strong>심볼(Symbol)</strong>: 함수와 변수의 이름 정보. 디버그 빌드에는 많고, 릴리스 빌드에서는 스트립(Strip)되어 없을 수 있다.</li>
+<li><strong>임포트·익스포트(Import, Export)</strong>: 프로그램이 외부 라이브러리에서 가져다 쓰는 함수와 밖으로 내보내는 함수. 스트립된 바이너리에서도 대부분 남아 있어서 첫 단서가 된다. 예를 들어 <code>CreateFileW</code>를 임포트하면 파일이나 장치를 열 수 있다는 후보 단서다. 임포트는 실제 호출을 증명하지 않으므로, 호출 경로와 인수를 따로 확인한다.</li>
+<li><strong>상호 참조(Cross-reference, Xref)</strong>: "이 함수를 누가 부르는가", "이 문자열을 누가 읽는가"의 목록. 문자열 하나에서 출발해 그 문자열을 쓰는 함수로 거슬러 올라가는 것이 가장 흔한 탐색 방법이다.</li>
+<li><strong>호출 그래프(Call Graph)</strong>: 함수 사이의 호출 관계. 호출자(Caller)와 피호출자(Callee)로 나뉜다.</li>
+<li><strong>소스 맵(Source Map)</strong>: 압축된 JavaScript 번들을 원본 파일과 줄 번호로 되돌리는 매핑 파일(<code>.map</code>). 사내 웹 앱은 소스 맵을 지우지 않고 배포하는 경우가 많다. 소스 맵의 <code>sourcesContent</code> 필드에 원본 내용이 들어 있으면 원본 소스를 거의 그대로 얻는다. 이 필드는 선택 사항이므로, 비어 있으면 원본 파일 경로와 줄 번호만 얻는다.</li>
+<li><strong>진입점(Entry Point)</strong>: 분석을 시작할 지점. <code>main</code> 함수일 수도 있고, 버튼 클릭 핸들러, HTTP 라우트, 에러 문자열일 수도 있다. 좋은 진입점을 고르는 것이 분석 시간을 가장 많이 줄인다.</li>
+</ul>
+<h3 id="re-fundamentals--대상별-난이도">대상별 난이도</h3>
+<p>같은 "프로그램"이라도 무엇으로 만들었는지에 따라 얻을 수 있는 정보가 크게 다르다. 사내 도구에서 자주 보는 대상을 쉬운 순서로 적었다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>대상</th>
+<th>무엇이 남는가</th>
+<th>난이도</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>웹 앱 프런트엔드(Vue, React 번들)</td>
+<td>JS 코드 전체, 소스 맵이 있으면 원본</td>
+<td>쉬움</td>
+<td>브라우저에 이미 다 내려와 있다</td>
+</tr>
+<tr>
+<td>Electron 앱</td>
+<td><code>app.asar</code> 안에 JS 코드 전체</td>
+<td>쉬움</td>
+<td>압축을 풀면 웹 앱과 같다</td>
+</tr>
+<tr>
+<td>.NET 어셈블리(C# <code>.exe</code>, <code>.dll</code>)</td>
+<td>클래스, 메서드 이름, IL 명령어</td>
+<td>쉬움</td>
+<td>메타데이터가 풍부하다. NativeAOT 빌드는 예외</td>
+</tr>
+<tr>
+<td>PyInstaller로 묶은 Python <code>.exe</code></td>
+<td>내부 <code>.pyc</code> 바이트코드, Python 버전</td>
+<td>보통</td>
+<td>압축을 풀 수는 있지만 <code>.pyc</code>를 <code>.py</code>로 되돌리는 것은 별도 도구가 필요하다</td>
+</tr>
+<tr>
+<td>Go, Rust 바이너리</td>
+<td>모듈과 의존성 정보</td>
+<td>보통</td>
+<td>바이너리가 크고 런타임 코드가 많다</td>
+</tr>
+<tr>
+<td>C, C++ 네이티브 바이너리</td>
+<td>기계어, 임포트, 문자열</td>
+<td>어려움</td>
+<td>Ghidra 같은 디컴파일러가 필요하다</td>
+</tr>
+<tr>
+<td>웹 앱 백엔드(Flask, FastAPI 서버)</td>
+<td>밖에서는 HTTP 요청과 응답만</td>
+<td>서버 접근에 달림</td>
+<td>서버 접근 권한이 없으면 API 동작만 관찰할 수 있다</td>
+</tr>
+</tbody>
+</table></div>
+<p>사내 웹 앱 하나를 분석한다면 실제 작업은 대개 "프런트엔드 번들 읽기 + 네트워크 요청 관찰"이다. 백엔드 로직은 프런트엔드가 보내는 요청과 받는 응답으로 추론한다. 백엔드를 직접 보려면 서버 접근 권한을 받는 편이 리버스 엔지니어링보다 빠르다.</p>
+<h3 id="re-fundamentals--증거의-등급">증거의 등급</h3>
+<p>분석 결과를 쓸 때는 각 주장이 어느 등급인지 함께 적는다. REA도 결과를 이 세 가지로 나눠서 돌려준다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>등급</th>
+<th>뜻</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>관찰(Observation)</td>
+<td>도구가 직접 본 사실</td>
+<td>"함수 <code>0x401a20</code>이 문자열 <code>"Recipe saved"</code>를 참조한다"</td>
+</tr>
+<tr>
+<td>추론(Inference)</td>
+<td>관찰을 묶어서 내린 해석</td>
+<td>"<code>0x401a20</code>이 레시피 저장 함수일 것이다"</td>
+</tr>
+<tr>
+<td>미확인(Unknown)</td>
+<td>도구가 볼 수 없었던 것</td>
+<td>"간접 호출 대상이라 누가 이 함수를 부르는지 정적으로 알 수 없다"</td>
+</tr>
+</tbody>
+</table></div>
+<p>리버스 엔지니어링 보고서가 틀리는 가장 흔한 이유는 추론을 관찰처럼 쓰는 것이다. 디컴파일 결과를 읽고 "이 함수는 A를 한다"고 쓰면 추론이다. 실행해서 A가 일어나는 것을 봐야 관찰이 된다.</p>
+<h3 id="re-fundamentals--디컴파일러가-틀리는-지점">디컴파일러가 틀리는 지점</h3>
+<p>Ghidra의 의사 코드는 강력하지만 아래 경우에는 그대로 믿지 않는다.</p>
+<ul>
+<li><strong>간접 호출(Indirect Call)</strong>: 함수 포인터, 가상 함수, 콜백은 호출 대상을 정적으로 모를 수 있다. 호출 그래프에서 빠진다.</li>
+<li><strong>반환하지 않는 함수(No-return)</strong>: <code>exit</code>나 예외를 던지는 함수 뒤의 코드를 디컴파일러가 잘라낼 수 있다.</li>
+<li><strong>타입 추정 실패</strong>: 구조체를 몰라서 오프셋 연산으로 보이거나, 부호 있는 정수와 없는 정수를 혼동한다.</li>
+<li><strong>최적화된 코드</strong>: 인라인된 함수, 펼쳐진 반복문은 원래 소스 모양과 다르다.</li>
+</ul>
+<p>이런 지점은 어셈블리를 직접 보거나 실행해서 확인한다.</p>
+<h2 id="re-fundamentals--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<p>개념을 실제 분석에 적용하는 순서는 <a href="#re-process">리버스 엔지니어링 작업 절차</a>에 있다. 도구 사용법은 <a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a>에 있다.</p>
+<p>처음이라면 쉬운 대상부터 시작한다. 사내 웹 앱 하나를 골라서 브라우저 DevTools의 <strong>Sources</strong> 탭에 소스 맵이 있는지 보고, <strong>Network</strong> 탭에서 버튼 하나를 눌렀을 때 나가는 요청을 확인한다. 이 두 가지만으로도 리버스 엔지니어링의 기본 흐름인 "진입점 찾기 → 코드 따라가기 → 실행으로 확인"을 한 번 경험할 수 있다.</p>
+<h2 id="re-fundamentals--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>Ghidra 공식 저장소와 문서: <a href="https://github.com/NationalSecurityAgency/ghidra">https://github.com/NationalSecurityAgency/ghidra</a></li>
+<li>REA 저장소: <a href="https://github.com/morluto/rea">https://github.com/morluto/rea</a></li>
+<li>Source Map 형식(TC39 ECMA-426): <a href="https://tc39.es/ecma426/">https://tc39.es/ecma426/</a></li>
+</ul>
+<h2 id="re-fundamentals--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
+<li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="re-process"><p class="file"><span class="num">02</span>re-process.md</p><h1>리버스 엔지니어링 작업 절차</h1>
+<blockquote>
+<p>범위 확인 → 질문 정하기 → 대상 식별 → 정찰 → 정적 분석 → 동적 확인 → 기록. 분석 하나마다 이 7단계를 따른다.</p>
+</blockquote>
+<h2 id="re-process--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>리버스 엔지니어링은 끝이 없는 작업이다. 바이너리 하나에 함수가 수천 개 있고, 다 읽을 수는 없다. 절차 없이 시작하면 흥미로운 함수를 따라가다 하루가 가고, 처음 질문에는 답하지 못한다.</p>
+<p>절차가 지키는 것은 세 가지다.</p>
+<ul>
+<li><strong>범위</strong>: 허가받은 대상만, 허가받은 방법으로 분석한다.</li>
+<li><strong>초점</strong>: 질문에 답하는 데 필요한 코드만 읽는다.</li>
+<li><strong>재현성</strong>: 나중에 같은 결론을 다시 끌어낼 수 있도록 근거를 남긴다.</li>
+</ul>
+<h2 id="re-process--핵심-개념-what">핵심 개념 (What)</h2>
+<p>전체 흐름은 다음과 같다. 5단계와 6단계는 가설이 확인될 때까지 반복한다.</p>
+<pre><code class="language-text">1. 범위와 허가 확인
+2. 질문 정하기 ─────────────┐
+3. 대상 식별                │
+4. 정찰(Triage)             │ 답이 안 나오면
+5. 정적 분석 ◀──┐           │ 질문을 다시 쪼갠다
+6. 동적 확인 ───┘ 반복      │
+7. 기록과 보고 ─────────────┘
+</code></pre>
+<p>에이전트와 REA를 쓰면 3~6단계의 손작업이 크게 줄어든다. 1, 2, 7단계는 줄지 않는다. 그 세 단계가 사람이 하는 일이다.</p>
+<h2 id="re-process--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<p>분석을 시작할 때 <a href="#investigation-log">분석 기록 양식</a>을 복사해서 단계마다 채운다.</p>
+<h3 id="re-process--1-범위와-허가를-확인한다">1. 범위와 허가를 확인한다</h3>
+<p>동료가 만든 도구라도 바로 분석하지 않는다. 아래 네 가지를 먼저 확인하고 기록 양식에 적는다.</p>
+<ul>
+<li><strong>소유자</strong>: 이 프로그램을 만든 사람 또는 소유 부서. 연락이 되면 먼저 물어본다. 리버스 엔지니어링보다 질문 한 번이 빠른 경우가 많다.</li>
+<li><strong>목적</strong>: 유지보수, 연동, 재구현, 버전 확인 중 무엇인가.</li>
+<li><strong>허가</strong>: 소유자나 관리자의 동의를 받았는가. 외부 상용 소프트웨어는 라이선스가 리버스 엔지니어링을 금지할 수 있으므로, 사내 제작 도구와 구분한다.</li>
+<li><strong>실행 환경</strong>: 실행해도 되는 환경이 있는가. 장비, 운영 DB, 공유 파일에 쓰는 도구는 운영 환경에서 실행하지 않는다.</li>
+</ul>
+<blockquote class="callout callout-warning"><p class="callout-label">WARNING</p><p>운영 환경에서 실행하지 않는다
+장비 제어, DB 쓰기, 파일 삭제를 하는 도구는 동적 분석 중에 그 동작을 실제로 한다. 정적 분석으로 무엇을 건드리는지 먼저 확인하고, 테스트 환경이나 격리된 VM에서만 실행한다.</p>
+<p>VM 안에서 실행해도 네트워크가 열려 있으면 운영 DB와 장비에 접속할 수 있다. REA는 네트워크 격리나 샌드박스를 제공하지 않는다. 실행 전에 아래 세 가지를 확인한다.
+- 운영망 접근이 막혀 있다.
+- 운영 계정의 자격 증명(설정 파일, 환경 변수, 저장된 토큰)이 없다.
+- 공유 폴더가 연결되어 있지 않다.</p>
+</blockquote>
+<h3 id="re-process--2-질문을-정한다">2. 질문을 정한다</h3>
+<p>"이 프로그램을 분석해줘"는 질문이 아니다. 답할 수 있는 크기로 쪼갠다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>나쁜 질문</th>
+<th>좋은 질문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이 도구 분석해줘</td>
+<td>"Export 버튼을 누르면 어떤 파일이 어떤 형식으로 만들어지는가?"</td>
+</tr>
+<tr>
+<td>이 웹 앱 API 알려줘</td>
+<td>"목록 화면이 로드될 때 어떤 엔드포인트를 어떤 파라미터로 부르는가?"</td>
+</tr>
+<tr>
+<td>이 계산 로직 뭐야</td>
+<td>"결과 화면의 보정값은 어떤 입력으로 어떻게 계산되는가? 같은 값을 내는 Python 함수로 옮길 수 있는가?"</td>
+</tr>
+</tbody>
+</table></div>
+<p>좋은 질문에는 세 가지가 있다. 관찰할 수 있는 시작점(버튼, 화면, 파일), 알고 싶은 결과(형식, 엔드포인트, 계산식), 그리고 끝났다고 판단할 기준이다.</p>
+<p>질문마다 "어떤 증거가 있으면 답이 되는가"를 같이 적는다. 예를 들어 "Export 파일 형식" 질문이라면 파일을 쓰는 함수의 디컴파일 결과와 실제로 만들어진 파일 한 개가 증거다.</p>
+<h3 id="re-process--3-대상을-식별한다">3. 대상을 식별한다</h3>
+<p>분석할 파일이 정확히 무엇인지 고정한다.</p>
+<ol>
+<li>원본을 건드리지 않도록 분석용 폴더에 복사한다.</li>
+<li>
+<p>해시를 기록한다. 나중에 "그 파일이 이 파일인가"를 확인하는 유일한 방법이다.</p>
+<p><code>bash
+shasum -a 256 /absolute/path/to/target.exe</code></p>
+</li>
+<li>
+<p>파일 형식을 확인한다. 확장자를 믿지 않는다.</p>
+<p><code>bash
+file /absolute/path/to/target.exe</code></p>
+</li>
+<li>
+<p>버전 정보, 빌드 날짜, 함께 배포된 파일(설정 파일, DLL, <code>.asar</code>, <code>.map</code>)을 목록으로 남긴다.</p>
+</li>
+</ol>
+<p>설치 폴더째 받았고 무엇으로 만들었는지 모르면 REA의 <code>inspect_desktop_application</code>에 폴더를 넘긴다. 런타임 후보와 다음에 쓸 도구를 알려준다.</p>
+<h3 id="re-process--4-정찰한다-triage">4. 정찰한다 (Triage)</h3>
+<p>코드를 읽기 전에 겉에서 보이는 것을 모은다. 이 단계에서 진입점 후보를 3~5개 찾는 것이 목표다.</p>
+<ul>
+<li><strong>문자열</strong>: 에러 메시지, 로그 문구, URL, SQL, 파일 경로, 화면 문구. 질문과 관련된 문자열이 가장 좋은 진입점이다.</li>
+<li><strong>임포트</strong>: 파일, 네트워크, 레지스트리, DB 드라이버 중 무엇을 쓰는가.</li>
+<li><strong>리소스와 설정 파일</strong>: 화면 정의, 설정 파일, 내장된 템플릿.</li>
+<li><strong>의존성</strong>: Go 모듈, Rust 크레이트, npm 패키지, Python 버전. 직접 짠 코드와 라이브러리 코드를 나누는 기준이 된다.</li>
+<li><strong>웹 앱이면</strong>: 소스 맵 유무, 라우트 목록, API 엔드포인트 후보.</li>
+</ul>
+<p>라이브러리 코드는 읽지 않는다. 직접 짠 코드만 읽어도 시간이 모자란다.</p>
+<h3 id="re-process--5-정적-분석으로-경로를-따라간다">5. 정적 분석으로 경로를 따라간다</h3>
+<p>진입점 하나를 골라 질문의 결과까지 따라간다.</p>
+<ol>
+<li>진입점(문자열, 라우트, 버튼 핸들러)을 참조하는 함수를 상호 참조로 찾는다.</li>
+<li>그 함수의 디컴파일 결과를 읽고, 질문과 관련된 호출만 따라간다.</li>
+<li>따라가면서 함수에 이름을 붙인다. <code>FUN_00401a20</code> 대신 <code>save_recipe_candidate</code> 같은 이름을 붙여 두면 다음 함수를 읽기 쉬워진다.</li>
+<li>가설을 한 문장으로 적는다. "이 함수가 CSV를 쓰고, 세 번째 열이 보정값이다."</li>
+</ol>
+<p>한 경로에서 막히면 다른 진입점으로 간다. 간접 호출이나 암호화된 데이터 앞에서 계속 파고드는 것보다 빠르다.</p>
+<h3 id="re-process--6-동적-관찰로-확인한다">6. 동적 관찰로 확인한다</h3>
+<p>5단계의 가설은 추론이다. 실행해서 관찰로 바꾼다.</p>
+<ul>
+<li><strong>웹 앱</strong>: 브라우저를 원격 디버깅 포트와 함께 띄우고 화면을 조작하면서 네트워크 요청과 스크립트를 기록한다. 또는 DevTools에서 HAR 파일을 저장해서 오프라인으로 읽는다.</li>
+<li><strong>데스크톱 도구</strong>: 테스트 환경에서 실행하고 만들어진 파일, 출력, 로그를 확인한다.</li>
+<li><strong>계산 로직</strong>: 같은 입력을 원본 도구와 재구현 코드에 넣고 결과를 비교한다. 경계값(0, 음수, 빈 입력, 아주 큰 값)을 꼭 넣는다.</li>
+</ul>
+<p>관찰 결과가 가설과 다르면 5단계로 돌아간다. 다른 결과가 나왔다는 것은 실패가 아니라 정보다.</p>
+<h3 id="re-process--7-기록하고-보고한다">7. 기록하고 보고한다</h3>
+<p>질문 목록으로 돌아가서 각 질문을 셋 중 하나로 표시한다.</p>
+<ul>
+<li><strong>답함</strong>: 관찰 근거가 있다.</li>
+<li><strong>일부 답함</strong>: 추론까지는 했지만 관찰로 확인하지 못했다.</li>
+<li><strong>미해결</strong>: 근거가 없다. 어디까지 찾아봤는지 적는다.</li>
+</ul>
+<p>보고에는 결론마다 근거를 붙인다. REA를 썼다면 Evidence ID를 함께 적는다. "찾아봤는데 없었다"는 결론은 어디까지 찾아봤는지와 함께 적는다. 범위가 없는 부재 주장은 쓰지 않는다.</p>
+<p>재구현했다면 비교 테스트를 함께 남긴다. 테스트가 없는 재구현은 "아마 같을 것"이라는 추론일 뿐이다.</p>
+<h2 id="re-process--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>REA 스킬의 단계별 조사 지침: <a href="https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/SKILL.md">https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/SKILL.md</a> ("Plan broader investigations" 절)</li>
+<li>REA 책임 있는 사용 안내: <a href="https://github.com/morluto/rea/blob/main/DISCLAIMER.md">https://github.com/morluto/rea/blob/main/DISCLAIMER.md</a></li>
+</ul>
+<h2 id="re-process--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></li>
+<li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
+<li><a href="#investigation-log">분석 기록 양식</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="rea-windows-pi-setup"><p class="file"><span class="num">03</span>rea-windows-pi-setup.md</p><h1>회사 Windows + pi 환경에서 REA를 설정하고 쓰는 방법</h1>
+<blockquote>
+<p>회사 PC는 Windows이고 에이전트는 주로 pi, 가끔 Hermes다. REA는 둘 다 지원하지만 Windows의 Ghidra 연동은 실험 단계이고 읽기 전용이다. 이 문서는 그 환경에서 막히는 지점과 해결 방법을 정리한다.</p>
+</blockquote>
+<h2 id="rea-windows-pi-setup--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>REA 문서는 macOS와 Linux를 기준으로 쓰인 부분이 많다. Windows에서는 같은 명령이 다르게 동작하거나 아예 지원되지 않는 기능이 있다. 또 pi는 MCP 설정 파일을 엄격한 JSON으로 읽어서, 수동으로 고친 설정 파일 하나 때문에 REA 등록이 통째로 실패할 수 있다. 회사에서 시간을 버리지 않도록 제약을 먼저 알고 시작한다.</p>
+<h2 id="rea-windows-pi-setup--핵심-개념-what">핵심 개념 (What)</h2>
+<h3 id="rea-windows-pi-setup--windows에서-되는-것과-안-되는-것">Windows에서 되는 것과 안 되는 것</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>기능</th>
+<th>Windows</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>네이티브 PE(<code>.exe</code>, <code>.dll</code>) Ghidra 분석</td>
+<td>됨, 읽기 전용</td>
+<td>x86, x86-64, ARM64 PE. 26개 읽기 전용 작업</td>
+</tr>
+<tr>
+<td>Ghidra 함수 이름, 주석 붙이기</td>
+<td>안 됨</td>
+<td><code>annotate_native_function</code>, <code>set_address_name</code>은 Linux, macOS만</td>
+</tr>
+<tr>
+<td>ELF, Mach-O를 Ghidra로 분석</td>
+<td>안 됨</td>
+<td>Windows는 PE와 raw 6502 이미지만 받는다</td>
+</tr>
+<tr>
+<td>.NET 어셈블리</td>
+<td>됨</td>
+<td>Ghidra를 쓰지 않는 별도 분석기</td>
+</tr>
+<tr>
+<td>PyInstaller, ASAR, JS 정적 분석</td>
+<td>됨</td>
+<td>엔진 불필요</td>
+</tr>
+<tr>
+<td>웹 페이지 관찰(Chrome CDP)</td>
+<td>됨</td>
+<td>Chrome을 디버깅 포트로 띄우면 된다</td>
+</tr>
+<tr>
+<td>HAR 파일 분석</td>
+<td>됨</td>
+<td></td>
+</tr>
+<tr>
+<td>프로세스 실행 관찰(process capture)</td>
+<td>안 됨</td>
+<td>Linux, macOS의 PTY가 필요하다</td>
+</tr>
+<tr>
+<td>패킷 캡처, 펌웨어 분석</td>
+<td>안 됨</td>
+<td>Linux 전용 도구에 의존한다</td>
+</tr>
+</tbody>
+</table></div>
+<p>사내 도구 분석에서 실제로 아쉬운 것은 함수 이름 붙이기 하나다. 나머지 Windows 미지원 기능은 사내 웹 앱과 Windows 도구 분석에 거의 쓰이지 않는다.</p>
+<h3 id="rea-windows-pi-setup--분석-대상은-로컬-ntfs-디스크에-둔다">분석 대상은 로컬 NTFS 디스크에 둔다</h3>
+<p>Windows의 Ghidra 연동은 <strong>고정 로컬 NTFS 볼륨</strong>의 파일만 받는다. 공유 폴더(네트워크 드라이브), USB 드라이브에 있는 파일은 거부된다. 임시 폴더도 로컬 NTFS여야 한다. 분석 전에 대상을 로컬 분석 폴더(예: <code>C:\re-work\</code>)로 복사한다. <a href="#re-process--3-대상을-식별한다">작업 절차 3단계</a>의 "원본을 분석용 폴더에 복사한다"를 지키면 자연히 해결된다.</p>
+<h3 id="rea-windows-pi-setup--pi가-rea를-찾는-방식">pi가 REA를 찾는 방식</h3>
+<ul>
+<li><code>rea setup --client pi</code>는 사용자 설정 파일 <code>~/.pi/agent/mcp.json</code>(Windows에서는 <code>%USERPROFILE%\.pi\agent\mcp.json</code>)의 <code>mcpServers.rea</code>에 등록한다.</li>
+<li>스킬은 <code>~/.agents/skills</code> 아래에 설치된다.</li>
+<li><code>PI_CODING_AGENT_DIR</code>이 설정되어 있으면 그 폴더를 따른다.</li>
+<li>프로젝트 폴더의 <code>.pi/mcp.json</code>에 같은 이름(<code>rea</code>)의 항목이 있으면 사용자 설정을 덮어쓴다. 사용자 등록은 정상인데 특정 프로젝트에서만 REA가 안 보이면 이 파일을 확인한다.</li>
+<li>pi는 <code>mcp.json</code>을 엄격한 JSON으로 읽는다. 주석, 끝 쉼표, BOM, 빈 파일은 모두 오류다. 메모장으로 저장하면 BOM이 붙을 수 있으므로 VS Code 같은 편집기로 "UTF-8(BOM 없음)"으로 저장한다.</li>
+</ul>
+<h2 id="rea-windows-pi-setup--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<h3 id="rea-windows-pi-setup--1-사전-요구-사항을-확인한다">1. 사전 요구 사항을 확인한다</h3>
+<p>REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어야 한다.</p>
+<ul>
+<li>Windows 10 이상 x64</li>
+<li>Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm. SQLite 분석(<code>inspect_sqlite_database</code>)까지 쓰려면 24.x나 26 이상을 고른다</li>
+<li>Ghidra 12.1.x(검증된 버전은 12.1.4)</li>
+<li>64비트 JDK 21 이상</li>
+<li>REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 <code>npm install --global rea-agents</code>로 설치한다</li>
+</ul>
+<h3 id="rea-windows-pi-setup--2-환경-변수를-정하고-진단한다">2. 환경 변수를 정하고 진단한다</h3>
+<p>PowerShell에서 실행한다. 경로는 실제 설치 위치로 바꾼다.</p>
+<pre><code class="language-powershell">$env:GHIDRA_INSTALL_DIR = &quot;C:\tools\ghidra_12.1.4_PUBLIC&quot;
+$env:JAVA_HOME = &quot;C:\Program Files\Java\jdk-21&quot;
+$env:REA_ANALYSIS_PROVIDER = &quot;ghidra&quot;
+
+rea doctor --provider ghidra --json
+rea providers --json
+</code></pre>
+<p><code>rea doctor</code>가 <code>runtime_unavailable</code>이나 native self-test 실패를 보고하면 Ghidra나 Java를 다시 설치해도 해결되지 않는다. 보고된 파일 시스템, 권한(DACL), 임시 폴더 문제를 먼저 확인한다. 대부분 임시 폴더가 로컬 NTFS가 아니거나 쓰기 권한이 없는 경우다.</p>
+<h3 id="rea-windows-pi-setup--3-pi에-등록한다">3. pi에 등록한다</h3>
+<p>먼저 계획만 확인한다. 아무것도 바꾸지 않는다.</p>
+<pre><code class="language-powershell">rea setup --client pi --dry-run --json
+</code></pre>
+<p>출력에서 바뀔 파일 경로와 백업 위치를 확인한 뒤 적용한다.</p>
+<pre><code class="language-powershell">rea setup --client pi --yes --json
+rea doctor --client pi --json
+</code></pre>
+<p>setup은 셸에 설정된 유효한 <code>GHIDRA_INSTALL_DIR</code>, <code>JAVA_HOME</code> 값을 등록에 보존한다. doctor 결과가 정상인데 pi에서 Ghidra를 못 찾으면 <code>mcp.json</code>의 <code>rea</code> 항목에 <code>env</code>가 들어갔는지 직접 본다. 들어가 있어야 할 모양은 다음과 같다.</p>
+<pre><code class="language-json">{
+    &quot;mcpServers&quot;: {
+        &quot;rea&quot;: {
+            &quot;type&quot;: &quot;stdio&quot;,
+            &quot;command&quot;: &quot;...setup이 넣은 값 그대로...&quot;,
+            &quot;args&quot;: [&quot;...setup이 넣은 값 그대로...&quot;],
+            &quot;env&quot;: {
+                &quot;REA_ANALYSIS_PROVIDER&quot;: &quot;ghidra&quot;,
+                &quot;GHIDRA_INSTALL_DIR&quot;: &quot;C:\\tools\\ghidra_12.1.4_PUBLIC&quot;,
+                &quot;JAVA_HOME&quot;: &quot;C:\\Program Files\\Java\\jdk-21&quot;
+            }
+        }
+    }
+}
+</code></pre>
+<p>JSON 안에서는 백슬래시를 두 번 쓴다. <code>command</code>와 <code>args</code>는 setup이 쓴 값을 바꾸지 않는다.</p>
+<h3 id="rea-windows-pi-setup--4-pi를-다시-불러온다">4. pi를 다시 불러온다</h3>
+<p>이미 열려 있는 pi 세션에서는 <code>/reload</code>를 실행한다. 새로 열어도 된다. 그다음 pi에게 REA 도구가 보이는지 묻는다.</p>
+<pre><code class="language-text">REA MCP 도구 목록이 보이는지 확인하고, binary_session 도구를 {}로 호출해서
+ghidra 프로바이더가 사용 가능한지 알려줘.
+</code></pre>
+<h3 id="rea-windows-pi-setup--hermes를-쓸-때">Hermes를 쓸 때</h3>
+<p>가끔 Hermes를 쓴다면 같은 REA를 Hermes에도 등록한다. 두 에이전트의 등록은 서로 독립이다.</p>
+<pre><code class="language-powershell">rea setup --client hermes --dry-run --json
+rea setup --client hermes --yes --json
+rea doctor --client hermes --json
+</code></pre>
+<p>pi와 다른 점은 아래와 같다.</p>
+<ul>
+<li>설정 파일은 Hermes 홈의 <code>config.yaml</code>이고, <code>mcp_servers.rea</code> 항목에 등록된다. Windows의 기본 홈은 <code>%LOCALAPPDATA%\hermes</code>이고, <code>HERMES_HOME</code>이 있으면 그 폴더를 따른다.</li>
+<li>YAML이라 기존 주석과 다른 설정은 보존된다. setup은 <code>enabled: true</code>를 명시한다.</li>
+<li>스킬은 Hermes 홈의 <code>skills</code> 폴더에 설치된다.</li>
+<li>Hermes 프로필을 쓰면 현재 선택된 프로필(<code>active_profile</code>)에 등록된다. 선택된 프로필이 없거나 깨져 있으면 setup이 오류를 보고하므로, <code>hermes profile use default</code>로 고친 뒤 다시 실행한다.</li>
+<li>Ghidra 환경 변수(<code>GHIDRA_INSTALL_DIR</code>, <code>JAVA_HOME</code>)가 <code>rea</code> 항목의 <code>env</code>에 들어갔는지 pi와 같은 방법으로 확인한다.</li>
+</ul>
+<h3 id="rea-windows-pi-setup--5-대상을-복사하고-분석한다">5. 대상을 복사하고 분석한다</h3>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Force C:\re-work\recipe-tool | Out-Null
+Copy-Item &quot;\\shared\tools\RecipeTool\RecipeTool.exe&quot; C:\re-work\recipe-tool\
+Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
+</code></pre>
+<p>해시를 <a href="#investigation-log">분석 기록 양식</a>에 적고, <a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a>의 프롬프트 형식으로 pi에게 묻는다. 경로는 <code>C:\re-work\recipe-tool\RecipeTool.exe</code>처럼 절대 경로로 쓴다.</p>
+<p>함수 이름을 붙일 수 없으므로, pi에게 "따라간 함수의 주소와 제안 이름을 표로 정리하라"고 요청해서 분석 기록 5절에 붙인다.</p>
+<h3 id="rea-windows-pi-setup--6-웹-앱은-windows-chrome으로-관찰한다">6. 웹 앱은 Windows Chrome으로 관찰한다</h3>
+<pre><code class="language-powershell">&amp; &quot;C:\Program Files\Google\Chrome\Application\chrome.exe&quot; `
+    --remote-debugging-port=9222 `
+    --user-data-dir=&quot;C:\re-work\chrome-profile&quot; `
+    http://internal-app.example/
+</code></pre>
+<p>분석 전용 프로필(<code>--user-data-dir</code>)을 쓴다. 평소 쓰는 프로필로 띄우면 개인 쿠키와 확장 프로그램이 분석 대상에 섞인다. 이후 순서는 <a href="#rea-usage-guide--사내-웹-앱-vue-nuxt-react-프런트엔드">사용법 문서의 웹 앱 절</a>과 같다.</p>
+<h3 id="rea-windows-pi-setup--7-큰-바이너리의-시간-초과를-대비한다">7. 큰 바이너리의 시간 초과를 대비한다</h3>
+<p>Ghidra의 첫 가져오기는 기본 330초까지 기다린다. 에이전트의 도구 호출 제한이 이보다 짧으면 REA보다 에이전트가 먼저 포기한다. 회사에서 pi로 REA를 쓸 때 지금까지 이 문제는 없었다(2026-10-24 기준). 아주 큰 대상에서 시간 초과가 반복되면 pi의 MCP 설정 문서에서 요청 제한 항목을 찾는다. 그동안에는 CLI로 먼저 분석하고 <code>--snapshot</code>으로 결과를 저장해 두는 방법이 있다.</p>
+<pre><code class="language-powershell">rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C:\re-work\recipe-tool\snapshot.json --json
+</code></pre>
+<h3 id="rea-windows-pi-setup--사내-llm과-쓸-때-주의할-점">사내 LLM과 쓸 때 주의할 점</h3>
+<p>회사의 pi는 사내 엔드포인트의 GLM-5.3 모델을 쓰고, 컨텍스트 창은 500K 토큰이다(2026-10-24 기준). 두 가지를 알아둔다.</p>
+<ul>
+<li><strong>도구 정의 크기</strong>: REA는 도구가 170개 넘게 있다. 도구 정의를 매 요청에 모두 보내는 클라이언트라면 간략형 스키마로도 약 68k 토큰(cl100k 기준)을 차지한다는 측정이 있다. 500K 컨텍스트에서 이 크기는 약 14%이고, 실제로 pi에서 REA를 쓸 때 문제가 없었다. 분석이 길어져서 컨텍스트가 빨리 차면 <code>env</code>에 <code>"REA_MCP_INPUT_SCHEMA_PROFILE": "compact"</code>가 있는지 본다(현재 기본값이 <code>compact</code>이고, <code>full</code>로 바꿔 두었다면 되돌린다).</li>
+<li><strong>스키마 거부</strong>: GLM-5.3에서는 보고된 문제가 없다. 참고로 일부 Kimi 게이트웨이가 REA의 이전 버전 입력 스키마를 "infinite recursion"으로 거부한 사례가 있다. 같은 오류가 나면 <code>rea update</code>로 REA를 최신으로 올리고 <code>compact</code> 프로필을 확인한다.</li>
+</ul>
+<p>도구 결과는 사내 모델로만 간다. 외부 LLM API는 사내망에서 차단되어 있으므로, 외부 모델에 연결된 에이전트로 사내 도구를 분석하지 않는다.</p>
+<h2 id="rea-windows-pi-setup--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>REA Windows Ghidra P0: <a href="https://github.com/morluto/rea/blob/main/docs/windows-ghidra-p0.md">https://github.com/morluto/rea/blob/main/docs/windows-ghidra-p0.md</a></li>
+<li>REA 클라이언트 설정(Pi 절): <a href="https://github.com/morluto/rea/blob/main/docs/client-configuration.md#pi">https://github.com/morluto/rea/blob/main/docs/client-configuration.md#pi</a></li>
+<li>REA 클라이언트 설정(Hermes 절): <a href="https://github.com/morluto/rea/blob/main/docs/client-configuration.md#hermes">https://github.com/morluto/rea/blob/main/docs/client-configuration.md#hermes</a></li>
+<li>REA 지원 에이전트 목록: <a href="https://github.com/morluto/rea/blob/main/docs/installation.md#supported-agents">https://github.com/morluto/rea/blob/main/docs/installation.md#supported-agents</a></li>
+<li>pi MCP 문서: <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md">https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md</a></li>
+</ul>
+<h2 id="rea-windows-pi-setup--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
+<li><a href="#rea-reference">REA 명령·도구 참조</a></li>
+<li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="rea-usage-guide"><p class="file"><span class="num">04</span>rea-usage-guide.md</p><h1>REA + Ghidra로 분석하는 방법</h1>
+<blockquote>
+<p>에이전트에게 "대상 경로 + 좁은 질문 + 근거 요구 + 실행 범위"를 주면 REA가 Ghidra를 대신 돌리고 근거가 붙은 결론을 돌려준다. 사람이 할 일은 질문을 고르고 결론의 등급을 따지는 것이다.</p>
+</blockquote>
+<h2 id="rea-usage-guide--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>Ghidra를 직접 쓰면 프로젝트를 만들고, 파일을 가져오고, 자동 분석을 기다리고, 함수 목록과 디컴파일 창을 오가며 클릭해야 한다. 함수 수십 개를 따라가는 데 반나절이 걸린다.</p>
+<p>REA는 이 손작업을 에이전트에게 넘긴다. 에이전트가 MCP로 REA 도구를 부르면 REA가 Ghidra를 헤드리스(Headless)로 실행해 결과를 돌려준다. 사람은 GUI를 열지 않고 질문만 한다. 또 REA는 모든 결과에 근거(Evidence)와 한계(limitations)를 붙인다. 에이전트가 근거 없이 지어내는 것을 막는 장치다.</p>
+<p>REA는 Ghidra 전용 도구가 아니다. JavaScript, Electron, .NET, PyInstaller, 웹 페이지, HAR 캡처는 Ghidra 없이 분석한다. 사내 웹 앱 분석에 Ghidra가 필요한 경우는 거의 없다.</p>
+<h2 id="rea-usage-guide--핵심-개념-what">핵심 개념 (What)</h2>
+<h3 id="rea-usage-guide--구성-요소의-관계">구성 요소의 관계</h3>
+<pre><code class="language-text">사람 ──질문──▶ 에이전트(Claude Code, Codex 등)
+                  │ MCP 도구 호출
+                  ▼
+                REA MCP 서버 (로컬)
+                  │
+      ┌───────────┼──────────────┬───────────────┐
+      ▼           ▼              ▼               ▼
+   Ghidra      JS/Electron     .NET/PyInstaller  Chrome(CDP)
+  (네이티브)   정적 분석         정적 분석         웹 페이지 관찰
+</code></pre>
+<ul>
+<li><strong>REA 스킬(<code>reverse-engineer-anything</code>)</strong>: 에이전트가 REA를 어떻게 쓸지 정한 지침. <code>npx rea-agents setup</code>이 MCP 등록과 함께 설치한다.</li>
+<li><strong>REA MCP 서버</strong>: 실제 분석 도구 묶음. 에이전트는 이 서버의 도구를 부른다.</li>
+<li><strong>프로바이더(Provider)</strong>: 네이티브 분석 엔진. Ghidra, Hopper, IDA 중 하나를 고른다. 대상 하나에는 프로바이더 하나가 묶인다.</li>
+<li><strong>세션(Session)</strong>: <code>open_binary</code>로 대상을 열면 시작되고 <code>close_binary</code>로 닫으면 끝난다. Ghidra 세션은 임시 데이터베이스를 쓰므로, 세션 중에 붙인 함수 이름은 닫으면 사라진다.</li>
+<li><strong>Evidence</strong>: 도구 결과 한 건의 기록. <code>evidence_id</code>로 가리킨다. 관찰, 추론, 미확인, 한계, 커버리지를 함께 담는다.</li>
+</ul>
+<h3 id="rea-usage-guide--rea를-쓰지-않아도-되는-경우">REA를 쓰지 않아도 되는 경우</h3>
+<p>소스 저장소가 온전히 있으면 REA를 쓰지 않는다. 일반 코드 읽기로 충분하다. REA는 "배포된 결과물에서만 확인할 수 있는 사실"이 필요할 때 쓴다. 예를 들면 저장소 코드와 배포된 <code>.exe</code>가 같은지 확인할 때다.</p>
+<h2 id="rea-usage-guide--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<h3 id="rea-usage-guide--1단계-준비-상태를-확인한다">1단계: 준비 상태를 확인한다</h3>
+<p>설치는 이미 끝났다고 가정한다. 회사 Windows PC에서 처음 연결한다면 <a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a>을 먼저 따른다. 분석 전에는 Ghidra 연결과 pi 등록만 확인한다.</p>
+<pre><code class="language-powershell">rea doctor --provider ghidra --json
+rea doctor --client pi --json
+</code></pre>
+<p><code>healthy</code>가 <code>false</code>면 <code>GHIDRA_INSTALL_DIR</code>과 <code>JAVA_HOME</code>부터 확인한다. 둘 다 REA를 띄우는 환경(pi의 <code>mcp.json</code>에 있는 <code>rea</code> 항목의 <code>env</code>)에 들어가 있어야 한다. PowerShell에서만 <code>$env:</code>로 설정하면 이미 떠 있는 MCP 서버에는 반영되지 않는다. REA는 Ghidra 12.1.x와 JDK 21 이상을 요구한다. 설정을 바꾼 뒤에는 pi에서 <code>/reload</code>를 실행한다.</p>
+<blockquote class="callout callout-note"><p class="callout-label">NOTE</p><p>Windows의 제약
+Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 이름 붙이기(<code>annotate_native_function</code>, <code>set_address_name</code>)는 Linux와 macOS에서만 되므로, Windows에서는 이름을 분석 기록에 따로 적는다. 분석 대상은 로컬 NTFS 디스크에 두어야 한다.</p>
+</blockquote>
+<h3 id="rea-usage-guide--2단계-에이전트에게-좋은-질문을-준다">2단계: 에이전트에게 좋은 질문을 준다</h3>
+<p>REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가지를 넣는다.</p>
+<ol>
+<li><strong>대상</strong>: 절대 경로. "내 앱"처럼 모호하게 쓰면 에이전트가 되묻는다.</li>
+<li><strong>질문</strong>: 관찰할 수 있는 시작점과 알고 싶은 결과. <a href="#re-process--2-질문을-정한다">작업 절차 2단계</a>의 "좋은 질문" 형식.</li>
+<li><strong>근거 요구</strong>: 결론마다 Evidence ID와 등급(관찰, 추론, 미확인)을 달라고 한다.</li>
+<li><strong>실행 범위</strong>: 정적 분석만 할지, 실행해도 되는지. 말하지 않으면 에이전트가 실행 도구를 고를 수 있다.</li>
+</ol>
+<p>예시 프롬프트:</p>
+<pre><code class="language-text">대상: C:\re-work\recipe-tool\install\RecipeTool.exe (SHA-256은 분석 기록에 있음)
+질문: &quot;Export&quot; 버튼을 누르면 만들어지는 CSV의 열 구성과 각 열의 계산 방법을 알고 싶다.
+방법: 정적 분석만 한다. 프로그램을 실행하지 않는다. 프로바이더는 ghidra.
+진입점 후보: 문자열 &quot;Export completed&quot;, &quot;csv&quot;.
+결과 형식: 결론마다 Evidence ID와 관찰/추론/미확인 구분을 붙여라.
+         확인하지 못한 부분은 어디까지 찾아봤는지 적어라.
+</code></pre>
+<p>나쁜 프롬프트는 "이 exe 분석해줘"다. 에이전트는 함수 목록부터 훑기 시작하고, 결과는 넓고 얕다.</p>
+<h3 id="rea-usage-guide--3단계-대상에-맞는-경로를-고른다">3단계: 대상에 맞는 경로를 고른다</h3>
+<p>에이전트는 대상 형식을 보고 첫 도구를 고른다. 사람이 경로를 알고 있으면 질문이 더 정확해지고 낭비가 줄어든다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>대상</th>
+<th>첫 도구</th>
+<th>Ghidra 필요</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>형식을 모르는 설치 폴더</td>
+<td><code>inspect_desktop_application</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>C, C++ <code>.exe</code>, <code>.dll</code>, ELF, Mach-O</td>
+<td><code>open_binary</code> → <code>analyze_function</code> 등</td>
+<td>예</td>
+</tr>
+<tr>
+<td>.NET 어셈블리</td>
+<td><code>inspect_managed_artifact</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>.NET NativeAOT 빌드</td>
+<td><code>open_binary</code> (Ghidra)</td>
+<td>예</td>
+</tr>
+<tr>
+<td>PyInstaller <code>.exe</code></td>
+<td><code>open_binary</code> → <code>inspect_artifact</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>단독 <code>.pyc</code> 파일</td>
+<td><code>inspect_python_pyc</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>Electron <code>app.asar</code>, 압축 푼 JS 폴더</td>
+<td><code>analyze_javascript_application</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>브라우저에 열린 웹 앱</td>
+<td><code>list_browser_targets</code> → <code>inspect_web_page</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>저장해 둔 HAR 파일</td>
+<td><code>inspect_web_network_capture</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>Go, Rust 바이너리의 의존성</td>
+<td><code>inspect_go_binary</code>, <code>inspect_rust_binary</code></td>
+<td>아니요</td>
+</tr>
+<tr>
+<td>SQLite DB 파일</td>
+<td><code>inspect_sqlite_database</code></td>
+<td>아니요</td>
+</tr>
+</tbody>
+</table></div>
+<p>명령과 옵션은 <a href="#rea-reference">REA 명령·도구 참조</a>에 있다.</p>
+<h3 id="rea-usage-guide--4단계-대상별-작업-흐름을-따른다">4단계: 대상별 작업 흐름을 따른다</h3>
+<h4 id="rea-usage-guide--사내-웹-앱-vue-nuxt-react-프런트엔드">사내 웹 앱 (Vue, Nuxt, React 프런트엔드)</h4>
+<p>웹 앱은 Ghidra 없이 끝난다. 코드는 이미 브라우저에 있고, 대부분 소스 맵도 함께 배포된다.</p>
+<ol>
+<li>
+<p>분석 전용 프로필로 Chrome을 원격 디버깅 포트와 함께 띄운다. 디버깅 포트는 반드시 <code>127.0.0.1</code>에만 연다.</p>
+<p><code>powershell
+&amp; "C:\Program Files\Google\Chrome\Application\chrome.exe" `
+    --remote-debugging-port=9222 `
+    --user-data-dir="C:\re-work\chrome-profile" `
+    http://internal-app.example/</code></p>
+</li>
+<li>
+<p>로그인하고 분석할 화면을 연다. 로그인은 사람이 한다.</p>
+</li>
+<li>
+<p>에이전트에게 페이지 구조와 번들을 분석하게 한다.</p>
+<p><code>text
+http://127.0.0.1:9222 에 열린 internal-app 페이지를 REA로 분석해라.
+1) inspect_web_page로 스크립트와 리소스 목록을 보고
+2) analyze_web_bundle로 라우트, API 엔드포인트 후보, 소스 맵 유무를 정리해라.
+페이지를 조작하지 마라.</code></p>
+</li>
+<li>
+<p>특정 동작의 요청을 보려면 관찰 창을 열고 사람이 버튼을 누른다. <code>observe_web_session</code>이 그동안의 탐색과 요청 메타데이터를 기록한다. REA는 연결하기 전에 일어난 네트워크 요청을 기록하지 않는다. 페이지가 처음 로드될 때의 요청이 필요하면 관찰을 시작한 뒤에 테스트 화면을 새로고침한다. 스크립트 목록은 연결 전에 로드된 것도 나온다.</p>
+</li>
+<li>요청 본문까지 필요하면 DevTools <strong>Network</strong> 탭에서 <strong>Save all as HAR</strong>로 저장하고 <code>inspect_web_network_capture</code>로 읽는다.</li>
+</ol>
+<blockquote class="callout callout-warning"><p class="callout-label">WARNING</p><p>HAR 파일에는 쿠키와 토큰이 들어 있다
+HAR 파일은 분석이 끝나면 지운다. 이 저장소나 공유 폴더에 올리지 않는다.</p>
+</blockquote>
+<h4 id="rea-usage-guide--네이티브-실행-파일-ghidra-사용">네이티브 실행 파일 (Ghidra 사용)</h4>
+<p>아래는 기본 흐름이다. 설치형 프로그램 전체를 분석한다면 <a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a>을 따른다. 그 문서에 런타임 판별, 임포트 해석, 값 추적, 실행 확인, 버전 비교가 있다.</p>
+<ol>
+<li>
+<p>정찰부터 시킨다. 함수 하나를 바로 디컴파일하지 않는다.</p>
+<p><code>text
+C:\re-work\tool\tool.exe 를 ghidra 프로바이더로 열고, binary_overview와 문자열 검색으로
+"Export" 관련 문자열과 그 문자열을 참조하는 함수를 찾아라. 아직 디컴파일하지 마라.</code></p>
+</li>
+<li>
+<p>진입점 함수가 나오면 그 함수만 깊게 본다. <code>analyze_function</code>은 디컴파일, 호출 관계, 참조를 한 번에 돌려준다.</p>
+</li>
+<li>경로를 따라가면서 함수에 이름을 붙이게 한다(Linux, macOS). 이름은 세션을 닫으면 사라지므로 분석 기록에도 적는다.</li>
+<li>디컴파일 결과가 이상하면 어셈블리를 확인하게 한다. <code>read_function_instructions</code>는 디컴파일러를 거치지 않는다.</li>
+<li>끝나기 전에 남길 Evidence를 <code>export_evidence_bundle</code>로 파일에 저장한다. <code>close_binary</code>는 세션의 Evidence와 미확인 항목 기록을 지운다. Evidence ID만 적어 두면 닫은 뒤에는 원문을 다시 볼 수 없다.</li>
+<li>저장한 뒤 <code>close_binary</code>로 세션을 닫는다.</li>
+</ol>
+<p>큰 바이너리는 Ghidra 첫 가져오기(import)에 시간이 오래 걸린다. 시간 초과에는 주체가 둘 있으므로, 오류가 어느 쪽에서 났는지 먼저 구분한다.</p>
+<ul>
+<li><strong>REA의 Ghidra 시작 제한</strong>: 기본 330초. <code>REA_GHIDRA_STARTUP_TIMEOUT_MS</code>를 늘리고 MCP 서버를 재시작한다.</li>
+<li><strong>에이전트(MCP 클라이언트)의 도구 호출 제한</strong>: 클라이언트마다 다르고, REA 제한보다 먼저 끝날 수 있다. pi의 제한 설정 방법은 <a href="#rea-windows-pi-setup--7-큰-바이너리의-시간-초과를-대비한다">회사 환경 설정 7단계</a>를 본다.</li>
+</ul>
+<p>시간 초과 뒤에는 같은 호출을 바로 반복하지 않는다. <code>close_binary</code>의 정리 결과를 확인한 뒤 대상을 다시 연다. 메모리가 부족하면 <code>GHIDRA_HEADLESS_MAXMEM</code>을 올린다(기본 <code>2G</code>).</p>
+<p>같은 대상을 여러 날에 걸쳐 분석한다면 CLI의 <code>--snapshot</code> 옵션으로 결과를 저장한다. 같은 바이트, 같은 질의는 저장된 결과를 다시 쓴다.</p>
+<pre><code class="language-powershell">rea analyze C:\re-work\tool\tool.exe --provider ghidra --snapshot C:\re-work\tool\tool-snapshot.json --json
+</code></pre>
+<h4 id="rea-usage-guide--python-도구-pyinstaller로-묶은-exe">Python 도구 (PyInstaller로 묶은 <code>.exe</code>)</h4>
+<p>사내 Python 도구는 PyInstaller로 배포된 경우가 많다.</p>
+<ol>
+<li><code>inspect_artifact</code>로 내부 목록을 본다. Python 버전, 진입 스크립트, 포함된 모듈이 나온다.</li>
+<li>필요한 파일만 <code>extract_artifact</code>로 새 빈 폴더에 꺼낸다.</li>
+<li>꺼낸 <code>.pyc</code>는 <code>inspect_python_pyc</code>로 이름과 구조를 본다. REA는 <code>.pyc</code>를 <code>.py</code>로 되돌리지 않는다. 소스 복원이 필요하면 오픈 소스 디컴파일러 pycdc를 쓴다. 최신 Python 버전에서는 일부 구문을 복원하지 못할 수 있다. 회사 PC에 들일 수 있는 도구는 <a href="#installed-program-analysis--회사-pc에-보조-도구를-들이는-기준">설치형 프로그램 문서의 보조 도구 기준</a>을 본다.</li>
+</ol>
+<h4 id="rea-usage-guide--net-도구">.NET 도구</h4>
+<p><code>inspect_managed_artifact</code>로 시작한다. 클래스와 메서드 이름이 남아 있어서 네이티브보다 훨씬 쉽다. 특정 메서드만 보려면 CLI에서 <code>rea inspect-managed-members PATH --type Namespace.ClassName --json</code>을 쓴다.</p>
+<h3 id="rea-usage-guide--5단계-결과를-읽고-다음-질문을-정한다">5단계: 결과를 읽고 다음 질문을 정한다</h3>
+<p>REA 결과를 받으면 세 가지를 확인한다.</p>
+<ul>
+<li><strong>한계(limitations)와 미확인(unknowns)</strong>: 무엇을 보지 못했는지. 간접 호출, 잘린 결과, 부분 커버리지가 여기에 적힌다.</li>
+<li><strong>커버리지(coverage)</strong>: 결과가 전체인지 일부 페이지인지. 페이지가 끝났다고 해서 "없다"는 뜻은 아니다.</li>
+<li><strong>등급</strong>: 에이전트의 설명 중 어느 문장이 관찰이고 어느 문장이 추론인지.</li>
+</ul>
+<p>남은 질문이 있으면 그 질문 하나만 좁혀서 다시 묻는다. 같은 분석을 그대로 다시 돌리지 않는다.</p>
+<h3 id="rea-usage-guide--효과적으로-쓰는-요령">효과적으로 쓰는 요령</h3>
+<ul>
+<li><strong>요약부터 받는다.</strong> 큰 대상은 <code>detail: "summary"</code>로 요약을 먼저 받고, 필요한 부분만 <code>inspect_analysis_view</code>로 펼친다. 에이전트 컨텍스트를 아낀다.</li>
+<li><strong>미해결 질문을 등록시킨다.</strong> <code>record_unknown</code>으로 남은 질문을 세션에 기록하게 하면 다음 단계에서 빠뜨리지 않는다.</li>
+<li><strong>질문이 여러 개면 나눈다.</strong> 서로 독립인 질문은 따로 묻는다. 한 프롬프트에 다섯 질문을 넣으면 다섯 개가 다 얕아진다.</li>
+<li><strong>안내 프롬프트를 쓴다.</strong> REA MCP 서버는 <code>investigate_feature</code>, <code>compare_application_versions</code>, <code>verify_reconstruction</code> 같은 안내 프롬프트를 제공한다. 에이전트가 MCP 프롬프트를 지원하면 이것으로 시작해도 된다.</li>
+<li><strong>버전 비교에 쓴다.</strong> "어제 배포본과 지난달 배포본이 뭐가 다른가"는 REA가 잘하는 질문이다. JS 앱은 <code>compare_application_versions</code>, Evidence 파일끼리는 <code>rea compare</code>를 쓴다.</li>
+<li><strong>재구현은 검증까지 시킨다.</strong> 계산 로직을 옮길 때는 원본과 같은 입력을 넣어 비교하는 테스트까지 요구한다.</li>
+<li><strong>자주 업데이트한다.</strong> REA는 변경이 잦다. 버그를 만나면 <code>rea update</code>부터 한다.</li>
+</ul>
+<h3 id="rea-usage-guide--자주-만나는-문제">자주 만나는 문제</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인</th>
+<th>해결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pi에 REA 도구가 없다</td>
+<td>MCP 등록이 없거나, <code>mcp.json</code>이 엄격한 JSON이 아니거나, 다시 불러오지 않았다</td>
+<td><code>rea doctor --client pi --json</code> 확인 후 pi에서 <code>/reload</code></td>
+</tr>
+<tr>
+<td>Ghidra 프로바이더를 못 찾는다</td>
+<td><code>GHIDRA_INSTALL_DIR</code>이 MCP 등록 환경에 없다</td>
+<td>MCP 등록의 환경 변수에 넣고 재시작</td>
+</tr>
+<tr>
+<td>JDK가 거부된다</td>
+<td>Rosetta 아래의 x86 JDK, 또는 JDK 21 미만</td>
+<td>호스트 아키텍처와 같은 JDK 21 이상을 <code>JAVA_HOME</code>으로 지정</td>
+</tr>
+<tr>
+<td>큰 바이너리가 시간 초과된다</td>
+<td>Ghidra 시작이 330초를 넘었거나, 에이전트의 도구 호출 제한이 먼저 끝났다</td>
+<td>주체를 구분한 뒤 <code>REA_GHIDRA_STARTUP_TIMEOUT_MS</code> 또는 클라이언트 제한을 늘린다</td>
+</tr>
+<tr>
+<td>세션을 닫았더니 Evidence가 없다</td>
+<td><code>close_binary</code>가 세션 기록을 지운다</td>
+<td>닫기 전에 <code>export_evidence_bundle</code>로 저장</td>
+</tr>
+<tr>
+<td>결과가 잘려서 온다</td>
+<td>MCP 응답 크기 제한</td>
+<td><code>inspect_analysis_view</code>로 페이지 단위로 받거나 <code>export_evidence_bundle</code>로 파일에 저장</td>
+</tr>
+<tr>
+<td>붙인 함수 이름이 사라졌다</td>
+<td>Ghidra 세션은 임시 DB를 쓴다</td>
+<td>이름을 분석 기록에 적어 둔다</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="rea-usage-guide--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>REA README: <a href="https://github.com/morluto/rea">https://github.com/morluto/rea</a></li>
+<li>REA 설치와 Ghidra 설정: <a href="https://github.com/morluto/rea/blob/main/docs/installation.md">https://github.com/morluto/rea/blob/main/docs/installation.md</a></li>
+<li>REA 네이티브 분석: <a href="https://github.com/morluto/rea/blob/main/docs/native-investigation.md">https://github.com/morluto/rea/blob/main/docs/native-investigation.md</a></li>
+<li>REA Ghidra 프로바이더 동작: <a href="https://github.com/morluto/rea/blob/main/docs/ghidra-provider.md">https://github.com/morluto/rea/blob/main/docs/ghidra-provider.md</a></li>
+<li>REA 웹 페이지 관찰: <a href="https://github.com/morluto/rea/blob/main/docs/browser-observation.md">https://github.com/morluto/rea/blob/main/docs/browser-observation.md</a></li>
+<li>REA 스킬 원문: <a href="https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/SKILL.md">https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/SKILL.md</a></li>
+</ul>
+<h2 id="rea-usage-guide--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></li>
+<li><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
+<li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
+<li><a href="#rea-reference">REA 명령·도구 참조</a></li>
+<li><a href="#investigation-log">분석 기록 양식</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="installed-program-analysis"><p class="file"><span class="num">05</span>installed-program-analysis.md</p><h1>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</h1>
+<blockquote>
+<p>설치 폴더 전체를 복사해서 먼저 런타임을 판별하고, 동료가 직접 짠 실행 파일만 골라서 Ghidra로 깊게 본다. 문자열과 임포트에서 출발해서 질문의 결과까지 함수 경로를 따라가고, 실행으로 확인한다.</p>
+</blockquote>
+<h2 id="installed-program-analysis--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>사내 설치형 프로그램은 실행 파일 하나가 아니다. <code>.exe</code> 하나, 직접 만든 DLL 몇 개, 외부 라이브러리 DLL 수십 개, 설정 파일, 로그 폴더, 로컬 DB가 함께 설치된다. 그중 동료가 직접 짠 코드는 일부다. 처음부터 메인 <code>.exe</code>를 Ghidra에 넣으면 외부 라이브러리 코드와 런타임 코드 사이에서 길을 잃는다.</p>
+<p>또 "설치형 프로그램"이라는 겉모습은 같아도 속은 다르다. C# 프로그램이면 Ghidra가 필요 없고 메서드 이름이 그대로 보인다. Python을 PyInstaller로 묶은 것이면 압축을 풀어야 한다. Ghidra가 꼭 필요한 대상은 C, C++, Delphi 같은 네이티브 프로그램이다. 런타임을 먼저 판별하면 분석 시간이 몇 배 줄어든다.</p>
+<h2 id="installed-program-analysis--핵심-개념-what">핵심 개념 (What)</h2>
+<h3 id="installed-program-analysis--설치형-프로그램의-구성">설치형 프로그램의 구성</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>위치</th>
+<th>들어 있는 것</th>
+<th>분석에서 쓰는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설치 폴더(<code>C:\Program Files\...</code>)</td>
+<td><code>.exe</code>, DLL, 리소스, 기본 설정</td>
+<td>코드 분석의 본체</td>
+</tr>
+<tr>
+<td><code>%ProgramData%\...</code></td>
+<td>모든 사용자 공용 설정, DB, 라이선스</td>
+<td>설정 형식, 데이터 구조</td>
+</tr>
+<tr>
+<td><code>%AppData%\...</code>, <code>%LocalAppData%\...</code></td>
+<td>사용자별 설정, 캐시, 로그</td>
+<td>실제 동작의 흔적</td>
+</tr>
+<tr>
+<td>레지스트리 <code>HKLM\Software\...</code>, <code>HKCU\Software\...</code></td>
+<td>설치 경로, 옵션 값</td>
+<td>바이너리 안의 레지스트리 키 문자열과 맞춰 본다</td>
+</tr>
+<tr>
+<td>로그 파일</td>
+<td>실행 기록</td>
+<td>로그 문구는 가장 좋은 진입점 문자열이다</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="installed-program-analysis--런타임을-알아보는-단서">런타임을 알아보는 단서</h3>
+<p><code>inspect_desktop_application</code>이 런타임 후보를 알려주지만, 사람도 단서를 알아두면 결과를 검증할 수 있다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>런타임</th>
+<th>설치 폴더나 바이너리에서 보이는 단서</th>
+<th>분석 경로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET(C#, VB.NET)</td>
+<td><code>mscoree.dll</code> 임포트, <code>*.dll.config</code>, <code>*.deps.json</code>, <code>System.*.dll</code></td>
+<td><code>inspect_managed_artifact</code>. Ghidra 불필요</td>
+</tr>
+<tr>
+<td>.NET NativeAOT</td>
+<td>.NET 단서가 있는데 CLI 메타데이터가 없다. 일반 apphost나 single-file 배포도 같은 모습이므로 이것만으로는 판별되지 않는다. 함께 배포된 관리 어셈블리와 배포 형태를 더 확인한다</td>
+<td>판별되면 Ghidra</td>
+</tr>
+<tr>
+<td>PyInstaller(Python)</td>
+<td><code>python3xx.dll</code>, <code>_MEI</code> 문자열, <code>base_library.zip</code></td>
+<td><code>inspect_artifact</code>로 내부 목록</td>
+</tr>
+<tr>
+<td>Electron</td>
+<td><code>resources\app.asar</code>, <code>chrome_*.pak</code></td>
+<td><code>analyze_javascript_application</code>. Ghidra 불필요</td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>.jar</code> 파일, 번들된 <code>jre\</code> 폴더</td>
+<td>Java 디컴파일러. REA의 Ghidra 경로가 아니다</td>
+</tr>
+<tr>
+<td>C++ MFC</td>
+<td><code>mfc140u.dll</code>, <code>vcruntime140.dll</code> 의존</td>
+<td>Ghidra</td>
+</tr>
+<tr>
+<td>C++ Qt</td>
+<td><code>Qt5Core.dll</code>, <code>Qt6Core.dll</code>, <code>platforms\qwindows.dll</code></td>
+<td>Ghidra. Qt 함수 이름이 임포트에 남아 단서가 많다</td>
+</tr>
+<tr>
+<td>Delphi</td>
+<td><code>Borland</code>, <code>TObject</code>, <code>TForm</code> 문자열, 리소스의 폼 정의</td>
+<td>Ghidra</td>
+</tr>
+<tr>
+<td>VB6</td>
+<td><code>msvbvm60.dll</code> 의존</td>
+<td>전용 도구가 필요하다. Ghidra만으로는 어렵다</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="installed-program-analysis--임포트로-프로그램이-하는-일을-짐작한다">임포트로 프로그램이 하는 일을 짐작한다</h3>
+<p>Windows 네이티브 프로그램은 운영체제 기능을 쓰려면 Windows API를 임포트해야 한다. 임포트 목록은 "이 프로그램이 할 수 있는 일"의 지도다. 임포트가 있다고 실제로 호출된다는 뜻은 아니므로 후보 단서로만 쓴다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>하는 일</th>
+<th>대표 임포트</th>
+<th>다음에 볼 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>파일 읽기와 쓰기</td>
+<td><code>CreateFileW</code>, <code>ReadFile</code>, <code>WriteFile</code></td>
+<td>경로 문자열, 호출 인수</td>
+</tr>
+<tr>
+<td>설정(INI)</td>
+<td><code>GetPrivateProfileStringW</code>, <code>WritePrivateProfileStringW</code></td>
+<td>섹션명, 키 이름 문자열</td>
+</tr>
+<tr>
+<td>레지스트리</td>
+<td><code>RegOpenKeyExW</code>, <code>RegQueryValueExW</code>, <code>RegSetValueExW</code></td>
+<td>키 경로 문자열</td>
+</tr>
+<tr>
+<td>네트워크</td>
+<td><code>WSAStartup</code>, <code>connect</code>, <code>send</code>, <code>recv</code>(<code>ws2_32.dll</code>)</td>
+<td>IP, 포트 상수</td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td><code>WinHttpOpen</code>, <code>WinHttpSendRequest</code>, <code>InternetOpenW</code></td>
+<td>URL, 헤더 문자열</td>
+</tr>
+<tr>
+<td>시리얼 통신</td>
+<td><code>CreateFileW</code>("COM1" 등), <code>SetCommState</code>, <code>ReadFile</code></td>
+<td>통신 속도 설정, 프레임 형식</td>
+</tr>
+<tr>
+<td>DB(ODBC)</td>
+<td><code>SQLDriverConnectW</code>, <code>SQLExecDirectW</code></td>
+<td>SQL 문자열, 연결 문자열</td>
+</tr>
+<tr>
+<td>암호화, 비밀값</td>
+<td><code>BCryptEncrypt</code>, <code>CryptProtectData</code></td>
+<td>무엇을 보호하는지</td>
+</tr>
+<tr>
+<td>다른 프로그램 실행</td>
+<td><code>CreateProcessW</code>, <code>ShellExecuteW</code></td>
+<td>실행 명령 문자열</td>
+</tr>
+<tr>
+<td>대화 상자 UI</td>
+<td><code>DialogBoxParamW</code>, <code>MessageBoxW</code>, <code>SetDlgItemTextW</code></td>
+<td>PE 리소스의 대화 상자, 문자열 표</td>
+</tr>
+<tr>
+<td>COM 객체</td>
+<td><code>CoCreateInstance</code></td>
+<td>CLSID 상수</td>
+</tr>
+<tr>
+<td>숨은 임포트</td>
+<td><code>LoadLibraryW</code>, <code>GetProcAddress</code></td>
+<td>런타임에 불러오는 DLL과 함수 이름 문자열</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>GetProcAddress</code>가 있으면 주의한다. 임포트 목록에 없는 함수를 실행 중에 찾아 쓴다는 뜻이다. 인수는 함수 이름 문자열일 수도 있고, 서수(ordinal) 번호나 실행 중에 계산한 값일 수도 있다. 이름 문자열이 보이면 숨은 기능이 바로 나오지만, 문자열이 없다고 해서 동적 조회가 없다고 판단하지 않는다.</p>
+<h3 id="installed-program-analysis--c-바이너리를-읽을-때-알아둘-것">C++ 바이너리를 읽을 때 알아둘 것</h3>
+<ul>
+<li><strong>x64 호출 규약</strong>: MSVC x64는 첫 네 인수를 위치별로 레지스터에 넣는다. 정수와 포인터는 <code>rcx</code>, <code>rdx</code>, <code>r8</code>, <code>r9</code>, 실수는 같은 위치의 <code>xmm0</code>~<code>xmm3</code>을 쓴다. 예를 들어 두 번째 인수가 <code>double</code>이면 <code>rdx</code>가 아니라 <code>xmm1</code>에 들어간다. C++ 멤버 함수는 <code>this</code>가 <code>rcx</code>로 들어온다. 디컴파일 결과의 <code>param_1</code>은 대개 <code>this</code>다.</li>
+<li><strong>가상 함수 표(vtable)</strong>: 가상 함수 호출은 <code>(**(code **)(*param_1 + 0x18))(param_1)</code> 같은 간접 호출로 보인다. 정적 분석으로 대상을 못 찾을 수 있으므로 <code>resolve_native_call_targets</code>로 후보를 확인한다.</li>
+<li><strong>RTTI 클래스 이름</strong>: MSVC 바이너리에는 <code>.?AVRecipeManager@@</code> 같은 클래스 이름 문자열이 남아 있는 경우가 많다. 문자열 검색으로 클래스 목록을 얻을 수 있다.</li>
+<li><strong>PDB 경로 문자열</strong>: 릴리스 빌드에도 <code>C:\...\Release\RecipeTool.pdb</code> 같은 경로가 남아 있을 수 있다. 원래 프로젝트 이름과 폴더 구조의 단서다.</li>
+<li><strong>정적으로 링크된 라이브러리</strong>: OpenSSL, zlib, SQLite 같은 라이브러리가 바이너리 안에 들어 있으면 함수 수가 크게 늘어난다. <code>OpenSSL 1.1.1</code> 같은 버전 문자열로 알아보고 그 코드는 읽지 않는다. <code>SQLite format 3</code>은 라이브러리 버전이 아니라 SQLite DB 파일의 헤더 문자열이다. 이 문자열은 SQLite 파일을 다룬다는 단서일 뿐이다.</li>
+<li><strong>패킹(Packing)</strong>: UPX 같은 패커로 압축된 바이너리는 코드가 실행 중에 풀린다. 섹션 이름(<code>UPX0</code>), 엔트로피가 아주 높은 구간, 임포트가 거의 없는 것이 징후다. 사내 도구에서는 드물지만, 보이면 정적 분석이 거의 막힌다.</li>
+</ul>
+<h2 id="installed-program-analysis--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<h3 id="installed-program-analysis--1-설치-폴더를-통째로-복사한다">1. 설치 폴더를 통째로 복사한다</h3>
+<p>REA는 MSI, Inno Setup, NSIS 같은 설치 파일 자체를 풀지 않는다. 테스트 PC나 VM에 설치한 뒤 설치된 폴더를 분석한다. 이미 설치된 PC가 있으면 그 폴더를 복사한다.</p>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Force C:\re-work\recipe-tool | Out-Null
+Copy-Item -Recurse &quot;C:\Program Files\RecipeTool&quot; C:\re-work\recipe-tool\install
+Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
+    Get-FileHash -Algorithm SHA256 |
+    Export-Csv C:\re-work\recipe-tool\hashes.csv -NoTypeInformation
+</code></pre>
+<p><code>%ProgramData%</code>와 <code>%AppData%</code>에 프로그램 폴더가 있으면 같이 복사한다. 운영 데이터가 들어 있을 수 있으므로 분석이 끝나면 지운다.</p>
+<p>Windows의 Ghidra 연동은 로컬 NTFS 디스크의 파일만 받는다. 공유 폴더에서 바로 분석하지 않는다. 자세한 내용은 <a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a>에 있다.</p>
+<h3 id="installed-program-analysis--2-런타임을-판별한다">2. 런타임을 판별한다</h3>
+<p>pi에게 설치 폴더 전체를 먼저 보게 한다.</p>
+<pre><code class="language-text">C:\re-work\recipe-tool\install 를 REA inspect_desktop_application으로 분석해라.
+1) 런타임 후보와 근거
+2) 실행 파일과 DLL을 &quot;직접 만든 것으로 보이는 것&quot;과 &quot;외부 라이브러리&quot;로 나눈 표
+3) 설정 파일, DB 파일, 로그 파일 목록
+4) REA가 제안한 다음 도구(next_probes)
+를 정리해라. 아직 Ghidra를 열지 마라.
+</code></pre>
+<p>직접 만든 것과 외부 것을 나눌 때는 아래를 근거로 쓴다.</p>
+<ul>
+<li><strong>서명 인증서</strong>: <code>inspect_pe_certificates</code>로 서명자 필드를 본다. Microsoft, Qt 같은 외부 업체 이름이 있으면 외부 것일 가능성이 높다. REA는 서명이 유효한지 검증하지 않으므로 이것은 후보 단서다. 확정이 필요하면 Windows의 Authenticode 검증(<code>Get-AuthenticodeSignature</code>)을 따로 한다. 사내 도구는 대개 서명이 없다.</li>
+<li><strong>이름과 버전 정보</strong>: <code>Qt5Core.dll</code>, <code>libcrypto-1_1-x64.dll</code> 같은 이름은 외부 라이브러리다.</li>
+<li><strong>익스포트</strong>: DLL은 <code>inspect_native_exports</code>로 내보내는 함수를 본다. 사내 DLL은 <code>CalcOffset</code>, <code>LoadRecipe</code>처럼 업무 용어가 들어간 이름을 내보내는 경우가 많다.</li>
+</ul>
+<h3 id="installed-program-analysis--3-런타임에-따라-경로를-고른다">3. 런타임에 따라 경로를 고른다</h3>
+<ul>
+<li>.NET이면 <a href="#rea-usage-guide--net-도구">사용법 문서의 .NET 절</a>로 간다. 이 문서의 나머지는 필요 없다.</li>
+<li>PyInstaller면 <a href="#rea-usage-guide--python-도구-pyinstaller로-묶은-exe">사용법 문서의 Python 절</a>로 간다.</li>
+<li>Electron이면 <code>resources\app.asar</code>를 <code>analyze_javascript_application</code>에 넘긴다.</li>
+<li>네이티브(C, C++, Delphi)면 아래 4단계부터 이어서 한다.</li>
+</ul>
+<h3 id="installed-program-analysis--4-정찰한다-임포트-문자열-리소스">4. 정찰한다: 임포트, 문자열, 리소스</h3>
+<p>Ghidra로 함수를 읽기 전에 겉을 먼저 본다.</p>
+<pre><code class="language-text">C:\re-work\recipe-tool\install\RecipeTool.exe 를 ghidra 프로바이더로 열어라.
+1) binary_overview로 아키텍처(x86/x64), 컴파일러 단서, 섹션을 보고
+2) 임포트를 기능별(파일, 레지스트리, 네트워크, 시리얼, DB, UI, 동적 로드)로 묶고
+3) 문자열 중 로그 문구, 에러 문구, 파일 경로, 레지스트리 키, SQL, URL을 분류하고
+4) inspect_pe_resources로 대화 상자, 메뉴, 문자열 표 리소스가 있는지와 그 ID를 봐라.
+디컴파일은 아직 하지 마라. 질문 &quot;Export 버튼의 CSV 형식&quot;에 쓸 진입점 후보 3~5개를 제안해라.
+</code></pre>
+<p>대화 상자, 메뉴, 문자열 표 리소스에는 화면 문구와 컨트롤 ID가 들어 있다. 사용자가 보는 버튼 이름에서 출발하면 그 버튼을 처리하는 코드로 가는 길이 짧다. <code>inspect_pe_resources</code>는 엔진 없이 리소스의 종류, ID, 위치를 알려주지만 내용은 디코딩하지 않는다. 화면 문구를 읽으려면 별도 리소스 도구로 연다. 회사에서는 오픈 소스인 RisohEditor(GPL-3.0)나 PE-bear(GPL-2.0)를 쓴다. 아래 <a href="#installed-program-analysis--회사-pc에-보조-도구를-들이는-기준">보조 도구 표</a>를 본다. 이렇게 얻은 컨트롤 ID는 상수 검색으로 버튼 처리 코드를 찾는 데 쓴다.</p>
+<h3 id="installed-program-analysis--5-진입점에서-경로를-따라간다">5. 진입점에서 경로를 따라간다</h3>
+<p>진입점 문자열 하나를 골라 질문의 결과까지 따라간다.</p>
+<pre><code class="language-text">문자열 &quot;Export completed&quot;를 참조하는 함수를 찾아 analyze_function으로 분석해라.
+그 함수의 호출자(caller)를 따라 올라가서 버튼 처리 함수를 찾고,
+호출 대상(callee)을 따라 내려가서 파일을 쓰는 함수(WriteFile 또는 fprintf 계열)까지 경로를 정리해라.
+경로의 각 함수마다 주소, 제안 이름, 하는 일 한 문장, Evidence ID를 표로 줘라.
+간접 호출 때문에 끊긴 곳은 따로 표시해라.
+</code></pre>
+<p>이 단계에서 쓰는 도구는 아래와 같다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>하고 싶은 것</th>
+<th>도구</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>함수 하나의 디컴파일, 호출 관계, 참조를 한 번에</td>
+<td><code>analyze_function</code></td>
+</tr>
+<tr>
+<td>디컴파일러를 거치지 않은 어셈블리</td>
+<td><code>read_function_instructions</code></td>
+</tr>
+<tr>
+<td>값이 어디서 와서 어디로 가는지(계산식 추적)</td>
+<td><code>trace_native_values</code></td>
+</tr>
+<tr>
+<td>간접 호출의 대상 후보</td>
+<td><code>resolve_native_call_targets</code></td>
+</tr>
+<tr>
+<td>명령어 하나의 상세</td>
+<td><code>inspect_native_instruction</code></td>
+</tr>
+<tr>
+<td>복원된 구조체, 타입</td>
+<td><code>inspect_native_data_type</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>계산 로직이 질문이면 <code>trace_native_values</code>가 특히 쓸모 있다. 결과값 하나를 정하고, 그 값이 어느 입력과 상수에서 어떤 연산을 거쳐 만들어지는지 함수 경계를 넘어 추적한다. 메모리 별칭(alias)이나 전역 상태를 거치는 값은 미확인으로 남는다. 그 부분은 어셈블리를 직접 보거나 실행해서 확인한다.</p>
+<p>Windows에서는 Ghidra에 함수 이름을 붙일 수 없다. pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 <a href="#investigation-log">분석 기록</a> 5절에 붙인다.</p>
+<h3 id="installed-program-analysis--6-설정과-데이터-파일을-함께-읽는다">6. 설정과 데이터 파일을 함께 읽는다</h3>
+<p>코드만 보면 동작의 절반만 보인다. 설정 값과 데이터 형식이 동작을 바꾸기 때문이다.</p>
+<ul>
+<li>INI, XML, JSON 설정 파일은 직접 읽는다. 키 이름을 바이너리 문자열과 맞춰서 각 설정을 읽는 함수를 찾는다.</li>
+<li>SQLite DB는 <code>inspect_sqlite_database</code>로 테이블과 컬럼을 본다. 프로그램이 쓰고 있는 DB를 그냥 복사하면 내용이 어긋나거나 <code>-wal</code> 파일의 내용이 빠질 수 있다. 프로그램을 종료한 뒤 <code>.db</code>와 <code>-wal</code> 파일을 함께 복사하거나, 프로그램의 백업 기능으로 받은 파일을 쓴다. 이 도구는 REA를 Node.js 24.15 이상 또는 26 이상으로 실행해야 한다. Node.js 22에서는 쓸 수 없다.</li>
+<li>바이너리 안의 레지스트리 키 문자열을 찾았으면, 테스트 PC의 레지스트리에서 실제 값을 확인한다.</li>
+</ul>
+<h3 id="installed-program-analysis--7-실행해서-확인한다">7. 실행해서 확인한다</h3>
+<p>Windows에서는 REA의 프로세스 관찰 기능을 쓸 수 없다. 테스트 PC나 VM에서 보조 도구로 확인한다. 실행 전에 <a href="#re-process--1-범위와-허가를-확인한다">작업 절차 1단계의 경고</a>대로 운영망과 운영 계정을 분리한다. 도구를 고르는 기준은 아래 "회사 PC에 보조 도구를 들이는 기준"에 있다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>확인하고 싶은 것</th>
+<th>회사에서 쓸 도구</th>
+<th>방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>어떤 파일, 레지스트리를 건드리는가</td>
+<td>System Informer 4.0 이상(MIT), 또는 Fibratus(Apache-2.0)</td>
+<td>프로그램을 실행하기 전에 기록을 시작한다. 프로세스 트리로 자식 프로세스와 함께 동작하는 서비스까지 확인한 뒤 범위를 정한다. 메인 프로세스 하나만 보면 자식 프로세스가 한 일을 놓친다</td>
+</tr>
+<tr>
+<td>어떤 DLL을 불러오는가</td>
+<td>System Informer</td>
+<td>프로세스의 <strong>Modules</strong> 탭. 설치 없이 보려면 PowerShell <code>(Get-Process RecipeTool).Modules</code></td>
+</tr>
+<tr>
+<td>어디로 통신하는가</td>
+<td>System Informer의 <strong>Network</strong> 탭, 또는 기본 제공 <code>netstat -ano</code>, 리소스 모니터</td>
+<td>연결과 소유 프로세스를 본다. 패킷 내용까지는 보지 않는다</td>
+</tr>
+<tr>
+<td>특정 함수에서 값이 무엇인가</td>
+<td>x64dbg(GPL-3.0 기반)</td>
+<td>Ghidra에서 찾은 주소에 중단점을 건다</td>
+</tr>
+<tr>
+<td>결과 파일이 가설과 같은가</td>
+<td>기본 제공 <code>fc.exe /b</code>, PowerShell <code>Compare-Object</code></td>
+<td>같은 입력으로 실행해서 만들어진 파일을 비교한다</td>
+</tr>
+</tbody>
+</table></div>
+<p>디버거에서 주소를 맞출 때는 기준 주소(image base)를 확인한다. Ghidra는 PE 헤더의 기준 주소로 주소를 보여주지만, 실행 중에는 ASLR 때문에 다른 주소에 올라갈 수 있다. "Ghidra 주소 - Ghidra 기준 주소 + 실행 중 기준 주소"로 바꾼다.</p>
+<h3 id="installed-program-analysis--8-두-버전을-비교한다">8. 두 버전을 비교한다</h3>
+<p>"새 버전에서 무엇이 바뀌었나"는 설치형 프로그램에서 자주 나오는 질문이다.</p>
+<pre><code class="language-text">C:\re-work\v1\RecipeTool.exe 와 C:\re-work\v2\RecipeTool.exe 를 비교해라.
+1) 각각 ghidra로 열고 list_procedures를 detail summary로 받아라.
+2) 각 세션을 닫기 전에 export_evidence_bundle로 저장해라.
+3) 두 번들을 다시 불러와 match_native_functions로 함수 대응을 만들고,
+   대응된 함수와 대응되지 않은 함수를 후보 목록으로 정리해라.
+4) 질문과 관련된 함수만 골라 양쪽 analyze_function 결과를 비교해서 실제로 바뀌었는지 확인해라.
+</code></pre>
+<p><code>close_binary</code>는 세션 기록을 지운다. 첫 번째 대상을 닫기 전에 반드시 Evidence를 저장한다. 함수 매칭 결과는 후보일 뿐이다. 이름이 같다고 코드가 같다는 뜻은 아니고, 대응되지 않은 함수가 추가되거나 삭제되었다는 증거도 아니다. 변경 여부는 고른 함수의 본문을 양쪽에서 비교해서 확정한다.</p>
+<h3 id="installed-program-analysis--9-재구현한다면-비교-테스트까지-만든다">9. 재구현한다면 비교 테스트까지 만든다</h3>
+<p>계산 로직을 Python 같은 언어로 옮길 때는 원본 프로그램과 같은 입력을 넣어 결과를 비교하는 테스트를 함께 만든다. 정상 범위만 넣지 말고 0, 음수, 경계값, 빈 입력을 넣는다. 반올림, 정수 나눗셈, 부동소수점 정밀도 차이에서 원본과 어긋나는 경우가 가장 많다.</p>
+<h2 id="installed-program-analysis--회사-pc에-보조-도구를-들이는-기준">회사 PC에 보조 도구를 들이는 기준</h2>
+<p>회사 PC에는 설치 금지 목록이 있다. 도구를 들이기 전에 두 가지를 차례로 확인한다.</p>
+<ol>
+<li><strong>설치 금지 목록에 없는가.</strong> 목록에 있으면 무료든 오픈 소스든 설치하지 않는다.</li>
+<li><strong>회사에서 써도 되는 라이선스인가.</strong> 무료 도구라도 "개인 사용만 무료"이고 회사 사용에는 유료 라이선스를 요구하는 경우가 많다. 공식 사이트의 라이선스 조항을 직접 확인한다.</li>
+</ol>
+<p>OSI가 승인한 오픈 소스 라이선스(MIT, Apache-2.0, GPL 등)는 회사에서 쓰는 것 자체를 막지 않으므로 2번이 가장 쉽게 통과한다. Ghidra(Apache-2.0)도 이 기준으로 설치했다. 그래서 보조 도구는 오픈 소스부터 고른다. 무료이지만 오픈 소스가 아닌 도구는 2번을 따로 확인해야 한다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>용도</th>
+<th>오픈 소스 도구(라이선스)</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>파일, 레지스트리 접근 추적</td>
+<td>System Informer 4.0 이상(MIT), Fibratus(Apache-2.0)</td>
+<td>System Informer는 드라이버를 쓰는 기능이 있다. Fibratus는 ETW 기반이다</td>
+</tr>
+<tr>
+<td>프로세스, DLL, 네트워크 연결 확인</td>
+<td>System Informer(MIT)</td>
+<td>구 Process Hacker</td>
+</tr>
+<tr>
+<td>디버거</td>
+<td>x64dbg(GPL-3.0 기반, 플러그인 예외 조항 추가)</td>
+<td>표준 GPL-3.0과 문구가 다르므로 신청할 때 LICENSE 파일을 함께 낸다</td>
+</tr>
+<tr>
+<td>PE 구조, 리소스 보기</td>
+<td>PE-bear(GPL-2.0), RisohEditor(GPL-3.0)</td>
+<td>RisohEditor는 대화 상자와 문자열 표를 연다</td>
+</tr>
+<tr>
+<td>런타임, 패커 판별</td>
+<td>Detect It Easy(MIT)</td>
+<td>컴파일러, 패커, 설치 파일 형식을 알려준다</td>
+</tr>
+<tr>
+<td>PE 구조를 스크립트로 읽기</td>
+<td>pefile(MIT, Python)</td>
+<td>사내 Python 환경에서 쓴다</td>
+</tr>
+<tr>
+<td>헥스 편집기</td>
+<td>ImHex(GPL-2.0)</td>
+<td></td>
+</tr>
+<tr>
+<td>.NET 디컴파일</td>
+<td>ILSpy(MIT), dnSpyEx(GPL-3.0)</td>
+<td>REA의 <code>inspect_managed_artifact</code>를 보완한다</td>
+</tr>
+<tr>
+<td>PyInstaller 풀기, <code>.pyc</code> 디컴파일</td>
+<td>pyinstxtractor(GPL-3.0), pycdc(GPL-3.0)</td>
+<td>pycdc는 최신 Python 버전에서 일부 구문을 복원하지 못할 수 있다</td>
+</tr>
+<tr>
+<td>저장된 패킷 캡처 읽기</td>
+<td>Wireshark(GPL-2.0 이상)</td>
+<td>실시간 캡처에 쓰는 Npcap은 오픈 소스가 아니다. Npcap 없이 캡처 파일만 읽는다</td>
+</tr>
+</tbody>
+</table></div>
+<p>무료이지만 오픈 소스가 아닌 도구도 있다. Sysinternals Process Monitor와 Process Explorer는 Microsoft 이용 약관을 따른다. Resource Hacker와 HxD는 각자의 프리웨어 라이선스를, Npcap은 자체 라이선스를 따른다. 이 도구들은 금지 목록과 회사 사용 조건을 확인한 뒤에만 쓴다. 이 표의 라이선스는 2026-10-24에 각 공식 저장소에서 확인했다. 설치 패키지에 동봉된 플러그인이나 구성 요소는 라이선스가 다를 수 있다.</p>
+<h2 id="installed-program-analysis--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>REA 네이티브 분석: <a href="https://github.com/morluto/rea/blob/main/docs/native-investigation.md">https://github.com/morluto/rea/blob/main/docs/native-investigation.md</a></li>
+<li>REA 설치 폴더 분석: <a href="https://github.com/morluto/rea/blob/main/docs/desktop-applications.md">https://github.com/morluto/rea/blob/main/docs/desktop-applications.md</a></li>
+<li>REA 빌드 간 함수 매칭: <a href="https://github.com/morluto/rea/blob/main/docs/native-function-matching.md">https://github.com/morluto/rea/blob/main/docs/native-function-matching.md</a></li>
+<li>REA 네이티브·패키지 분석 지침: <a href="https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md">https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md</a></li>
+<li>Microsoft x64 호출 규약: <a href="https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention">https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention</a></li>
+<li>System Informer: <a href="https://github.com/winsiderss/systeminformer">https://github.com/winsiderss/systeminformer</a></li>
+<li>Fibratus: <a href="https://github.com/rabbitstack/fibratus">https://github.com/rabbitstack/fibratus</a></li>
+<li>x64dbg: <a href="https://github.com/x64dbg/x64dbg">https://github.com/x64dbg/x64dbg</a></li>
+<li>RisohEditor: <a href="https://github.com/katahiromz/RisohEditor">https://github.com/katahiromz/RisohEditor</a></li>
+<li>PE-bear: <a href="https://github.com/hasherezade/pe-bear">https://github.com/hasherezade/pe-bear</a></li>
+</ul>
+<h2 id="installed-program-analysis--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></li>
+<li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
+<li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
+<li><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="rea-reference"><p class="file"><span class="num">06</span>rea-reference.md</p><h1>REA 명령·도구 참조</h1>
+<blockquote>
+<p>REA CLI 명령, MCP 도구 이름, 환경 변수 목록. 2026-10-24에 <code>morluto/rea</code> main 브랜치 문서로 정리했다. 버전에 따라 다를 수 있으므로 실제 목록은 <code>rea --help</code>와 <code>binary_session</code>으로 확인한다.</p>
+</blockquote>
+<h2 id="rea-reference--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>에이전트에게 도구 이름을 짚어 주면 경로를 덜 헤맨다. 직접 CLI로 확인할 때도 명령을 찾는 데 쓴다.</p>
+<h2 id="rea-reference--핵심-개념-what">핵심 개념 (What)</h2>
+<ul>
+<li>CLI 명령은 MCP 도구 이름의 밑줄을 하이픈으로 바꾼 것이다. 예: <code>analyze_javascript_application</code> → <code>rea analyze-javascript-application</code>.</li>
+<li>모든 경로는 절대 경로로 쓴다.</li>
+<li><code>--json</code>을 붙이면 Evidence 레코드를 JSON으로 출력한다.</li>
+<li>실행 중인 서버에서 쓸 수 있는 도구와 그 이유는 MCP <code>binary_session</code> 도구에 <code>{}</code>를 넘겨서 확인한다. <code>result.tool_availability</code>에 나온다.</li>
+</ul>
+<h2 id="rea-reference--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<h3 id="rea-reference--설치-진단-업데이트">설치, 진단, 업데이트</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>명령</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npx rea-agents setup</code></td>
+<td>에이전트에 MCP 서버와 스킬을 등록한다. 변경 내용을 보여주고 승인을 받는다</td>
+</tr>
+<tr>
+<td><code>rea setup --client codex --dry-run --json</code></td>
+<td>특정 에이전트의 등록 계획만 보여준다. 아무것도 바꾸지 않는다</td>
+</tr>
+<tr>
+<td><code>rea doctor --json</code></td>
+<td>전체 환경을 진단한다. 설정을 바꾸지 않는다</td>
+</tr>
+<tr>
+<td><code>rea doctor --provider ghidra --json</code></td>
+<td>Ghidra 연결만 진단한다</td>
+</tr>
+<tr>
+<td><code>rea doctor --client claude_code --json</code></td>
+<td>한 에이전트의 MCP 등록만 진단한다</td>
+</tr>
+<tr>
+<td><code>rea doctor --skill --json</code></td>
+<td>설치된 스킬만 진단한다</td>
+</tr>
+<tr>
+<td><code>rea providers --json</code></td>
+<td>쓸 수 있는 분석 엔진 목록</td>
+</tr>
+<tr>
+<td><code>rea capabilities --json</code></td>
+<td>기능 목록</td>
+</tr>
+<tr>
+<td><code>rea update</code></td>
+<td>전역 설치한 REA를 업데이트한다</td>
+</tr>
+<tr>
+<td><code>rea --version --json</code></td>
+<td>버전과 런타임 정보</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>--client</code> 값: 회사에서는 <code>pi</code>와 <code>hermes</code>를 쓴다. 그 밖에 <code>claude_code</code>, <code>claude_desktop</code>, <code>codex</code>, <code>cursor</code>, <code>gemini_cli</code>, <code>windsurf</code>, <code>devin</code>, <code>opencode</code>, <code>antigravity</code>, <code>copilot_cli</code>, <code>commandcode</code>, <code>qwen_code</code>, <code>kimi</code>, <code>vscode</code>, <code>grok_build</code>, <code>omp</code>, <code>hermes</code>, <code>qoder</code>, <code>droid</code>, <code>trae</code>, <code>workbuddy</code>, <code>zcode</code>, <code>dsh</code>가 있다. <code>droid</code>, <code>dsh</code>, <code>kimi</code>, <code>qoder</code>, <code>trae</code>, <code>workbuddy</code>, <code>zcode</code>는 <code>rea-agents</code> 6.5.0 이상이 필요하다. Grok Bot은 setup이 아니라 수동으로 연결한다.</p>
+<h3 id="rea-reference--네이티브-분석-ghidra">네이티브 분석 (Ghidra)</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>명령</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rea inspect PATH --provider ghidra --json</code></td>
+<td>대상 개요</td>
+</tr>
+<tr>
+<td><code>rea analyze PATH --provider ghidra --json</code></td>
+<td>분석 실행</td>
+</tr>
+<tr>
+<td><code>rea search PATH "text" --kind procedures --provider ghidra --json</code></td>
+<td>함수 이름 검색. 다른 <code>--kind</code> 값은 <code>rea search --help</code>로 확인한다</td>
+</tr>
+<tr>
+<td><code>rea function PATH NAME_OR_ADDR --provider ghidra --json</code></td>
+<td>함수 하나의 종합 정보(dossier)</td>
+</tr>
+<tr>
+<td><code>rea decompile PATH 0x1000 --provider ghidra --json</code></td>
+<td>의사 코드</td>
+</tr>
+<tr>
+<td><code>rea instructions PATH NAME_OR_ADDR --provider ghidra --json</code></td>
+<td>어셈블리</td>
+</tr>
+<tr>
+<td><code>rea xrefs PATH 0x1000 --provider ghidra --json</code></td>
+<td>상호 참조</td>
+</tr>
+<tr>
+<td><code>rea trace PATH "text" --provider ghidra --json</code></td>
+<td>시작점에서 정적 경로 추적</td>
+</tr>
+<tr>
+<td><code>rea analyze PATH --provider ghidra --snapshot SNAP.json</code></td>
+<td>결과를 스냅샷 파일에 저장하고 재사용</td>
+</tr>
+<tr>
+<td><code>rea trace-native-values PATH PROCEDURE --provider ghidra</code></td>
+<td>값의 출처와 흐름을 함수 경계를 넘어 추적</td>
+</tr>
+<tr>
+<td><code>rea resolve-native-call-targets PATH CALL_SITE --provider ghidra</code></td>
+<td>간접 호출의 대상 후보</td>
+</tr>
+<tr>
+<td><code>rea inspect-native-instruction PATH ADDR --provider ghidra</code></td>
+<td>명령어 하나의 상세</td>
+</tr>
+<tr>
+<td><code>rea inspect-native-data-type PATH --type /MyStruct --provider ghidra</code></td>
+<td>복원된 구조체, 타입</td>
+</tr>
+<tr>
+<td><code>rea inspect-pe-resources PATH --json</code></td>
+<td>PE 리소스의 종류, ID, 위치. 내용은 디코딩하지 않는다. 엔진 불필요</td>
+</tr>
+<tr>
+<td><code>rea inspect-native-exports PATH --json</code></td>
+<td>DLL 익스포트 목록. 엔진 불필요</td>
+</tr>
+</tbody>
+</table></div>
+<p>자주 쓰는 MCP 도구: <code>open_binary</code>, <code>binary_overview</code>, <code>list_procedures</code>, <code>analyze_function</code>, <code>read_function_instructions</code>, <code>trace_native_values</code>, <code>match_native_functions</code>(두 빌드의 함수 대응), <code>inspect_pe_resources</code>, <code>inspect_native_exports</code>, <code>close_binary</code>. <code>annotate_native_function</code>, <code>set_address_name</code>은 Linux, macOS에서만 된다. Windows에서 실제로 쓸 수 있는 도구는 <code>binary_session</code>의 <code>tool_availability</code>로 확인한다.</p>
+<h3 id="rea-reference--정적-분석-엔진-불필요">정적 분석 (엔진 불필요)</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>대상</th>
+<th>CLI</th>
+<th>MCP 도구</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설치 폴더</td>
+<td><code>rea inspect-desktop-application PATH --json</code></td>
+<td><code>inspect_desktop_application</code></td>
+</tr>
+<tr>
+<td>JS, Electron 앱</td>
+<td><code>rea analyze-javascript-application PATH --json</code></td>
+<td><code>analyze_javascript_application</code></td>
+</tr>
+<tr>
+<td>아카이브, 패키지(ASAR, ZIP, PyInstaller 등)</td>
+<td><code>rea inspect-artifact PATH --json</code></td>
+<td><code>inspect_artifact</code></td>
+</tr>
+<tr>
+<td>아카이브에서 꺼내기</td>
+<td><code>rea extract-artifact PATH --json</code></td>
+<td><code>extract_artifact</code></td>
+</tr>
+<tr>
+<td>.NET 어셈블리</td>
+<td><code>rea inspect-managed-artifact PATH --json</code></td>
+<td><code>inspect_managed_artifact</code></td>
+</tr>
+<tr>
+<td>.NET 멤버</td>
+<td><code>rea inspect-managed-members PATH --type NS.Class --json</code></td>
+<td><code>inspect_managed_members</code></td>
+</tr>
+<tr>
+<td><code>.pyc</code></td>
+<td><code>rea inspect-python-pyc PATH --json</code></td>
+<td><code>inspect_python_pyc</code></td>
+</tr>
+<tr>
+<td>Go 바이너리</td>
+<td><code>rea inspect-go-binary PATH --json</code></td>
+<td><code>inspect_go_binary</code></td>
+</tr>
+<tr>
+<td>Rust 바이너리</td>
+<td><code>rea inspect-rust-binary PATH --json</code></td>
+<td><code>inspect_rust_binary</code></td>
+</tr>
+<tr>
+<td>PE 서명 인증서</td>
+<td><code>rea inspect-pe-certificates PATH --json</code></td>
+<td><code>inspect_pe_certificates</code></td>
+</tr>
+<tr>
+<td>SQLite DB(Node.js 24.15 이상 또는 26 이상 필요)</td>
+<td><code>rea inspect-sqlite-database PATH --json</code></td>
+<td><code>inspect_sqlite_database</code></td>
+</tr>
+<tr>
+<td>모델 파일(GGUF, safetensors)</td>
+<td><code>rea inspect-model-artifact PATH --json</code></td>
+<td><code>inspect_model_artifact</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rea-reference--웹-분석">웹 분석</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>명령</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rea list-browser-targets http://127.0.0.1:9222 --json</code></td>
+<td>디버깅 포트에 열린 페이지 목록</td>
+</tr>
+<tr>
+<td><code>rea inspect-web-page http://127.0.0.1:9222 TARGET_ID --observation-ms 1000 --json</code></td>
+<td>DOM, 스크립트, 리소스, 네트워크 메타데이터</td>
+</tr>
+<tr>
+<td><code>rea analyze-web-bundle http://127.0.0.1:9222 TARGET_ID --json</code></td>
+<td>번들의 라우트, 엔드포인트 후보, 소스 맵</td>
+</tr>
+<tr>
+<td><code>rea observe-web-session http://127.0.0.1:9222 TARGET_ID --observation-ms 10000 --json</code></td>
+<td>사람이 조작하는 동안의 탐색, 요청 기록</td>
+</tr>
+<tr>
+<td><code>rea inspect-web-network-capture /abs/session.har har --json</code></td>
+<td>저장한 HAR 파일 분석. URL을 다시 요청하지 않는다</td>
+</tr>
+</tbody>
+</table></div>
+<p>에이전트가 직접 클릭하고 입력해야 하면 MCP 도구 <code>capture_browser_scenario</code>를 쓴다. 캡처한 스크립트를 JS 정적 분석으로 넘기려면 <code>export_web_scripts</code>를 쓴다.</p>
+<h3 id="rea-reference--evidence-다루기">Evidence 다루기</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>도구 또는 명령</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inspect_analysis_view</code></td>
+<td>저장된 Evidence의 요약, 한 모듈, 한 페이지를 본다. 분석을 다시 돌리지 않는다</td>
+</tr>
+<tr>
+<td><code>get_evidence_bundle</code></td>
+<td>세션의 Evidence를 조건으로 찾는다</td>
+</tr>
+<tr>
+<td><code>export_evidence_bundle</code></td>
+<td>세션 전체 Evidence를 파일로 저장한다</td>
+</tr>
+<tr>
+<td><code>record_unknown</code></td>
+<td>미해결 질문을 세션에 기록한다</td>
+</tr>
+<tr>
+<td><code>rea evidence-import FILE</code> / <code>rea evidence-export IN OUT</code></td>
+<td>Evidence 파일 가져오기, 내보내기</td>
+</tr>
+<tr>
+<td><code>rea compare LEFT.json RIGHT.json</code></td>
+<td>두 Evidence 비교</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rea-reference--mcp-안내-프롬프트">MCP 안내 프롬프트</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>프롬프트</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>investigate_feature</code></td>
+<td>기능 하나를 진입점부터 함수 근거까지 추적</td>
+</tr>
+<tr>
+<td><code>compare_application_versions</code></td>
+<td>두 배포본 비교</td>
+</tr>
+<tr>
+<td><code>verify_reconstruction</code></td>
+<td>재구현이 명세를 만족하는지 검증</td>
+</tr>
+<tr>
+<td><code>trace_crash</code></td>
+<td>크래시 증상과 정적 경로 연결</td>
+</tr>
+<tr>
+<td><code>audit_residual_unknowns</code></td>
+<td>남은 미확인 항목 점검</td>
+</tr>
+<tr>
+<td><code>prepare_bounded_process_capture</code></td>
+<td>실행 관찰 실험을 실행 전에 설계</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rea-reference--환경-변수">환경 변수</h3>
+<p>REA를 띄우는 환경(MCP 등록)에 넣어야 한다. 바꾼 뒤에는 MCP 서버를 재시작한다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>변수</th>
+<th>뜻</th>
+<th>기본값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GHIDRA_INSTALL_DIR</code></td>
+<td>Ghidra 설치 경로. 없으면 <code>PATH</code>에서 <code>ghidraRun</code>을 찾는다</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>JAVA_HOME</code></td>
+<td>Ghidra가 쓸 JDK. 21 이상, 호스트 아키텍처와 같아야 한다</td>
+<td><code>PATH</code>의 <code>java</code></td>
+</tr>
+<tr>
+<td><code>GHIDRA_HEADLESS_MAXMEM</code></td>
+<td>Ghidra JVM 힙(<code>-Xmx</code>)</td>
+<td><code>2G</code></td>
+</tr>
+<tr>
+<td><code>REA_GHIDRA_STARTUP_TIMEOUT_MS</code></td>
+<td>Ghidra 시작 대기 시간</td>
+<td>330초</td>
+</tr>
+<tr>
+<td><code>REA_GHIDRA_LANGUAGE_ID</code>, <code>REA_GHIDRA_COMPILER_SPEC_ID</code></td>
+<td>헤더 자동 감지 대신 쓸 언어와 컴파일러 지정</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>REA_MCP_INPUT_SCHEMA_PROFILE</code></td>
+<td><code>full</code>이면 MCP 입력 스키마를 자세히 노출한다</td>
+<td>간략형</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rea-reference--지원-조건">지원 조건</h3>
+<ul>
+<li>Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm.</li>
+<li>Ghidra 12.1.x와 64비트 JDK 21 이상. 검증된 조합은 Ghidra 12.1.4 + JDK 21.</li>
+<li>Ghidra는 Linux, macOS에서 읽기 전용 분석과 함수 이름, 주석 편집을 지원한다. Windows는 실험 단계이고 읽기 전용이다.</li>
+<li>실행 파일의 바이트는 바꾸지 않는다. 세션 중 편집은 닫으면 사라진다.</li>
+</ul>
+<h2 id="rea-reference--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>REA CLI와 Evidence: <a href="https://github.com/morluto/rea/blob/main/docs/cli.md">https://github.com/morluto/rea/blob/main/docs/cli.md</a></li>
+<li>REA MCP 계약: <a href="https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md">https://github.com/morluto/rea/blob/main/docs/mcp-contracts.md</a></li>
+<li>REA MCP 안내 프롬프트: <a href="https://github.com/morluto/rea/blob/main/docs/mcp-prompts.md">https://github.com/morluto/rea/blob/main/docs/mcp-prompts.md</a></li>
+<li>REA 설치: <a href="https://github.com/morluto/rea/blob/main/docs/installation.md">https://github.com/morluto/rea/blob/main/docs/installation.md</a></li>
+</ul>
+<h2 id="rea-reference--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
+<li><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></li>
+<li><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="investigation-log"><p class="file"><span class="num">07</span>templates/investigation-log.md</p><h1>분석 기록: ⟨대상 이름⟩</h1>
+<blockquote>
+<p>분석 하나를 시작할 때 이 파일을 복사해서 채운다. 디컴파일 코드 원문, 장비명, 내부 시스템 상세는 적지 않는다.</p>
+</blockquote>
+<h2 id="investigation-log--1-범위와-허가">1. 범위와 허가</h2>
+<ul>
+<li>대상 소유자 또는 부서:</li>
+<li>목적: 유지보수 / 연동 / 재구현 / 버전 확인</li>
+<li>허가받은 사람과 날짜:</li>
+<li>실행 허용 여부와 환경: 정적 분석만 / 테스트 환경에서 실행 가능</li>
+</ul>
+<h2 id="investigation-log--2-질문">2. 질문</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th>답이 되는 증거</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td></td>
+<td></td>
+<td>답함 / 일부 답함 / 미해결</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="investigation-log--3-대상-식별">3. 대상 식별</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>파일</th>
+<th>SHA-256</th>
+<th>형식(<code>file</code> 결과)</th>
+<th>버전, 빌드 날짜</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>함께 배포된 파일:</p>
+<p>웹 앱이면 아래를 대신 적는다. URL이 같아도 배포 시점과 계정 권한에 따라 결과가 달라진다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>URL</th>
+<th>관찰 시각</th>
+<th>배포 식별자 또는 번들 해시</th>
+<th>사용한 테스트 계정의 역할</th>
+<th>재현한 동작</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="investigation-log--4-정찰-결과">4. 정찰 결과</h2>
+<ul>
+<li>진입점 후보 문자열:</li>
+<li>주요 임포트:</li>
+<li>의존성, 라이브러리:</li>
+<li>설정 파일, 리소스:</li>
+</ul>
+<h2 id="investigation-log--5-정적-분석-경로">5. 정적 분석 경로</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>주소 또는 모듈</th>
+<th>붙인 이름</th>
+<th>하는 일(한 문장)</th>
+<th>Evidence ID</th>
+<th>등급</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>관찰 / 추론</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="investigation-log--6-동적-확인">6. 동적 확인</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>가설</th>
+<th>확인 방법</th>
+<th>결과</th>
+<th>일치 여부</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="investigation-log--7-결론">7. 결론</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>질문</th>
+<th>결론</th>
+<th>근거(Evidence ID)</th>
+<th>등급</th>
+<th>찾아본 범위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>남은 미확인 항목:</p><p class="back"><a href="#top">목차로</a></p></section>
+</main>

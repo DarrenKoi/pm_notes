@@ -33,6 +33,13 @@ note_kind: "목차"
 
 회사 환경은 Windows PC + pi 에이전트(사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 5번 문서를 가장 자주 본다.
 
+## 휴대폰, 태블릿에서 읽기
+
+이 폴더의 문서 전체를 한 페이지로 묶은 HTML이 claude.ai에 있다: <https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE>
+
+- 비공개 링크다. 본인 claude.ai 계정으로 로그인해야 열린다. 저장소가 공개라서 링크는 누구나 볼 수 있지만, 공유 설정을 바꾸지 않는 한 다른 사람은 열 수 없다.
+- `.md`를 고쳐도 자동으로 반영되지 않는다. `python build_html.py`로 `reverse-engineering-guide.html`을 다시 만든 뒤, Claude Code에 "이 HTML을 같은 링크에 다시 게시해줘"라고 요청한다. 링크는 그대로 유지된다.
+
 ## 먼저 알아둘 세 가지
 
 1. **허가 범위 안에서만 분석한다.** 동료가 만든 도구라도 소유 부서와 목적을 먼저 확인한다. 절차는 [작업 절차 1단계](./re-process.md#1-범위와-허가를-확인한다)에 있다.
