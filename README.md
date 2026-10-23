@@ -42,6 +42,7 @@ document_type: vault_index
 | [orchestration/](./orchestration/README.md) | 에이전트 협업 설계와 운영 계약 |
 | [platform/](./platform/README.md) | 플랫폼 연구·기획·티켓/검토 기록 |
 | [my-task/](./my-task/README.md) | 업무 보고·AIX 방법론 출처·재사용 양식·적용 기획/발표 |
+| [reverse_engineering/](./reverse_engineering/README.md) | 소스 없는 사내 프로그램·웹 앱 분석 지식, 절차, REA + Ghidra 사용법 |
 | [RAG/](./RAG/README.md) | 특정 RAG 사례/벤치마크를 읽는 단발 분석 |
 | [docs/](./docs/README.md) | 에이전트 운영·이슈/도메인 문서 작성 규칙 |
 | [_workspace/](./_workspace/README.md) | 당시 세션의 임시·보존 기록. 현재 기술 설명의 대표로 사용하지 않음 |

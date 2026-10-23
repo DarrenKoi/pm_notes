@@ -30,6 +30,7 @@ document_type: agent_instructions
 | `my-task/` | 진행 중인 업무 산출물 (AIX_POC, 2026_report) — 자체 CLAUDE.md 있음 |
 | `harness/` | 코딩 에이전트 실행/평가·하니스 설계와 모델 자료 |
 | `platform/` | 플랫폼 연구·기획·티켓/검토 기록 |
+| `reverse_engineering/` | 리버스 엔지니어링 지식·절차, REA + Ghidra 사용법 |
 | `RAG/` | RAG 관련 단발 분석 문서 |
 | `orchestration/` | pi 코딩 에이전트 기반 멀티 에이전트 오케스트레이션 (역할·모델 티어링, 사내 HCP) |
 | `docs/` | 에이전트 운영 문서 (issue-tracker, triage-labels, domain) |
