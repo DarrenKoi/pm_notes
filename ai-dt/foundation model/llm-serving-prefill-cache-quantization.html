@@ -1,0 +1,194 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LLM 서빙 계산기</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+/* Layout: one reading column; each part is prose followed by one instrument (timeline, prefix blocks, weight number line). */
+:root {
+  --bg: #f2f5f8; --surface: #ffffff; --ink: #16202e; --muted: #5a6778; --line: #d3dae4;
+  --accent: #0f6e8c; --on-accent: #ffffff; --query: #b9640f; --query-soft: #fbead6; --blocked: #e4e9ef;
+  --display: "Noto Serif KR", "Apple SD Gothic Neo", "Malgun Gothic", serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --surface: #171f29; --ink: #e6ebf2; --muted: #94a1b3; --line: #2a3543;
+    --accent: #4cb8d6; --on-accent: #06222b; --query: #f0a24a; --query-soft: #3a2a14; --blocked: #202a36;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --surface: #171f29; --ink: #e6ebf2; --muted: #94a1b3; --line: #2a3543;
+  --accent: #4cb8d6; --on-accent: #06222b; --query: #f0a24a; --query-soft: #3a2a14; --blocked: #202a36;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 16px/1.75 var(--body); }
+.page { max-width: 820px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: flex; flex-direction: column; gap: 56px; }
+header, section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+h2 { font-size: 1.4rem; }
+.step { font: 500 0.8rem var(--mono); color: var(--accent); letter-spacing: 0.08em; }
+p { margin: 0; max-width: 65ch; }
+.lede { font-size: 1.1rem; color: var(--muted); }
+.note { font-size: 0.875rem; color: var(--muted); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+label { font-size: 0.9rem; display: grid; grid-template-columns: 9.5em 1fr 5em; gap: 10px; align-items: center; }
+label.check { display: flex; gap: 8px; }
+label .num { text-align: right; }
+input[type="range"] { accent-color: var(--accent); width: 100%; min-width: 0; }
+input[type="checkbox"] { accent-color: var(--accent); }
+input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.timeline { display: flex; height: 34px; border-radius: 4px; overflow: hidden; background: var(--blocked); }
+.timeline div { min-width: 2px; }
+.t-pre { background: var(--query); }
+.t-dec { background: var(--accent); }
+.key { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.85rem; color: var(--muted); }
+.key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stats div { border-top: 2px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; }
+.stats span { font-size: 0.8rem; color: var(--muted); }
+.stats b { font: 500 1.25rem var(--mono); font-variant-numeric: tabular-nums; }
+
+.req { display: flex; flex-direction: column; gap: 6px; }
+.req > span { font-size: 0.85rem; color: var(--muted); }
+.blocks { display: flex; flex-wrap: wrap; gap: 4px; }
+.blocks div { padding: 6px 10px; border-radius: 3px; font-size: 0.85rem; background: var(--blocked); border: 1px solid transparent; }
+.blocks .hit { background: var(--accent); color: var(--on-accent); }
+.blocks .miss { background: var(--query-soft); color: var(--query); border-color: var(--query); }
+
+svg { width: 100%; height: auto; display: block; }
+svg text { font: 11px var(--mono); fill: var(--muted); }
+</style>
+
+<div class="page">
+<header>
+  <h1>LLM 서빙 계산기</h1>
+  <p class="lede">학습이 끝난 모델을 서비스할 때는 세 가지가 속도와 비용을 정합니다. 프롬프트를 한꺼번에 읽는 prefill, 계산을 재사용하는 cache, 가중치를 작게 줄이는 양자화입니다.</p>
+  <p class="note">속도 값(prefill 5,000 토큰/초, decode 40 토큰/초)과 모델 크기(32층, 4,096차원, 16비트)는 설명용 가정입니다. 실제 값은 모델, GPU, 서빙 엔진에 따라 크게 다릅니다. 관계식은 그대로 성립합니다.</p>
+</header>
+
+<section>
+  <span class="step">PART 1</span>
+  <h2>Prefill과 decode: 한 요청의 두 구간</h2>
+  <p>요청이 오면 모델은 프롬프트 전체를 한 번에 병렬로 읽습니다. 이 구간이 <b>prefill</b>이고, 끝나면 첫 토큰이 나옵니다. 그 뒤로는 토큰을 하나씩 만드는 <b>decode</b>입니다. prefill이 남긴 계산 결과(KV cache)를 계속 꺼내 쓰기 때문에 decode의 한 걸음은 새 토큰 하나만 계산합니다.</p>
+  <div class="panel">
+    <label for="P">프롬프트 토큰 <input type="range" id="P" min="100" max="16000" step="100" value="4000"> <span class="num" id="Pv"></span></label>
+    <label for="N">출력 토큰 <input type="range" id="N" min="10" max="1500" step="10" value="300"> <span class="num" id="Nv"></span></label>
+    <label for="C">prefix cache 적중 <input type="range" id="C" min="0" max="100" step="5" value="0"> <span class="num" id="Cv"></span></label>
+    <div class="timeline" role="img" aria-label="prefill과 decode 시간 비율"><div class="t-pre" id="barPre"></div><div class="t-dec" id="barDec"></div></div>
+    <div class="key"><span><i style="background:var(--query)"></i>prefill (첫 토큰까지)</span><span><i style="background:var(--accent)"></i>decode (토큰 하나씩)</span></div>
+    <div class="stats">
+      <div><span>첫 토큰까지 (TTFT)</span><b id="sTtft"></b></div>
+      <div><span>전체 응답 시간</span><b id="sTotal"></b></div>
+      <div><span>KV cache 메모리</span><b id="sMem"></b></div>
+      <div><span>KV cache가 없다면 계산량</span><b id="sWaste"></b></div>
+    </div>
+  </div>
+  <p class="note">출력 토큰을 늘리면 막대 대부분이 decode로 찹니다. 프롬프트 1,000토큰보다 출력 100토큰이 더 오래 걸리는 이유입니다. prefix cache 적중을 올리면 TTFT만 줄고 decode는 그대로입니다.</p>
+</section>
+
+<section>
+  <span class="step">PART 2</span>
+  <h2>Prefix cache: 앞부분이 같으면 다시 읽지 않는다</h2>
+  <p>서빙 엔진은 이전 요청의 KV cache를 보관했다가, 새 요청의 프롬프트가 <b>첫 토큰부터 똑같이</b> 시작하는 구간만큼 재사용합니다. 중간에 한 토큰이라도 달라지면 그 뒤는 전부 새로 계산합니다. 각 토큰의 계산 결과가 자기 앞의 모든 토큰에 의존하기 때문입니다.</p>
+  <div class="panel">
+    <label class="check"><input type="checkbox" id="stamp"> 요청 시각을 프롬프트 맨 앞에 넣는다</label>
+    <div class="req"><span>요청 1 (cache에 저장됨)</span><div class="blocks" id="req1"></div></div>
+    <div class="req"><span>요청 2</span><div class="blocks" id="req2"></div></div>
+    <div class="key"><span><i style="background:var(--accent)"></i>재사용</span><span><i style="background:var(--query-soft);outline:1px solid var(--query)"></i>새로 계산</span></div>
+    <p id="reuse"></p>
+  </div>
+  <p class="note">고정된 내용(시스템 지침, 도구 정의, 참고 문서)을 앞에, 요청마다 바뀌는 내용(질문, 시각, 사용자 ID)을 뒤에 두면 적중률이 올라갑니다.</p>
+</section>
+
+<section>
+  <span class="step">PART 3</span>
+  <h2>양자화: 가중치를 몇 단계로 반올림할까</h2>
+  <p>학습된 가중치는 보통 16비트 실수입니다. 양자화는 각 값을 정해진 몇 개의 단계 중 가장 가까운 것으로 반올림해 더 적은 비트로 저장합니다. 비트를 줄이면 모델이 작아지고, 반올림 오차는 커집니다.</p>
+  <div class="panel">
+    <label for="B">비트 수 <input type="range" id="B" min="2" max="8" step="1" value="4"> <span class="num" id="Bv"></span></label>
+    <svg id="qsvg" viewBox="0 0 600 150" role="img" aria-label="원래 가중치와 양자화된 가중치 위치"></svg>
+    <div class="stats">
+      <div><span>단계 수</span><b id="qLevels"></b></div>
+      <div><span>반올림 오차 (RMS, 범위 대비)</span><b id="qErr"></b></div>
+      <div><span>80억 파라미터 모델 크기</span><b id="qSize"></b></div>
+      <div><span>16비트 대비</span><b id="qRatio"></b></div>
+    </div>
+  </div>
+  <p class="note">윗줄은 원래 가중치 48개, 아랫줄은 반올림된 위치입니다. 2비트에서는 값들이 세 지점으로 뭉칩니다. 실제 양자화 기법(GPTQ, AWQ 등)은 이 단순 반올림에 보정 데이터를 써서 오차가 출력에 미치는 영향을 줄입니다.</p>
+</section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString("ko-KR");
+const secs = s => s < 1 ? (s * 1000).toFixed(0) + " ms" : s.toFixed(1) + " 초";
+
+// ---------- PART 1 ----------
+// Assumed example values, not measurements.
+const PREFILL_TPS = 5000, DECODE_TPS = 40;
+const KV_BYTES_PER_TOKEN = 2 * 32 * 4096 * 2; // (K and V) x layers x dim x 2 bytes (fp16)
+function renderTime() {
+  const P = +$("P").value, N = +$("N").value, c = +$("C").value / 100;
+  $("Pv").textContent = fmt(P); $("Nv").textContent = fmt(N); $("Cv").textContent = (c * 100).toFixed(0) + "%";
+  const ttft = P * (1 - c) / PREFILL_TPS, dec = N / DECODE_TPS;
+  $("barPre").style.flex = ttft; $("barDec").style.flex = dec;
+  $("sTtft").textContent = secs(ttft);
+  $("sTotal").textContent = secs(ttft + dec);
+  $("sMem").textContent = ((P + N) * KV_BYTES_PER_TOKEN / 2 ** 30).toFixed(2) + " GB";
+  // without a KV cache every step reprocesses the whole sequence so far
+  const without = P + N * P + N * (N - 1) / 2, withCache = P + N;
+  $("sWaste").textContent = (without / withCache).toFixed(0) + "배";
+}
+["P", "N", "C"].forEach(id => $(id).oninput = renderTime);
+
+// ---------- PART 2 ----------
+const BASE = [["시스템 지침", 1200], ["장비 매뉴얼 발췌", 3000]];
+function renderPrefix() {
+  const stamp = $("stamp").checked;
+  const mk = (time, q) => [...(stamp ? [[`요청 시각 ${time}`, 12]] : []), ...BASE, [q, 40]];
+  const a = mk("09:00:01", "질문 A"), b = mk("09:00:07", "질문 B");
+  let same = true, reused = 0, total = 0;
+  $("req1").innerHTML = a.map(([t, n]) => `<div>${t} <span class="num">${fmt(n)}</span></div>`).join("");
+  $("req2").innerHTML = b.map(([t, n], i) => {
+    same = same && a[i][0] === t; total += n; if (same) reused += n;
+    return `<div class="${same ? "hit" : "miss"}">${t} <span class="num">${fmt(n)}</span></div>`;
+  }).join("");
+  $("reuse").innerHTML = `요청 2의 <span class="num">${fmt(total)}</span>토큰 중 <b class="num">${fmt(reused)}</b>토큰을 재사용합니다 (${(reused / total * 100).toFixed(0)}%).`
+    + (stamp ? " 맨 앞 12토큰이 달라졌을 뿐인데 뒤의 4,200토큰도 전부 다시 계산합니다." : "");
+}
+$("stamp").onchange = renderPrefix;
+
+// ---------- PART 3 ----------
+// 48 fixed pseudo-random weights (seeded, roughly bell-shaped like real weight matrices)
+function seeded(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rnd = seeded(7);
+const WEIGHTS = Array.from({ length: 48 }, () => Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(2 * Math.PI * rnd()));
+const WMAX = Math.max(...WEIGHTS.map(Math.abs));
+function quantize(w, bits) { const qmax = 2 ** (bits - 1) - 1, scale = WMAX / qmax; return Math.max(-qmax, Math.min(qmax, Math.round(w / scale))) * scale; }
+function renderQuant() {
+  const bits = +$("B").value, qmax = 2 ** (bits - 1) - 1, x = w => 300 + w / WMAX * 270;
+  $("Bv").textContent = bits + " bit";
+  let s = "", se = 0;
+  if (qmax <= 15) for (let k = -qmax; k <= qmax; k++) s += `<line x1="${x(k * WMAX / qmax)}" y1="84" x2="${x(k * WMAX / qmax)}" y2="124" stroke="var(--line)" stroke-width="1"/>`;
+  WEIGHTS.forEach(w => {
+    const q = quantize(w, bits); se += (w - q) ** 2;
+    s += `<line x1="${x(w)}" y1="52" x2="${x(q)}" y2="88" stroke="var(--line)" stroke-width="1"/>`
+      + `<rect x="${x(w) - 1}" y="26" width="2" height="26" fill="var(--muted)"/>`
+      + `<rect x="${x(q) - 1.5}" y="88" width="3" height="26" fill="var(--accent)" fill-opacity="0.75"/>`;
+  });
+  s += `<text x="30" y="16">원래 값 (16비트)</text><text x="30" y="142">양자화된 값 (${bits}비트)</text>`;
+  $("qsvg").innerHTML = s;
+  $("qLevels").textContent = fmt(2 * qmax + 1);
+  $("qErr").textContent = (Math.sqrt(se / WEIGHTS.length) / (2 * WMAX) * 100).toFixed(2) + "%";
+  $("qSize").textContent = (8e9 * bits / 8 / 1e9).toFixed(0) + " GB";
+  $("qRatio").textContent = (bits / 16 * 100).toFixed(0) + "%";
+}
+$("B").oninput = renderQuant;
+
+renderTime(); renderPrefix(); renderQuant();
+</script>

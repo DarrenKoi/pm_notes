@@ -1,0 +1,256 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>어텐션에서 LLM까지</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+/* Layout: one reading column; each step is prose followed by one working instrument (pipeline, attention table, heatmap, sampler). */
+:root {
+  --bg: #f2f5f8; --surface: #ffffff; --ink: #16202e; --muted: #5a6778; --line: #d3dae4;
+  --accent: #0f6e8c; --on-accent: #ffffff; --query: #b9640f; --query-soft: #fbead6; --blocked: #e4e9ef;
+  --display: "Noto Serif KR", "Apple SD Gothic Neo", "Malgun Gothic", serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --surface: #171f29; --ink: #e6ebf2; --muted: #94a1b3; --line: #2a3543;
+    --accent: #4cb8d6; --on-accent: #06222b; --query: #f0a24a; --query-soft: #3a2a14; --blocked: #202a36;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --surface: #171f29; --ink: #e6ebf2; --muted: #94a1b3; --line: #2a3543;
+  --accent: #4cb8d6; --on-accent: #06222b; --query: #f0a24a; --query-soft: #3a2a14; --blocked: #202a36;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 16px/1.75 var(--body); }
+.page { max-width: 820px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: flex; flex-direction: column; gap: 56px; }
+header, section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+h2 { font-size: 1.4rem; }
+.step { font: 500 0.8rem var(--mono); color: var(--accent); letter-spacing: 0.08em; }
+p { margin: 0; max-width: 65ch; }
+.lede { font-size: 1.1rem; color: var(--muted); }
+.note { font-size: 0.875rem; color: var(--muted); }
+code, .num { font-family: var(--mono); font-size: 0.9em; font-variant-numeric: tabular-nums; }
+b.q { color: var(--query); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+button { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button[aria-pressed="true"] { background: var(--query-soft); border-color: var(--query); color: var(--query); font-weight: 600; }
+button:disabled { opacity: 0.5; cursor: default; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* pipeline */
+.pipe { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.pipe .arrow { align-self: center; color: var(--muted); font-family: var(--mono); }
+.pipe .stack { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border: 1px dashed var(--accent); border-radius: 6px; padding: 8px; position: relative; padding-top: 28px; }
+.pipe .stack::before { content: "Transformer 블록 × N층"; position: absolute; top: 4px; left: 10px; font: 500 0.75rem var(--mono); color: var(--accent); }
+.loop { font: 0.8rem var(--mono); color: var(--muted); }
+#stageDetail h3 { margin: 0; font-size: 1rem; }
+#stageDetail { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+/* attention table */
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-weight: 500; color: var(--muted); font-size: 0.8rem; }
+td.barcell { width: 40%; min-width: 140px; }
+.bar { height: 14px; background: var(--accent); border-radius: 2px; min-width: 1px; }
+tr.masked td { color: var(--muted); }
+tr.masked td:first-child { text-decoration: line-through; }
+.legend { font: 0.8rem var(--mono); color: var(--muted); }
+
+/* heatmap */
+.heat { display: grid; grid-template-columns: auto repeat(5, minmax(44px, 1fr)) auto; gap: 3px; font-size: 0.8rem; align-items: stretch; min-width: 520px; }
+.heat > div { padding: 8px 6px; text-align: center; border-radius: 3px; }
+.heat .lab { text-align: right; color: var(--muted); white-space: nowrap; }
+.heat .col { color: var(--muted); }
+.heat .cell { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.heat .x { background: repeating-linear-gradient(45deg, var(--blocked) 0 4px, transparent 4px 8px); color: var(--muted); }
+.heat .tgt { text-align: left; white-space: nowrap; }
+.heat .tgt b { color: var(--query); }
+
+/* sampler */
+.ctx { display: flex; flex-wrap: wrap; gap: 6px; font-size: 1.05rem; }
+.ctx span { padding: 2px 8px; border-radius: 3px; background: var(--blocked); }
+.ctx span.new { background: var(--query-soft); color: var(--query); font-weight: 600; }
+.cand { display: grid; grid-template-columns: 6.5em 1fr 3.5em; gap: 10px; align-items: center; font-size: 0.9rem; }
+.cand .num { text-align: right; }
+label { font-size: 0.9rem; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+input[type="range"] { accent-color: var(--accent); width: 160px; max-width: 100%; }
+input[type="checkbox"] { accent-color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .bar { transition: width 0.25s; } }
+</style>
+
+<div class="page">
+<header>
+  <h1>어텐션에서 LLM까지</h1>
+  <p class="lede">LLM은 지금까지의 토큰을 받아 다음 토큰 하나의 확률을 내놓는 함수입니다. 어텐션은 그 함수 안에서 토큰끼리 정보를 주고받는 유일한 통로입니다. 아래 네 단계를 직접 눌러 보며 따라가세요.</p>
+  <p class="note">이 페이지의 벡터와 확률은 원리를 보여 주려고 손으로 정한 장난감 값입니다. 계산 절차(내적, √d<sub>k</sub> 나누기, softmax)는 실제 모델과 같습니다.</p>
+</header>
+
+<section>
+  <span class="step">STEP 1</span>
+  <h2>한 번의 계산은 이렇게 흐른다</h2>
+  <p>단계를 누르면 그 자리에서 벌어지는 일을 볼 수 있습니다. 점선 안의 두 단계가 한 층이고, 이 층을 수십 번 반복해 쌓은 것이 Transformer입니다.</p>
+  <div class="panel">
+    <div class="pipe" id="pipe"></div>
+    <div class="loop">↺ 뽑힌 토큰을 입력 맨 뒤에 붙이고 처음부터 다시 계산한다</div>
+    <div id="stageDetail" aria-live="polite"></div>
+  </div>
+</section>
+
+<section>
+  <span class="step">STEP 2</span>
+  <h2>어텐션 한 번을 손으로 계산해 보기</h2>
+  <p>문장은 <b>철수는 영희에게 책을 건넸고 그녀는</b>입니다. 토큰 하나를 고르면 그 토큰이 <b class="q">질문(Query)</b>을 던지고, 각 토큰이 가진 <b>표지(Key)</b>와 얼마나 맞는지 점수를 매깁니다. 점수를 확률로 바꾼 것이 어텐션 가중치입니다.</p>
+  <div class="panel">
+    <div class="row" id="qPick" role="group" aria-label="Query 토큰 선택"></div>
+    <label><input type="checkbox" id="mask" checked> 미래 토큰 가리기 (causal mask)</label>
+    <div class="num" id="qVec"></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>토큰</th><th>Key</th><th>Q·K</th><th>÷ √d<sub>k</sub></th><th>가중치</th><th></th></tr></thead>
+        <tbody id="attRows"></tbody>
+      </table>
+    </div>
+    <div class="legend">벡터의 네 칸 = [사람, 여성, 사물, 행위] · d<sub>k</sub> = 4 이므로 √d<sub>k</sub> = 2</div>
+    <p id="attSum"></p>
+  </div>
+  <p class="note">mask를 끄고 앞쪽 토큰을 골라 보세요. 아직 나오지 않은 뒤 토큰까지 보게 됩니다. 다음 토큰을 맞히는 문제에서 정답을 미리 보는 셈이라, GPT 계열은 mask를 항상 켭니다.</p>
+</section>
+
+<section>
+  <span class="step">STEP 3</span>
+  <h2>학습: 문장 하나가 문제 다섯 개가 된다</h2>
+  <p>모든 토큰이 동시에 자기 줄의 어텐션을 계산합니다. 각 줄은 자기 왼쪽만 볼 수 있으므로, 줄마다 "여기까지 읽고 다음 토큰을 맞혀라"라는 별개의 문제가 됩니다. 문장 하나를 한 번 통과시키면 다섯 문제를 한꺼번에 채점할 수 있고, 이 병렬성 덕분에 방대한 텍스트로 학습할 수 있습니다.</p>
+  <div class="panel">
+    <div class="scroll"><div class="heat" id="heat"></div></div>
+    <div class="legend">칸의 숫자 = 그 줄의 토큰이 그 칸의 토큰을 보는 비중 · 빗금 = mask로 가려진 미래</div>
+  </div>
+  <p>학습은 정답 토큰의 확률이 낮을수록 큰 벌점(cross-entropy)을 주고, 그 벌점이 줄어드는 방향으로 Q·K·V를 만드는 행렬을 조금씩 고치는 일입니다. "그녀는 → 영희"처럼 어디를 봐야 하는지는 사람이 가르치지 않습니다. 다음 토큰을 잘 맞히려다 보니 그렇게 보는 편이 유리해서 생긴 결과입니다.</p>
+</section>
+
+<section>
+  <span class="step">STEP 4</span>
+  <h2>생성: 한 토큰 뽑고, 붙이고, 다시</h2>
+  <p>학습이 끝난 모델은 마지막 위치의 벡터로 어휘 전체에 점수를 매기고, 그 확률에서 토큰 하나를 뽑습니다. 뽑은 토큰을 입력 뒤에 붙여 같은 계산을 반복하면 문장이 됩니다. Temperature는 점수를 나누는 값으로, 낮추면 1등만 뽑히고 높이면 고르게 뽑힙니다.</p>
+  <div class="panel">
+    <div class="ctx" id="ctx"></div>
+    <div id="cands" style="display:flex;flex-direction:column;gap:6px"></div>
+    <div class="row">
+      <label for="temp">Temperature <input type="range" id="temp" min="0.2" max="2" step="0.1" value="1"> <span class="num" id="tempV">1.0</span></label>
+    </div>
+    <div class="row">
+      <button id="sample">확률대로 한 토큰 뽑기</button>
+      <button id="reset">처음부터</button>
+    </div>
+  </div>
+  <p class="note">이 장난감은 마지막 토큰만 보고 후보 표에서 점수를 꺼냅니다. 실제 LLM에는 그런 표가 없고, 토큰을 하나 뽑을 때마다 STEP 1의 블록 전체를 다시 실행해 문맥 전체로부터 점수를 계산합니다.</p>
+</section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const softmax = xs => { const m = Math.max(...xs), e = xs.map(x => Math.exp(x - m)), s = e.reduce((a, b) => a + b); return e.map(x => x / s); };
+
+// ---------- STEP 1: pipeline ----------
+const STAGES = [
+  ["토큰화", "텍스트를 토큰 번호로 바꾼다", "\"그녀는\" 같은 글자 조각을 어휘 사전의 번호로 바꿉니다. 모델은 글자가 아니라 이 번호 목록을 받습니다. 어휘 크기는 보통 수만~수십만 개입니다."],
+  ["임베딩 + 위치", "번호를 벡터로 바꾸고 순서를 표시한다", "번호마다 학습된 벡터를 하나씩 꺼냅니다. 어텐션은 순서를 모르는 연산이라, 몇 번째 토큰인지 알려 주는 위치 정보를 함께 넣습니다. 여기서부터 토큰마다 벡터 한 줄이 끝까지 흘러갑니다."],
+  ["어텐션", "토큰끼리 정보를 주고받는다", "각 토큰이 다른 토큰들을 얼마나 볼지 정하고, 그 비중대로 정보를 끌어와 자기 벡터에 더합니다. 전체 구조에서 토큰과 토큰이 섞이는 곳은 여기뿐입니다. 여러 head가 서로 다른 관계를 동시에 봅니다. STEP 2가 이 단계입니다."],
+  ["MLP", "토큰 하나하나가 받은 정보를 가공한다", "어텐션으로 모은 정보를 토큰별로 따로 변환합니다. 다른 토큰은 보지 않습니다. 모델 파라미터의 대부분이 이 층에 있습니다. 어텐션과 MLP의 결과는 원래 벡터에 더해지므로(residual), 층을 지날수록 벡터에 정보가 쌓입니다."],
+  ["출력층", "마지막 벡터를 어휘 전체 점수로 바꾼다", "맨 끝 토큰의 벡터 하나를 어휘 크기만큼의 점수(logits)로 바꿉니다. 그 벡터에는 층을 거치며 어텐션으로 끌어온 문맥 전체가 요약돼 있습니다."],
+  ["softmax · 샘플링", "점수를 확률로 바꿔 토큰 하나를 뽑는다", "점수를 합이 1인 확률로 바꾸고 그 확률대로 토큰 하나를 고릅니다. 이 토큰을 입력 뒤에 붙여 전체 과정을 반복합니다. STEP 4가 이 단계입니다."],
+];
+let stage = 2;
+function renderPipe() {
+  const pipe = $("pipe"); pipe.innerHTML = "";
+  const btn = i => { const b = document.createElement("button"); b.textContent = STAGES[i][0]; b.setAttribute("aria-pressed", i === stage); b.onclick = () => { stage = i; renderPipe(); }; return b; };
+  const arrow = () => { const s = document.createElement("span"); s.className = "arrow"; s.textContent = "→"; return s; };
+  pipe.append(btn(0), arrow(), btn(1), arrow());
+  const stack = document.createElement("div"); stack.className = "stack"; stack.append(btn(2), arrow(), btn(3));
+  pipe.append(stack, arrow(), btn(4), arrow(), btn(5));
+  $("stageDetail").innerHTML = `<h3>${STAGES[stage][0]}: ${STAGES[stage][1]}</h3><p>${STAGES[stage][2]}</p>`;
+}
+
+// ---------- STEP 2/3: attention ----------
+const TOK = ["철수는", "영희에게", "책을", "건넸고", "그녀는"];
+const NEXT = ["영희에게", "책을", "건넸고", "그녀는", "바로"];
+// dims: [person, female, thing, action] — hand-set for illustration
+const K = [[1,0,0,0], [1,1,0,0], [0,0,1,0], [0,0,0,1], [0.5,0.5,0,0]];
+const Q = [[1,0,0,0], [3,-1,0,2], [1,1,0,2], [2,1,3,0], [2,6,0,0]];
+const SEEK = ["(첫 토큰이라 볼 것이 자기뿐)", "주는 사람과 행위를 찾는 중", "누가 무엇을 하는지 찾는 중", "누가, 누구에게, 무엇을 찾는 중", "여성인 사람을 찾는 중"];
+const D = 4;
+const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
+function attend(q, causal) {
+  const raw = K.map(k => dot(Q[q], k));
+  const vis = K.map((_, j) => !causal || j <= q);
+  const w = softmax(raw.map((s, j) => vis[j] ? s / Math.sqrt(D) : -Infinity));
+  return { raw, vis, w };
+}
+let query = 4;
+function renderAtt() {
+  const causal = $("mask").checked;
+  $("qPick").innerHTML = "";
+  TOK.forEach((t, i) => { const b = document.createElement("button"); b.textContent = t; b.setAttribute("aria-pressed", i === query); b.onclick = () => { query = i; renderAtt(); }; $("qPick").append(b); });
+  $("qVec").innerHTML = `Query(<b class="q">${TOK[query]}</b>) = [${Q[query].join(", ")}] <span class="note">· ${SEEK[query]}</span>`;
+  const { raw, vis, w } = attend(query, causal);
+  $("attRows").innerHTML = TOK.map((t, j) => vis[j]
+    ? `<tr><td>${t}${j === query ? " (자기)" : ""}</td><td class="num">[${K[j].join(", ")}]</td><td class="num">${raw[j].toFixed(1)}</td><td class="num">${(raw[j] / 2).toFixed(2)}</td><td class="num">${w[j].toFixed(2)}</td><td class="barcell"><div class="bar" style="width:${w[j] * 100}%"></div></td></tr>`
+    : `<tr class="masked"><td>${t}</td><td class="num">[${K[j].join(", ")}]</td><td class="num">가려짐</td><td class="num">−∞</td><td class="num">0.00</td><td class="barcell"></td></tr>`).join("");
+  const top = w.map((x, j) => [x, j]).filter(([x]) => x >= 0.005).sort((a, b) => b[0] - a[0]);
+  $("attSum").innerHTML = `<b class="q">${TOK[query]}</b>의 새 벡터에 더해지는 정보 = ` + top.map(([x, j]) => `<span class="num">${x.toFixed(2)}</span>×V(${TOK[j]})`).join(" + ");
+}
+function renderHeat() {
+  let h = `<div></div>` + TOK.map(t => `<div class="col">${t}</div>`).join("") + `<div class="col tgt">맞혀야 할 정답</div>`;
+  TOK.forEach((t, i) => {
+    const { w } = attend(i, true);
+    h += `<div class="lab">${t}</div>` + TOK.map((_, j) => j > i ? `<div class="cell x">·</div>`
+      : `<div class="cell" style="background:color-mix(in srgb, var(--accent) ${Math.round(w[j] * 100)}%, var(--surface));color:var(${w[j] > 0.5 ? "--on-accent" : "--ink"})">${w[j].toFixed(2)}</div>`).join("")
+      + `<div class="tgt">→ <b>${NEXT[i]}</b></div>`;
+  });
+  $("heat").innerHTML = h;
+}
+
+// ---------- STEP 4: sampler ----------
+// ponytail: toy bigram table keyed on the last token only; a real model reruns the whole stack over the full context.
+const LOGITS = {
+  "그녀는": { "바로": 2.0, "책을": 1.2, "고맙다고": 0.9, "웃으며": 0.6 },
+  "바로": { "읽기": 2.2, "펼쳤다": 1.0, "웃었다": 0.3 },
+  "책을": { "읽기": 1.8, "펼쳤다": 1.6, "받았다": 1.0 },
+  "웃으며": { "책을": 1.5, "받았다": 1.4, "말했다": 1.0 },
+  "고맙다고": { "말했다": 2.5, "웃었다": 0.8 },
+  "읽기": { "시작했다": 3.0, "싫었다": 0.2 },
+};
+let gen = [];
+function candidates() {
+  const table = LOGITS[gen.length ? gen[gen.length - 1] : "그녀는"];
+  if (!table) return null;
+  const words = Object.keys(table), p = softmax(words.map(w => table[w] / +$("temp").value));
+  return words.map((w, i) => [w, p[i]]);
+}
+function renderGen() {
+  $("tempV").textContent = (+$("temp").value).toFixed(1);
+  $("ctx").innerHTML = TOK.map(t => `<span>${t}</span>`).join("") + gen.map(t => `<span class="new">${t}</span>`).join("");
+  const c = candidates();
+  $("sample").disabled = !c;
+  $("cands").innerHTML = c
+    ? c.map(([w, p]) => `<div class="cand"><span>${w}</span><div class="bar" style="width:${p * 100}%"></div><span class="num">${(p * 100).toFixed(0)}%</span></div>`).join("")
+    : `<p class="note">문장이 끝났습니다. 실제 모델은 종료 토큰이 뽑히면 멈춥니다. "처음부터"를 눌러 다른 경로를 뽑아 보세요.</p>`;
+}
+$("sample").onclick = () => {
+  const c = candidates(); if (!c) return;
+  let r = Math.random(), pick = c[c.length - 1][0];
+  for (const [w, p] of c) { if ((r -= p) < 0) { pick = w; break; } }
+  gen.push(pick); renderGen();
+};
+$("reset").onclick = () => { gen = []; renderGen(); };
+$("temp").oninput = renderGen;
+$("mask").onchange = renderAtt;
+
+renderPipe(); renderAtt(); renderHeat(); renderGen();
+</script>

@@ -37,9 +37,12 @@ classified_on: "2026-10-05"
 ## 문서 구성
 
 - [Attention이란 무엇인가?](./attention.md) - attention의 직관, Q/K/V, self-attention, multi-head, causal mask
+- [Attention은 LLM 안에서 어떻게 쓰이는가?](./how-attention-powers-llm.md) - 한 번의 forward pass, causal mask와 학습·생성 루프, [인터랙티브 시각화](./how-attention-powers-llm.html)
 - [Transformer가 어떻게 LLM으로 이어졌는가?](./transformer-to-llm.md) - RNN/attention/transformer/BERT/GPT/T5/foundation model로 이어지는 계보
 - [Encoder와 Decoder란 무엇인가?](./encoder-and-decoder.md) - encoder-only, decoder-only, encoder-decoder의 차이와 대표 모델
 - [Foundation LLM은 어떻게 만들어지는가?](./how-foundation-llms-are-built.md) - 데이터, 토크나이저, 사전학습, 스케일링, 정렬(alignment), 배포
+- [LLM 학습 데이터셋은 어떻게 준비하는가?](./llm-dataset-preparation.md) - 단계별 데이터 형태, 중복 제거·누수 방지·chat 형식, 실행 가능한 준비 스크립트
+- [LLM은 어떻게 서빙되는가? Prefill, Cache, 양자화](./llm-serving-prefill-cache-quantization.md) - prefill/decode, KV·prefix cache, 양자화 방식, [서빙 계산기 시각화](./llm-serving-prefill-cache-quantization.html)
 
 ## 핵심 요약
 
