@@ -65,9 +65,10 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#re-process"><span class="num">02</span>리버스 엔지니어링 작업 절차</a></li>
 <li><a href="#rea-windows-pi-setup"><span class="num">03</span>회사 Windows + pi 환경에서 REA를 설정하고 쓰는 방법</a></li>
 <li><a href="#rea-usage-guide"><span class="num">04</span>REA + Ghidra로 분석하는 방법</a></li>
-<li><a href="#installed-program-analysis"><span class="num">05</span>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
-<li><a href="#rea-reference"><span class="num">06</span>REA 명령·도구 참조</a></li>
-<li><a href="#templates-investigation-log"><span class="num">07</span>분석 기록: ⟨대상 이름⟩</a></li>
+<li><a href="#source-map-discovery"><span class="num">05</span>소스 맵 찾고 원본 꺼내는 방법</a></li>
+<li><a href="#installed-program-analysis"><span class="num">06</span>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
+<li><a href="#rea-reference"><span class="num">07</span>REA 명령·도구 참조</a></li>
+<li><a href="#templates-investigation-log"><span class="num">08</span>분석 기록: ⟨대상 이름⟩</a></li>
 </ol></nav>
 <section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>리버스 엔지니어링(Reverse Engineering) 노트</h1>
 <blockquote>
@@ -113,12 +114,18 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>5</td>
+<td><a href="#source-map-discovery">소스 맵 찾고 원본 꺼내는 방법</a></td>
+<td>사용법</td>
+<td>웹 앱, Electron 앱을 분석할 때. 맵 찾기부터 원본 추출까지</td>
+</tr>
+<tr>
+<td>6</td>
 <td><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></td>
 <td>사용법</td>
 <td>설치형 프로그램을 분석할 때. 런타임 판별부터 버전 비교까지</td>
 </tr>
 <tr>
-<td>6</td>
+<td>7</td>
 <td><a href="#rea-reference">REA 명령·도구 참조</a></td>
 <td>참조</td>
 <td>명령어, MCP 도구 이름, 환경 변수를 찾을 때</td>
@@ -131,7 +138,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 </tbody>
 </table></div>
-<p>회사 환경은 Windows PC + pi 에이전트(가끔 Hermes, 사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 5번 문서를 가장 자주 본다.</p>
+<p>회사 환경은 Windows PC + pi 에이전트(가끔 Hermes, 사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 6번 문서를 가장 자주 본다.</p>
 <h2 id="readme--휴대폰-태블릿에서-읽기">휴대폰, 태블릿에서 읽기</h2>
 <p>이 폴더의 문서 전체를 한 페이지로 묶은 HTML이 claude.ai에 있다: <a href="https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE">https://claude.ai/artifact/DexHMg9MppSBs9NHQiiZFE</a></p>
 <ul>
@@ -215,6 +222,85 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><strong>소스 맵(Source Map)</strong>: 압축된 JavaScript 번들을 원본 파일과 줄 번호로 되돌리는 매핑 파일(<code>.map</code>). 사내 웹 앱은 소스 맵을 지우지 않고 배포하는 경우가 많다. 소스 맵의 <code>sourcesContent</code> 필드에 원본 내용이 들어 있으면 원본 소스를 거의 그대로 얻는다. 이 필드는 선택 사항이므로, 비어 있으면 원본 파일 경로와 줄 번호만 얻는다.</li>
 <li><strong>진입점(Entry Point)</strong>: 분석을 시작할 지점. <code>main</code> 함수일 수도 있고, 버튼 클릭 핸들러, HTTP 라우트, 에러 문자열일 수도 있다. 좋은 진입점을 고르는 것이 분석 시간을 가장 많이 줄인다.</li>
 </ul>
+<h3 id="re-fundamentals--기계어-바이트-어셈블리-의사-코드">기계어 바이트, 어셈블리, 의사 코드</h3>
+<p>셋은 같은 함수를 다른 높이에서 본 모습이다. CPU가 실행하는 것은 기계어 바이트뿐이고, 어셈블리와 의사 코드는 사람이 읽으려고 만든 번역이다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>층</th>
+<th>정체</th>
+<th>누가 만드나</th>
+<th>원본과의 관계</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기계어 바이트(Machine Code)</td>
+<td><code>.exe</code>, <code>.dll</code> 안에 실제로 들어 있는 숫자</td>
+<td>컴파일러</td>
+<td>이것이 원본이다</td>
+</tr>
+<tr>
+<td>어셈블리(Assembly)</td>
+<td>바이트 하나하나에 명령어 이름을 붙인 글자 표기</td>
+<td>디스어셈블러</td>
+<td>거의 1:1 대응. 정확하다</td>
+</tr>
+<tr>
+<td>의사 코드(Pseudocode)</td>
+<td>여러 명령어를 묶어 <code>if</code>, 변수, <code>return</code>으로 다시 쓴 C 비슷한 코드</td>
+<td>디컴파일러</td>
+<td>추정으로 복원한 것. 원본 소스가 아니다</td>
+</tr>
+</tbody>
+</table></div>
+<p>아래 C 함수 하나를 세 층으로 따라가 본다.</p>
+<pre><code class="language-c">// 원본 소스 (분석할 때는 이것이 없다)
+int check_limit(int value) {
+    if (value &gt; 100) {
+        return -1;
+    }
+    return value * 2;
+}
+</code></pre>
+<p><strong>1. 기계어 바이트.</strong> Windows x64용으로 최적화 컴파일(<code>clang -target x86_64-pc-windows-msvc -O1</code>)하면 함수 전체가 15바이트가 된다. 16진수 편집기로 파일을 열면 보이는 것이 이것이다.</p>
+<pre><code class="language-text">8d 14 09 83 f9 65 b8 ff ff ff ff 0f 4c c2 c3
+</code></pre>
+<p>어디서 명령어가 끝나는지도 바이트만 봐서는 알 수 없다. x86 명령어는 길이가 1바이트에서 15바이트까지 제각각이다.</p>
+<p><strong>2. 어셈블리.</strong> 디스어셈블러는 바이트를 명령어 단위로 끊고 이름을 붙인다. 위 바이트를 <code>objdump -d --x86-asm-syntax=intel</code>로 디스어셈블한 실제 결과다.</p>
+<pre><code class="language-text">주소  바이트           어셈블리                  뜻
+0:   8d 14 09         lea   edx, [rcx + rcx]   edx = value * 2
+3:   83 f9 65         cmp   ecx, 0x65          value 와 101 비교
+6:   b8 ff ff ff ff   mov   eax, 0xffffffff    eax = -1
+b:   0f 4c c2         cmovl eax, edx           value &lt; 101 이면 eax = edx
+e:   c3               ret                      eax 값을 반환
+</code></pre>
+<p>바이트와 명령어가 한 줄씩 짝을 이룬다. <code>c3</code>은 언제나 <code>ret</code>이고, <code>83 f9 65</code>의 마지막 <code>65</code>는 비교할 숫자 101(0x65)이다. 그래서 어셈블리는 정확하다. 대신 읽는 사람이 규칙을 알아야 한다.</p>
+<ul>
+<li><code>ecx</code>에 첫 번째 인수 <code>value</code>가 들어 있다. Windows x64 호출 규약(Calling Convention)이 그렇게 정해 두었다. 반환값은 <code>eax</code>에 넣는다.</li>
+<li>원본의 <code>value &gt; 100</code>은 <code>value &lt; 101</code>로 뒤집혀 있다.</li>
+<li>원본에는 <code>if</code>가 있었는데 어셈블리에는 분기(점프)가 없다. 컴파일러가 두 결과를 미리 다 계산해 두고 <code>cmovl</code>(조건부 이동)로 하나를 고르게 바꿨다. "컴파일은 정보를 버린다" 표의 "제어 구조" 항목이 이런 경우다.</li>
+</ul>
+<p><strong>3. 의사 코드.</strong> 디컴파일러는 명령어들의 데이터 흐름을 따라가서 레지스터를 변수로, 비교와 조건부 이동을 <code>if</code>로 다시 묶는다. Ghidra는 대략 아래 모양으로 보여준다(형태를 보여주려는 예시이며, 실제 출력은 버전과 설정에 따라 다르다).</p>
+<pre><code class="language-c">int check_limit(int param_1)
+{
+  int iVar1;
+
+  iVar1 = -1;
+  if (param_1 &lt; 0x65) {
+    iVar1 = param_1 * 2;
+  }
+  return iVar1;
+}
+</code></pre>
+<p>의미는 원본과 같지만 모양은 다르다. 이것이 의사 코드의 성격이다.</p>
+<ul>
+<li>이름이 사라졌다. <code>value</code>는 <code>param_1</code>, 임시값은 <code>iVar1</code>이 된다. 함수 이름 <code>check_limit</code>도 심볼이 없으면 <code>FUN_140001000</code>처럼 주소로 붙는다.</li>
+<li>상수가 바뀐 채로 남는다. <code>100</code>이 아니라 <code>0x65</code>(101)와 <code>&lt;</code>로 나온다.</li>
+<li>구조가 다시 만들어진다. 원본의 "일찍 반환"이 "기본값을 넣고 덮어쓰기"로 바뀌었다.</li>
+<li>타입은 추정이다. 여기서는 <code>int</code>가 맞았지만, 포인터나 구조체는 자주 틀린다. 틀린 타입 위에서 읽은 의사 코드는 그럴듯하게 틀린다.</li>
+</ul>
+<p>정리하면, 의사 코드로 빨리 뜻을 파악하고 중요한 판단(경계값, 분기 조건, 인수 순서)은 어셈블리로 확인한다. 기계어 바이트를 직접 볼 일은 드물다. 패치 위치를 찾거나 디스어셈블러가 코드와 데이터를 헷갈렸을 때 정도다.</p>
 <h3 id="re-fundamentals--대상별-난이도">대상별 난이도</h3>
 <p>같은 "프로그램"이라도 무엇으로 만들었는지에 따라 얻을 수 있는 정보가 크게 다르다. 사내 도구에서 자주 보는 대상을 쉬운 순서로 적었다.</p>
 <div class="tbl"><table>
@@ -761,7 +847,7 @@ Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 
 <p>명령과 옵션은 <a href="#rea-reference">REA 명령·도구 참조</a>에 있다.</p>
 <h3 id="rea-usage-guide--4단계-대상별-작업-흐름을-따른다">4단계: 대상별 작업 흐름을 따른다</h3>
 <h4 id="rea-usage-guide--사내-웹-앱-vue-nuxt-react-프런트엔드">사내 웹 앱 (Vue, Nuxt, React 프런트엔드)</h4>
-<p>웹 앱은 Ghidra 없이 끝난다. 코드는 이미 브라우저에 있고, 대부분 소스 맵도 함께 배포된다.</p>
+<p>웹 앱은 Ghidra 없이 끝난다. 코드는 이미 브라우저에 있고, 대부분 소스 맵도 함께 배포된다. 소스 맵을 찾는 순서와 원본을 꺼내는 스크립트는 <a href="#source-map-discovery">소스 맵 찾고 원본 꺼내는 방법</a>에 있다.</p>
 <ol>
 <li>
 <p>분석 전용 프로필로 Chrome을 원격 디버깅 포트와 함께 띄운다. 디버깅 포트는 반드시 <code>127.0.0.1</code>에만 연다.</p>
@@ -907,7 +993,255 @@ C:\re-work\tool\tool.exe 를 ghidra 프로바이더로 열고, binary_overview�
 <li><a href="#rea-reference">REA 명령·도구 참조</a></li>
 <li><a href="#templates-investigation-log">분석 기록 양식</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="installed-program-analysis"><p class="file"><span class="num">05</span>installed-program-analysis.md</p><h1>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</h1>
+<section class="doc" id="source-map-discovery"><p class="file"><span class="num">05</span>source-map-discovery.md</p><h1>소스 맵 찾고 원본 꺼내는 방법</h1>
+<blockquote>
+<p>번들 끝의 <code>sourceMappingURL</code> 주석, 응답 헤더 <code>SourceMap</code>, 관례상 경로 <code>번들.js.map</code> 순서로 찾는다. 찾은 맵에 <code>sourcesContent</code>가 있으면 원본 파일을 그대로 꺼낼 수 있다.</p>
+</blockquote>
+<h2 id="source-map-discovery--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>사내 웹 앱의 프런트엔드 코드는 브라우저에 이미 다 내려와 있다. 다만 압축(Minify)되어 있어서 <code>function a(e,t){return e.n&gt;t?-1:...}</code> 같은 한 줄짜리 코드로 보인다. 이 상태로도 읽을 수는 있지만 느리다.</p>
+<p>소스 맵이 있으면 사정이 달라진다. 변수 이름, 파일 구조(<code>src/views/RecipeList.vue</code>), 주석까지 남은 원본을 얻을 수 있다. 웹 앱 분석에서 소스 맵 확인이 첫 단계인 이유다. 몇 분 만에 찾으면 몇 시간짜리 번들 읽기를 건너뛴다.</p>
+<h2 id="source-map-discovery--핵심-개념-what">핵심 개념 (What)</h2>
+<h3 id="source-map-discovery--소스-맵-파일의-구조">소스 맵 파일의 구조</h3>
+<p>소스 맵은 JSON 파일이다. 빌드 도구가 번들과 함께 만든다.</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 3,
+  &quot;file&quot;: &quot;app.4f2a1c.js&quot;,
+  &quot;sources&quot;: [&quot;webpack:///./src/main.js&quot;, &quot;webpack:///./src/views/RecipeList.vue&quot;],
+  &quot;sourcesContent&quot;: [&quot;import { createApp } from 'vue'\n...&quot;, &quot;&lt;template&gt;\n...&quot;],
+  &quot;names&quot;: [&quot;createApp&quot;, &quot;recipeList&quot;],
+  &quot;mappings&quot;: &quot;AAAA,SAASA,...&quot;
+}
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>필드</th>
+<th>뜻</th>
+<th>분석에서 쓰는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sources</code></td>
+<td>원본 파일 경로 목록</td>
+<td>프로젝트 폴더 구조. 이것만 있어도 화면과 모듈 이름을 안다</td>
+</tr>
+<tr>
+<td><code>sourcesContent</code></td>
+<td>원본 파일 내용. <code>sources</code>와 같은 순서</td>
+<td>있으면 원본 소스를 그대로 얻는다. 선택 필드라 없을 수도 있다</td>
+</tr>
+<tr>
+<td><code>names</code></td>
+<td>압축 전 변수, 함수 이름</td>
+<td>압축된 코드에서 원래 이름 복원</td>
+</tr>
+<tr>
+<td><code>mappings</code></td>
+<td>압축된 코드의 위치와 원본 위치의 대응표(Base64 VLQ 인코딩)</td>
+<td>DevTools가 쓴다. 사람이 직접 읽을 일은 없다</td>
+</tr>
+<tr>
+<td><code>sections</code></td>
+<td>여러 맵을 이어 붙인 색인 맵(Index Map)일 때만 있다</td>
+<td>맵이 안에 여러 개 들어 있다</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>sourcesContent</code>가 비어 있으면 원본 내용은 없고 경로와 이름만 얻는다. 그래도 <code>sources</code> 목록 하나로 프로젝트 구조를 파악할 수 있다.</p>
+<h3 id="source-map-discovery--번들이-소스-맵을-가리키는-세-가지-방법">번들이 소스 맵을 가리키는 세 가지 방법</h3>
+<ol>
+<li><strong>파일 끝의 주석</strong>: 가장 흔하다. 번들 마지막 줄에 이렇게 붙는다. CSS는 <code>/*# sourceMappingURL=... */</code> 형태다.</li>
+</ol>
+<p><code>js
+   //# sourceMappingURL=app.4f2a1c.js.map</code></p>
+<p>주소가 상대 경로면 번들의 URL을 기준으로 해석한다. <code>data:application/json;base64,...</code>로 시작하면 맵이 번들 안에 통째로 들어 있는 인라인 맵이다.</p>
+<ol>
+<li>
+<p><strong>HTTP 응답 헤더</strong>: 서버가 번들을 내려줄 때 <code>SourceMap: /maps/app.js.map</code> 헤더를 붙인다. 오래된 서버는 <code>X-SourceMap</code>을 쓴다. 주석이 없어도 헤더가 있을 수 있다.</p>
+</li>
+<li>
+<p><strong>아무 표시 없음(숨긴 소스 맵)</strong>: 빌드 도구의 <code>hidden</code> 옵션은 <code>.map</code> 파일은 만들고 주석만 뺀다. 에러 추적 서비스에 올리려고 만든 맵이 서버에 그대로 남아 있는 경우가 많다. 관례상 <code>번들 주소 + .map</code>에 있으므로 직접 요청해 본다.</p>
+</li>
+</ol>
+<h3 id="source-map-discovery--빌드-도구별-기본값">빌드 도구별 기본값</h3>
+<p>배포본에 소스 맵이 있을지 미리 짐작하는 데 쓴다. 기본값은 버전마다 바뀔 수 있으므로, 프로젝트 설정 파일이 있으면 그쪽을 믿는다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>도구</th>
+<th>운영 빌드 기본값</th>
+<th>설정 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vue CLI</td>
+<td>만든다</td>
+<td><code>vue.config.js</code>의 <code>productionSourceMap</code></td>
+</tr>
+<tr>
+<td>Create React App</td>
+<td>만든다</td>
+<td>환경 변수 <code>GENERATE_SOURCEMAP</code></td>
+</tr>
+<tr>
+<td>Vite</td>
+<td>만들지 않는다</td>
+<td><code>vite.config</code>의 <code>build.sourcemap</code> (<code>true</code>, <code>'inline'</code>, <code>'hidden'</code>)</td>
+</tr>
+<tr>
+<td>Nuxt 3</td>
+<td>클라이언트는 만들지 않는다</td>
+<td><code>nuxt.config</code>의 <code>sourcemap.client</code></td>
+</tr>
+<tr>
+<td>Next.js</td>
+<td>브라우저용은 만들지 않는다</td>
+<td><code>next.config</code>의 <code>productionBrowserSourceMaps</code></td>
+</tr>
+<tr>
+<td>webpack</td>
+<td><code>devtool</code> 설정에 따라 다르다</td>
+<td><code>devtool: 'source-map'</code>, <code>'hidden-source-map'</code> 등</td>
+</tr>
+</tbody>
+</table></div>
+<p>오래된 사내 Vue 2 앱(Vue CLI)은 소스 맵이 남아 있을 가능성이 높다.</p>
+<h2 id="source-map-discovery--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<p>아래 순서로 찾는다. 앞 단계에서 찾으면 뒤는 건너뛴다.</p>
+<h3 id="source-map-discovery--1단계-devtools에서-바로-확인한다">1단계: DevTools에서 바로 확인한다</h3>
+<p>가장 빠르다. 로그인한 상태 그대로 볼 수 있다.</p>
+<ol>
+<li>분석할 화면을 열고 DevTools(F12)를 연다.</li>
+<li>설정(톱니바퀴) → <strong>Preferences</strong> → <strong>Sources</strong>에서 <strong>Enable JavaScript source maps</strong>가 켜져 있는지 확인한다. 꺼져 있으면 맵이 있어도 안 보인다.</li>
+<li><strong>Sources</strong> 탭 왼쪽 파일 트리를 본다. <code>webpack://</code>, <code>src/</code>, <code>.vue</code> 파일이 보이면 소스 맵이 로드된 것이다. 트리 위 <code>⋮</code> 메뉴의 <strong>Group by Authored/Deployed</strong>를 켜면 원본(Authored)과 배포본(Deployed)이 나뉘어 보인다.</li>
+<li>원본이 안 보이면 <strong>More tools</strong> → <strong>Developer resources</strong> 패널을 연다. DevTools가 시도한 소스 맵 요청과 성공, 실패 여부가 나온다. 소스 맵 요청은 페이지가 아니라 DevTools가 보내기 때문에 <strong>Network</strong> 탭에는 나오지 않는다.</li>
+</ol>
+<p>Developer resources에 실패(404, 403)로 나오면 맵을 가리키는 표시는 있는데 파일이 없거나 막힌 것이다. 아무것도 없으면 표시가 없는 것이므로 2단계로 간다.</p>
+<h3 id="source-map-discovery--2단계-번들-주소를-모으고-표시를-직접-확인한다">2단계: 번들 주소를 모으고 표시를 직접 확인한다</h3>
+<p><strong>Network</strong> 탭에서 필터를 <strong>JS</strong>로 두고 새로고침해서 번들 주소를 모은다. <code>app.4f2a1c.js</code>, <code>chunk-vendors.js</code>, <code>index-BkX9.js</code>처럼 해시가 붙은 파일이 대상이다. 화면을 옮길 때 새로 로드되는 청크(Chunk)도 있으므로 분석할 화면을 한 번씩 다 연다.</p>
+<p>번들마다 끝부분과 응답 헤더를 본다. Windows PowerShell에서는 <code>curl</code> 대신 <code>curl.exe</code>로 쓴다(<code>curl</code>은 <code>Invoke-WebRequest</code>의 별칭이다).</p>
+<pre><code class="language-bash">URL=http://internal-app.example/assets/index-BkX9.js
+
+# 파일 끝의 주석
+curl -s &quot;$URL&quot; | tail -c 300
+
+# 응답 헤더의 SourceMap, X-SourceMap
+curl -sI &quot;$URL&quot; | grep -i sourcemap
+</code></pre>
+<p>로그인이 필요한 앱이면 Network 탭에서 요청을 우클릭해 <strong>Copy</strong> → <strong>Copy as cURL</strong>로 쿠키까지 복사해서 쓴다. 복사한 명령에는 세션 쿠키가 들어 있으므로 파일이나 채팅에 남기지 않는다.</p>
+<h3 id="source-map-discovery--3단계-표시가-없으면-관례-경로를-요청한다">3단계: 표시가 없으면 관례 경로를 요청한다</h3>
+<pre><code class="language-bash">curl -s -o app.js.map -w &quot;%{http_code} %{content_type}\n&quot; &quot;$URL.map&quot;
+head -c 100 app.js.map
+</code></pre>
+<p>결과를 볼 때 한 가지를 조심한다. SPA(Single Page Application) 서버는 없는 경로에도 <code>200</code>과 함께 <code>index.html</code>을 돌려주는 경우가 많다. 상태 코드만 보고 "맵이 있다"고 판단하지 않는다. 내용이 <code>{"version":3</code>으로 시작해야 진짜 소스 맵이다.</p>
+<p>경로를 바꿔 볼 곳도 있다.</p>
+<ul>
+<li>번들과 같은 폴더의 <code>번들이름.map</code> (<code>.js</code>를 뺀 형태)</li>
+<li>빌드 도구가 맵을 따로 모으는 폴더 (<code>/maps/</code>, <code>/sourcemaps/</code>)</li>
+</ul>
+<p>이 이상 경로를 추측해서 대량으로 요청하지 않는다. 그건 탐색이 아니라 스캔이 되고, 허가 범위를 넘을 수 있다.</p>
+<h3 id="source-map-discovery--4단계-파일로-받은-앱에서-찾는다">4단계: 파일로 받은 앱에서 찾는다</h3>
+<p>Electron 앱이나 설치 폴더에 웹 리소스가 들어 있는 경우다. 네트워크 없이 파일 검색으로 끝난다.</p>
+<pre><code class="language-bash"># Electron 앱은 app.asar 압축부터 푼다
+npx @electron/asar extract &quot;C:/re-work/tool/resources/app.asar&quot; C:/re-work/tool/asar-out
+
+# .map 파일과 sourceMappingURL 주석을 찾는다
+find C:/re-work/tool/asar-out -name &quot;*.map&quot;
+grep -rl &quot;sourceMappingURL&quot; C:/re-work/tool/asar-out --include=&quot;*.js&quot;
+</code></pre>
+<p>REA를 쓰면 <code>analyze_javascript_application</code>(파일)과 <code>analyze_web_bundle</code>(브라우저에 열린 페이지)이 소스 맵 유무를 함께 보고한다. 사용법은 <a href="#rea-usage-guide--사내-웹-앱-vue-nuxt-react-프런트엔드">REA + Ghidra로 분석하는 방법</a>에 있다.</p>
+<h3 id="source-map-discovery--5단계-원본-파일을-꺼낸다">5단계: 원본 파일을 꺼낸다</h3>
+<p>DevTools의 Sources 탭에서 파일을 하나씩 열어 봐도 되지만, 파일이 많으면 맵에서 한 번에 꺼낸다. 아래 스크립트는 표준 라이브러리만 쓴다.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+&quot;&quot;&quot;Write each original file stored in a source map's sourcesContent to disk.
+
+Usage: python3 extract_sourcemap.py app.js.map out_dir
+&quot;&quot;&quot;
+import json
+import re
+import sys
+from pathlib import Path
+from urllib.parse import urlparse
+
+
+def safe_relpath(source: str) -&gt; Path:
+    &quot;&quot;&quot;webpack:///./src/App.vue -&gt; src/App.vue. Never escapes out_dir.&quot;&quot;&quot;
+    url = urlparse(source)
+    raw = f&quot;{url.netloc}/{url.path}&quot; if url.scheme else source
+    parts = [p for p in re.split(r&quot;[\\/]+&quot;, raw) if p not in (&quot;&quot;, &quot;.&quot;, &quot;..&quot;)]
+    parts = [re.sub(r'[&lt;&gt;:&quot;|?*]', &quot;_&quot;, p) for p in parts]  # Windows-invalid chars
+    return Path(*parts) if parts else Path(&quot;unnamed&quot;)
+
+
+def extract(smap: dict, out_dir: Path) -&gt; tuple[int, int]:
+    &quot;&quot;&quot;Return (files written, sources listed).&quot;&quot;&quot;
+    if &quot;sections&quot; in smap:  # index map: several maps glued together
+        totals = [extract(s[&quot;map&quot;], out_dir) for s in smap[&quot;sections&quot;] if &quot;map&quot; in s]
+        return sum(t[0] for t in totals), sum(t[1] for t in totals)
+    sources = smap.get(&quot;sources&quot;) or []
+    contents = smap.get(&quot;sourcesContent&quot;) or []
+    written = 0
+    for i, source in enumerate(sources):
+        text = contents[i] if i &lt; len(contents) else None
+        if text is None:
+            continue
+        base = out_dir / safe_relpath(source or f&quot;source_{i}&quot;)
+        target, n = base, 1
+        while target.exists():  # Vue splits one .vue file into several entries
+            target = base.with_name(f&quot;{base.stem}.{n}{base.suffix}&quot;)
+            n += 1
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding=&quot;utf-8&quot;)
+        written += 1
+    return written, len(sources)
+
+
+if __name__ == &quot;__main__&quot;:
+    map_path, out_dir = Path(sys.argv[1]), Path(sys.argv[2])
+    smap = json.loads(map_path.read_text(encoding=&quot;utf-8&quot;))
+    written, listed = extract(smap, out_dir)
+    print(f&quot;{written}/{listed} files written to {out_dir}&quot;)
+    if written == 0:
+        print(&quot;sourcesContent is empty. Paths only:&quot;)
+        for source in smap.get(&quot;sources&quot;) or []:
+            print(&quot;  &quot;, source)
+</code></pre>
+<pre><code class="language-bash">python3 extract_sourcemap.py app.js.map C:/re-work/web-app/src-out
+</code></pre>
+<p>스크립트가 막는 것이 두 가지 있다. 소스 맵은 남이 만든 파일이므로, <code>sources</code>에 <code>../../</code>가 들어 있어도 출력 폴더 밖에 파일을 쓰지 않도록 <code>..</code>을 버린다. 그리고 Vue는 <code>.vue</code> 파일 하나를 <code>App.vue?vue&amp;type=script</code> 같은 항목 여러 개로 나누므로, 이름이 겹치면 <code>App.1.vue</code>처럼 번호를 붙인다.</p>
+<p>꺼낸 파일 중 <code>node_modules/</code> 아래는 외부 라이브러리다. 읽지 않는다. 동료가 짠 코드는 대개 <code>src/</code> 아래에 있다.</p>
+<h3 id="source-map-discovery--결과를-기록한다">결과를 기록한다</h3>
+<p><a href="#templates-investigation-log">분석 기록 양식</a>에 아래를 남긴다.</p>
+<ul>
+<li>소스 맵을 찾은 방법(주석, 헤더, 관례 경로, 파일)과 맵 URL 또는 경로</li>
+<li><code>sourcesContent</code> 유무와 꺼낸 파일 수 (예: "212/240")</li>
+<li>번들 파일의 해시. 다음 배포에서 번들이 바뀌면 맵도 다시 받아야 한다</li>
+</ul>
+<p>소스 맵에서 꺼낸 원본은 배포 시점의 소스다. 저장소의 소스와 다를 수 있다는 점을 기록에 함께 적는다. 꺼낸 원본은 이 저장소에 올리지 않는다.</p>
+<h3 id="source-map-discovery--소스-맵이-없을-때">소스 맵이 없을 때</h3>
+<p>찾지 못했다면 세 가지 길이 있다.</p>
+<ol>
+<li><strong>소유자에게 묻는다.</strong> 에러 추적 서비스(Sentry 등)에만 맵을 올리고 배포본에서는 지운 경우가 있다. 소유 팀에 맵이나 소스 저장소를 요청하는 편이 가장 빠르다.</li>
+<li><strong>DevTools의 Pretty print로 읽는다.</strong> Sources 탭에서 압축된 파일을 열고 <code>{}</code> 버튼을 누르면 줄바꿈이 들어간다. 이름은 없지만 문자열, API 경로, 라우트 이름은 그대로 남아 있다.</li>
+<li><strong>REA로 번들을 분석한다.</strong> <code>analyze_web_bundle</code>이 맵 없이도 라우트와 API 엔드포인트 후보를 뽑아 준다.</li>
+</ol>
+<h2 id="source-map-discovery--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li>Source Map 형식(TC39 ECMA-426): <a href="https://tc39.es/ecma426/">https://tc39.es/ecma426/</a></li>
+<li>Chrome DevTools 소스 맵 안내: <a href="https://developer.chrome.com/docs/devtools/javascript/source-maps">https://developer.chrome.com/docs/devtools/javascript/source-maps</a></li>
+<li>Chrome DevTools Developer resources 패널: <a href="https://developer.chrome.com/docs/devtools/developer-resources">https://developer.chrome.com/docs/devtools/developer-resources</a></li>
+<li>Vite <code>build.sourcemap</code>: <a href="https://vite.dev/config/build-options#build-sourcemap">https://vite.dev/config/build-options#build-sourcemap</a></li>
+<li>webpack <code>devtool</code>: <a href="https://webpack.js.org/configuration/devtool/">https://webpack.js.org/configuration/devtool/</a></li>
+</ul>
+<h2 id="source-map-discovery--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></li>
+<li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
+<li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="installed-program-analysis"><p class="file"><span class="num">06</span>installed-program-analysis.md</p><h1>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</h1>
 <blockquote>
 <p>설치 폴더 전체를 복사해서 먼저 런타임을 판별하고, 동료가 직접 짠 실행 파일만 골라서 Ghidra로 깊게 본다. 문자열과 임포트에서 출발해서 질문의 결과까지 함수 경로를 따라가고, 실행으로 확인한다.</p>
 </blockquote>
@@ -1328,7 +1662,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
 <li><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="rea-reference"><p class="file"><span class="num">06</span>rea-reference.md</p><h1>REA 명령·도구 참조</h1>
+<section class="doc" id="rea-reference"><p class="file"><span class="num">07</span>rea-reference.md</p><h1>REA 명령·도구 참조</h1>
 <blockquote>
 <p>REA CLI 명령, MCP 도구 이름, 환경 변수 목록. 2026-10-24에 <code>morluto/rea</code> main 브랜치 문서로 정리했다. 버전에 따라 다를 수 있으므로 실제 목록은 <code>rea --help</code>와 <code>binary_session</code>으로 확인한다.</p>
 </blockquote>
@@ -1703,7 +2037,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <li><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></li>
 <li><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="templates-investigation-log"><p class="file"><span class="num">07</span>templates/investigation-log.md</p><h1>분석 기록: ⟨대상 이름⟩</h1>
+<section class="doc" id="templates-investigation-log"><p class="file"><span class="num">08</span>templates/investigation-log.md</p><h1>분석 기록: ⟨대상 이름⟩</h1>
 <blockquote>
 <p>분석 하나를 시작할 때 이 파일을 복사해서 채운다. 디컴파일 코드 원문, 장비명, 내부 시스템 상세는 적지 않는다.</p>
 </blockquote>
