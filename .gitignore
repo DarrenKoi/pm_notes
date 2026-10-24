@@ -15,3 +15,7 @@ screenshots/*.jpeg
 
 # humanize-korean skill scratch output
 _workspace/
+
+# Local editor / agent settings
+.obsidian/
+.pi/
