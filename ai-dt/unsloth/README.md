@@ -28,6 +28,7 @@ classified_on: "2026-10-05"
 
 ## 문서 구성
 
+- [사내 sLLM 튜닝: 프레임워크 선택과 전체 순서](./framework-selection.md) - 튜닝 종류, Unsloth 외 선택지 비교, 준비할 데이터셋 4종
 - [Unsloth 개요](./unsloth-overview.md) - Unsloth가 무엇인지, 무엇이 특별한지, 왜 쓰는지
 - [로컬 sLLM 파인튜닝 워크플로우](./local-sllm-finetuning-workflow.md) - API 모델 + GPU student 모델을 활용한 단계별 진행법
 - [데이터셋과 Chat Template 가이드](./dataset-and-chat-template-guide.md) - synthetic data, 형식 통일, template mismatch 방지
