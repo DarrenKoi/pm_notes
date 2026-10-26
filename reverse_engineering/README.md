@@ -30,9 +30,19 @@ note_kind: "목차"
 | 5 | [소스 맵 찾고 원본 꺼내는 방법](./source-map-discovery.md) | 사용법 | 웹 앱, Electron 앱을 분석할 때. 맵 찾기부터 원본 추출까지 |
 | 6 | [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md) | 사용법 | 설치형 프로그램을 분석할 때. 런타임 판별부터 버전 비교까지 |
 | 7 | [REA 명령·도구 참조](./rea-reference.md) | 참조 | 명령어, MCP 도구 이름, 환경 변수를 찾을 때 |
+| 8 | [커뮤니티 자료에서 가져온 작업법](./community-resources.md) | 자료 정리 | 기본을 익힌 뒤. YouTube·Reddit 실무자의 습관과 REA 공식 실습 |
 | - | [분석 기록 양식](./templates/investigation-log.md) | 양식 | 분석 하나를 시작할 때 복사해서 쓴다 |
 
 회사 환경은 Windows PC + pi 에이전트(가끔 Hermes, 사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 6번 문서를 가장 자주 본다.
+
+## 발표 자료
+
+팀원에게 RE와 REA 사용법을 공유하는 22장짜리 발표 deck이 `slides/`에 있다.
+
+- [slides/re-rea-team-share.bento.html](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/re-rea-team-share.bento.html): [Bento](https://bento.page) 형식. GitHub 화면에서는 HTML 소스로 보이므로 **Download raw file**로 내려받아 브라우저로 연다. 편집기가 뜨면 오른쪽 아래 **Slideshow**로 발표한다. 슬라이드마다 발표자 노트가 있다.
+- [slides/bento-editing-guide.md](./slides/bento-editing-guide.md): deck을 이어서 고칠 LLM과 사람을 위한 지침. 고칠 곳, 디자인 규칙, 슬라이드별 원본 문서, 줄이면 안 되는 단서를 정리했다.
+
+deck의 내용은 이 폴더 문서의 요약이다. 문서를 고치면 지침의 슬라이드 표를 보고 해당 슬라이드도 함께 고친다.
 
 ## 휴대폰, 태블릿에서 읽기
 
