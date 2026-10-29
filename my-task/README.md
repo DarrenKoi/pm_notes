@@ -29,6 +29,7 @@ classified_on: "2026-10-05"
 | AI Agent 보고 양식 사용 | [작성 가이드](./report-template-ai-agent/작성가이드.md) | [빈 서식](./report-template-ai-agent/템플릿_빈서식.md) → [채워진 예시](./report-template-ai-agent/예시_채워진샘플.md); 예시의 수치는 실제 업무 실적으로 사용하지 않음 |
 | AI/DT 교육 커리큘럼 설계 | [커리큘럼 설계 목차](./ai-dt-curriculum/README.md) | [Expert 분과 브레인스토밍](./ai-dt-curriculum/expert-curriculum-brainstorm.md); 2장 이후는 초안 가설 |
 | 장비 데이터 매핑 Agent 기획 | [기획 목차](./equipment-data-mapping/README.md) | [왜 해야 하는가](./equipment-data-mapping/01-why-proposal.md) → [지도 만들기 설계](./equipment-data-mapping/02-map-design.md) → [비교·관리·운영 설계](./equipment-data-mapping/03-compare-operate-design.md) → [단계별 실행 계획](./equipment-data-mapping/04-phased-plan.md); 전부 초안, 수치는 ⟨확인⟩ 자리 |
+| ARC TF (레시피 자동 생성, 컴퓨터 사용 Agent) | [TF 목차](./arc-tf/README.md) | [TF 구성 기획안](./arc-tf/01-tf-proposal.md) → [참여 팀과 역할](./arc-tf/02-roles-and-teams.md) → [운영 방식](./arc-tf/03-operating-rhythm.md) → [온보딩 학습 과정](./arc-tf/04-onboarding.md) → [PoC 자산](./arc-tf/05-poc-assets.md); 2026-12 임원 보고용 초안 |
 
 사내용 하반기 회고는 Git에서 제외된 로컬 전용 문서이며 별도 독자·용도로 보존한다. 유사 제목만으로 회고를 합치거나 공개용과 사내용 정보를 섞지 않는다. 작성일·승인 상태·실적의 확인 여부는 각 기록의 문맥과 정리 기록을 따른다. 제목의 연도만으로 보고의 최종 승인이나 현 실적을 확정하지 않는다.
 

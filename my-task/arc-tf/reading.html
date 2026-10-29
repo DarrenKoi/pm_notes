@@ -1,0 +1,1503 @@
+<title>ARC TF — 레시피 자동 생성 태스크포스</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column; a sticky bar names the docs, each doc is a section headed by its file path like a listing header. */
+:root {
+	--bg: #f3f5f4; --surface: #ffffff; --ink: #18201d; --muted: #5b6862; --line: #d5ddd9;
+	--accent: #a63a2b; --code-bg: #e8edea; --note: #2f6690; --warn: #a65e00;
+	--sans: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+	--mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+	--bg: #121715; --surface: #1a201e; --ink: #e3e9e6; --muted: #98a59f; --line: #2c3532;
+	--accent: #e07a62; --code-bg: #222a27; --note: #7fb3dd; --warn: #e3a54a; color-scheme: dark } }
+:root[data-theme="dark"] {
+	--bg: #121715; --surface: #1a201e; --ink: #e3e9e6; --muted: #98a59f; --line: #2c3532;
+	--accent: #e07a62; --code-bg: #222a27; --note: #7fb3dd; --warn: #e3a54a; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.75 var(--sans); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
+	padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bar-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bar strong { font-size: 15px; }
+.bar a { color: var(--accent); font-size: 14px; text-decoration: none; }
+main { max-width: 760px; margin: 0 auto; padding-block: 24px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.toc { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; }
+.toc h2 { margin: 0 0 8px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border: 0; padding: 0; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a { display: flex; gap: 12px; padding: 8px 4px; color: var(--ink); text-decoration: none; border-radius: 4px; }
+.toc a:hover, .toc a:focus-visible { background: var(--code-bg); }
+.num { font-family: var(--mono); color: var(--accent); font-size: 13px; padding-top: 3px; flex: none; }
+.doc { margin-top: 56px; scroll-margin-top: 64px; }
+.file { font-family: var(--mono); font-size: 13px; color: var(--muted); margin: 0; display: flex; gap: 10px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.35; scroll-margin-top: 64px; }
+h1 { font-size: 1.65rem; margin: 14px 0 8px; }
+h2 { font-size: 1.3rem; margin: 40px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+h4 { font-size: 1rem; margin: 22px 0 6px; color: var(--muted); }
+p, li { max-width: 68ch; }
+a { color: var(--accent); overflow-wrap: anywhere; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: var(--mono); font-size: .88em; background: var(--code-bg); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+pre { background: var(--code-bg); border-radius: 6px; padding: 14px 16px; overflow-x: auto; tab-size: 4; line-height: 1.55; }
+pre code { background: none; padding: 0; font-size: 13.5px; overflow-wrap: normal; }
+.tbl { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; line-height: 1.55; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); min-width: 7em; }
+th { background: var(--code-bg); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--line); color: var(--muted); }
+.callout { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--note); border-radius: 6px; color: var(--ink); }
+.callout-warning { border-left-color: var(--warn); }
+.callout-label { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; margin: 0 0 2px; color: var(--note); }
+.callout-warning .callout-label { color: var(--warn); }
+.callout p { margin: 6px 0; }
+.back { margin-top: 32px; font-size: 14px; }
+@media (max-width: 480px) { body { font-size: 15.5px; } h1 { font-size: 1.4rem; } th, td { padding: 8px 10px; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+<header class="bar"><div class="bar-inner"><strong>ARC TF — 레시피 자동 생성 태스크포스</strong><a href="#top">목차</a></div></header>
+<main id="top">
+<nav class="toc" aria-label="문서 목록"><h2>문서 · 읽는 순서</h2><ol>
+<li><a href="#readme"><span class="num">00</span>ARC TF — 레시피 자동 생성 태스크포스</a></li>
+<li><a href="#01-tf-proposal"><span class="num">01</span>ARC TF 구성 기획안</a></li>
+<li><a href="#02-roles-and-teams"><span class="num">02</span>참여 팀과 역할</a></li>
+<li><a href="#03-operating-rhythm"><span class="num">03</span>운영 방식</a></li>
+<li><a href="#04-onboarding"><span class="num">04</span>온보딩 학습 과정 (2027-01~02, 8주)</a></li>
+<li><a href="#05-poc-assets"><span class="num">05</span>PoC 자산과 남은 과제</a></li>
+<li><a href="#decision-log"><span class="num">06</span>결정 기록</a></li>
+<li><a href="#risk-register"><span class="num">07</span>위험 목록</a></li>
+</ol></nav>
+<section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>ARC TF — 레시피 자동 생성 태스크포스</h1>
+<blockquote>
+<p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.</p>
+</blockquote>
+<h2 id="readme--한-문단-요약">한 문단 요약</h2>
+<p>레시피 셋업은 숙련 엔지니어가 원격 제어 화면에서 손으로 하는 반복 작업이고, 장비가 늘면 사람도 그만큼 늘어야 한다. 1차 PoC(Align Fail 대응 자동화)에서 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것, VLM과 CV를 나눠 쓰면 오프라인 평가에서 정밀 좌표도 잡힌다는 것을 확인했다. 남은 문제는 두 가지다. 하나는 현장 신뢰성과 실행 엔진 제품화이고, 다른 하나는 장비군마다 다른 레시피 절차다. 뒤의 것은 현업 지식 없이는 풀 수 없다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고, <strong>장비군별 셀</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2026-11에 기획안을 쓰고, 12월에 임원 승인을 받고, 2027-01에 가동한다.</p>
+<h2 id="readme--문서">문서</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>순서</th>
+<th>문서</th>
+<th>독자</th>
+<th>내용</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="#01-tf-proposal">TF 구성 기획안</a></td>
+<td>임원</td>
+<td>왜 해야 하는가, PoC 성과, 범위, TF 구성, 타임라인, 요청 사항</td>
+<td>초안, 2026-12 보고용</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="#02-roles-and-teams">참여 팀과 역할</a></td>
+<td>TF 전원</td>
+<td>플랫폼 팀·셀 구성, 셀 명단, 책임 분담표(RACI)</td>
+<td>초안</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="#03-operating-rhythm">운영 방식</a></td>
+<td>TF 전원</td>
+<td>회의, 월간 보고 형식, 의사결정, 작업 관리, 안전 원칙</td>
+<td>초안</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="#04-onboarding">온보딩 학습 과정</a></td>
+<td>셀 엔지니어</td>
+<td>2027-01~02 8주 과정, 수료 기준</td>
+<td>초안</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="#05-poc-assets">PoC 자산과 남은 과제</a></td>
+<td>플랫폼 팀·임원</td>
+<td>Align Fail PoC에서 가져오는 것, 새로 풀어야 하는 것</td>
+<td>초안</td>
+</tr>
+<tr>
+<td>—</td>
+<td><a href="#decision-log">결정 기록</a></td>
+<td>리드</td>
+<td>날짜별 결정과 이유</td>
+<td>2026-10-29</td>
+</tr>
+<tr>
+<td>—</td>
+<td><a href="#risk-register">위험 목록</a></td>
+<td>리드</td>
+<td>위험, 대응, 담당</td>
+<td>2026-10-29</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="readme--일정">일정</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시기</th>
+<th>단계</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11</td>
+<td>기획안 작성</td>
+</tr>
+<tr>
+<td>2026-12</td>
+<td>임원 보고, TF 구성 승인</td>
+</tr>
+<tr>
+<td>2027-01~02</td>
+<td>온보딩 학습, 셀별 기준선 측정</td>
+</tr>
+<tr>
+<td>2027-03~06</td>
+<td>1차 구축 (1차 셀 2~3개)</td>
+</tr>
+<tr>
+<td>2027-07~09</td>
+<td>파일럿</td>
+</tr>
+<tr>
+<td>2027-10~12</td>
+<td>2차 셀 확장</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="readme--채워야-할-확인-목록">채워야 할 ⟨확인⟩ 목록</h2>
+<ul>
+<li>⟨확인: 1차 장비군 (CD-SEM/VeritySEM 외 1~2개)⟩</li>
+<li>⟨확인: 셀별 참여 엔지니어와 겸직 시간 N⟩</li>
+<li>⟨확인: 공통 플랫폼 팀 인원⟩</li>
+<li>⟨확인: 보고 대상 임원⟩</li>
+<li>⟨확인: 비생산 검증용 장비 시간이나 테스트 환경⟩</li>
+<li>⟨확인: 장비 PC 화면 조작 보안 승인 절차⟩</li>
+<li>⟨확인: 셀별 현재 레시피 셋업 시간 — 온보딩 8주차에 측정⟩</li>
+<li>⟨확인: 작업 관리 도구⟩</li>
+</ul>
+<p>사내 수치, 실명, 장비 상세는 <code>*_사내용.md</code>(git 제외)에만 둔다.</p>
+<h2 id="readme--휴대폰-태블릿에서-읽기">휴대폰, 태블릿에서 읽기</h2>
+<p><a href="https://claude.ai/artifact/PUq6fvLRzbF7sP6DciTovo">ARC TF 문서 모음 (claude.ai Artifact, 비공개)</a> — <code>reading.html</code>은 <code>python scripts/build_folder_html.py my-task/arc-tf</code>로 다시 만든다. 손으로 고치지 않는다.</p><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="01-tf-proposal"><p class="file"><span class="num">01</span>01-tf-proposal.md</p><h1>ARC TF 구성 기획안</h1>
+<blockquote>
+<p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶은 TF를 2027년 1월부터 운영하겠다는 제안.</p>
+</blockquote>
+<h2 id="01-tf-proposal--한-줄-요청">한 줄 요청</h2>
+<p><strong>2027년 1월부터 ARC TF를 구성하는 것을 승인해 주시고, 장비군별 MI 엔지니어가 겸직으로 참여하는 것(주 ⟨확인: N⟩시간)을 허락해 주십시오.</strong></p>
+<h2 id="01-tf-proposal--1-왜-해야-하는가">1. 왜 해야 하는가</h2>
+<h3 id="01-tf-proposal--문제">문제</h3>
+<ul>
+<li>레시피 셋업은 숙련 엔지니어가 원격 제어 화면에서 마우스와 키보드로 하는 반복 수작업이다. 측정 위치를 잡을 때는 측정, 실패, 재조정을 되풀이한다.</li>
+<li>노하우가 개인에게 있다. 사람이 바뀌면 지식이 사라지고, 사람마다 품질이 다르다.</li>
+<li>장비가 늘어나면 셋업 인력도 같은 비율로 늘어야 한다. 이 구조로는 규모를 키울 수 없다.</li>
+</ul>
+<h3 id="01-tf-proposal--안-하면-생기는-일">안 하면 생기는 일</h3>
+<ul>
+<li>⟨확인: 신규 제품·공정 도입 때 레시피 셋업 대기로 늦어지는 기간⟩</li>
+<li>⟨확인: 장비군별 레시피 셋업에 쓰는 엔지니어 시간 (월 기준)⟩</li>
+<li>장비군마다 따로 자동화를 시도하면 화면 인식, 조작, 안전 장치를 매번 새로 만들게 된다.</li>
+</ul>
+<h3 id="01-tf-proposal--효과">효과</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>효과</th>
+<th>측정 지표</th>
+<th>현재</th>
+<th>목표</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>셋업 시간 단축</td>
+<td>레시피 1건 셋업 소요 시간</td>
+<td>⟨확인: 셀별 실측⟩</td>
+<td>⟨확인⟩% 단축</td>
+</tr>
+<tr>
+<td>사람 개입 감소</td>
+<td>1건당 엔지니어 개입 횟수</td>
+<td>⟨확인⟩</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>품질 균일화</td>
+<td>셋업 뒤 첫 측정 성공률</td>
+<td>⟨확인⟩</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>지식 자산화</td>
+<td>절차서로 정리된 레시피 유형 수</td>
+<td>0</td>
+<td>장비군마다 1개 이상</td>
+</tr>
+<tr>
+<td>확장성</td>
+<td>새 장비군 합류에 드는 기간</td>
+<td>—</td>
+<td>⟨확인⟩</td>
+</tr>
+</tbody>
+</table></div>
+<p>현재 값은 TF 온보딩 기간(2027-01~02)에 셀 엔지니어가 직접 측정해 채운다. 측정하기 전에는 목표를 숫자로 약속하지 않는다.</p>
+<p><strong>측정 규칙</strong> (기준선과 파일럿을 같은 조건으로 비교하려고 온보딩 측정 양식에 고정한다)</p>
+<ul>
+<li>대상: 셀마다 정한 대표 레시피 유형 1개. 전체 셋업이 아니라 <strong>자동화 대상 구간(측정 위치·Align 셋업)</strong> 의 시작과 끝을 정해 잰다.</li>
+<li>포함: 그 구간 안의 실패·재작업·수동 인계 시간. 승인 대기 시간은 따로 적는다.</li>
+<li>개입 횟수: 반드시 거치는 승인(저장 전 등)은 세지 않고, <strong>예정에 없던 개입</strong>만 센다.</li>
+</ul>
+<h3 id="01-tf-proposal--셋업-시간이-줄면-회사에-무엇이-남는가">셋업 시간이 줄면 회사에 무엇이 남는가</h3>
+<pre><code>레시피 셋업 수요(건/월) × 건당 엔지니어 투입 시간 감소분
+  → 회수되는 엔지니어 시간 (월 ⟨확인⟩시간)
+  → 신규 제품·공정 도입 때 셋업 대기 단축, 엔지니어가 분석·개선 업무로 이동
+  → 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않아도 됨
+</code></pre>
+<ul>
+<li>가정: ⟨확인: 장비군별 월 셋업 수요와 증가 추세⟩. 셋업 수요가 장비·제품 수와 함께 늘어야 "인력이 비례해야 한다"는 주장이 성립한다.</li>
+<li>Align Fail PoC의 효과(장비 가동 시간 회수)는 운영 중 정렬 실패를 대응한 효과다. 신규 레시피 셋업의 효과로 옮겨 쓰지 않는다.</li>
+</ul>
+<h2 id="01-tf-proposal--2-이미-확보한-것--1차-poc-align-fail-대응-자동화">2. 이미 확보한 것 — 1차 PoC (Align Fail 대응 자동화)</h2>
+<p>ARC는 처음부터 레시피 자동 생성을 목표로 했다. 1차 PoC로는 범위가 좁고 효과를 재기 쉬운 <strong>Align Fail(정렬 실패) 무인 대응</strong>을 골랐다. 이 PoC에서 레시피 자동 생성에 그대로 쓸 기반을 검증했다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>확보한 것</th>
+<th>레시피 자동 생성에서의 쓰임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>사내 인프라에서 화면 이해 모델(VLM·OCR)을 자체 운영</td>
+<td>외부 API 없이 화면 이해</td>
+</tr>
+<tr>
+<td>표준 컴포넌트가 아닌 계측 화면에서도 대략 위치 → 정밀 좌표 → OCR 확인 순서로 클릭</td>
+<td>API 없는 장비 화면 조작</td>
+</tr>
+<tr>
+<td>VLM은 "어디를 볼지", CV는 "정확히 어디인지"를 맡는 역할 분리 원칙</td>
+<td>측정 위치·Align Key 등록의 정확도</td>
+</tr>
+<tr>
+<td>최근 성공 사례를 모은 기준 이미지로 Align Key 탐색 정확도 개선 (오프라인 평가 기준)</td>
+<td>레시피 Align 셋업</td>
+</tr>
+<tr>
+<td>실장비 반자동 운영: 위치 재조정은 자동, 최종 확정은 엔지니어</td>
+<td>TF의 안전 원칙</td>
+</tr>
+<tr>
+<td>엔지니어 작업 녹화 → 조작 타임라인 → 한국어 절차서</td>
+<td>장비별 레시피 절차 정의</td>
+</tr>
+</tbody>
+</table></div>
+<p>상세 목록은 <a href="#05-poc-assets">PoC 자산과 남은 과제</a>에 있다. 수치는 사내용 문서에만 둔다.</p>
+<p><strong>PoC로 확인한 것</strong>: API 없는 장비 화면을 보고 조작할 수 있다는 것, 오프라인 평가에서 Align Key를 찾을 수 있다는 것.</p>
+<p><strong>아직 확인하지 못한 것</strong>:</p>
+<ul>
+<li>현장 통합의 신뢰성: 실알람 첫 완주, Align Key 탐색의 실장비 검증이 남아 있다.</li>
+<li>실행 엔진: 절차를 실행하는 엔진은 아직 데모 단계다. 레시피 셋업에 쓰려면 제품 수준으로 만들어야 한다.</li>
+<li>신규 등록: 기존 Key를 찾는 능력과 새로 등록할 좋은 위치를 고르는 능력은 다르다. 후자는 PoC에서 다루지 않았다.</li>
+<li>여러 장비 적용: 장비군마다 다른 화면과 레시피 절차를 담을 수 있느냐. 이것은 도메인 지식을 가진 현업 엔지니어 없이는 풀 수 없다.</li>
+</ul>
+<p>앞의 세 가지는 플랫폼 팀이, 마지막은 셀이 푼다. 그래서 TF가 필요하다.</p>
+<h2 id="01-tf-proposal--3-무엇을-하는가--범위">3. 무엇을 하는가 — 범위</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>최종 목표</td>
+<td>신규 레시피 셋업의 전 과정 자동화: 생성 → 측정 위치·Align Key 등록 → 파라미터 → 검증 측정 → 저장</td>
+</tr>
+<tr>
+<td>1차 범위</td>
+<td>시행착오가 가장 많은 <strong>측정 위치·Align 셋업 구간</strong></td>
+</tr>
+<tr>
+<td>대상 장비</td>
+<td>1차: CD-SEM/VeritySEM + ⟨확인: 장비군 1~2개⟩. 2차: 나머지 MI 장비군</td>
+</tr>
+<tr>
+<td>1차에서 사람이 맡는 것</td>
+<td>레시피 생성과 기본 정보 입력, 파라미터 설정, 검증 측정 판정, 저장. Agent는 그 사이의 측정 위치·Align 셋업 구간을 맡는다</td>
+</tr>
+<tr>
+<td>자동화 수준</td>
+<td><strong>반자동(Supervised Autonomy)</strong>: Agent가 조작하고, 위험 조작(측정 실행, 삭제, 모드 변경)과 레시피 저장·적용 직전에는 엔지니어가 승인한다. 완전 자동은 반복 검증과 안전 중단 기록까지 통과한 레시피 유형만 단계 승인을 거쳐 검토한다</td>
+</tr>
+<tr>
+<td>제외</td>
+<td>장비 유지보수, 하드웨어 제어, 장비 내부 소프트웨어 설치</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="01-tf-proposal--4-어떻게-하는가--tf-구성">4. 어떻게 하는가 — TF 구성</h2>
+<pre><code>                  ┌──────────────────────────────┐
+                  │  TF 리드 (본인)               │
+                  │  + 공통 플랫폼 팀              │
+                  │  화면 인식·조작 엔진·안전 규칙  │
+                  │  승인 화면·VLM 연동·교육       │
+                  └──────────────┬───────────────┘
+           ┌─────────────────────┼─────────────────────┐
+   ┌───────┴───────┐     ┌───────┴───────┐     ┌───────┴───────┐
+   │ 1차 셀 A       │     │ 1차 셀 B       │     │ 2차 셀들        │
+   │ CD-SEM/Verity │     │ ⟨확인: 장비군⟩ │     │ 나머지 장비군   │
+   │ MI 엔지니어   │     │ MI 엔지니어   │     │ 학습·데이터 준비│
+   └───────────────┘     └───────────────┘     └───────────────┘
+</code></pre>
+<ul>
+<li><strong>공통 플랫폼</strong>은 모든 장비군이 같이 쓴다. 장비마다 엔진을 새로 만들지 않는다.</li>
+<li><strong>장비군별 셀</strong>은 MI 현업 엔지니어 1~2명으로 구성한다. 그 장비의 레시피 절차 정의, 성공 판정 기준, 현장 검증을 맡는다.</li>
+<li><strong>2차 셀</strong>도 1월에 함께 합류한다. 1차 기간에는 학습을 받고, 자기 장비 작업을 녹화해 절차서로 정리한다. 플랫폼이 준비되면 바로 들어온다.</li>
+<li>인프라(GPU·VLM 서빙)는 필요해지면 합류하고, 장비 벤더는 필요할 때 자문을 받는다.</li>
+</ul>
+<p>역할 분담은 <a href="#02-roles-and-teams">참여 팀과 역할</a>에 있다.</p>
+<h2 id="01-tf-proposal--5-타임라인">5. 타임라인</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시기</th>
+<th>단계</th>
+<th>하는 일</th>
+<th>통과 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11</td>
+<td>기획</td>
+<td>이 기획안 작성, 1차 장비군 후보 협의</td>
+<td>기획안 완성</td>
+</tr>
+<tr>
+<td>2026-12</td>
+<td>승인</td>
+<td>임원 보고, TF 구성 승인, 참여 엔지니어 지정</td>
+<td>승인과 명단 확정</td>
+</tr>
+<tr>
+<td>2027-01~02</td>
+<td>온보딩</td>
+<td>학습 과정, 셀별 현재 셋업 시간 측정, 대표 레시피 유형 선정, 성공 이미지 수집 시작. 플랫폼 팀은 PoC 남은 일 정리와 실행 엔진 작업</td>
+<td>셀마다 기준선과 대상 유형 확정</td>
+</tr>
+<tr>
+<td>2027-03~06</td>
+<td>1차 구축</td>
+<td>실행 엔진 제품화, 측정 위치·Align 셋업 기능 + 1차 셀 절차 정의, 오프라인·비생산 검증</td>
+<td>1차 셀마다 대표 유형 1개를 비생산 환경에서 ⟨확인: N⟩회 연속 완주, 실패한 시도는 모두 안전하게 중단</td>
+</tr>
+<tr>
+<td>2027-07~09</td>
+<td>파일럿</td>
+<td>1차 장비군 실장비 파일럿 (필요하면 셀 엔지니어 파견 요청)</td>
+<td>성공률·셋업 시간 목표 ⟨확인⟩, 오조작으로 잘못 저장된 레시피 0건</td>
+</tr>
+<tr>
+<td>2027-10~12</td>
+<td>확장</td>
+<td>2차 셀 합류, 1차 셀 유형 확대</td>
+<td>2차 장비군 1개 이상 착수</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>단계 통과 결정</strong>: 단계가 끝날 때 리드가 통과 기준과 결과를 정리하고, 셀 엔지니어의 품질 확인을 받아 월간 임원 보고에서 통과를 승인받는다. 기준에 못 미치면 셋 중 하나를 정해 <a href="#decision-log">결정 기록</a>에 남긴다: <strong>보완</strong>(기간 연장), <strong>축소</strong>(대상 유형·장비군 줄이기), <strong>중단</strong>. 파일럿을 통과하지 못한 장비군은 2차 확장의 근거로 쓰지 않는다.</p>
+<p><strong>2027년 말 목표</strong>: 1차 장비군마다 대표 레시피 유형 1개 이상에서 <strong>측정 위치·Align 셋업 구간을 반자동으로 수행</strong>하고, 그 구간의 건당 셋업 시간을 ⟨확인⟩% 줄인다. 레시피 전 과정 자동 생성은 2028년 이후 목표다.</p>
+<h2 id="01-tf-proposal--6-요청-사항">6. 요청 사항</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>요청</th>
+<th>시점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>ARC TF 구성 승인</td>
+<td>2026-12</td>
+</tr>
+<tr>
+<td>2</td>
+<td>장비군별 MI 엔지니어 겸직 지정 (셀당 1~2명, 주 ⟨확인: N⟩시간)</td>
+<td>2026-12</td>
+</tr>
+<tr>
+<td>3</td>
+<td>공통 플랫폼 팀의 개발·교육 인력 배정 (⟨확인: 인원⟩)</td>
+<td>2026-12</td>
+</tr>
+<tr>
+<td>4</td>
+<td>기존 사내 추론 인프라를 TF 실습·검증에 쓰는 것을 보장. 추가 비용이 생기면 승인할 주체 지정</td>
+<td>2027-01 전</td>
+</tr>
+<tr>
+<td>5</td>
+<td>비생산 검증에 쓸 장비 시간이나 테스트 환경 ⟨확인⟩</td>
+<td>2027-03 전</td>
+</tr>
+<tr>
+<td>6</td>
+<td>장비 PC 화면 조작과 작업 녹화에 대한 보안 승인 범위 확정</td>
+<td>2027-03 전</td>
+</tr>
+<tr>
+<td>7</td>
+<td>파일럿 기간 셀 엔지니어 파견 (필요하면)</td>
+<td>2027-06</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="01-tf-proposal--7-위험과-대응-요약">7. 위험과 대응 (요약)</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>위험</th>
+<th>대응</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>현업 엔지니어가 AI·코드 특성에 익숙하지 않음</td>
+<td>온보딩 8주 과정, 실습 중심 (<a href="#04-onboarding">온보딩 학습 과정</a>)</td>
+</tr>
+<tr>
+<td>겸직이라 참여 시간이 확보되지 않음</td>
+<td>주 N시간을 기획안에 명시, 월간 보고에 참여 시간 기록</td>
+</tr>
+<tr>
+<td>장비군마다 화면·절차가 크게 다름</td>
+<td>공통 플랫폼과 장비별 절차를 분리, 1차는 2~3개 장비군으로 제한</td>
+</tr>
+<tr>
+<td>PoC가 현장에서 아직 검증되지 않음 (실알람 완주, 실장비 탐색, 실행 엔진)</td>
+<td>1~2월에 플랫폼 팀이 정리, 1차 구축 통과 기준에 반복 완주를 넣음</td>
+</tr>
+<tr>
+<td>Agent 오조작</td>
+<td>위험 조작과 저장 전 엔지니어 승인, 즉시 중단 수단, 작업 전 원본 레시피 백업</td>
+</tr>
+</tbody>
+</table></div>
+<p>전체 목록은 <a href="#risk-register">위험 목록</a>에 있다.</p>
+<h2 id="01-tf-proposal--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#readme">ARC TF 목차</a></li>
+<li><a href="#02-roles-and-teams">참여 팀과 역할</a></li>
+<li><a href="#03-operating-rhythm">운영 방식</a></li>
+<li><a href="#04-onboarding">온보딩 학습 과정</a></li>
+<li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="02-roles-and-teams"><p class="file"><span class="num">02</span>02-roles-and-teams.md</p><h1>참여 팀과 역할</h1>
+<blockquote>
+<p>누가 TF에 들어오고, 무엇을 책임지는가. 공통 플랫폼 팀과 장비군별 셀로 나눈다.</p>
+</blockquote>
+<h2 id="02-roles-and-teams--왜-나누는가">왜 나누는가</h2>
+<p>장비군마다 자동화를 따로 만들면 화면 인식, 조작, 안전 장치를 장비 수만큼 다시 만든다. 반대로 플랫폼 팀이 모든 장비의 레시피 절차까지 알 수는 없다. 그래서 <strong>엔진은 한 곳(플랫폼)에서</strong>, <strong>절차와 판정 기준은 장비를 아는 사람(셀)이</strong> 맡는다.</p>
+<h2 id="02-roles-and-teams--구성">구성</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>구성</th>
+<th>맡는 일</th>
+<th>참여 형태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TF 리드</td>
+<td>본인</td>
+<td>TF 운영, 범위·우선순위 결정, 임원 보고, 셀 간 조율</td>
+<td>주 업무</td>
+</tr>
+<tr>
+<td>공통 플랫폼 팀</td>
+<td>본인 + ⟨확인: 개발 인원⟩</td>
+<td>화면 인식·조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육 진행</td>
+<td>주 업무</td>
+</tr>
+<tr>
+<td>1차 셀</td>
+<td>장비군마다 MI 엔지니어 1~2명 (2~3개 장비군)</td>
+<td>레시피 절차 정의, 성공 판정 기준, 데이터 수집, 현장 검증</td>
+<td>겸직 주 ⟨확인: N⟩시간, 파일럿 때 파견 요청 가능</td>
+</tr>
+<tr>
+<td>2차 셀</td>
+<td>나머지 장비군 MI 엔지니어</td>
+<td>1차 기간: 학습 + 자기 장비 작업 녹화·절차서 정리. 확장 단계: 1차 셀과 같은 역할</td>
+<td>겸직</td>
+</tr>
+<tr>
+<td>인프라</td>
+<td>⟨확인⟩</td>
+<td>GPU, VLM 서빙 운영</td>
+<td>필요해지면 합류</td>
+</tr>
+<tr>
+<td>장비 벤더</td>
+<td>⟨확인⟩</td>
+<td>화면·레시피 구조 자문</td>
+<td>필요할 때</td>
+</tr>
+<tr>
+<td>정보보안</td>
+<td>⟨확인⟩</td>
+<td>장비 PC 화면 조작 승인 범위</td>
+<td>승인 단계에서 협의</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="02-roles-and-teams--셀-명단">셀 명단</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>셀</th>
+<th>장비군</th>
+<th>단계</th>
+<th>엔지니어</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>CD-SEM/VeritySEM</td>
+<td>1차</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>B</td>
+<td>⟨확인⟩</td>
+<td>1차</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>C</td>
+<td>⟨확인⟩</td>
+<td>1차 (선택)</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>—</td>
+<td>⟨확인⟩</td>
+<td>2차</td>
+<td>⟨확인⟩</td>
+</tr>
+</tbody>
+</table></div>
+<p>실명과 팀명은 사내용 문서(<code>*_사내용.md</code>)에만 적는다.</p>
+<h2 id="02-roles-and-teams--책임-분담표-raci">책임 분담표 (RACI)</h2>
+<p>R=실행, A=최종 책임, C=협의, I=공유</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>일</th>
+<th>리드</th>
+<th>플랫폼 팀</th>
+<th>셀 엔지니어</th>
+<th>인프라</th>
+<th>보안</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>범위·우선순위 결정</td>
+<td>A</td>
+<td>C</td>
+<td>C</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr>
+<td>공통 엔진·안전 규칙</td>
+<td>A</td>
+<td>R</td>
+<td>C</td>
+<td>C</td>
+<td>C</td>
+</tr>
+<tr>
+<td>장비별 레시피 절차 정의</td>
+<td>I</td>
+<td>C</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>성공 판정 기준</td>
+<td>C</td>
+<td>C</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>현재 셋업 시간 측정 (기준선)</td>
+<td>I</td>
+<td>C</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>작업 녹화·절차서 정리</td>
+<td>I</td>
+<td>C</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>비생산·파일럿 검증</td>
+<td>A</td>
+<td>R</td>
+<td>R</td>
+<td>I</td>
+<td>—</td>
+</tr>
+<tr>
+<td>레시피 저장 승인 (운영 중)</td>
+<td>I</td>
+<td>—</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>VLM 서빙 운영</td>
+<td>I</td>
+<td>C</td>
+<td>—</td>
+<td>R·A</td>
+<td>—</td>
+</tr>
+<tr>
+<td>장비 PC 조작 승인 범위</td>
+<td>R</td>
+<td>C</td>
+<td>I</td>
+<td>—</td>
+<td>A</td>
+</tr>
+<tr>
+<td>교육 진행</td>
+<td>A</td>
+<td>R</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>월간 임원 보고</td>
+<td>R·A</td>
+<td>C</td>
+<td>C</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>단계 통과 정리 (승인은 임원)</td>
+<td>R·A</td>
+<td>C</td>
+<td>C</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>수집 데이터 관리 (녹화·화면·기록)</td>
+<td>A</td>
+<td>R</td>
+<td>C</td>
+<td>—</td>
+<td>C</td>
+</tr>
+<tr>
+<td>위험 조작 승인·즉시 중단 (운영 중)</td>
+<td>I</td>
+<td>—</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>오조작 복구 (원본 레시피 되돌리기)</td>
+<td>I</td>
+<td>C</td>
+<td>R·A</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>장애 대응 (플랫폼·모델 장애)</td>
+<td>I</td>
+<td>R·A</td>
+<td>I</td>
+<td>R</td>
+<td>—</td>
+</tr>
+<tr>
+<td>모델·절차 변경 승인과 재검증</td>
+<td>A</td>
+<td>R</td>
+<td>R</td>
+<td>C</td>
+<td>—</td>
+</tr>
+<tr>
+<td>운영 이관</td>
+<td>A</td>
+<td>R</td>
+<td>C</td>
+<td>C</td>
+<td>—</td>
+</tr>
+<tr>
+<td>TF 종료·연장 판단 (결정은 임원)</td>
+<td>R</td>
+<td>C</td>
+<td>C</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>셀 엔지니어가 위험 조작과 레시피 저장의 최종 승인자다.</strong> Agent와 플랫폼 팀은 레시피를 혼자 확정하지 않는다.</p>
+<h2 id="02-roles-and-teams--파일럿-이후">파일럿 이후</h2>
+<ul>
+<li><strong>변경과 재검증</strong>: VLM 모델, 플랫폼, 장비 화면, 장비별 절차 중 하나라도 바뀌면 이전 검증 결과는 그대로 쓰지 않는다. 그 장비군의 대표 유형을 비생산 환경에서 다시 완주한 뒤에 운영에 반영한다.</li>
+<li><strong>장애 연락</strong>: 플랫폼이나 모델 장애가 나면 플랫폼 팀이 셀에 알리고, 셀은 수동 셋업으로 돌아간다. 연락 경로는 ⟨확인⟩.</li>
+<li><strong>운영 이관</strong>: 파일럿을 통과한 장비군을 TF 밖의 상시 운영으로 넘기는 조건과 받을 조직은 ⟨확인⟩. 2027-09 월간 보고에서 정한다.</li>
+<li><strong>TF 종료·연장</strong>: 2027-12 월간 보고에서 리드가 성과와 남은 범위를 정리해 올리고, 임원이 종료, 연장, 상시 조직 전환 중 하나를 정한다.</li>
+</ul>
+<h2 id="02-roles-and-teams--셀-엔지니어에게-기대하는-것">셀 엔지니어에게 기대하는 것</h2>
+<ul>
+<li>Python 코드를 읽고 간단히 고칠 수 있는 정도의 소양. 기초 문법은 TF에서 가르치지 않는다.</li>
+<li>자기 장비의 레시피 셋업 절차를 설명할 수 있다.</li>
+<li>겸직 시간 안에서 기준선 측정, 녹화, 검증을 한다.</li>
+<li>AI·LLM 특성은 몰라도 된다. 온보딩에서 배운다 (<a href="#04-onboarding">온보딩 학습 과정</a>).</li>
+</ul>
+<h2 id="02-roles-and-teams--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
+<li><a href="#03-operating-rhythm">운영 방식</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="03-operating-rhythm"><p class="file"><span class="num">03</span>03-operating-rhythm.md</p><h1>운영 방식</h1>
+<blockquote>
+<p>회의, 보고, 의사결정, 작업 관리, 안전 원칙. 여러 팀이 겸직으로 모이는 TF라서 정해진 리듬이 없으면 흩어진다.</p>
+</blockquote>
+<h2 id="03-operating-rhythm--회의">회의</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>회의</th>
+<th>주기</th>
+<th>참석</th>
+<th>시간</th>
+<th>다루는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>실무 회의</td>
+<td>초기 주 1회 → 집중 단계에서 주 2회</td>
+<td>리드, 플랫폼 팀, 셀 엔지니어</td>
+<td>⟨확인: 60분⟩</td>
+<td>셀별 진행, 막힌 것, 다음 주 할 일, 결정 필요 사항</td>
+</tr>
+<tr>
+<td>셀 작업 세션</td>
+<td>셀마다 필요할 때</td>
+<td>플랫폼 팀 1명 + 셀</td>
+<td>—</td>
+<td>절차 정의, 녹화 검토, 장비 검증</td>
+</tr>
+<tr>
+<td>임원 보고</td>
+<td>월 1회</td>
+<td>리드 (필요하면 셀 대표)</td>
+<td>⟨확인⟩</td>
+<td>진행, 지표, 위험, 요청 사항</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>주 2회로 바꾸는 시점</strong>: 1차 구축 단계(2027-03)에 들어가 셀들이 동시에 장비 검증을 하기 시작할 때. 바꿀 때는 <a href="#decision-log">결정 기록</a>에 남긴다.</p>
+<h3 id="03-operating-rhythm--실무-회의-진행-순서">실무 회의 진행 순서</h3>
+<ol>
+<li>지난 회의 할 일 확인 (5분)</li>
+<li>셀별 진행: 한 셀에 5분, 형식은 "한 것 / 막힌 것 / 다음 할 일"</li>
+<li>결정 필요 사항: 그 자리에서 정하고 결정 기록에 남긴다. 못 정하면 담당과 기한을 정한다</li>
+<li>위험 목록에서 바뀐 것 확인</li>
+<li>다음 주 할 일과 담당 확정</li>
+</ol>
+<p>회의록은 짧게, 결정과 할 일만 남긴다.</p>
+<h2 id="03-operating-rhythm--월간-임원-보고-형식">월간 임원 보고 형식</h2>
+<p>1페이지로 쓴다. 기능 설명보다 효과를 먼저 쓴다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이번 달 결과</td>
+<td>무엇이 되었나, 어떤 지표가 바뀌었나</td>
+</tr>
+<tr>
+<td>지표</td>
+<td>셋업 시간, 예정에 없던 개입 횟수, 셋업 뒤 첫 측정 성공률, 완주한 레시피 유형 수 (기준선 대비, 측정 규칙은 <a href="#01-tf-proposal">기획안</a>)</td>
+</tr>
+<tr>
+<td>다음 달 계획</td>
+<td>단계와 통과 기준</td>
+</tr>
+<tr>
+<td>위험</td>
+<td>새로 생긴 것, 커진 것</td>
+</tr>
+<tr>
+<td>요청</td>
+<td>임원이 결정하거나 도와줘야 할 것</td>
+</tr>
+<tr>
+<td>참여 시간</td>
+<td>셀별 겸직 시간 실적 (계획 대비)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="03-operating-rhythm--의사결정">의사결정</h2>
+<ul>
+<li>범위와 우선순위는 리드가 정한다. 장비 절차와 판정 기준은 셀 엔지니어가 정한다.</li>
+<li>결정은 <a href="#decision-log">결정 기록</a>에 날짜, 결정, 이유와 함께 남긴다. 뒤집을 때도 남긴다.</li>
+<li>셀 사이에 의견이 갈리면 실무 회의에서 리드가 정한다. 예산이나 인력이 걸린 것은 월간 보고에서 임원에게 올린다.</li>
+<li>단계 통과는 리드가 정리하고 월간 보고에서 임원이 승인한다. 미달이면 보완, 축소, 중단 중 하나를 정한다 (<a href="#01-tf-proposal">기획안</a> 5절).</li>
+</ul>
+<h2 id="03-operating-rhythm--작업-관리">작업 관리</h2>
+<ul>
+<li>할 일은 ⟨확인: 이슈 트래커 / 사내 도구⟩에 셀 단위 라벨로 관리한다.</li>
+<li>코드는 공통 플랫폼 저장소 하나에 둔다. 장비별 절차는 같은 저장소 안의 장비군 폴더로 나눈다.</li>
+<li>장비 데이터, 화면 캡처, 사내 수치는 사내 환경에만 둔다. 이 문서 폴더에는 일반화된 계획만 남긴다.</li>
+</ul>
+<h2 id="03-operating-rhythm--안전-원칙-모든-셀-공통">안전 원칙 (모든 셀 공통)</h2>
+<p>PoC에서 정한 규칙을 그대로 가져온다.</p>
+<ul>
+<li><strong>검증에 실패하면 기본은 중단이다.</strong> 무한 재시도는 없다. 마지막 대안은 사람에게 넘기는 것이다.</li>
+<li>되돌릴 수 없는 조작은 실행 전과 후 모두 검증한다. 실패하면 자동으로 다시 실행하지 않는다.</li>
+<li>모든 조작은 증거를 남긴다: 조작 전후 화면, VLM 응답, 좌표.</li>
+<li>낮은 CV 점수를 VLM 답변으로 덮어쓰지 않는다.</li>
+<li>엔지니어 작업 녹화는 화면만 본다. 입력을 가로채지 않는다.</li>
+<li>실장비 검증은 처음에는 엔지니어가 지켜보는 상태에서만 한다.</li>
+</ul>
+<h3 id="03-operating-rhythm--조작별-승인">조작별 승인</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>조작</th>
+<th>승인</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>화면 읽기, 창 전환, 값 확인</td>
+<td>필요 없음</td>
+</tr>
+<tr>
+<td>측정 위치·Align 후보 선택, 입력란 채우기 (저장 전)</td>
+<td>필요 없음. 단계마다 검증하고 실패하면 중단</td>
+</tr>
+<tr>
+<td>측정 실행</td>
+<td>셀 엔지니어 승인</td>
+</tr>
+<tr>
+<td>레시피 저장·적용</td>
+<td>셀 엔지니어 승인</td>
+</tr>
+<tr>
+<td>삭제, 덮어쓰기, 장비 모드 변경</td>
+<td>셀 엔지니어 승인. 1차에서는 Agent에게 맡기지 않는 것을 기본으로 한다</td>
+</tr>
+</tbody>
+</table></div>
+<p>장비군마다 다르게 분류할 조작은 셀이 절차 정의 때 이 표에 더한다.</p>
+<h3 id="03-operating-rhythm--중단-인계-복구">중단, 인계, 복구</h3>
+<ul>
+<li><strong>즉시 중단</strong>: 엔지니어는 언제든 Agent를 멈출 수 있어야 한다. 중단 수단(버튼·단축키)은 ⟨확인⟩이며, 1차 구축 단계의 필수 기능이다.</li>
+<li><strong>제어권 인계</strong>: Agent는 중단하거나 실패하면 마우스와 키보드에서 손을 떼고, 마지막 화면과 진행 단계를 엔지니어에게 넘긴다. 엔지니어가 수동으로 이어서 하거나 처음부터 다시 한다.</li>
+<li><strong>원본 보존</strong>: 기존 레시피를 고치는 작업이면 시작 전에 원본을 백업한다. 신규 레시피는 승인 전까지 확정하지 않는다.</li>
+<li><strong>오조작 복구</strong>: 잘못 저장된 레시피는 셀 엔지니어가 백업으로 되돌리고, 결정 기록에 원인과 함께 남긴다. 원인을 찾을 때까지 그 절차의 자동 실행을 멈춘다.</li>
+</ul>
+<h2 id="03-operating-rhythm--데이터-취급">데이터 취급</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>규칙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>담당</td>
+<td>플랫폼 팀이 관리하고 리드가 책임진다. 보안 담당과 범위를 협의한다</td>
+</tr>
+<tr>
+<td>녹화 동의</td>
+<td>엔지니어 작업 녹화는 본인 동의를 받고, 녹화 중임을 화면에 표시한다</td>
+</tr>
+<tr>
+<td>수집 범위</td>
+<td>장비 화면, 조작 기록, VLM 응답, 좌표. 계정·비밀번호 입력 구간은 가린다</td>
+</tr>
+<tr>
+<td>접근 권한</td>
+<td>TF 구성원만. 셀은 자기 장비군 데이터만 본다</td>
+</tr>
+<tr>
+<td>보존·삭제</td>
+<td>보존 기간 ⟨확인⟩, 기간이 지나면 삭제. 학습 자료로 쓸 것은 따로 표시해 남긴다</td>
+</tr>
+<tr>
+<td>교육 자료로 쓸 때</td>
+<td>장비명·Lot·수치를 가린 사본만 쓰고, 리드가 승인한다. 사내 환경 밖으로 내보내지 않는다</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="03-operating-rhythm--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#02-roles-and-teams">참여 팀과 역할</a></li>
+<li><a href="#decision-log">결정 기록</a></li>
+<li><a href="#risk-register">위험 목록</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="04-onboarding"><p class="file"><span class="num">04</span>04-onboarding.md</p><h1>온보딩 학습 과정 (2027-01~02, 8주)</h1>
+<blockquote>
+<p>MI 현업 엔지니어가 AI Agent로 레시피를 자동화할 때 알아야 할 배경 지식을 쌓는 TF 전용 실무 과정.</p>
+</blockquote>
+<h2 id="04-onboarding--왜-필요한가">왜 필요한가</h2>
+<p>셀 엔지니어는 장비와 레시피는 잘 알지만, LLM·VLM이 무엇을 잘하고 무엇을 못하는지는 모른다. 이걸 모르면 두 가지가 생긴다.</p>
+<ul>
+<li>Agent에게 맡기면 안 되는 판단(정밀 좌표, 반복 가능한 판정)을 맡기는 절차를 쓴다.</li>
+<li>Agent가 실패했을 때 원인이 모델인지, 화면 품질인지, 절차 정의인지 구분하지 못한다.</li>
+</ul>
+<p>목표는 엔지니어가 <strong>자기 장비의 레시피 절차를 Agent가 실행할 수 있는 형태로 정의하고, 결과를 판정할 수 있게</strong> 되는 것이다. AI 개발자를 만드는 과정이 아니다.</p>
+<h2 id="04-onboarding--전제">전제</h2>
+<ul>
+<li><strong>Python 기초는 다루지 않는다.</strong> 코드를 읽고 간단히 고칠 수 있는 정도의 소양은 갖고 온다.</li>
+<li>겸직 시간(주 ⟨확인: N⟩시간) 안에서 진행한다. 강의는 짧게 하고 실습을 길게 한다.</li>
+<li>강사는 리드와 공통 플랫폼 팀이 맡는다.</li>
+<li>1차·2차 셀 엔지니어가 모두 듣는다.</li>
+</ul>
+<h2 id="04-onboarding--과정">과정</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>주차</th>
+<th>주제</th>
+<th>배우는 것</th>
+<th>실습</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>TF와 플랫폼 개요, Git</td>
+<td>ARC 목표, 셀의 역할, 저장소 구조, 브랜치와 리뷰</td>
+<td>저장소 받기, 문서 수정 PR</td>
+</tr>
+<tr>
+<td>2</td>
+<td>LLM·VLM의 특성</td>
+<td>잘하는 것(화면 의미 이해, 설명), 못하는 것(좌표가 흔들림, 기억 없음, 환각), 프롬프트가 결과를 바꾸는 방식</td>
+<td>같은 화면을 여러 번 물어보고 답이 흔들리는 것 확인하기</td>
+</tr>
+<tr>
+<td>3</td>
+<td>왜 VLM과 CV를 나눠 쓰는가</td>
+<td>"어디를 볼지"는 VLM, "정확히 어디인지"는 CV. 이미지 매칭 점수 읽는 법</td>
+<td>PoC의 Align Key 탐색 결과를 보고 점수 해석하기</td>
+</tr>
+<tr>
+<td>4</td>
+<td>컴퓨터 사용 Agent의 동작</td>
+<td>화면 캡처 → 판단 → 조작 → 검증 순환, 실패 유형(화면 품질, 모델, 절차)</td>
+<td>플랫폼으로 비생산 화면에서 클릭·입력 시켜 보기</td>
+</tr>
+<tr>
+<td>5</td>
+<td>안전 규칙과 승인</td>
+<td>검증 실패 시 중단, 되돌릴 수 없는 조작, 저장 전 승인, 증거 기록</td>
+<td>실패 기록을 보고 원인 분류하기</td>
+</tr>
+<tr>
+<td>6</td>
+<td>작업 녹화 → 절차서</td>
+<td>화면 녹화, 조작 타임라인, 한국어 절차서로 바꾸기</td>
+<td>자기 장비 레시피 셋업 1건 녹화하고 절차서 만들기</td>
+</tr>
+<tr>
+<td>7</td>
+<td>절차를 플랫폼에 정의하기</td>
+<td>단계, 각 단계의 성공 조건, 실패 시 행동, 조작별 승인 분류</td>
+<td>6주차 절차서를 절차 정의로 옮기고, 녹화본에 대고 모의 실행하기</td>
+</tr>
+<tr>
+<td>8</td>
+<td>기준선 측정과 판정 기준</td>
+<td>측정 양식으로 현재 셋업 시간 재기, 성공 판정 기준 정하기</td>
+<td>셀별 기준선과 대표 레시피 유형을 발표</td>
+</tr>
+</tbody>
+</table></div>
+<p>레시피 셋업 기능은 3~6월에 만든다. 그래서 온보딩 실습은 <strong>녹화본과 모의 실행</strong>으로 하고, 실제 장비 실행은 1차 구축 단계에서 한다.</p>
+<h2 id="04-onboarding--기준선-측정-양식">기준선 측정 양식</h2>
+<p>8주차에 셀마다 이 양식으로 잰다. 파일럿에서도 같은 양식을 쓴다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>적는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>레시피 유형</td>
+<td>셀의 대표 유형 1개</td>
+</tr>
+<tr>
+<td>구간</td>
+<td>자동화 대상 구간(측정 위치·Align 셋업)의 시작 화면과 끝 화면</td>
+</tr>
+<tr>
+<td>소요 시간</td>
+<td>구간 안의 실패·재작업·수동 인계를 포함한 시간. 승인 대기는 따로</td>
+</tr>
+<tr>
+<td>예정에 없던 개입</td>
+<td>반드시 거치는 승인은 빼고 센다</td>
+</tr>
+<tr>
+<td>첫 측정 결과</td>
+<td>셋업 뒤 첫 측정의 성공/실패</td>
+</tr>
+<tr>
+<td>표본 수</td>
+<td>⟨확인: 유형당 최소 건수⟩</td>
+</tr>
+</tbody>
+</table></div>
+<p>8주차 발표 결과가 <a href="#01-tf-proposal">TF 구성 기획안</a>의 ⟨확인⟩ 칸(현재 셋업 시간, 목표 단축률)을 채운다.</p>
+<h2 id="04-onboarding--수료-기준">수료 기준</h2>
+<ul>
+<li>자기 장비 레시피 셋업 1건의 절차서가 있다.</li>
+<li>그 절차를 플랫폼 절차로 정의하고, 녹화본에 대고 모의 실행해 봤다.</li>
+<li>Agent 실패 기록을 보고 원인(화면 품질 / 모델 / 절차 정의)을 구분할 수 있다.</li>
+<li>셀의 기준선과 성공 판정 기준이 정해져 있다.</li>
+</ul>
+<h2 id="04-onboarding--선택-과정">선택 과정</h2>
+<p>더 깊이 알고 싶은 엔지니어는 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/../ai-dt-curriculum/README.md">AI/DT 교육 커리큘럼</a>에서 준비 중인 오픈웨이트 LLM 심화 과정을 추가로 들을 수 있다. TF 수료와는 관계없다.</p>
+<h2 id="04-onboarding--준비물">준비물</h2>
+<ul>
+<li>⟨확인: 실습용 PC와 셀별 작업 녹화본 (6주차 전 녹화 승인 필요)⟩</li>
+<li>⟨확인: 실습 중 VLM 호출 한도⟩</li>
+<li>실습 자료: PoC의 공개 가능한 화면 예시와 실패 기록</li>
+</ul>
+<h2 id="04-onboarding--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#02-roles-and-teams">참여 팀과 역할</a></li>
+<li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="05-poc-assets"><p class="file"><span class="num">05</span>05-poc-assets.md</p><h1>PoC 자산과 남은 과제</h1>
+<blockquote>
+<p>1차 PoC(Align Fail 대응 자동화)에서 레시피 자동 생성으로 가져오는 것과, 아직 풀지 않은 것.</p>
+</blockquote>
+<h2 id="05-poc-assets--왜-정리하는가">왜 정리하는가</h2>
+<p>TF는 0에서 시작하지 않는다. PoC에서 이미 검증한 것을 공통 플랫폼의 출발점으로 쓴다. 반대로 PoC가 다루지 않은 것은 TF가 새로 풀어야 한다. 이 둘을 섞으면 일정을 낙관적으로 잡게 된다.</p>
+<h2 id="05-poc-assets--poc가-무엇이었나">PoC가 무엇이었나</h2>
+<p>계측 Lot을 운영하다 보면 Align Fail(정렬 실패)이 자주 난다. 그러면 장비가 멈추고, 사람이 장비에 접속해 정렬을 다시 맞춰야 한다. PoC는 이 대응을 AI가 대신하게 만들었다. 알람 감지 → 장비 접속 → 정렬 보정 → 실패 시 담당자 알림 → 녹화로 이어지는 루프다. 실장비에서는 위치 재조정까지 자동으로 하고, 최종 확정은 엔지니어가 누르는 반자동으로 열었다.</p>
+<p>Align Fail 대응은 레시피에 등록된 Align Key와 실제 Wafer 사이의 차이를 사람이 매번 맞추는 일이다. 레시피를 처음부터 제대로 만드는 것이 ARC의 본래 목표이고, Align Fail 대응은 그 일부를 먼저 떼어 검증한 것이다.</p>
+<h2 id="05-poc-assets--가져오는-것">가져오는 것</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>자산</th>
+<th>상태</th>
+<th>공통 플랫폼에서의 쓰임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>사내 화면 이해 모델(VLM·OCR) 서빙</td>
+<td>운영 중</td>
+<td>화면 이해의 기반. 모델 교체는 측정으로 결정</td>
+</tr>
+<tr>
+<td>2단계 좌표 찾기 (대략 위치 → 정밀 좌표) + OCR 확인</td>
+<td>검증 완료</td>
+<td>장비 화면 클릭·입력</td>
+</tr>
+<tr>
+<td>VLM/CV 역할 분리 원칙</td>
+<td>확정</td>
+<td>모든 셀의 설계 원칙</td>
+</tr>
+<tr>
+<td>기존 Align Key 탐색 (성공 사례 기준 이미지, 저배율/고배율 재순위)</td>
+<td>오프라인 검증 완료, 현장 검증 대기. 성공 이미지 공급 기능은 구현 대기</td>
+<td>이미 등록된 Key를 다시 찾는 데 쓴다. 신규 등록 위치 선정은 아래 "새로 풀어야 하는 것"</td>
+</tr>
+<tr>
+<td>상태 머신 기반 실행·판정 계층</td>
+<td>판정 계층 구현, 실행 엔진은 데모 단계</td>
+<td>레시피 셋업 절차 실행</td>
+</tr>
+<tr>
+<td>안전 규칙 (검증 실패 시 중단, 비가역 조작 재실행 금지, 증거 기록)</td>
+<td>확정</td>
+<td>TF 공통 안전 원칙</td>
+</tr>
+<tr>
+<td>엔지니어 작업 녹화 → 조작 타임라인 → 한국어 절차서</td>
+<td>녹화 확보, 추출은 현장 미실행</td>
+<td>셀의 절차 정의</td>
+</tr>
+<tr>
+<td>실패 회복 기록 (알람 1건의 시도·판정을 한 줄로 기록)</td>
+<td>구현 완료</td>
+<td>셋업 시도 기록과 지표</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="05-poc-assets--레시피-생성을-위해-새로-풀어야-하는-것">레시피 생성을 위해 새로 풀어야 하는 것</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>과제</th>
+<th>왜 PoC에 없었나</th>
+<th>맡을 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>레시피 생성의 전 과정 절차 (생성 → 위치 등록 → 파라미터 → 검증 → 저장)</td>
+<td>PoC는 기존 레시피의 정렬 보정만 다뤘다</td>
+<td>셀 + 플랫폼</td>
+</tr>
+<tr>
+<td>장비군마다 다른 화면과 절차</td>
+<td>PoC는 한 장비군 화면만 다뤘다</td>
+<td>셀</td>
+</tr>
+<tr>
+<td>신규 Align·측정 위치 선정 (좋은 위치를 고르고 장비 자체 알고리즘으로 통하는지 확인)</td>
+<td>PoC는 이미 등록된 Key를 찾기만 했다. 위치 제안은 구현하지 않았다</td>
+<td>플랫폼 + 셀 (실장비 검증)</td>
+</tr>
+<tr>
+<td>성공 이미지 수집과 초기 확보</td>
+<td>기준 이미지 방식은 레시피별 성공 이미지가 쌓여야 효과가 나는데, 공급 기능이 구현 대기다. 신규 레시피는 성공 이미지가 처음에 없다</td>
+<td>플랫폼 (수집 기능) + 셀 (초기 이미지)</td>
+</tr>
+<tr>
+<td>실행 엔진 제품화</td>
+<td>PoC의 절차 실행 엔진은 데모 단계다</td>
+<td>플랫폼</td>
+</tr>
+<tr>
+<td>측정 결과 판정 (성공/실패, 위치 오프셋)</td>
+<td>Align 성공 여부만 판정했다</td>
+<td>셀이 기준, 플랫폼이 구현</td>
+</tr>
+<tr>
+<td>엔지니어와 대화하며 진행하는 승인 화면</td>
+<td>PoC는 알림과 확정 버튼만 있었다</td>
+<td>플랫폼</td>
+</tr>
+<tr>
+<td>장비 PC 배포 (개발 도구 없는 PC에서 실행)</td>
+<td>방식 결정 대기</td>
+<td>플랫폼 + 인프라</td>
+</tr>
+<tr>
+<td>등록 위치가 헷갈리기 쉬운 레시피의 재등록</td>
+<td>알고리즘으로 안 풀리는 몫이 크다고 확인됨</td>
+<td>셀</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="05-poc-assets--poc의-남은-일-tf-시작-전-정리">PoC의 남은 일 (TF 시작 전 정리)</h2>
+<p>TF 가동 전에 끝내거나, 끝내지 못하면 TF 1차 구축 단계로 넘긴다.</p>
+<ul>
+<li>⟨확인: 실알람 첫 완주⟩</li>
+<li>⟨확인: Align Key 탐색의 현장 실데이터 검증⟩</li>
+<li>⟨확인: 녹화 → 절차서 추출의 현장 실행⟩</li>
+<li>⟨확인: 장비 PC 배포 방식 결정⟩</li>
+</ul>
+<p>PoC의 수치(대상 장비 수, 주간 발생 건수, 대응 시간, 정확도)는 사내용 문서에만 적는다.</p>
+<h2 id="05-poc-assets--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
+<li><a href="#04-onboarding">온보딩 학습 과정</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="decision-log"><p class="file"><span class="num">06</span>decision-log.md</p><h1>결정 기록</h1>
+<blockquote>
+<p>날짜별로 정한 것과 그 이유. 뒤집을 때도 새 줄로 남기고 이전 줄을 지우지 않는다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>결정</th>
+<th>이유</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-29</td>
+<td>Align Fail 대응은 PoC로 마감하고, ARC 본 구현(레시피 자동 생성)을 TF로 진행한다</td>
+<td>PoC로 기술 가능성은 확인했다. 장비별 레시피 절차는 현업 도메인 지식 없이 풀 수 없다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>공통 플랫폼 팀 + 장비군별 셀 구조</td>
+<td>엔진을 장비마다 새로 만들지 않는다. 절차와 판정 기준은 장비를 아는 사람이 맡는다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>1차는 2~3개 장비군(CD-SEM/VeritySEM 포함), 다른 장비군 엔지니어도 1월에 함께 합류</td>
+<td>플랫폼이 안정되기 전에 장비군을 다 열면 흩어진다. 2차 셀은 학습과 녹화·절차서로 미리 준비한다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>1차 범위는 측정 위치·Align 셋업 구간, 최종 목표는 전 과정</td>
+<td>PoC 자산이 바로 이어지고, 시행착오가 가장 많은 구간이다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>레시피 저장·적용 직전에는 셀 엔지니어가 승인 (반자동)</td>
+<td>PoC와 같은 원칙이고, 현업이 받아들이기 쉽다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>셀 엔지니어는 겸직 주 N시간, 파일럿 때 파견 요청 가능</td>
+<td>처음부터 전담을 요청하면 승인 문턱이 높다</td>
+<td>확정, N은 ⟨확인⟩</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>2027-01~02 온보딩 8주, Python 기초는 제외</td>
+<td>엔지니어는 AI·LLM 특성을 모른다. Python 소양은 갖고 오기를 기대한다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>일정: 11월 기획안, 12월 임원 승인, 2027-01 가동</td>
+<td>—</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>실무 회의 초기 주 1회 → 집중 단계 주 2회, 임원 보고 월 1회</td>
+<td>겸직 부담을 초기에 줄인다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>인프라는 나중에 합류, 장비 벤더는 필요할 때</td>
+<td>초기에는 MI 엔지니어 중심</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>공개 문서에는 PoC 수치·실명·팀명을 쓰지 않고 사내용 문서에만 둔다</td>
+<td>공개 저장소다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>Codex 검토 12건 반영: 2027 목표를 측정 위치·Align 구간으로 한정, 조작별 승인과 중단·복구, 온보딩은 녹화본·모의 실행으로 수료, 측정 규칙·단계 통과 결정·데이터 취급·파일럿 이후 책임 추가, 공개본에서 시스템 운영 상태 제거</td>
+<td>범위와 약속이 어긋나 있었고, 승인 지점이 저장 직전뿐이었고, 온보딩이 아직 없는 기능에 기대고 있었다</td>
+<td>확정</td>
+</tr>
+</tbody>
+</table></div><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="risk-register"><p class="file"><span class="num">07</span>risk-register.md</p><h1>위험 목록</h1>
+<blockquote>
+<p>TF 운영과 구현의 위험, 대응, 담당. 실무 회의에서 바뀐 것만 확인한다.</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>위험</th>
+<th>가능성</th>
+<th>영향</th>
+<th>대응</th>
+<th>담당</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>겸직이라 셀 엔지니어 시간이 확보되지 않는다</td>
+<td>높음</td>
+<td>높음</td>
+<td>기획안에 주 N시간 명시, 월간 보고에 참여 시간 실적 보고, 파일럿 때 파견 요청</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>엔지니어가 AI·LLM 특성을 몰라 Agent에 맞지 않는 절차를 쓴다</td>
+<td>높음</td>
+<td>중간</td>
+<td>온보딩 8주, 2~3주차에서 VLM 한계를 직접 확인하는 실습</td>
+<td>플랫폼 팀</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Python 소양이 셀마다 다르다</td>
+<td>중간</td>
+<td>중간</td>
+<td>합류 전 기대 수준 공지, 실습은 코드 작성보다 읽기·수정 중심</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>장비군마다 화면과 절차가 크게 달라 공통 플랫폼에 담기지 않는다</td>
+<td>중간</td>
+<td>높음</td>
+<td>1차를 2~3개 장비군으로 제한, 장비별 차이는 절차 정의로 흡수, 안 되면 결정 기록에 남기고 범위 조정</td>
+<td>플랫폼 팀</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Agent 오조작으로 잘못된 레시피가 저장된다</td>
+<td>중간</td>
+<td>높음</td>
+<td>저장 전 셀 엔지니어 승인, 검증 실패 시 중단, 실장비는 초기에 입회 검증만</td>
+<td>셀 + 플랫폼</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>장비 PC 화면 조작에 대한 보안 승인이 늦어진다</td>
+<td>중간</td>
+<td>높음</td>
+<td>2027-03 전 승인 범위 확정을 기획안 요청 사항에 포함, 그 전에는 비생산 환경과 녹화본으로 진행</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>비생산 검증용 장비 시간을 못 얻는다</td>
+<td>중간</td>
+<td>높음</td>
+<td>기획안 요청 사항에 포함, 녹화본 기반 오프라인 검증을 먼저 진행</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>추론 서비스 가용성 (장애나 용량 부족으로 Agent가 멈춤)</td>
+<td>중간</td>
+<td>중간</td>
+<td>인프라 합류 시점 정하기, 장애 시 수동 셋업으로 돌아가는 절차, 호출이 많은 작업은 실시간 경로 밖에서 실행</td>
+<td>플랫폼 팀</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R9</td>
+<td>PoC의 현장 검증이 끝나지 않은 채 TF가 시작된다</td>
+<td>중간</td>
+<td>중간</td>
+<td>남은 항목을 1차 구축 단계 할 일로 명시 (<a href="#05-poc-assets">PoC 자산</a>)</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R10</td>
+<td>기준선(현재 셋업 시간)이 없어 효과를 증명하지 못한다</td>
+<td>중간</td>
+<td>높음</td>
+<td>온보딩 8주차까지 셀별 기준선 측정을 수료 기준으로 둔다</td>
+<td>셀</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>공개 문서에 사내 정보가 섞인다 (수치뿐 아니라 시스템 운영 상태도)</td>
+<td>낮음</td>
+<td>높음</td>
+<td>수치·실명·장비 상세·시스템 운영 상태는 <code>*_사내용.md</code>(git 제외)에만</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>신규 레시피에는 성공 이미지가 없어 PoC의 기준 이미지 방식이 바로 통하지 않는다</td>
+<td>높음</td>
+<td>중간</td>
+<td>수집 기능 구현, 셀이 초기 이미지 확보, 신규 위치 선정은 별도 과제로</td>
+<td>플랫폼 + 셀</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R13</td>
+<td>위험 조작(측정 실행·삭제·모드 변경) 오조작</td>
+<td>중간</td>
+<td>높음</td>
+<td>조작별 승인, 즉시 중단 수단, 원본 백업과 복구 절차 (<a href="#03-operating-rhythm">운영 방식</a>)</td>
+<td>셀 + 플랫폼</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R14</td>
+<td>녹화·화면 데이터의 동의·보존·반출 문제</td>
+<td>중간</td>
+<td>높음</td>
+<td>데이터 취급 규칙, 보안 담당 협의</td>
+<td>리드</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R15</td>
+<td>모델·절차가 바뀐 뒤에도 예전 검증 결과를 계속 믿는다</td>
+<td>중간</td>
+<td>중간</td>
+<td>변경 시 비생산 재완주 후 반영 (<a href="#02-roles-and-teams">참여 팀과 역할</a>)</td>
+<td>플랫폼 팀</td>
+<td>열림</td>
+</tr>
+</tbody>
+</table></div><p class="back"><a href="#top">목차로</a></p></section>
+</main>
