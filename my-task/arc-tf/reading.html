@@ -223,7 +223,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li>⟨확인: VeritySEM·Thickness 셀 참여 엔지니어⟩</li>
 <li>⟨확인: 설치형 프로그램 배포·녹화 보안 승인 절차⟩</li>
 <li>⟨확인: 셀별 자동화 대상 구간 실측 — 온보딩 8주차⟩</li>
-<li>⟨확인: 입력 주입 테스트 (로컬 RCS, VDI 경로 각각)⟩</li>
+<li>⟨확인: 입력 주입 테스트 — 본인 PC, 로컬 RCS·VDI 경로 각각, 저장 없음⟩</li>
 <li>⟨확인: VDI 워터마크 여부⟩</li>
 <li>⟨확인: 작업 관리 도구⟩</li>
 </ul>
@@ -1030,7 +1030,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>수집 범위</td>
-<td>장비 화면, 조작 기록, VLM 응답, 좌표. 계정·비밀번호 입력 구간은 가린다</td>
+<td><strong>장비 뷰어 창(RCS 창 또는 VDI 브라우저 창)만</strong> 캡처한다. 데스크톱 전체는 찍지 않는다. 그 창이 맨 앞에 없거나 다른 창이 위에 덮인 구간은 저장하지 않는다. 남기는 것은 장비 화면, 조작 기록, VLM 응답, 좌표. 키 입력은 기록하지 않고, 계정·비밀번호 입력 구간은 가린다</td>
 </tr>
 <tr>
 <td>접근 권한</td>
@@ -1319,7 +1319,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li>⟨확인: Align Key 탐색의 현장 실데이터 검증⟩</li>
 <li>⟨확인: 녹화 → 절차서 추출의 현장 실행⟩</li>
 <li>설치형 프로그램 패키징 (배포 방식은 엔지니어 본인 PC 설치로 결정)</li>
-<li>입력 주입 테스트: 엔지니어 PC 한 대에서 로컬 RCS 경로와 VDI 경로 각각 "캡처 → 클릭·입력 → 화면 변화 확인" 한 바퀴. 화면 캡처는 두 경로 모두 막히지 않음을 확인했다 (2026-11-02)</li>
+<li>입력 주입 테스트: <strong>리드 본인 PC</strong>에서 로컬 RCS 경로와 VDI 경로(본인 계정) 각각 "캡처 → 클릭·입력 → 화면 변화 확인" 한 바퀴. 다른 사람 화면이 끼지 않게 본인 PC에서만 하고, 녹화·로그는 저장하지 않으며, 승인이 필요 없는 조작(창 전환, 탭 클릭)만 쓴다. 측정 실행과 저장은 하지 않는다. 화면 캡처는 두 경로 모두 막히지 않음을 확인했다 (2026-11-02)</li>
 <li>⟨확인: VDI 화면의 워터마크 오버레이 여부 (OCR·CV 매칭에 영향)⟩</li>
 </ul>
 <p>PoC의 수치(대상 장비 수, 주간 발생 건수, 대응 시간, 정확도)는 사내용 문서에만 적는다.</p>
@@ -1462,6 +1462,18 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>두 경로 모두 화면 캡처가 된다. 배포 방식을 하나로 유지한다. 입력 주입이 막히면 VDI 안 설치를 대안으로 검토</td>
 <td>확정, 입력 주입은 테스트 대기</td>
 </tr>
+<tr>
+<td>2026-11-02</td>
+<td>작업 녹화는 장비 뷰어 창만 캡처하고, 데스크톱 전체와 키 입력은 기록하지 않는다</td>
+<td>엔지니어 PC 화면에 업무 외 민감 정보가 담길 수 있다. 장비 화면만 본다고 설명할 수 있어야 보안 협의가 쉽다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-02</td>
+<td>입력 주입 테스트는 건너뛰지 않고, 리드 본인 PC에서 저장 없이 승인 불필요 조작만으로 한다</td>
+<td>입력 주입이 막히면 구조가 바뀌므로 1차 구축 전에 알아야 한다. 본인 PC라 다른 사람 정보가 끼지 않는다</td>
+<td>확정, 테스트 대기</td>
+</tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="risk-register"><p class="file"><span class="num">07</span>risk-register.md</p><h1>위험 목록</h1>
@@ -1603,7 +1615,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>녹화·화면 데이터의 동의·보존·반출 문제</td>
 <td>중간</td>
 <td>높음</td>
-<td>데이터 취급 규칙, 보안 담당 협의</td>
+<td>데이터 취급 규칙(장비 뷰어 창만 캡처, 키 입력 기록 안 함), 보안 담당 협의</td>
 <td>리드</td>
 <td>열림</td>
 </tr>
@@ -1621,7 +1633,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>엔지니어 PC의 가상 입력(마우스·키보드 주입)이 원격 제어 툴이나 보안 솔루션에 막힌다</td>
 <td>⟨확인⟩</td>
 <td>높음</td>
-<td>2027-01 가동 전에 로컬 RCS와 VDI 경로 각각 입력 주입 테스트. 막히면 VDI 안에 설치하는 대안을 VDI 관리 조직과 협의</td>
+<td>2027-01 가동 전에 리드 본인 PC에서 로컬 RCS와 VDI 경로 각각 입력 주입 테스트 (저장 없음, 승인 불필요 조작만). 막히면 VDI 안에 설치하는 대안을 VDI 관리 조직과 협의</td>
 <td>플랫폼 팀</td>
 <td>열림</td>
 </tr>
