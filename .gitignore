@@ -19,3 +19,4 @@ _workspace/
 # Local editor / agent settings
 .obsidian/
 .pi/
+.claude/settings.local.json
