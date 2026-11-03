@@ -92,7 +92,7 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 | 대상 | 첫 도구 | Ghidra 필요 |
 |---|---|---|
 | 형식을 모르는 설치 폴더 | `inspect_desktop_application` | 아니요 |
-| C, C++ `.exe`, `.dll`, ELF, Mach-O | `open_binary` → `analyze_function` 등 | 예 |
+| C, C++ `.exe`, `.dll`, ELF, Mach-O(ELF, Mach-O는 Linux, macOS만) | `open_binary` → `analyze_function` 등 | 예 |
 | .NET 어셈블리 | `inspect_managed_artifact` | 아니요 |
 | .NET NativeAOT 빌드 | `open_binary` (Ghidra) | 예 |
 | PyInstaller `.exe` | `open_binary` → `inspect_artifact` | 아니요 |

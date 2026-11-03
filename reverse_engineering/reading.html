@@ -588,7 +588,7 @@ file /absolute/path/to/target.exe</code></p>
 <tr>
 <td>ELF, Mach-O를 Ghidra로 분석</td>
 <td>안 됨</td>
-<td>Windows는 PE와 raw 6502 이미지만 받는다</td>
+<td>REA의 Windows Ghidra 연동이 PE와 raw 6502 이미지만 받는다. Ghidra 화면에서 직접 열면 분석된다</td>
 </tr>
 <tr>
 <td>.NET 어셈블리</td>
@@ -809,7 +809,7 @@ Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 
 <td>아니요</td>
 </tr>
 <tr>
-<td>C, C++ <code>.exe</code>, <code>.dll</code>, ELF, Mach-O</td>
+<td>C, C++ <code>.exe</code>, <code>.dll</code>, ELF, Mach-O(ELF, Mach-O는 Linux, macOS만)</td>
 <td><code>open_binary</code> → <code>analyze_function</code> 등</td>
 <td>예</td>
 </tr>

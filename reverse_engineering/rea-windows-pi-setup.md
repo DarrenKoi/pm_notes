@@ -25,7 +25,7 @@ REA 문서는 macOS와 Linux를 기준으로 쓰인 부분이 많다. Windows에
 |---|---|---|
 | 네이티브 PE(`.exe`, `.dll`) Ghidra 분석 | 됨, 읽기 전용 | x86, x86-64, ARM64 PE. 26개 읽기 전용 작업 |
 | Ghidra 함수 이름, 주석 붙이기 | 안 됨 | `annotate_native_function`, `set_address_name`은 Linux, macOS만 |
-| ELF, Mach-O를 Ghidra로 분석 | 안 됨 | Windows는 PE와 raw 6502 이미지만 받는다 |
+| ELF, Mach-O를 Ghidra로 분석 | 안 됨 | REA의 Windows Ghidra 연동이 PE와 raw 6502 이미지만 받는다. Ghidra 화면에서 직접 열면 분석된다 |
 | .NET 어셈블리 | 됨 | Ghidra를 쓰지 않는 별도 분석기 |
 | PyInstaller, ASAR, JS 정적 분석 | 됨 | 엔진 불필요 |
 | 웹 페이지 관찰(Chrome CDP) | 됨 | Chrome을 디버깅 포트로 띄우면 된다 |
