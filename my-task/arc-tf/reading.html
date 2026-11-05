@@ -155,6 +155,34 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 </tbody>
 </table></div>
+<h2 id="readme--최종-산출물-docx-pptx">최종 산출물 (docx, pptx)</h2>
+<p>임원에게 내는 기획안의 최종본은 Word와 PowerPoint 파일이다. <code>.md</code>가 원본이고, 두 파일은 손으로 고치지 않고 다시 만든다. 필요 패키지: <code>python-docx</code>, <code>python-pptx</code>. 한글 폰트는 맑은 고딕.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>파일</th>
+<th>내용</th>
+<th>만드는 명령</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx">deliverables/arc-tf-proposal.docx</a></td>
+<td>기획안 본문(01) + 별첨 A 문제 정의(00)</td>
+<td><code>python my-task/arc-tf/deliverables/build_docx.py</code></td>
+</tr>
+<tr>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx">deliverables/arc-tf-proposal.pptx</a></td>
+<td>2026-12 임원 보고 deck 11장, 슬라이드마다 발표자 노트</td>
+<td><code>python my-task/arc-tf/deliverables/build_pptx.py</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>docx는 01·00 <code>.md</code>를 그대로 변환한다. <code>.md</code>를 고치면 명령만 다시 실행한다.</li>
+<li>pptx는 01·00의 <strong>요약</strong>이라 내용이 <code>build_pptx.py</code> 안에 있다. 01·00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.</li>
+<li>플랫폼 PRD(06)는 팀 작업 문서라 최종 산출물에 넣지 않는다.</li>
+</ul>
 <h2 id="readme--일정">일정</h2>
 <div class="tbl"><table>
 <thead>
@@ -510,19 +538,42 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tbody>
 </table></div>
 <h2 id="01-tf-proposal--4-어떻게-하는가--tf-구성">4. 어떻게 하는가 — TF 구성</h2>
-<pre><code>                  ┌──────────────────────────────┐
-                  │  TF 리드 (본인)               │
-                  │  + 공통 플랫폼 팀 (개발 2명)   │
-                  │  화면 인식·조작 엔진·안전 규칙  │
-                  │  승인 화면·VLM 연동·교육       │
-                  └──────────────┬───────────────┘
-        ┌──────────────┬─────────┴────┬──────────────┐
-  ┌─────┴─────┐  ┌─────┴─────┐  ┌─────┴─────┐  ┌─────┴─────┐
-  │ 1차 셀 A   │  │ 1차 셀 B   │  │ 1차 셀 C   │  │ 2차 셀들   │
-  │ CD-SEM    │  │ VeritySEM │  │ Thickness │  │ 나머지     │
-  │ 본인 담당  │  │ MI 엔지니어│  │ MI 엔지니어│  │ 학습·녹화  │
-  └───────────┘  └───────────┘  └───────────┘  └───────────┘
-</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>구성</th>
+<th>맡는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TF 리드 + 공통 플랫폼 팀</td>
+<td>리드(본인) 포함 개발 2명</td>
+<td>화면 인식·조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육</td>
+</tr>
+<tr>
+<td>1차 셀 A</td>
+<td>CD-SEM, 리드(본인) 담당</td>
+<td>장비별 레시피 절차, 성공 판정 기준, 현장 검증</td>
+</tr>
+<tr>
+<td>1차 셀 B</td>
+<td>VeritySEM, MI 엔지니어</td>
+<td>위와 같음</td>
+</tr>
+<tr>
+<td>1차 셀 C</td>
+<td>Thickness, MI 엔지니어</td>
+<td>위와 같음</td>
+</tr>
+<tr>
+<td>2차 셀</td>
+<td>나머지 MI 장비군</td>
+<td>1차 기간에는 학습과 작업 녹화·절차서 정리</td>
+</tr>
+</tbody>
+</table></div>
 <ul>
 <li><strong>공통 플랫폼</strong>은 모든 장비군이 같이 쓴다. 장비마다 엔진을 새로 만들지 않는다.</li>
 <li><strong>장비군별 셀</strong>은 MI 현업 엔지니어 1~2명으로 구성한다. 그 장비의 레시피 절차 정의, 성공 판정 기준, 현장 검증을 맡는다. CD-SEM 셀은 리드(본인)가 직접 맡는다.</li>

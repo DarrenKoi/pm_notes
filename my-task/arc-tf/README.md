@@ -30,6 +30,19 @@ last_updated: 2026-11-06
 | — | [결정 기록](./decision-log.md) | 리드 | 날짜별 결정과 이유 | 2026-10-29 |
 | — | [위험 목록](./risk-register.md) | 리드 | 위험, 대응, 담당 | 2026-10-29 |
 
+## 최종 산출물 (docx, pptx)
+
+임원에게 내는 기획안의 최종본은 Word와 PowerPoint 파일이다. `.md`가 원본이고, 두 파일은 손으로 고치지 않고 다시 만든다. 필요 패키지: `python-docx`, `python-pptx`. 한글 폰트는 맑은 고딕.
+
+| 파일 | 내용 | 만드는 명령 |
+|---|---|---|
+| [deliverables/arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx) | 기획안 본문(01) + 별첨 A 문제 정의(00) | `python my-task/arc-tf/deliverables/build_docx.py` |
+| [deliverables/arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx) | 2026-12 임원 보고 deck 11장, 슬라이드마다 발표자 노트 | `python my-task/arc-tf/deliverables/build_pptx.py` |
+
+- docx는 01·00 `.md`를 그대로 변환한다. `.md`를 고치면 명령만 다시 실행한다.
+- pptx는 01·00의 **요약**이라 내용이 `build_pptx.py` 안에 있다. 01·00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.
+- 플랫폼 PRD(06)는 팀 작업 문서라 최종 산출물에 넣지 않는다.
+
 ## 일정
 
 | 시기 | 단계 |
