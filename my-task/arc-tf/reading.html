@@ -62,13 +62,14 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <main id="top">
 <nav class="toc" aria-label="문서 목록"><h2>문서 · 읽는 순서</h2><ol>
 <li><a href="#readme"><span class="num">00</span>ARC TF — 레시피 자동 생성 태스크포스</a></li>
-<li><a href="#01-tf-proposal"><span class="num">01</span>ARC TF 구성 기획안</a></li>
-<li><a href="#02-roles-and-teams"><span class="num">02</span>참여 팀과 역할</a></li>
-<li><a href="#03-operating-rhythm"><span class="num">03</span>운영 방식</a></li>
-<li><a href="#04-onboarding"><span class="num">04</span>온보딩 학습 과정 (2027-01~02, 8주)</a></li>
-<li><a href="#05-poc-assets"><span class="num">05</span>PoC 자산과 남은 과제</a></li>
-<li><a href="#decision-log"><span class="num">06</span>결정 기록</a></li>
-<li><a href="#risk-register"><span class="num">07</span>위험 목록</a></li>
+<li><a href="#00-problem-statement"><span class="num">01</span>ARC TF 문제 정의 (Problem Statement)</a></li>
+<li><a href="#01-tf-proposal"><span class="num">02</span>ARC TF 구성 기획안</a></li>
+<li><a href="#02-roles-and-teams"><span class="num">03</span>참여 팀과 역할</a></li>
+<li><a href="#03-operating-rhythm"><span class="num">04</span>운영 방식</a></li>
+<li><a href="#04-onboarding"><span class="num">05</span>온보딩 학습 과정 (2027-01~02, 8주)</a></li>
+<li><a href="#05-poc-assets"><span class="num">06</span>PoC 자산과 남은 과제</a></li>
+<li><a href="#decision-log"><span class="num">07</span>결정 기록</a></li>
+<li><a href="#risk-register"><span class="num">08</span>위험 목록</a></li>
 </ol></nav>
 <section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>ARC TF — 레시피 자동 생성 태스크포스</h1>
 <blockquote>
@@ -88,6 +89,13 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>0</td>
+<td><a href="#00-problem-statement">문제 정의</a></td>
+<td>임원·TF 전원</td>
+<td>누가 무엇을 하려다 왜 막히는가, 한 문장 문제 정의와 판단 지표</td>
+<td>초안, 셀 엔지니어 확인 전</td>
+</tr>
 <tr>
 <td>1</td>
 <td><a href="#01-tf-proposal">TF 구성 기획안</a></td>
@@ -230,7 +238,105 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>사내 수치, 실명, 장비 상세는 <code>*_사내용.md</code>(git 제외)에만 둔다.</p>
 <h2 id="readme--휴대폰-태블릿에서-읽기">휴대폰, 태블릿에서 읽기</h2>
 <p><a href="https://claude.ai/artifact/PUq6fvLRzbF7sP6DciTovo">ARC TF 문서 모음 (claude.ai Artifact, 비공개)</a> — <code>reading.html</code>은 <code>python scripts/build_folder_html.py my-task/arc-tf</code>로 다시 만든다. 손으로 고치지 않는다.</p><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="01-tf-proposal"><p class="file"><span class="num">01</span>01-tf-proposal.md</p><h1>ARC TF 구성 기획안</h1>
+<section class="doc" id="00-problem-statement"><p class="file"><span class="num">01</span>00-problem-statement.md</p><h1>ARC TF 문제 정의 (Problem Statement)</h1>
+<blockquote>
+<p>MI 엔지니어는 레시피(Recipe) 셋업과 튜닝을 원격 화면에서 손으로 되풀이하느라, 더 많은 레시피를 다루고 문제를 빨리 찾고 실험할 시간을 잃고 있다.</p>
+</blockquote>
+<h2 id="00-problem-statement--왜-이-문서가-필요한가">왜 이 문서가 필요한가</h2>
+<p><a href="#01-tf-proposal">TF 구성 기획안</a>은 "TF를 만들자"는 해결책을 제안한다. 해결책을 말하기 전에 <strong>누가, 무엇을 하려다, 왜 막히는지</strong>를 한 장으로 맞춰 두려고 이 문서를 쓴다. 임원, 셀 엔지니어, 플랫폼 팀이 같은 문제를 보고 있어야 TF의 범위와 지표를 두고 다투지 않는다.</p>
+<p>이 문서에는 해결책을 넣지 않는다. 해결 방향은 맨 끝에 한 절로만 적고, 상세는 기획안으로 넘긴다.</p>
+<h2 id="00-problem-statement--문제-서술-problem-framing-narrative">문제 서술 (Problem Framing Narrative)</h2>
+<p><strong>나는:</strong> 계측(MI) 장비의 레시피를 셋업하고 튜닝하는 현업 엔지니어다.
+- CD-SEM, VeritySEM, Thickness 같은 장비를 원격 제어 화면(RCS, 웹 VDI → RCS/Radmin Viewer)으로 다룬다.
+- 신규 제품·공정이 들어오거나 측정이 흔들릴 때마다 레시피를 만들거나 다시 맞춘다. 레시피 한 건에 평균 30~60분이 든다 (현업 경험치, 셋업 전체 기준).
+- 어디를 측정 위치로, 어디를 Align Key로 잡아야 통하는지는 경험으로 안다. 그 경험은 문서가 아니라 내 머릿속에 있다.</p>
+<p><strong>하려는 것:</strong>
+- 레시피를 짧은 시간에 정확하게 만들고, 측정 문제가 생기면 원인을 빨리 찾아 고치고, 남는 시간에 더 많은 실험과 테스트를 하고 싶다.</p>
+<p><strong>그런데:</strong>
+- 측정 위치·Align 셋업 구간에서 "측정 → 실패 → 위치 재조정"을 되풀이한다. 시행착오가 가장 많은 구간이고, 그동안 화면 앞을 떠날 수 없다.
+- 레시피 한 건에 붙어 있는 동안 다른 레시피 요청은 쌓이고, 측정 문제의 원인 분석은 뒤로 밀린다.
+- 같은 레시피라도 누가 셋업하느냐에 따라 품질이 다르고, 담당자가 바뀌면 노하우가 함께 사라진다.
+- 반복 작업이 길어서 지친다. 새로운 조건을 시험해 볼 여력이 남지 않는다.</p>
+<p><strong>왜냐하면:</strong>
+- 레시피 셋업의 핵심 판단(이 위치가 좋은가, 이 측정이 성공인가)이 숙련자의 눈과 손에만 있다. 그 판단을 대신하거나 기록해 둘 수단이 없다.
+- 장비는 외부에서 조작할 API가 없다. 사람이 보는 원격 화면이 유일한 접점이라, 일반적인 스크립트 자동화가 통하지 않는다.
+- 장비별 절차를 아는 사람(현업 엔지니어)과 화면 자동화를 만들 수 있는 사람(개발)이 나뉘어 있다. 한쪽만으로는 자동화가 완성되지 않는다.</p>
+<p><strong>그래서 나는:</strong>
+- 중요한 일인데 대부분의 시간을 같은 클릭과 재조정에 쓰고 있어 답답하고 지친다.
+- 쌓여 가는 요청 앞에서 "실험은 나중에"를 반복하게 된다.
+- ⟨확인: VeritySEM·Thickness 셀 엔지니어도 같은 감정을 말하는지 — 온보딩 첫 주 인터뷰⟩</p>
+<p>위 감정은 CD-SEM을 직접 맡는 리드의 경험에서 나왔다. 다른 장비군 엔지니어의 말로 확인되기 전에는 공통 문제로 일반화하지 않는다.</p>
+<h2 id="00-problem-statement--맥락과-제약-context--constraints">맥락과 제약 (Context &amp; Constraints)</h2>
+<ul>
+<li><strong>조작 경로</strong>: 장비마다 다르다. CD-SEM은 엔지니어 PC → RCS로 바로 접속하고, VeritySEM·Thickness는 웹 VDI의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속한다. 모니터는 대부분 FHD다.</li>
+<li><strong>장비 PC 변경 불가</strong>: 장비 PC에는 아무것도 설치하지 않는다. 무엇을 하든 엔지니어 본인 PC에서 해야 한다.</li>
+<li><strong>사내 모델만 사용</strong>: 외부 LLM API는 막혀 있다. 화면 이해는 사내 VLM·OCR로 해야 한다.</li>
+<li><strong>생산 장비 안전</strong>: 잘못 저장된 레시피는 생산 측정에 바로 영향을 준다. 저장·적용과 위험 조작(측정 실행, 삭제, 모드 변경)은 엔지니어가 최종 승인해야 한다.</li>
+<li><strong>검증 시간</strong>: 실장비 검증은 장비 사용 인가를 받은 하루 1시간뿐이다.</li>
+<li><strong>현업 시간</strong>: 셀 엔지니어는 겸직이다. 주 5시간(근무일마다 1시간)을 넘겨 기대할 수 없다.</li>
+<li><strong>기밀</strong>: 장비 수치, 실명, 팀명은 사내용 문서에만 둔다.</li>
+</ul>
+<h2 id="00-problem-statement--최종-문제-정의-final-problem-statement">최종 문제 정의 (Final Problem Statement)</h2>
+<p><strong>MI 엔지니어는 신규·변경 레시피의 측정 위치·Align 셋업을 시행착오 없이 짧은 시간에 끝낼 방법이 필요하다. 지금은 API 없는 장비 화면에서 숙련자가 눈과 손으로 측정·실패·재조정을 되풀이하는 수밖에 없어서 레시피당 30~60분이 들고, 그만큼 다른 레시피와 문제 원인 분석, 실험이 밀린다.</strong></p>
+<p>해결했는지는 이것으로 판단한다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>확인할 것</th>
+<th>지표</th>
+<th>현재</th>
+<th>목표</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>셋업이 짧아졌나</td>
+<td>자동화 대상 구간(측정 위치·Align)의 건당 소요 시간</td>
+<td>셋업 전체 30~60분 (경험치). 구간 실측은 온보딩 8주차</td>
+<td>⟨확인⟩% 단축</td>
+</tr>
+<tr>
+<td>사람이 화면에서 풀려났나</td>
+<td>건당 예정에 없던 엔지니어 개입 횟수</td>
+<td>⟨확인⟩</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>더 많이 다루게 됐나</td>
+<td>엔지니어 1명이 월에 처리하는 레시피 건수</td>
+<td>⟨확인⟩</td>
+<td>⟨확인⟩</td>
+</tr>
+<tr>
+<td>노하우가 남았나</td>
+<td>절차서로 정리된 레시피 유형 수</td>
+<td>0</td>
+<td>장비군마다 1개 이상</td>
+</tr>
+</tbody>
+</table></div>
+<p>측정 규칙(구간의 시작과 끝, 개입 횟수를 세는 기준)은 <a href="#01-tf-proposal--효과">기획안의 측정 규칙</a>을 따른다.</p>
+<h2 id="00-problem-statement--검증-방법">검증 방법</h2>
+<ul>
+<li><strong>셀 엔지니어에게 읽어 주기</strong>: 온보딩 첫 주에 VeritySEM·Thickness 셀 엔지니어에게 "최종 문제 정의"를 읽어 주고, "맞다"는 반응이 나오는지 본다. 다르면 "그런데"와 "왜냐하면"을 고친다.</li>
+<li><strong>기준선 측정</strong>: 온보딩 8주차 실측 값으로 "30~60분"을 자동화 대상 구간 기준으로 바꾼다.</li>
+<li><strong>임원 보고 전 점검</strong>: 이 문서의 한 문장만 들어도 "그건 풀 가치가 있다"고 고개를 끄덕일 수 있는지 본다. 끄덕이지 않으면 ⟨확인: 장비군별 월 셋업 수요⟩를 먼저 채운다.</li>
+</ul>
+<h2 id="00-problem-statement--해결-방향-이-문서-범위-밖">해결 방향 (이 문서 범위 밖)</h2>
+<p>근본 원인의 세 번째 줄(절차를 아는 사람과 자동화를 만드는 사람이 나뉘어 있다)이 TF 구조의 이유다.</p>
+<ul>
+<li><strong>현업 엔지니어(셀)</strong>: 장비별 레시피 절차와 성공 판정 기준을 정의하고 현장에서 검증한다. 자동화의 "무엇을"을 맡는다.</li>
+<li><strong>리드와 공통 플랫폼 팀</strong>: 화면 인식·조작 엔진, 안전 규칙, 승인 화면을 만든다. 자동화가 가능하게 하는 "어떻게"를 맡는다.</li>
+</ul>
+<p>상세는 <a href="#01-tf-proposal">TF 구성 기획안</a>과 <a href="#02-roles-and-teams">참여 팀과 역할</a>에 있다.</p>
+<h2 id="00-problem-statement--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#readme">ARC TF 목차</a></li>
+<li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
+<li><a href="#02-roles-and-teams">참여 팀과 역할</a></li>
+<li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="01-tf-proposal"><p class="file"><span class="num">02</span>01-tf-proposal.md</p><h1>ARC TF 구성 기획안</h1>
 <blockquote>
 <p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶은 TF를 2027년 1월부터 운영하겠다는 제안.</p>
 </blockquote>
@@ -554,7 +660,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#04-onboarding">온보딩 학습 과정</a></li>
 <li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="02-roles-and-teams"><p class="file"><span class="num">02</span>02-roles-and-teams.md</p><h1>참여 팀과 역할</h1>
+<section class="doc" id="02-roles-and-teams"><p class="file"><span class="num">03</span>02-roles-and-teams.md</p><h1>참여 팀과 역할</h1>
 <blockquote>
 <p>누가 TF에 들어오고, 무엇을 책임지는가. 공통 플랫폼 팀과 장비군별 셀로 나눈다.</p>
 </blockquote>
@@ -855,7 +961,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
 <li><a href="#03-operating-rhythm">운영 방식</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="03-operating-rhythm"><p class="file"><span class="num">03</span>03-operating-rhythm.md</p><h1>운영 방식</h1>
+<section class="doc" id="03-operating-rhythm"><p class="file"><span class="num">04</span>03-operating-rhythm.md</p><h1>운영 방식</h1>
 <blockquote>
 <p>회의, 보고, 의사결정, 작업 관리, 안전 원칙. 여러 팀이 겸직으로 모이는 TF라서 정해진 리듬이 없으면 흩어진다.</p>
 </blockquote>
@@ -1052,7 +1158,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#decision-log">결정 기록</a></li>
 <li><a href="#risk-register">위험 목록</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="04-onboarding"><p class="file"><span class="num">04</span>04-onboarding.md</p><h1>온보딩 학습 과정 (2027-01~02, 8주)</h1>
+<section class="doc" id="04-onboarding"><p class="file"><span class="num">05</span>04-onboarding.md</p><h1>온보딩 학습 과정 (2027-01~02, 8주)</h1>
 <blockquote>
 <p>MI 현업 엔지니어가 AI Agent로 레시피를 자동화할 때 알아야 할 배경 지식을 쌓는 TF 전용 실무 과정.</p>
 </blockquote>
@@ -1189,7 +1295,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#02-roles-and-teams">참여 팀과 역할</a></li>
 <li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="05-poc-assets"><p class="file"><span class="num">05</span>05-poc-assets.md</p><h1>PoC 자산과 남은 과제</h1>
+<section class="doc" id="05-poc-assets"><p class="file"><span class="num">06</span>05-poc-assets.md</p><h1>PoC 자산과 남은 과제</h1>
 <blockquote>
 <p>1차 PoC(Align Fail 대응 자동화)에서 레시피 자동 생성으로 가져오는 것과, 아직 풀지 않은 것.</p>
 </blockquote>
@@ -1328,7 +1434,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
 <li><a href="#04-onboarding">온보딩 학습 과정</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="decision-log"><p class="file"><span class="num">06</span>decision-log.md</p><h1>결정 기록</h1>
+<section class="doc" id="decision-log"><p class="file"><span class="num">07</span>decision-log.md</p><h1>결정 기록</h1>
 <blockquote>
 <p>날짜별로 정한 것과 그 이유. 뒤집을 때도 새 줄로 남기고 이전 줄을 지우지 않는다.</p>
 </blockquote>
@@ -1476,7 +1582,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="risk-register"><p class="file"><span class="num">07</span>risk-register.md</p><h1>위험 목록</h1>
+<section class="doc" id="risk-register"><p class="file"><span class="num">08</span>risk-register.md</p><h1>위험 목록</h1>
 <blockquote>
 <p>TF 운영과 구현의 위험, 대응, 담당. 실무 회의에서 바뀐 것만 확인한다.</p>
 </blockquote>

@@ -5,7 +5,7 @@ category_middle: "ARC TF (Auto Recipe Creation)"
 category_minor: "전체 목차"
 note_kind: "목차"
 classified_on: "2026-10-29"
-last_updated: 2026-11-02
+last_updated: 2026-11-06
 ---
 
 # ARC TF — 레시피 자동 생성 태스크포스
@@ -20,6 +20,7 @@ last_updated: 2026-11-02
 
 | 순서 | 문서 | 독자 | 내용 | 상태 |
 |---|---|---|---|---|
+| 0 | [문제 정의](./00-problem-statement.md) | 임원·TF 전원 | 누가 무엇을 하려다 왜 막히는가, 한 문장 문제 정의와 판단 지표 | 초안, 셀 엔지니어 확인 전 |
 | 1 | [TF 구성 기획안](./01-tf-proposal.md) | 임원 | 왜 해야 하는가, PoC 성과, 범위, TF 구성, 타임라인, 요청 사항 | 초안, 2026-12 보고용 |
 | 2 | [참여 팀과 역할](./02-roles-and-teams.md) | TF 전원 | 플랫폼 팀·셀 구성, 셀 명단, 책임 분담표(RACI) | 초안 |
 | 3 | [운영 방식](./03-operating-rhythm.md) | TF 전원 | 회의, 월간 보고 형식, 의사결정, 작업 관리, 안전 원칙 | 초안 |
