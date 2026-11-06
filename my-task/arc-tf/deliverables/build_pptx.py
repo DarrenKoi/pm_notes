@@ -106,7 +106,7 @@ def slide(title, notes, dark=False):
 
 
 def footer(s, n):
-    text(s, M, H - Inches(0.45), Inches(6), Inches(0.3), "ARC TF 구성 기획안 · 초안", size=10, color=INK_SOFT)
+    text(s, M, H - Inches(0.45), Inches(6), Inches(0.3), "ARC TF 구성 기획안, 초안", size=10, color=INK_SOFT)
     text(s, W - M - Inches(1), H - Inches(0.45), Inches(1), Inches(0.3), str(n), size=10,
          color=INK_SOFT, align=PP_ALIGN.RIGHT)
 
@@ -119,7 +119,7 @@ s = slide(None, "ARC TF 구성 기획안을 보고드립니다. 결론부터 말
 text(s, M, Inches(2.2), Inches(10), Inches(1.2), "ARC TF 구성 기획안", size=48, bold=True, color=WHITE)
 text(s, M, Inches(3.35), Inches(10), Inches(0.6), "레시피(Recipe) 셋업 자동화 태스크포스", size=22, color=PALE)
 text(s, M, Inches(5.4), Inches(10), Inches(0.9),
-     ["보고 대상: AI TF 담당 임원, 기반기술센터장", "2026-12 · TF 리드"], size=15, color=PALE)
+     ["보고 대상: AI TF 담당 임원, 기반기술센터장", "2026-12, TF 리드"], size=15, color=PALE)
 
 # ---------- 2. 결론: 요청 ----------
 s = slide("2027년 1월부터 ARC TF 운영을 승인해 주십시오",
@@ -134,7 +134,7 @@ for i, (head, body) in enumerate([
     text(s, x + Inches(0.4), Inches(3.15), Inches(5.1), Inches(0.6), head, size=24, bold=True)
     text(s, x + Inches(0.4), Inches(3.85), Inches(5.1), Inches(1.2), body, size=16, color=INK_SOFT)
 text(s, M, Inches(5.65), W - 2 * M, Inches(0.8),
-     "목표 (2027): 상반기 CD-SEM·Thickness Align Fail 자동 대응 완성, 연말까지 1차 3개 장비군 셋업 절차·노하우를 지식 자산으로 축적",
+     "목표 (2027): 상반기 CD-SEM, Thickness Align Fail 자동 대응 완성, 연말까지 1차 3개 장비군 셋업 절차, 노하우를 지식 자산으로 축적",
      size=16, color=INK)
 footer(s, 2)
 
@@ -148,7 +148,7 @@ text(s, M + Inches(0.4), BODY_Y + Inches(2.1), Inches(3.6), Inches(1.2),
 text(s, M + Inches(0.4), BODY_Y + Inches(3.55), Inches(3.6), Inches(1.0),
      "자동화 대상 구간 실측은 2027-02 온보딩 8주차", size=13, color=PALE)
 rows = [
-    ("시행착오 반복", "측정 위치·Align을 잡을 때 측정 → 실패 → 재조정. 그동안 화면 앞을 떠날 수 없다"),
+    ("시행착오 반복", "측정 위치, Align을 잡을 때 측정 → 실패 → 재조정. 그동안 화면 앞을 떠날 수 없다"),
     ("노하우가 사람에게만", "판단 기준이 숙련자의 눈과 손에 있어, 사람마다 품질이 다르고 담당자가 바뀌면 사라진다"),
     ("장비가 늘면 사람도", "API가 없어 스크립트 자동화가 안 된다. 셋업 인력이 장비 수에 비례해 늘어야 한다"),
 ]
@@ -163,7 +163,7 @@ footer(s, 3)
 # ---------- 4. 효과 ----------
 s = slide("셋업 시간이 줄면 엔지니어 시간이 회사에 돌아옵니다",
           "효과는 이렇게 이어집니다. 건당 엔지니어 투입 시간이 줄면 그만큼 엔지니어 시간이 회수되고, 신규 제품 도입 때 셋업 대기가 줄고, 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않아도 됩니다. 현재 값은 대부분 아직 비어 있습니다. 측정하기 전에는 목표를 숫자로 약속하지 않고, 온보딩 기간에 기준선을 재서 다음 보고 때 채우겠습니다.")
-steps = ["건당 셋업 시간 감소", "엔지니어 시간 회수\n월 ⟨확인⟩시간", "신규 제품·공정 셋업 대기 단축", "장비가 늘어도 인력 비례 증가 없음"]
+steps = ["건당 셋업 시간 감소", "엔지니어 시간 회수\n월 ⟨확인⟩시간", "신규 제품, 공정 셋업 대기 단축", "장비가 늘어도 인력 비례 증가 없음"]
 sw = Inches(2.7)
 for i, t in enumerate(steps):
     x = M + i * (sw + Inches(0.47))
@@ -174,7 +174,7 @@ for i, t in enumerate(steps):
         a = s.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, x + sw + Inches(0.1), BODY_Y + Inches(0.6), Inches(0.27), Inches(0.3))
         a.fill.solid(); a.fill.fore_color.rgb = LINE; a.line.fill.background()
 metrics = [("측정 지표", "현재", "목표"),
-           ("측정 위치·Align 구간 건당 소요 시간", "셋업 전체 30~60분 (경험치)", "⟨확인⟩% 단축"),
+           ("측정 위치, Align 구간 건당 소요 시간", "셋업 전체 30~60분 (경험치)", "⟨확인⟩% 단축"),
            ("건당 예정에 없던 엔지니어 개입", "⟨확인⟩", "⟨확인⟩"),
            ("셋업 뒤 첫 측정 성공률", "⟨확인⟩", "현재 이상"),
            ("절차서로 정리된 레시피 유형", "0", "장비군마다 1개 이상")]
@@ -202,7 +202,7 @@ footer(s, 4)
 s = slide("0에서 시작하지 않습니다: Align Fail PoC로 기반을 확인했습니다",
           "1차 PoC로 Align Fail 무인 대응을 했습니다. 여기서 API 없는 장비 화면을 사내 VLM으로 읽고 조작할 수 있다는 것, 오프라인 평가에서 Align Key를 찾을 수 있다는 것을 확인했습니다. 남은 과제는 오른쪽 네 가지입니다. 앞의 세 가지는 플랫폼 팀이, 마지막 장비별 절차는 현업 엔지니어가 풀어야 합니다. 그래서 TF가 필요합니다.")
 cols = [("확인한 것", INK, WHITE, [
-            "사내 VLM·OCR로 API 없는 장비 화면을 보고 조작",
+            "사내 VLM, OCR로 API 없는 장비 화면을 보고 조작",
             "VLM은 \"어디를 볼지\", CV는 \"정확히 어디인지\" 역할 분리",
             "기준 이미지로 Align Key 탐색 (오프라인 평가)",
             "반자동 운영 원칙: 위치 재조정은 자동, 확정은 엔지니어"]),
@@ -210,7 +210,7 @@ cols = [("확인한 것", INK, WHITE, [
             "현장 신뢰성: 실알람 완주, 실장비 Align 검증 → 플랫폼",
             "실행 엔진 제품화 (현재 데모 단계) → 플랫폼",
             "신규 레시피의 위치 선정 (PoC는 기존 Key만) → 플랫폼 + 장비군 담당",
-            "장비군마다 다른 화면·절차 → 장비군 담당 (현업 지식 필요)"])]
+            "장비군마다 다른 화면, 절차 → 장비군 담당 (현업 지식 필요)"])]
 for i, (head, fill, fg, items) in enumerate(cols):
     x = M + i * Inches(6.2)
     box(s, x, BODY_Y, Inches(5.9), Inches(4.9), fill=fill)
@@ -223,7 +223,7 @@ footer(s, 5)
 # ---------- 6. 범위 ----------
 s = slide("1차는 시행착오가 가장 많은 한 구간만 맡깁니다",
           "레시피 셋업은 생성부터 저장까지 다섯 단계입니다. 1차에서는 가운데, 측정 위치와 Align 셋업 구간만 Agent가 맡습니다. 나머지는 지금처럼 엔지니어가 합니다. Agent는 엔지니어 본인 PC에서 돌고 장비 PC에는 아무것도 설치하지 않습니다. 측정 실행과 저장 같은 위험 조작은 반드시 엔지니어가 승인합니다.")
-flow = [("레시피 생성·\n기본 정보", False), ("측정 위치·\nAlign 셋업", True), ("파라미터\n설정", False), ("검증 측정\n판정", False), ("저장", False)]
+flow = [("레시피 생성,\n기본 정보", False), ("측정 위치,\nAlign 셋업", True), ("파라미터\n설정", False), ("검증 측정\n판정", False), ("저장", False)]
 fw = Inches(2.15)
 for i, (t, agent) in enumerate(flow):
     x = M + i * (fw + Inches(0.36))
@@ -232,7 +232,7 @@ for i, (t, agent) in enumerate(flow):
          color=WHITE if agent else INK, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, spacing=1.0)
     text(s, x, BODY_Y + Inches(2.05), fw, Inches(0.4), "Agent" if agent else "엔지니어", size=14,
          bold=agent, color=AMBER if agent else INK_SOFT, align=PP_ALIGN.CENTER)
-facts = [("반자동", "Agent가 조작하고, 측정 실행·저장 직전에는 엔지니어가 승인"),
+facts = [("반자동", "Agent가 조작하고, 측정 실행, 저장 직전에는 엔지니어가 승인"),
          ("엔지니어 PC에서 실행", "설치형 프로그램. 장비 PC에는 아무것도 설치하지 않는다"),
          ("범위 밖", "장비 유지보수, 하드웨어 제어. 전 과정 자동화는 2028년 이후")]
 for i, (h, b) in enumerate(facts):
@@ -250,9 +250,9 @@ box(s, tx, BODY_Y, top_w, Inches(1.45), fill=INK)
 text(s, tx + Inches(0.4), BODY_Y + Inches(0.2), top_w - Inches(0.8), Inches(0.5),
      "TF 리드 + 공통 플랫폼 팀 (개발 2명)", size=20, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 text(s, tx + Inches(0.4), BODY_Y + Inches(0.8), top_w - Inches(0.8), Inches(0.5),
-     "화면 인식·조작 엔진 · 안전 규칙 · 승인 화면 · VLM 연동 · 교육", size=15, color=PALE, align=PP_ALIGN.CENTER)
+     "화면 인식, 조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육", size=15, color=PALE, align=PP_ALIGN.CENTER)
 cells = [("CD-SEM 담당", "CD-SEM", "리드 직접 담당", True), ("VeritySEM 담당", "VeritySEM", "MI 엔지니어", True),
-         ("Thickness 담당", "Thickness", "MI 엔지니어", True), ("2차 장비군 담당", "나머지 장비군", "학습·작업 녹화", False)]
+         ("Thickness 담당", "Thickness", "MI 엔지니어", True), ("2차 장비군 담당", "나머지 장비군", "학습, 작업 녹화", False)]
 cw = Inches(2.8)
 gap = (W - 2 * M - 4 * cw) / 3
 for i, (a, b, c, first) in enumerate(cells):
@@ -271,9 +271,9 @@ footer(s, 7)
 # ---------- 8. 타임라인 ----------
 s = slide("상반기에 Align Fail을 완성하고, 연말까지 지식 자산을 쌓습니다",
           "2027년은 두 갈래로 갑니다. 상반기에는 Align Fail 자동 대응을 CD-SEM과 Thickness에서 빠른 첫 통과로 완성하고, 6월에 판정받겠습니다. 이것을 버리는 시제품이 아닌 플랫폼 부품으로 만들어, 필요했던 요소를 장기 계획에 반영합니다. 같은 기간에 엔지니어 작업을 녹화해 쌓고, 하반기에 절차와 노하우를 지식 자산으로 만들어 12월에 판정받겠습니다.")
-phases = [("2026-12", "승인", "TF 구성 승인, 보안 승인(관찰·입력), 입력 시험"),
-          ("2027-01~03", "온보딩·반자동", "8주 학습·녹화 시작, CD-SEM Align Fail 반자동"),
-          ("04~06", "Align Fail 완성", "CD-SEM·Thickness 무인 대응, 6월 판정, 요소 목록"),
+phases = [("2026-12", "승인", "TF 구성 승인, 보안 승인(관찰, 입력), 입력 시험"),
+          ("2027-01~03", "온보딩, 반자동", "8주 학습, 녹화 시작, CD-SEM Align Fail 반자동"),
+          ("04~06", "Align Fail 완성", "CD-SEM, Thickness 무인 대응, 6월 판정, 요소 목록"),
           ("07~09", "절차화", "녹화에서 절차 초안, 노하우 수집, 의뢰서 연동"),
           ("10~12", "지식 자산", "지식 자산 DB, 돌파구 추천, 12월 판정")]
 pw = Inches(2.25)
@@ -291,17 +291,17 @@ for i, (when, name, what) in enumerate(phases):
 box(s, M, Inches(5.2), W - 2 * M, Inches(1.25), fill=MIST)
 text(s, M + Inches(0.4), Inches(5.2), W - 2 * M - Inches(0.8), Inches(1.25),
      [[("단계 통과 결정  ", {"bold": True}),
-       ("리드가 통과 기준과 결과를 정리 → 담당 엔지니어 품질 확인 → 월간 임원 보고에서 승인. 미달이면 보완·축소·중단 중 하나를 정함", {})]],
+       ("리드가 통과 기준과 결과를 정리 → 담당 엔지니어 품질 확인 → 월간 임원 보고에서 승인. 미달이면 보완, 축소, 중단 중 하나를 정함", {})]],
      size=15, anchor=MSO_ANCHOR.MIDDLE)
 footer(s, 8)
 
 # ---------- 9. 안전과 위험 ----------
 s = slide("Agent는 생산 레시피를 혼자 확정하지 않습니다",
           "가장 걱정하실 부분은 Agent가 생산 레시피를 잘못 건드리는 것이라고 생각합니다. 측정 실행, 저장, 삭제 같은 위험 조작은 반드시 엔지니어가 승인하고, 엔지니어는 언제든 즉시 멈출 수 있습니다. 실장비 검증은 인가받은 비생산 시간, 하루 1시간에만 합니다. 운영상 가장 큰 위험은 겸직 시간 확보인데, 이번에 주 5시간을 명시해 승인받고 월간 보고에 실적을 보고하겠습니다.")
-risks = [("오조작", "위험 조작·저장 전 엔지니어 승인, 즉시 중단 수단, 작업 전 원본 레시피 백업"),
+risks = [("오조작", "위험 조작, 저장 전 엔지니어 승인, 즉시 중단 수단, 작업 전 원본 레시피 백업"),
          ("겸직 시간 부족", "주 5시간을 기획안에 명시, 월간 보고에 참여 시간 실적 보고"),
          ("현업의 AI 이해 부족", "2027-01~02 온보딩 8주, 실습 중심"),
-         ("장비군마다 다른 화면·절차", "공통 엔진과 장비별 절차를 분리, 1차는 3개 장비군으로 제한")]
+         ("장비군마다 다른 화면, 절차", "공통 엔진과 장비별 절차를 분리, 1차는 3개 장비군으로 제한")]
 for i, (h, b) in enumerate(risks):
     col, row = i % 2, i // 2
     x = M + col * Inches(6.2)
@@ -311,7 +311,7 @@ for i, (h, b) in enumerate(risks):
     text(s, x + Inches(0.4), y + Inches(0.8), Inches(5.1), Inches(0.9), b, size=15, color=INK_SOFT)
 text(s, M, Inches(5.75), W - 2 * M, Inches(0.6),
      [[("가드레일  ", {"bold": True, "color": AMBER}),
-       ("오조작으로 잘못 저장된 레시피 0건 · 승인 없는 위험 조작 0건 · 생산 측정 영향 0건", {})]], size=16)
+       ("오조작으로 잘못 저장된 레시피 0건, 승인 없는 위험 조작 0건, 생산 측정 영향 0건", {})]], size=16)
 footer(s, 9)
 
 # ---------- 10. 요청 사항 ----------
@@ -323,7 +323,7 @@ asks = [("시점", "요청"),
         ("2026-12", "공통 플랫폼 팀 개발 인력 배정 (본인 포함 2명, 교육 포함)"),
         ("2026-12", "보안 승인 두 건: 관찰(설치형 프로그램, 화면 녹화)과 입력(Align Fail 한정)"),
         ("2027-01 전", "사내 추론 인프라 사용 보장, 추가 비용 승인 주체 지정"),
-        ("2027-01 전", "사내 서버 자원 할당 (저장소·검색·DB·캐시, 새 서버 없음)"),
+        ("2027-01 전", "사내 서버 자원 할당 (저장소, 검색, DB, 캐시, 새 서버 없음)"),
         ("2027-01 전", "비생산 검증용 장비 사용 인가 (1차 장비군마다 하루 1시간)")]
 tbl = s.shapes.add_table(len(asks), 2, M, BODY_Y, W - 2 * M, Inches(4.6)).table
 tbl.columns[0].width, tbl.columns[1].width = Inches(2.3), W - 2 * M - Inches(2.3)

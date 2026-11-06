@@ -8,7 +8,7 @@ classified_on: "2026-10-29"
 last_updated: 2026-11-06
 ---
 
-# ARC TF — 레시피 자동 생성 태스크포스
+# ARC TF: 레시피 자동 생성 태스크포스
 
 > 장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.
 
@@ -20,15 +20,15 @@ last_updated: 2026-11-06
 
 | 순서 | 문서 | 독자 | 내용 | 상태 |
 |---|---|---|---|---|
-| 0 | [문제 정의](./00-problem-statement.md) | 임원·TF 전원 | 누가 무엇을 하려다 왜 막히는가, 한 문장 문제 정의와 판단 지표 | 초안, 담당 엔지니어 확인 전 |
+| 0 | [문제 정의](./00-problem-statement.md) | 임원, TF 전원 | 누가 무엇을 하려다 왜 막히는가, 한 문장 문제 정의와 판단 지표 | 초안, 담당 엔지니어 확인 전 |
 | 1 | [TF 구성 기획안](./01-tf-proposal.md) | 임원 | 왜 해야 하는가, PoC 성과, 범위, TF 구성, 타임라인, 요청 사항 | 초안, 2026-12 보고용 |
-| 2 | [참여 팀과 역할](./02-roles-and-teams.md) | TF 전원 | 플랫폼 팀·장비군 담당 구성, 장비군 담당 명단, 책임 분담표(RACI) | 초안 |
+| 2 | [참여 팀과 역할](./02-roles-and-teams.md) | TF 전원 | 플랫폼 팀, 장비군 담당 구성, 장비군 담당 명단, 책임 분담표(RACI) | 초안 |
 | 3 | [운영 방식](./03-operating-rhythm.md) | TF 전원 | 회의, 월간 보고 형식, 의사결정, 작업 관리, 안전 원칙 | 초안 |
 | 4 | [온보딩 학습 과정](./04-onboarding.md) | 담당 엔지니어 | 2027-01~02 8주 과정, 수료 기준 | 초안 |
-| 5 | [PoC 자산과 남은 과제](./05-poc-assets.md) | 플랫폼 팀·임원 | Align Fail PoC에서 가져오는 것, 새로 풀어야 하는 것 | 초안 |
-| 6 | [플랫폼 1차 PRD](./06-platform-prd.md) | 플랫폼 팀·담당 엔지니어 | 무엇을 만드나: 사용자 스토리와 수용 기준, 성공·가드레일 지표, 범위 밖, 열린 질문 | 초안, 검토 전 |
-| — | [결정 기록](./decision-log.md) | 리드 | 날짜별 결정과 이유 | 2026-10-29 |
-| — | [위험 목록](./risk-register.md) | 리드 | 위험, 대응, 담당 | 2026-10-29 |
+| 5 | [PoC 자산과 남은 과제](./05-poc-assets.md) | 플랫폼 팀, 임원 | Align Fail PoC에서 가져오는 것, 새로 풀어야 하는 것 | 초안 |
+| 6 | [플랫폼 1차 PRD](./06-platform-prd.md) | 플랫폼 팀, 담당 엔지니어 | 무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문 | 초안, 검토 전 |
+| - | [결정 기록](./decision-log.md) | 리드 | 날짜별 결정과 이유 | 2026-10-29 |
+| - | [위험 목록](./risk-register.md) | 리드 | 위험, 대응, 담당 | 2026-10-29 |
 
 ## 최종 산출물 (docx, pptx)
 
@@ -39,8 +39,8 @@ last_updated: 2026-11-06
 | [deliverables/arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx) | 기획안 본문(01) + 별첨 A 문제 정의(00) | `python my-task/arc-tf/deliverables/build_docx.py` |
 | [deliverables/arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx) | 2026-12 임원 보고 deck 11장, 슬라이드마다 발표자 노트 | `python my-task/arc-tf/deliverables/build_pptx.py` |
 
-- docx는 01·00 `.md`를 그대로 변환한다. `.md`를 고치면 명령만 다시 실행한다.
-- pptx는 01·00의 **요약**이라 내용이 `build_pptx.py` 안에 있다. 01·00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.
+- docx는 01, 00 `.md`를 그대로 변환한다. `.md`를 고치면 명령만 다시 실행한다.
+- pptx는 01, 00의 **요약**이라 내용이 `build_pptx.py` 안에 있다. 01, 00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.
 - 플랫폼 PRD(06)는 팀 작업 문서라 최종 산출물에 넣지 않는다.
 
 ## 일정
@@ -66,15 +66,15 @@ last_updated: 2026-11-06
 | 보고 대상 임원 | AI TF 담당 임원(1차 승인) → 기반기술센터장(2차 최종 승인) |
 | 비생산 검증 | 장비 사용 인가를 받아 하루 1시간 실장비 테스트 |
 | 화면 조작 보안 | 설치형 프로그램을 배포해 엔지니어 본인 PC에서 실행. 장비 PC에는 설치하지 않는다 |
-| 접속 경로 | CD-SEM은 로컬 RCS, VeritySEM·Thickness는 웹 VDI → RCS/Radmin Viewer. 화면 캡처는 두 경로 모두 됨, 모니터는 대부분 FHD |
+| 접속 경로 | CD-SEM은 로컬 RCS, VeritySEM, Thickness는 웹 VDI → RCS/Radmin Viewer. 화면 캡처는 두 경로 모두 됨, 모니터는 대부분 FHD |
 | 현재 셋업 시간 | 레시피당 평균 30~60분 (현업 경험치, 셋업 전체 기준) |
 
 ### 아직 남은 것
 
-- ⟨확인: VeritySEM·Thickness 담당 참여 엔지니어⟩
-- ⟨확인: 설치형 프로그램 배포·녹화 보안 승인 절차⟩
-- ⟨확인: 장비군별 자동화 대상 구간 실측 — 온보딩 8주차⟩
-- ⟨확인: 입력 주입 테스트 — 본인 PC, 로컬 RCS·VDI 경로 각각, 저장 없음⟩
+- ⟨확인: VeritySEM, Thickness 담당 참여 엔지니어⟩
+- ⟨확인: 설치형 프로그램 배포, 녹화 보안 승인 절차⟩
+- ⟨확인: 장비군별 자동화 대상 구간 실측, 온보딩 8주차⟩
+- ⟨확인: 입력 주입 테스트, 본인 PC, 로컬 RCS, VDI 경로 각각, 저장 없음⟩
 - ⟨확인: VDI 워터마크 여부⟩
 - ⟨확인: 작업 관리 도구⟩
 
@@ -82,4 +82,4 @@ last_updated: 2026-11-06
 
 ## 휴대폰, 태블릿에서 읽기
 
-[ARC TF 문서 모음 (claude.ai Artifact, 비공개)](https://claude.ai/artifact/PUq6fvLRzbF7sP6DciTovo) — `reading.html`은 `python scripts/build_folder_html.py my-task/arc-tf`로 다시 만든다. 손으로 고치지 않는다.
+[ARC TF 문서 모음 (claude.ai Artifact, 비공개)](https://claude.ai/artifact/PUq6fvLRzbF7sP6DciTovo), `reading.html`은 `python scripts/build_folder_html.py my-task/arc-tf`로 다시 만든다. 손으로 고치지 않는다.

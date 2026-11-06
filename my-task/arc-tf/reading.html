@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>ARC TF — 레시피 자동 생성 태스크포스</title>
+<title>ARC TF: 레시피 자동 생성 태스크포스</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
@@ -58,21 +58,21 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 @media (max-width: 480px) { body { font-size: 15.5px; } h1 { font-size: 1.4rem; } th, td { padding: 8px 10px; } }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
-<header class="bar"><div class="bar-inner"><strong>ARC TF — 레시피 자동 생성 태스크포스</strong><a href="#top">목차</a></div></header>
+<header class="bar"><div class="bar-inner"><strong>ARC TF: 레시피 자동 생성 태스크포스</strong><a href="#top">목차</a></div></header>
 <main id="top">
 <nav class="toc" aria-label="문서 목록"><h2>문서 · 읽는 순서</h2><ol>
-<li><a href="#readme"><span class="num">00</span>ARC TF — 레시피 자동 생성 태스크포스</a></li>
+<li><a href="#readme"><span class="num">00</span>ARC TF: 레시피 자동 생성 태스크포스</a></li>
 <li><a href="#00-problem-statement"><span class="num">01</span>ARC TF 문제 정의 (Problem Statement)</a></li>
 <li><a href="#01-tf-proposal"><span class="num">02</span>ARC TF 구성 기획안</a></li>
 <li><a href="#02-roles-and-teams"><span class="num">03</span>참여 팀과 역할</a></li>
 <li><a href="#03-operating-rhythm"><span class="num">04</span>운영 방식</a></li>
 <li><a href="#04-onboarding"><span class="num">05</span>온보딩 학습 과정 (2027-01~02, 8주)</a></li>
 <li><a href="#05-poc-assets"><span class="num">06</span>PoC 자산과 남은 과제</a></li>
-<li><a href="#06-platform-prd"><span class="num">07</span>ARC 플랫폼 1차 PRD — 측정 위치·Align 셋업 반자동화</a></li>
+<li><a href="#06-platform-prd"><span class="num">07</span>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</a></li>
 <li><a href="#decision-log"><span class="num">08</span>결정 기록</a></li>
 <li><a href="#risk-register"><span class="num">09</span>위험 목록</a></li>
 </ol></nav>
-<section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>ARC TF — 레시피 자동 생성 태스크포스</h1>
+<section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>ARC TF: 레시피 자동 생성 태스크포스</h1>
 <blockquote>
 <p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.</p>
 </blockquote>
@@ -93,7 +93,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>0</td>
 <td><a href="#00-problem-statement">문제 정의</a></td>
-<td>임원·TF 전원</td>
+<td>임원, TF 전원</td>
 <td>누가 무엇을 하려다 왜 막히는가, 한 문장 문제 정의와 판단 지표</td>
 <td>초안, 담당 엔지니어 확인 전</td>
 </tr>
@@ -108,7 +108,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>2</td>
 <td><a href="#02-roles-and-teams">참여 팀과 역할</a></td>
 <td>TF 전원</td>
-<td>플랫폼 팀·장비군 담당 구성, 장비군 담당 명단, 책임 분담표(RACI)</td>
+<td>플랫폼 팀, 장비군 담당 구성, 장비군 담당 명단, 책임 분담표(RACI)</td>
 <td>초안</td>
 </tr>
 <tr>
@@ -128,26 +128,26 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>5</td>
 <td><a href="#05-poc-assets">PoC 자산과 남은 과제</a></td>
-<td>플랫폼 팀·임원</td>
+<td>플랫폼 팀, 임원</td>
 <td>Align Fail PoC에서 가져오는 것, 새로 풀어야 하는 것</td>
 <td>초안</td>
 </tr>
 <tr>
 <td>6</td>
 <td><a href="#06-platform-prd">플랫폼 1차 PRD</a></td>
-<td>플랫폼 팀·담당 엔지니어</td>
-<td>무엇을 만드나: 사용자 스토리와 수용 기준, 성공·가드레일 지표, 범위 밖, 열린 질문</td>
+<td>플랫폼 팀, 담당 엔지니어</td>
+<td>무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문</td>
 <td>초안, 검토 전</td>
 </tr>
 <tr>
-<td>—</td>
+<td>-</td>
 <td><a href="#decision-log">결정 기록</a></td>
 <td>리드</td>
 <td>날짜별 결정과 이유</td>
 <td>2026-10-29</td>
 </tr>
 <tr>
-<td>—</td>
+<td>-</td>
 <td><a href="#risk-register">위험 목록</a></td>
 <td>리드</td>
 <td>위험, 대응, 담당</td>
@@ -179,8 +179,8 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tbody>
 </table></div>
 <ul>
-<li>docx는 01·00 <code>.md</code>를 그대로 변환한다. <code>.md</code>를 고치면 명령만 다시 실행한다.</li>
-<li>pptx는 01·00의 <strong>요약</strong>이라 내용이 <code>build_pptx.py</code> 안에 있다. 01·00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.</li>
+<li>docx는 01, 00 <code>.md</code>를 그대로 변환한다. <code>.md</code>를 고치면 명령만 다시 실행한다.</li>
+<li>pptx는 01, 00의 <strong>요약</strong>이라 내용이 <code>build_pptx.py</code> 안에 있다. 01, 00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.</li>
 <li>플랫폼 PRD(06)는 팀 작업 문서라 최종 산출물에 넣지 않는다.</li>
 </ul>
 <h2 id="readme--일정">일정</h2>
@@ -254,7 +254,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>접속 경로</td>
-<td>CD-SEM은 로컬 RCS, VeritySEM·Thickness는 웹 VDI → RCS/Radmin Viewer. 화면 캡처는 두 경로 모두 됨, 모니터는 대부분 FHD</td>
+<td>CD-SEM은 로컬 RCS, VeritySEM, Thickness는 웹 VDI → RCS/Radmin Viewer. 화면 캡처는 두 경로 모두 됨, 모니터는 대부분 FHD</td>
 </tr>
 <tr>
 <td>현재 셋업 시간</td>
@@ -264,16 +264,16 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </table></div>
 <h3 id="readme--아직-남은-것">아직 남은 것</h3>
 <ul>
-<li>⟨확인: VeritySEM·Thickness 담당 참여 엔지니어⟩</li>
-<li>⟨확인: 설치형 프로그램 배포·녹화 보안 승인 절차⟩</li>
-<li>⟨확인: 장비군별 자동화 대상 구간 실측 — 온보딩 8주차⟩</li>
-<li>⟨확인: 입력 주입 테스트 — 본인 PC, 로컬 RCS·VDI 경로 각각, 저장 없음⟩</li>
+<li>⟨확인: VeritySEM, Thickness 담당 참여 엔지니어⟩</li>
+<li>⟨확인: 설치형 프로그램 배포, 녹화 보안 승인 절차⟩</li>
+<li>⟨확인: 장비군별 자동화 대상 구간 실측, 온보딩 8주차⟩</li>
+<li>⟨확인: 입력 주입 테스트, 본인 PC, 로컬 RCS, VDI 경로 각각, 저장 없음⟩</li>
 <li>⟨확인: VDI 워터마크 여부⟩</li>
 <li>⟨확인: 작업 관리 도구⟩</li>
 </ul>
 <p>사내 수치, 실명, 장비 상세는 <code>*_사내용.md</code>(git 제외)에만 둔다.</p>
 <h2 id="readme--휴대폰-태블릿에서-읽기">휴대폰, 태블릿에서 읽기</h2>
-<p><a href="https://claude.ai/artifact/PUq6fvLRzbF7sP6DciTovo">ARC TF 문서 모음 (claude.ai Artifact, 비공개)</a> — <code>reading.html</code>은 <code>python scripts/build_folder_html.py my-task/arc-tf</code>로 다시 만든다. 손으로 고치지 않는다.</p><p class="back"><a href="#top">목차로</a></p></section>
+<p><a href="https://claude.ai/artifact/PUq6fvLRzbF7sP6DciTovo">ARC TF 문서 모음 (claude.ai Artifact, 비공개)</a>, <code>reading.html</code>은 <code>python scripts/build_folder_html.py my-task/arc-tf</code>로 다시 만든다. 손으로 고치지 않는다.</p><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="00-problem-statement"><p class="file"><span class="num">01</span>00-problem-statement.md</p><h1>ARC TF 문제 정의 (Problem Statement)</h1>
 <blockquote>
 <p>MI 엔지니어는 레시피(Recipe) 셋업과 튜닝을 원격 화면에서 손으로 되풀이하느라, 더 많은 레시피를 다루고 문제를 빨리 찾고 실험할 시간을 잃고 있다.</p>
@@ -284,12 +284,12 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <h2 id="00-problem-statement--문제-서술-problem-framing-narrative">문제 서술 (Problem Framing Narrative)</h2>
 <p><strong>나는:</strong> 계측(MI) 장비의 레시피를 셋업하고 튜닝하는 현업 엔지니어다.
 - CD-SEM, VeritySEM, Thickness 같은 장비를 원격 제어 화면(RCS, 웹 VDI → RCS/Radmin Viewer)으로 다룬다.
-- 신규 제품·공정이 들어오거나 측정이 흔들릴 때마다 레시피를 만들거나 다시 맞춘다. 레시피 한 건에 평균 30~60분이 든다 (현업 경험치, 셋업 전체 기준).
+- 신규 제품, 공정이 들어오거나 측정이 흔들릴 때마다 레시피를 만들거나 다시 맞춘다. 레시피 한 건에 평균 30~60분이 든다 (현업 경험치, 셋업 전체 기준).
 - 어디를 측정 위치로, 어디를 Align Key로 잡아야 통하는지는 경험으로 안다. 그 경험은 문서가 아니라 내 머릿속에 있다.</p>
 <p><strong>하려는 것:</strong>
 - 레시피를 짧은 시간에 정확하게 만들고, 측정 문제가 생기면 원인을 빨리 찾아 고치고, 남는 시간에 더 많은 실험과 테스트를 하고 싶다.</p>
 <p><strong>그런데:</strong>
-- 측정 위치·Align 셋업 구간에서 "측정 → 실패 → 위치 재조정"을 되풀이한다. 시행착오가 가장 많은 구간이고, 그동안 화면 앞을 떠날 수 없다.
+- 측정 위치, Align 셋업 구간에서 "측정 → 실패 → 위치 재조정"을 되풀이한다. 시행착오가 가장 많은 구간이고, 그동안 화면 앞을 떠날 수 없다.
 - 레시피 한 건에 붙어 있는 동안 다른 레시피 요청은 쌓이고, 측정 문제의 원인 분석은 뒤로 밀린다.
 - 같은 레시피라도 누가 셋업하느냐에 따라 품질이 다르고, 담당자가 바뀌면 노하우가 함께 사라진다.
 - 반복 작업이 길어서 지친다. 새로운 조건을 시험해 볼 여력이 남지 않는다.</p>
@@ -300,20 +300,20 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p><strong>그래서 나는:</strong>
 - 중요한 일인데 대부분의 시간을 같은 클릭과 재조정에 쓰고 있어 답답하고 지친다.
 - 쌓여 가는 요청 앞에서 "실험은 나중에"를 반복하게 된다.
-- ⟨확인: VeritySEM·Thickness 담당 엔지니어도 같은 감정을 말하는지 — 온보딩 첫 주 인터뷰⟩</p>
+- ⟨확인: VeritySEM, Thickness 담당 엔지니어도 같은 감정을 말하는지, 온보딩 첫 주 인터뷰⟩</p>
 <p>위 감정은 CD-SEM을 직접 맡는 리드의 경험에서 나왔다. 다른 장비군 엔지니어의 말로 확인되기 전에는 공통 문제로 일반화하지 않는다.</p>
 <h2 id="00-problem-statement--맥락과-제약-context--constraints">맥락과 제약 (Context &amp; Constraints)</h2>
 <ul>
-<li><strong>조작 경로</strong>: 장비마다 다르다. CD-SEM은 엔지니어 PC → RCS로 바로 접속하고, VeritySEM·Thickness는 웹 VDI의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속한다. 모니터는 대부분 FHD다.</li>
+<li><strong>조작 경로</strong>: 장비마다 다르다. CD-SEM은 엔지니어 PC → RCS로 바로 접속하고, VeritySEM, Thickness는 웹 VDI의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속한다. 모니터는 대부분 FHD다.</li>
 <li><strong>장비 PC 변경 불가</strong>: 장비 PC에는 아무것도 설치하지 않는다. 무엇을 하든 엔지니어 본인 PC에서 해야 한다.</li>
-<li><strong>사내 모델만 사용</strong>: 외부 LLM API는 막혀 있다. 화면 이해는 사내 VLM·OCR로 해야 한다.</li>
-<li><strong>생산 장비 안전</strong>: 잘못 저장된 레시피는 생산 측정에 바로 영향을 준다. 저장·적용과 위험 조작(측정 실행, 삭제, 모드 변경)은 엔지니어가 최종 승인해야 한다.</li>
+<li><strong>사내 모델만 사용</strong>: 외부 LLM API는 막혀 있다. 화면 이해는 사내 VLM, OCR로 해야 한다.</li>
+<li><strong>생산 장비 안전</strong>: 잘못 저장된 레시피는 생산 측정에 바로 영향을 준다. 저장, 적용과 위험 조작(측정 실행, 삭제, 모드 변경)은 엔지니어가 최종 승인해야 한다.</li>
 <li><strong>검증 시간</strong>: 실장비 검증은 장비 사용 인가를 받은 하루 1시간뿐이다.</li>
 <li><strong>현업 시간</strong>: 담당 엔지니어는 겸직이다. 주 5시간(근무일마다 1시간)을 넘겨 기대할 수 없다.</li>
 <li><strong>기밀</strong>: 장비 수치, 실명, 팀명은 사내용 문서에만 둔다.</li>
 </ul>
 <h2 id="00-problem-statement--최종-문제-정의-final-problem-statement">최종 문제 정의 (Final Problem Statement)</h2>
-<p><strong>MI 엔지니어는 신규·변경 레시피의 측정 위치·Align 셋업을 시행착오 없이 짧은 시간에 끝낼 방법이 필요하다. 지금은 API 없는 장비 화면에서 숙련자가 눈과 손으로 측정·실패·재조정을 되풀이하는 수밖에 없어서 레시피당 30~60분이 들고, 그만큼 다른 레시피와 문제 원인 분석, 실험이 밀린다.</strong></p>
+<p><strong>MI 엔지니어는 신규, 변경 레시피의 측정 위치, Align 셋업을 시행착오 없이 짧은 시간에 끝낼 방법이 필요하다. 지금은 API 없는 장비 화면에서 숙련자가 눈과 손으로 측정, 실패, 재조정을 되풀이하는 수밖에 없어서 레시피당 30~60분이 들고, 그만큼 다른 레시피와 문제 원인 분석, 실험이 밀린다.</strong></p>
 <p>해결했는지는 이것으로 판단한다.</p>
 <div class="tbl"><table>
 <thead>
@@ -327,7 +327,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tbody>
 <tr>
 <td>셋업이 짧아졌나</td>
-<td>자동화 대상 구간(측정 위치·Align)의 건당 소요 시간</td>
+<td>자동화 대상 구간(측정 위치, Align)의 건당 소요 시간</td>
 <td>셋업 전체 30~60분 (경험치). 구간 실측은 온보딩 8주차</td>
 <td>⟨확인⟩% 단축</td>
 </tr>
@@ -354,7 +354,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>측정 규칙(구간의 시작과 끝, 개입 횟수를 세는 기준)은 <a href="#01-tf-proposal--효과">기획안의 측정 규칙</a>을 따른다.</p>
 <h2 id="00-problem-statement--검증-방법">검증 방법</h2>
 <ul>
-<li><strong>담당 엔지니어에게 읽어 주기</strong>: 온보딩 첫 주에 VeritySEM·Thickness 담당 엔지니어에게 "최종 문제 정의"를 읽어 주고, "맞다"는 반응이 나오는지 본다. 다르면 "그런데"와 "왜냐하면"을 고친다.</li>
+<li><strong>담당 엔지니어에게 읽어 주기</strong>: 온보딩 첫 주에 VeritySEM, Thickness 담당 엔지니어에게 "최종 문제 정의"를 읽어 주고, "맞다"는 반응이 나오는지 본다. 다르면 "그런데"와 "왜냐하면"을 고친다.</li>
 <li><strong>기준선 측정</strong>: 온보딩 8주차 실측 값으로 "30~60분"을 자동화 대상 구간 기준으로 바꾼다.</li>
 <li><strong>임원 보고 전 점검</strong>: 이 문서의 한 문장만 들어도 "그건 풀 가치가 있다"고 고개를 끄덕일 수 있는지 본다. 끄덕이지 않으면 ⟨확인: 장비군별 월 셋업 수요⟩를 먼저 채운다.</li>
 </ul>
@@ -362,7 +362,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>근본 원인의 세 번째 줄(절차를 아는 사람과 자동화를 만드는 사람이 나뉘어 있다)이 TF 구조의 이유다.</p>
 <ul>
 <li><strong>현업 엔지니어(장비군 담당)</strong>: 장비별 레시피 절차와 성공 판정 기준을 정의하고 현장에서 검증한다. 자동화의 "무엇을"을 맡는다.</li>
-<li><strong>리드와 공통 플랫폼 팀</strong>: 화면 인식·조작 엔진, 안전 규칙, 승인 화면을 만든다. 자동화가 가능하게 하는 "어떻게"를 맡는다.</li>
+<li><strong>리드와 공통 플랫폼 팀</strong>: 화면 인식, 조작 엔진, 안전 규칙, 승인 화면을 만든다. 자동화가 가능하게 하는 "어떻게"를 맡는다.</li>
 </ul>
 <p>상세는 <a href="#01-tf-proposal">TF 구성 기획안</a>과 <a href="#02-roles-and-teams">참여 팀과 역할</a>에 있다.</p>
 <h2 id="00-problem-statement--관련-문서">관련 문서</h2>
@@ -382,7 +382,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <ul>
 <li>ARC TF 구성 승인: 공통 플랫폼 팀(개발 2명)과 장비군 담당으로 2027-01부터 운영</li>
 <li>1차 장비군(CD-SEM, VeritySEM, Thickness) MI 엔지니어 겸직 지정: 장비군마다 1~2명, 주 5시간</li>
-<li>보안 승인 두 건: 관찰(장비 화면 캡처·녹화)과 입력(Align Fail 위치 재조정·해당 지점 재측정 재시도로 한정)</li>
+<li>보안 승인 두 건: 관찰(장비 화면 캡처, 녹화)과 입력(Align Fail 위치 재조정, 해당 지점 재측정 재시도로 한정)</li>
 </ul>
 <p><strong>2027년 약속</strong></p>
 <div class="tbl"><table>
@@ -396,12 +396,12 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tbody>
 <tr>
 <td>2027 상반기</td>
-<td>CD-SEM·Thickness의 <strong>Align Fail 자동 대응 완성</strong> (실알람 무인 대응)</td>
+<td>CD-SEM, Thickness의 <strong>Align Fail 자동 대응 완성</strong> (실알람 무인 대응)</td>
 <td>2027-06</td>
 </tr>
 <tr>
 <td>2027 연말</td>
-<td>1차 3개 장비군의 셋업 절차·노하우를 <strong>지식 자산</strong>으로 축적, 막힌 지점에서 바로 찾아 씀</td>
+<td>1차 3개 장비군의 셋업 절차, 노하우를 <strong>지식 자산</strong>으로 축적, 막힌 지점에서 바로 찾아 씀</td>
 <td>2027-12</td>
 </tr>
 </tbody>
@@ -420,7 +420,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </ul>
 <h3 id="01-tf-proposal--안-하면-생기는-일">안 하면 생기는 일</h3>
 <ul>
-<li>⟨확인: 신규 제품·공정 도입 때 레시피 셋업 대기로 늦어지는 기간⟩</li>
+<li>⟨확인: 신규 제품, 공정 도입 때 레시피 셋업 대기로 늦어지는 기간⟩</li>
 <li>⟨확인: 장비군별 레시피 셋업에 쓰는 엔지니어 시간 (월 기준)⟩</li>
 <li>⟨확인: Align Fail 알람으로 멈추는 장비 시간 (월 기준)⟩</li>
 <li>장비군마다 따로 자동화를 시도하면 화면 인식, 조작, 안전 장치를 매번 새로 만들게 됨</li>
@@ -440,13 +440,13 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>Align Fail 자동 대응</td>
 <td>2027 상반기</td>
-<td>CD-SEM·Thickness 실알람 무인 대응</td>
+<td>CD-SEM, Thickness 실알람 무인 대응</td>
 <td>장비 가동 시간 회수</td>
 </tr>
 <tr>
-<td>관찰·지식화</td>
+<td>관찰과 지식화</td>
 <td>2027</td>
-<td>엔지니어 작업 녹화에서 절차·노하우를 뽑아 지식 자산으로 축적, 막힌 지점에서 돌파구 추천</td>
+<td>엔지니어 작업 녹화에서 절차, 노하우를 뽑아 지식 자산으로 축적, 막힌 지점에서 돌파구 추천</td>
 <td>노하우의 조직 자산화</td>
 </tr>
 <tr>
@@ -458,7 +458,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>자율</td>
 <td>2029</td>
-<td>Agent가 레시피 셋업을 진행하고 특이 사항·위험 때만 엔지니어가 개입 (CD-SEM·Thickness)</td>
+<td>Agent가 레시피 셋업을 진행하고 특이 사항, 위험 때만 엔지니어가 개입 (CD-SEM, Thickness)</td>
 <td>셋업 인력을 장비 수에 비례해 늘리지 않음</td>
 </tr>
 </tbody>
@@ -492,7 +492,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>막힘 해소</td>
 <td>돌파구 추천 채택률</td>
-<td>—</td>
+<td>-</td>
 <td>⟨확인⟩%</td>
 <td>2027 연말</td>
 </tr>
@@ -520,7 +520,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>확장성</td>
 <td>새 장비군 합류에 드는 기간</td>
-<td>—</td>
+<td>-</td>
 <td>⟨확인⟩</td>
 <td>2029</td>
 </tr>
@@ -530,25 +530,25 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p><strong>시간 구분</strong>: 효과를 계산할 때 세 가지 시간을 나눠 셉니다.</p>
 <ul>
 <li>작업 경과 시간: 셋업 시작부터 끝까지 걸린 시간</li>
-<li>엔지니어 직접 투입 시간: 엔지니어가 실제로 조작·판단·승인에 쓴 시간. 회사 효과 계산에는 이 값을 씀</li>
+<li>엔지니어 직접 투입 시간: 엔지니어가 실제로 조작, 판단, 승인에 쓴 시간. 회사 효과 계산에는 이 값을 씀</li>
 <li>장비 정지 시간: Align Fail 등으로 장비가 멈췄다가 다시 측정하기까지의 시간. 회수한 장비 가동 시간은 이 정지 시간의 감소분으로 셈</li>
 </ul>
 <p><strong>측정 규칙</strong> (기준선과 이후 측정을 같은 조건으로 비교하기 위해 온보딩 측정 양식에 고정)</p>
 <ul>
-<li>대상: 장비군마다 정한 대표 레시피 유형 1개. 전체 셋업이 아닌 <strong>자동화 대상 구간(측정 위치·Align 셋업)</strong> 의 시작과 끝을 정해 측정</li>
-<li>포함: 그 구간 안의 실패·재작업·수동 인계 시간. 승인 대기 시간은 별도 기록</li>
+<li>대상: 장비군마다 정한 대표 레시피 유형 1개. 전체 셋업이 아닌 <strong>자동화 대상 구간(측정 위치, Align 셋업)</strong> 의 시작과 끝을 정해 측정</li>
+<li>포함: 그 구간 안의 실패, 재작업, 수동 인계 시간. 승인 대기 시간은 별도 기록</li>
 <li>개입 횟수: 반드시 거치는 승인(저장 전 등)은 제외하고 <strong>예정에 없던 개입</strong>만 집계</li>
 </ul>
 <h3 id="01-tf-proposal--엔지니어-시간이-줄면-회사에-무엇이-남는가">엔지니어 시간이 줄면 회사에 무엇이 남는가</h3>
 <pre><code>레시피 셋업 수요(건/월) × 건당 엔지니어 직접 투입 시간 감소분
   → 회수되는 엔지니어 시간 (월 ⟨확인⟩시간)
-  → 신규 제품·공정 도입 때 셋업 대기 단축, 엔지니어가 분석·개선 업무로 이동
+  → 신규 제품, 공정 도입 때 셋업 대기 단축, 엔지니어가 분석, 개선 업무로 이동
   → 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않아도 됨
 </code></pre>
 <ul>
-<li>가정: ⟨확인: 장비군별 월 셋업 수요와 증가 추세⟩. 셋업 수요가 장비·제품 수와 함께 늘어야 "인력이 비례해야 한다"는 주장이 성립함</li>
+<li>가정: ⟨확인: 장비군별 월 셋업 수요와 증가 추세⟩. 셋업 수요가 장비, 제품 수와 함께 늘어야 "인력이 비례해야 한다"는 주장이 성립함</li>
 </ul>
-<h2 id="01-tf-proposal--3-이미-확보한-것--1차-poc-align-fail-대응-자동화">3. 이미 확보한 것 — 1차 PoC (Align Fail 대응 자동화)</h2>
+<h2 id="01-tf-proposal--3-이미-확보한-것-1차-poc-align-fail-대응-자동화">3. 이미 확보한 것: 1차 PoC (Align Fail 대응 자동화)</h2>
 <p>ARC는 처음부터 레시피 자동 생성을 목표로 했습니다. 1차 PoC로는 범위가 좁고 효과를 재기 쉬운 <strong>Align Fail 무인 대응</strong>을 선택했고 이 PoC에서 레시피 자동 생성에 그대로 쓸 기반을 검증했습니다.</p>
 <div class="tbl"><table>
 <thead>
@@ -559,7 +559,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </thead>
 <tbody>
 <tr>
-<td>사내 인프라에서 화면 이해 모델(VLM·OCR) 자체 운영</td>
+<td>사내 인프라에서 화면 이해 모델(VLM, OCR) 자체 운영</td>
 <td>외부 API 없이 화면 이해</td>
 </tr>
 <tr>
@@ -568,7 +568,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>VLM은 "어디를 볼지", CV는 "정확히 어디인지"를 맡는 역할 분리 원칙</td>
-<td>측정 위치·Align Key 등록의 정확도</td>
+<td>측정 위치, Align Key 등록의 정확도</td>
 </tr>
 <tr>
 <td>최근 성공 사례를 모은 기준 이미지로 Align Key 탐색 정확도 개선 (오프라인 평가 기준)</td>
@@ -622,7 +622,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tbody>
 <tr>
 <td>최종 목표</td>
-<td>신규 레시피 셋업의 전 과정 자동화: 생성 → 측정 위치·Align Key 등록 → 파라미터 → 검증 측정 → 저장</td>
+<td>신규 레시피 셋업의 전 과정 자동화: 생성 → 측정 위치, Align Key 등록 → 파라미터 → 검증 측정 → 저장</td>
 </tr>
 <tr>
 <td>2027 상반기 선행 과제</td>
@@ -630,7 +630,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>레시피 셋업 자동화 대상 구간</td>
-<td>시행착오가 가장 많은 <strong>측정 위치·Align 셋업 구간</strong>. 2027에는 관찰·지식화, 2028부터 엔지니어 앞에서 Agent가 입력을 대행, 2029에 Agent가 진행</td>
+<td>시행착오가 가장 많은 <strong>측정 위치, Align 셋업 구간</strong>. 2027에는 관찰과 지식화, 2028부터 엔지니어 앞에서 Agent가 입력을 대행, 2029에 Agent가 진행</td>
 </tr>
 <tr>
 <td>1차 장비군</td>
@@ -638,7 +638,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>실행 방식</td>
-<td>설치형 프로그램을 엔지니어에게 배포하고 엔지니어가 <strong>자기 PC에서</strong> AI 자동화 프로그램과 함께 작업. 장비 PC에는 설치하지 않음. 접속 경로는 장비군마다 다름: CD-SEM은 엔지니어 PC에서 RCS로 직접, VeritySEM·Thickness는 SecureVDI(웹 VDI)의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속. Agent는 어느 경로든 엔지니어가 보는 화면(FHD 모니터 기준)을 캡처하고 같은 화면에 입력</td>
+<td>설치형 프로그램을 엔지니어에게 배포하고 엔지니어가 <strong>자기 PC에서</strong> AI 자동화 프로그램과 함께 작업. 장비 PC에는 설치하지 않음. 접속 경로는 장비군마다 다름: CD-SEM은 엔지니어 PC에서 RCS로 직접, VeritySEM, Thickness는 SecureVDI(웹 VDI)의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속. Agent는 어느 경로든 엔지니어가 보는 화면(FHD 모니터 기준)을 캡처하고 같은 화면에 입력</td>
 </tr>
 <tr>
 <td>제외</td>
@@ -648,7 +648,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </table></div>
 <h3 id="01-tf-proposal--자동화-수준과-안전-원칙">자동화 수준과 안전 원칙</h3>
 <ul>
-<li><strong>반자동(Supervised Autonomy)이 원칙임</strong>: Agent가 조작하고, 위험 조작(측정 실행, 삭제, 모드 변경)과 레시피 저장·적용 직전에는 엔지니어가 승인</li>
+<li><strong>반자동(Supervised Autonomy)이 원칙임</strong>: Agent가 조작하고, 위험 조작(측정 실행, 삭제, 모드 변경)과 레시피 저장, 적용 직전에는 엔지니어가 승인</li>
 <li><strong>Align Fail 무인 대응은 승인된 예외임</strong>: 허용 조작은 레시피를 바꾸지 않는 위치 재조정과 해당 지점 재측정 재시도뿐임. 저장, 삭제, 모드 변경, 레시피 수정은 계속 금지. 인식이 불확실하거나 화면이 예상과 다르면 Agent가 스스로 멈추고 엔지니어를 부름</li>
 <li><strong>무인 전환 승인</strong>: 반자동 운영 실적을 리드가 정리하고, 담당 엔지니어 확인을 거쳐 월간 임원 보고에서 장비별로 승인받음 (1차 AI TF 담당 임원, 2차 기반기술센터장)</li>
 <li>레시피 셋업의 완전 자동은 반복 검증과 자체 중단 기록까지 통과한 레시피 유형만 단계 승인을 거쳐 검토함</li>
@@ -666,7 +666,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>TF 리드 + 공통 플랫폼 팀</td>
 <td>TF 리드 포함 개발 2명</td>
-<td>화면 인식·조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육</td>
+<td>화면 인식, 조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육</td>
 </tr>
 <tr>
 <td>CD-SEM 담당</td>
@@ -686,7 +686,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>2차 장비군 담당</td>
 <td>나머지 MI 장비군</td>
-<td>1차 기간에는 학습과 작업 녹화·절차서 정리</td>
+<td>1차 기간에는 학습과 작업 녹화, 절차서 정리</td>
 </tr>
 </tbody>
 </table></div>
@@ -694,7 +694,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><strong>공통 플랫폼</strong>: 모든 장비군이 함께 사용. 장비마다 엔진을 새로 만들지 않음</li>
 <li><strong>장비군 담당</strong>: MI 현업 엔지니어 1~2명으로 구성. 그 장비의 레시피 절차 정의, 성공 판정 기준, 현장 검증을 맡음</li>
 <li><strong>2차 장비군 담당</strong>: 1월에 함께 합류. 1차 기간에는 학습을 받고 담당 장비 작업을 녹화해 절차서로 정리. 플랫폼 준비 후 바로 투입</li>
-<li><strong>인프라(GPU·VLM 서빙)</strong>: 필요 시점에 합류. 장비 벤더는 필요할 때 자문</li>
+<li><strong>인프라(GPU, VLM 서빙)</strong>: 필요 시점에 합류. 장비 벤더는 필요할 때 자문</li>
 </ul>
 <p><strong>개발 인력 배분 (2명, 각 50% 투입 = 실질 1명)</strong></p>
 <div class="tbl"><table>
@@ -720,15 +720,15 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </table></div>
 <ul>
 <li>두 사람 모두 개인 과제를 병행하므로 TF 전담은 불가함. 각 50%를 TF에 씀</li>
-<li>상반기에는 Align Fail을 우선함. 관찰·지식화는 녹화 축적까지만 하고, 상시 관찰 모드와 PC 자원 한도 검증은 3분기 초로 미룸</li>
+<li>상반기에는 Align Fail을 우선함. 관찰과 지식화는 녹화 축적까지만 하고, 상시 관찰 모드와 PC 자원 한도 검증은 3분기 초로 미룸</li>
 <li>온보딩 교육(2027-01~02)은 두 사람이 나눠 맡음</li>
 <li>인력이 늘면 상시 관찰 모드와 채팅을 먼저 당김</li>
 <li>인력이 모자라면 채팅 기능(관문 밖)을 먼저 미루고, 다음으로 돌파구 추천 대상 장비군을 줄임</li>
 </ul>
 <p>역할 분담은 <a href="#02-roles-and-teams">참여 팀과 역할</a>에 있습니다.</p>
 <h2 id="01-tf-proposal--5-일정">5. 일정</h2>
-<p>2027년은 두 갈래로 진행합니다. 상반기에 <strong>Align Fail 자동 대응을 빠른 첫 통과로 완성</strong>하고 같은 기간에 레시피 셋업 자동화의 바탕인 <strong>관찰·지식화</strong>를 쌓습니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.</p>
-<h3 id="01-tf-proposal--align-fail-자동-대응--2027-상반기-완성">Align Fail 자동 대응 — 2027 상반기 완성</h3>
+<p>2027년은 두 갈래로 진행합니다. 상반기에 <strong>Align Fail 자동 대응을 빠른 첫 통과로 완성</strong>하고 같은 기간에 레시피 셋업 자동화의 바탕인 <strong>관찰과 지식화</strong>를 쌓습니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.</p>
+<h3 id="01-tf-proposal--align-fail-자동-대응-2027-상반기-완성">Align Fail 자동 대응: 2027 상반기 완성</h3>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -746,12 +746,12 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>2027-01</td>
 <td>입력 주입 시험(RCS), PoC 제품화</td>
-<td>알람 사례 수집·녹화</td>
+<td>알람 사례 수집, 녹화</td>
 </tr>
 <tr>
 <td>2027-02~03</td>
 <td>반자동 운영 시작(위치 재조정 자동, 확정은 엔지니어)</td>
-<td>인식·재조정 기능 구축</td>
+<td>인식, 재조정 기능 구축</td>
 </tr>
 <tr>
 <td>2027-04~05</td>
@@ -770,9 +770,9 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><strong>무인 기간 지표 (완성 기준)</strong>: 자동 해결률 (실알람 가운데 엔지니어 손을 거치지 않고 해결된 비율) ⟨확인⟩% 이상, 잘못된 위치로 측정을 이어간 건수 0. 평가는 무인 전환 후 ⟨확인⟩주 동안 장비별 실알람 최소 ⟨확인⟩건 이상. 수치 기준은 2027-01 말까지 PoC 실측을 근거로 확정</li>
 <li>임원 보고 대표 숫자: 회수한 장비 가동 시간 (월 시간)</li>
 <li><strong>Thickness 입력이 막히면</strong>: SecureVDI 경로로 입력할 수 없으면 VDI 안에 프로그램을 두는 방식을 추가 승인받아 검증함. 그것도 막히면 Thickness는 관찰과 돌파구 추천(엔지니어 수동 조작)으로 한정하고, Thickness 무인 대응 완성에서 제외함</li>
-<li>2027-06 산출물: <strong>요소 목록</strong>. Align Fail에 쓰인 요소를 재사용·고쳐 쓰기·버림으로 나누고 플랫폼 기능에 대응시켜 하반기와 2028 계획의 입력으로 씀</li>
+<li>2027-06 산출물: <strong>요소 목록</strong>. Align Fail에 쓰인 요소를 재사용, 고쳐 쓰기, 버림으로 나누고 플랫폼 기능에 대응시켜 하반기와 2028 계획의 입력으로 씀</li>
 </ul>
-<h3 id="01-tf-proposal--관찰지식화--레시피-셋업-자동화의-바탕">관찰·지식화 — 레시피 셋업 자동화의 바탕</h3>
+<h3 id="01-tf-proposal--관찰과-지식화-레시피-셋업-자동화의-바탕">관찰과 지식화: 레시피 셋업 자동화의 바탕</h3>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -817,22 +817,22 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>2027-10~12</td>
 <td>지식 자산</td>
 <td>지식 자산 DB, 막힌 지점에서 요청하면 비슷한 사례를 찾아 주는 돌파구 추천, 반복 입력 빈도 분석</td>
-<td>관찰·지식화 관문 판정</td>
+<td>관찰과 지식화 관문 판정</td>
 </tr>
 </tbody>
 </table></div>
 <ul>
-<li>관찰·지식화 관문(2027-12): 장비군마다 대표 레시피 유형의 절차서 ⟨N⟩개 이상, 돌파구 추천 채택률 ⟨확인⟩% 이상, 엔지니어 PC 자원 한도 준수</li>
+<li>관찰과 지식화 관문(2027-12): 장비군마다 대표 레시피 유형의 절차서 ⟨N⟩개 이상, 돌파구 추천 채택률 ⟨확인⟩% 이상, 엔지니어 PC 자원 한도 준수</li>
 <li>엔지니어가 플랫폼에서 Agent와 대화하는 채팅 기능은 2028-01~03으로 넘김</li>
 </ul>
 <h3 id="01-tf-proposal--관문과-2028-진입-조건">관문과 2028 진입 조건</h3>
 <ul>
 <li>2028 보조 단계(반복 입력 대행)로 넘어가려면 두 가지가 필요함</li>
-<li>관찰·지식화 관문 통과</li>
-<li>공통 기술·안전 요건 충족: 입력 실행기가 실장비에서 의도한 조작만 하고, 불확실할 때 스스로 멈추는 것이 운영 기록으로 확인됨</li>
-<li>Align Fail의 성과 목표(자동 해결률, 회수 시간)는 별도 성과 과제이므로, 미달이어도 위 두 조건을 채우면 2028 진입을 막지 않음. 미달분은 보완·축소 결정 대상이 됨</li>
+<li>관찰과 지식화 관문 통과</li>
+<li>공통 기술, 안전 요건 충족: 입력 실행기가 실장비에서 의도한 조작만 하고, 불확실할 때 스스로 멈추는 것이 운영 기록으로 확인됨</li>
+<li>Align Fail의 성과 목표(자동 해결률, 회수 시간)는 별도 성과 과제이므로, 미달이어도 위 두 조건을 채우면 2028 진입을 막지 않음. 미달분은 보완, 축소 결정 대상이 됨</li>
 </ul>
-<p><strong>단계 통과 결정</strong>: 관문마다 리드가 통과 기준과 결과를 정리하고 담당 엔지니어의 품질 확인을 받아 월간 임원 보고에서 AI TF 담당 임원의 1차 승인, 기반기술센터장의 2차 승인을 받겠습니다. 기준에 못 미치면 <strong>보완</strong>(기간 연장), <strong>축소</strong>(대상 유형·장비군 축소), <strong>중단</strong> 중 하나를 정해 <a href="#decision-log">결정 기록</a>에 남깁니다.</p>
+<p><strong>단계 통과 결정</strong>: 관문마다 리드가 통과 기준과 결과를 정리하고 담당 엔지니어의 품질 확인을 받아 월간 임원 보고에서 AI TF 담당 임원의 1차 승인, 기반기술센터장의 2차 승인을 받겠습니다. 기준에 못 미치면 <strong>보완</strong>(기간 연장), <strong>축소</strong>(대상 유형, 장비군 축소), <strong>중단</strong> 중 하나를 정해 <a href="#decision-log">결정 기록</a>에 남깁니다.</p>
 <h2 id="01-tf-proposal--6-소요-자원과-요청-사항">6. 소요 자원과 요청 사항</h2>
 <p>모든 요청은 AI TF 담당 임원의 1차 승인 후 기반기술센터장의 2차 승인으로 확정됩니다.</p>
 <div class="tbl"><table>
@@ -861,17 +861,17 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>4</td>
-<td>보안 승인 두 건: <strong>관찰</strong>(엔지니어 PC 설치형 프로그램 배포, 장비 화면 캡처·녹화)과 <strong>입력</strong>(Align Fail 위치 재조정·해당 지점 재측정 재시도로 한정, RCS·SecureVDI 두 경로). 한쪽 심사가 다른 쪽을 막지 않게 따로 승인</td>
+<td>보안 승인 두 건: <strong>관찰</strong>(엔지니어 PC 설치형 프로그램 배포, 장비 화면 캡처, 녹화)과 <strong>입력</strong>(Align Fail 위치 재조정, 해당 지점 재측정 재시도로 한정, RCS, SecureVDI 두 경로). 한쪽 심사가 다른 쪽을 막지 않게 따로 승인</td>
 <td>2026-12 신청, 2027-01 전 승인</td>
 </tr>
 <tr>
 <td>5</td>
-<td>기존 사내 추론 인프라의 TF 실습·검증·운영 사용 보장. 추가 비용 발생 시 승인 주체 지정 (예상 추가 비용 ⟨확인⟩)</td>
+<td>기존 사내 추론 인프라의 TF 실습, 검증, 운영 사용 보장. 추가 비용 발생 시 승인 주체 지정 (예상 추가 비용 ⟨확인⟩)</td>
 <td>2027-01 전</td>
 </tr>
 <tr>
 <td>6</td>
-<td>사내 서버 자원 할당: 객체 저장소(녹화), 검색 엔진(지식 자산), 관계형 DB(권한·감사), 캐시. 앱은 기존 VLM 서버에서 운영해 새 서버 없음</td>
+<td>사내 서버 자원 할당: 객체 저장소(녹화), 검색 엔진(지식 자산), 관계형 DB(권한, 감사), 캐시. 앱은 기존 VLM 서버에서 운영해 새 서버 없음</td>
 <td>2027-01 전</td>
 </tr>
 <tr>
@@ -932,13 +932,13 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>Align Fail</td>
 <td>SecureVDI 경로 입력이 막힘</td>
-<td>VDI 안 설치를 추가 승인·검증, 막히면 Thickness는 관찰·추천으로 한정</td>
+<td>VDI 안 설치를 추가 승인, 검증, 막히면 Thickness는 관찰, 추천으로 한정</td>
 <td>2026-12 시험</td>
 </tr>
 <tr>
 <td>Align Fail</td>
 <td>Agent 오조작</td>
-<td>허용 조작을 위치 재조정·재측정 재시도로 한정, 불확실하면 자체 중단, 즉시 중단 수단, 무인 전환은 장비별 승인</td>
+<td>허용 조작을 위치 재조정, 재측정 재시도로 한정, 불확실하면 자체 중단, 즉시 중단 수단, 무인 전환은 장비별 승인</td>
 <td>반자동 기간 제안 적중률, 무인 기간 오측정 0건</td>
 </tr>
 <tr>
@@ -948,26 +948,26 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>2027-06</td>
 </tr>
 <tr>
-<td>관찰·지식화</td>
-<td>현업 엔지니어가 AI·코드 특성에 익숙하지 않음</td>
+<td>관찰과 지식화</td>
+<td>현업 엔지니어가 AI, 코드 특성에 익숙하지 않음</td>
 <td>온보딩 8주 과정, 실습 중심 (<a href="#04-onboarding">온보딩 학습 과정</a>)</td>
 <td>2027-02</td>
 </tr>
 <tr>
-<td>관찰·지식화</td>
+<td>관찰과 지식화</td>
 <td>겸직이라 참여 시간 확보가 어려움</td>
 <td>주 5시간(하루 1시간)을 기획안에 명시, 월간 보고에 참여 시간 기록</td>
 <td>매월</td>
 </tr>
 <tr>
-<td>관찰·지식화</td>
+<td>관찰과 지식화</td>
 <td>계측 화면에서 녹화로 절차를 뽑는 정확도가 낮을 수 있음</td>
 <td>AI 초안 + 엔지니어 검토 방식, 결정 지점 질문으로 노하우 수집, 2026-12 시범 실측으로 목표 설정</td>
 <td>2027-09 첫 절차서</td>
 </tr>
 <tr>
 <td>셋업 자동화</td>
-<td>작업 의미 파악·재현, 신규 파라미터 등록이 안 될 수 있음</td>
+<td>작업 의미 파악, 재현, 신규 파라미터 등록이 안 될 수 있음</td>
 <td>2027 지식 자산을 근거로 2028 보조 단계에서 엔지니어 앞에서 먼저 검증</td>
 <td>2028 관문</td>
 </tr>
@@ -979,7 +979,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>공통</td>
-<td>장비군마다 화면·절차가 크게 다름</td>
+<td>장비군마다 화면, 절차가 크게 다름</td>
 <td>공통 플랫폼과 장비별 절차를 분리, 1차는 3개 장비군으로 제한</td>
 <td>2027-06 요소 목록</td>
 </tr>
@@ -1014,13 +1014,13 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>TF 리드</td>
 <td>본인</td>
-<td>TF 운영, 범위·우선순위 결정, 임원 보고, 장비군 담당 간 조율</td>
+<td>TF 운영, 범위, 우선순위 결정, 임원 보고, 장비군 담당 간 조율</td>
 <td>주 업무</td>
 </tr>
 <tr>
 <td>공통 플랫폼 팀</td>
 <td>개발 2명 (본인 포함)</td>
-<td>화면 인식·조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육 진행</td>
+<td>화면 인식, 조작 엔진, 안전 규칙, 승인 화면, VLM 연동, 교육 진행</td>
 <td>주 업무</td>
 </tr>
 <tr>
@@ -1032,7 +1032,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>2차 장비군 담당</td>
 <td>나머지 장비군 MI 엔지니어</td>
-<td>1차 기간: 학습 + 자기 장비 작업 녹화·절차서 정리. 확장 단계: 1차 장비군 담당과 같은 역할</td>
+<td>1차 기간: 학습 + 자기 장비 작업 녹화, 절차서 정리. 확장 단계: 1차 장비군 담당과 같은 역할</td>
 <td>겸직</td>
 </tr>
 <tr>
@@ -1044,13 +1044,13 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>장비 벤더</td>
 <td>⟨확인⟩</td>
-<td>화면·레시피 구조 자문</td>
+<td>화면, 레시피 구조 자문</td>
 <td>필요할 때</td>
 </tr>
 <tr>
 <td>정보보안</td>
 <td>⟨확인⟩</td>
-<td>설치형 프로그램 배포·작업 녹화 승인 범위</td>
+<td>설치형 프로그램 배포, 작업 녹화 승인 범위</td>
 <td>승인 단계에서 협의</td>
 </tr>
 </tbody>
@@ -1089,7 +1089,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>⟨확인⟩</td>
 </tr>
 <tr>
-<td>—</td>
+<td>-</td>
 <td>⟨확인⟩</td>
 <td>2차</td>
 <td>⟨확인⟩</td>
@@ -1097,7 +1097,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 </tbody>
 </table></div>
-<p>VeritySEM·Thickness는 원격 계층이 하나 더 있다. CD-SEM에서 통과한 결과를 이 두 장비군의 근거로 쓰지 않고, 장비군마다 따로 검증한다.</p>
+<p>VeritySEM, Thickness는 원격 계층이 하나 더 있다. CD-SEM에서 통과한 결과를 이 두 장비군의 근거로 쓰지 않고, 장비군마다 따로 검증한다.</p>
 <p>실명과 팀명은 사내용 문서(<code>*_사내용.md</code>)에만 적는다.</p>
 <h2 id="02-roles-and-teams--책임-분담표-raci">책임 분담표 (RACI)</h2>
 <p>R=실행, A=최종 책임, C=협의, I=공유</p>
@@ -1114,7 +1114,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </thead>
 <tbody>
 <tr>
-<td>범위·우선순위 결정</td>
+<td>범위, 우선순위 결정</td>
 <td>A</td>
 <td>C</td>
 <td>C</td>
@@ -1122,7 +1122,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>I</td>
 </tr>
 <tr>
-<td>공통 엔진·안전 규칙</td>
+<td>공통 엔진, 안전 규칙</td>
 <td>A</td>
 <td>R</td>
 <td>C</td>
@@ -1133,129 +1133,129 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>장비별 레시피 절차 정의</td>
 <td>I</td>
 <td>C</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>성공 판정 기준</td>
 <td>C</td>
 <td>C</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>현재 셋업 시간 측정 (기준선)</td>
 <td>I</td>
 <td>C</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
-<td>작업 녹화·절차서 정리</td>
+<td>작업 녹화, 절차서 정리</td>
 <td>I</td>
 <td>C</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
-<td>비생산·파일럿 검증</td>
+<td>비생산, 파일럿 검증</td>
 <td>A</td>
 <td>R</td>
 <td>R</td>
 <td>I</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>레시피 저장 승인 (운영 중)</td>
 <td>I</td>
-<td>—</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>VLM 서빙 운영</td>
 <td>I</td>
 <td>C</td>
-<td>—</td>
-<td>R·A</td>
-<td>—</td>
+<td>-</td>
+<td>R/A</td>
+<td>-</td>
 </tr>
 <tr>
-<td>설치형 프로그램 배포·녹화 승인 범위</td>
+<td>설치형 프로그램 배포, 녹화 승인 범위</td>
 <td>R</td>
 <td>C</td>
 <td>I</td>
-<td>—</td>
+<td>-</td>
 <td>A</td>
 </tr>
 <tr>
 <td>교육 진행</td>
 <td>A</td>
 <td>R</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>월간 임원 보고</td>
-<td>R·A</td>
+<td>R/A</td>
 <td>C</td>
 <td>C</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>단계 통과 정리 (승인은 임원)</td>
-<td>R·A</td>
+<td>R/A</td>
 <td>C</td>
 <td>C</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
-<td>수집 데이터 관리 (녹화·화면·기록)</td>
+<td>수집 데이터 관리 (녹화, 화면, 기록)</td>
 <td>A</td>
 <td>R</td>
 <td>C</td>
-<td>—</td>
+<td>-</td>
 <td>C</td>
 </tr>
 <tr>
-<td>위험 조작 승인·즉시 중단 (운영 중)</td>
+<td>위험 조작 승인, 즉시 중단 (운영 중)</td>
 <td>I</td>
-<td>—</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>오조작 복구 (원본 레시피 되돌리기)</td>
 <td>I</td>
 <td>C</td>
-<td>R·A</td>
-<td>—</td>
-<td>—</td>
+<td>R/A</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
-<td>장애 대응 (플랫폼·모델 장애)</td>
+<td>장애 대응 (플랫폼, 모델 장애)</td>
 <td>I</td>
-<td>R·A</td>
+<td>R/A</td>
 <td>I</td>
 <td>R</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
-<td>모델·절차 변경 승인과 재검증</td>
+<td>모델, 절차 변경 승인과 재검증</td>
 <td>A</td>
 <td>R</td>
 <td>R</td>
 <td>C</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>운영 이관</td>
@@ -1263,15 +1263,15 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>R</td>
 <td>C</td>
 <td>C</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
-<td>TF 종료·연장 판단 (결정은 임원)</td>
+<td>TF 종료, 연장 판단 (결정은 임원)</td>
 <td>R</td>
 <td>C</td>
 <td>C</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 </tbody>
 </table></div>
@@ -1281,14 +1281,14 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><strong>변경과 재검증</strong>: VLM 모델, 플랫폼, 장비 화면, 장비별 절차 중 하나라도 바뀌면 이전 검증 결과는 그대로 쓰지 않는다. 그 장비군의 대표 유형을 비생산 검증 시간에 다시 완주한 뒤에 운영에 반영한다.</li>
 <li><strong>장애 연락</strong>: 플랫폼이나 모델 장애가 나면 플랫폼 팀이 장비군 담당에 알리고, 장비군 담당은 수동 셋업으로 돌아간다. 연락 경로는 ⟨확인⟩.</li>
 <li><strong>운영 이관</strong>: 파일럿을 통과한 장비군을 TF 밖의 상시 운영으로 넘기는 조건과 받을 조직은 ⟨확인⟩. 2027-09 월간 보고에서 정한다.</li>
-<li><strong>TF 종료·연장</strong>: 2027-12 월간 보고에서 리드가 성과와 남은 범위를 정리해 올리고, 임원이 종료, 연장, 상시 조직 전환 중 하나를 정한다.</li>
+<li><strong>TF 종료, 연장</strong>: 2027-12 월간 보고에서 리드가 성과와 남은 범위를 정리해 올리고, 임원이 종료, 연장, 상시 조직 전환 중 하나를 정한다.</li>
 </ul>
 <h2 id="02-roles-and-teams--담당-엔지니어에게-기대하는-것">담당 엔지니어에게 기대하는 것</h2>
 <ul>
 <li>Python 코드를 읽고 간단히 고칠 수 있는 정도의 소양. 기초 문법은 TF에서 가르치지 않는다.</li>
 <li>자기 장비의 레시피 셋업 절차를 설명할 수 있다.</li>
 <li>겸직 시간(근무일마다 1시간) 안에서 기준선 측정, 녹화, 검증을 한다.</li>
-<li>AI·LLM 특성은 몰라도 된다. 온보딩에서 배운다 (<a href="#04-onboarding">온보딩 학습 과정</a>).</li>
+<li>AI, LLM 특성은 몰라도 된다. 온보딩에서 배운다 (<a href="#04-onboarding">온보딩 학습 과정</a>).</li>
 </ul>
 <h2 id="02-roles-and-teams--관련-문서">관련 문서</h2>
 <ul>
@@ -1322,7 +1322,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>장비군 작업 세션</td>
 <td>장비군마다 필요할 때</td>
 <td>플랫폼 팀 1명 + 장비군 담당</td>
-<td>—</td>
+<td>-</td>
 <td>절차 정의, 녹화 검토, 장비 검증</td>
 </tr>
 <tr>
@@ -1405,7 +1405,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li>실장비 검증은 장비 사용 인가를 받은 시간(하루 1시간)에만 한다. 이 시간을 이 문서들에서 "비생산 검증 시간"이라 부른다.</li>
 <li>Agent는 엔지니어 본인 PC에 설치한 프로그램으로 돈다. 장비 PC에는 설치하지 않는다.</li>
 </ul>
-<h3 id="03-operating-rhythm--vdi-경유-장비군-화면-규칙-veritysemthickness">VDI 경유 장비군 화면 규칙 (VeritySEM·Thickness)</h3>
+<h3 id="03-operating-rhythm--vdi-경유-장비군-화면-규칙-veritysem-thickness">VDI 경유 장비군 화면 규칙 (VeritySEM, Thickness)</h3>
 <p>Agent는 엔지니어 PC에서 웹 VDI 화면을 통해 RCS/Radmin을 조작한다. VDI 안에는 설치하지 않는다.</p>
 <ul>
 <li>VDI 브라우저는 <strong>전체 화면(F11), 배율 100%</strong> 로 고정한다. FHD 모니터에서 화면 위치와 크기가 늘 같아야 좌표가 흔들리지 않는다.</li>
@@ -1426,7 +1426,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>필요 없음</td>
 </tr>
 <tr>
-<td>측정 위치·Align 후보 선택, 입력란 채우기 (저장 전)</td>
+<td>측정 위치, Align 후보 선택, 입력란 채우기 (저장 전)</td>
 <td>필요 없음. 단계마다 검증하고 실패하면 중단</td>
 </tr>
 <tr>
@@ -1434,7 +1434,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>담당 엔지니어 승인</td>
 </tr>
 <tr>
-<td>레시피 저장·적용</td>
+<td>레시피 저장, 적용</td>
 <td>담당 엔지니어 승인</td>
 </tr>
 <tr>
@@ -1446,7 +1446,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>장비군마다 다르게 분류할 조작은 담당 엔지니어가 절차 정의 때 이 표에 더한다.</p>
 <h3 id="03-operating-rhythm--중단-인계-복구">중단, 인계, 복구</h3>
 <ul>
-<li><strong>즉시 중단</strong>: 엔지니어는 언제든 Agent를 멈출 수 있어야 한다. 중단 수단(버튼·단축키)은 ⟨확인⟩이며, 1차 구축 단계의 필수 기능이다.</li>
+<li><strong>즉시 중단</strong>: 엔지니어는 언제든 Agent를 멈출 수 있어야 한다. 중단 수단(버튼, 단축키)은 ⟨확인⟩이며, 1차 구축 단계의 필수 기능이다.</li>
 <li><strong>제어권 인계</strong>: Agent는 중단하거나 실패하면 마우스와 키보드에서 손을 떼고, 마지막 화면과 진행 단계를 엔지니어에게 넘긴다. 엔지니어가 수동으로 이어서 하거나 처음부터 다시 한다.</li>
 <li><strong>원본 보존</strong>: 기존 레시피를 고치는 작업이면 시작 전에 원본을 백업한다. 신규 레시피는 승인 전까지 확정하지 않는다.</li>
 <li><strong>오조작 복구</strong>: 잘못 저장된 레시피는 담당 엔지니어가 백업으로 되돌리고, 결정 기록에 원인과 함께 남긴다. 원인을 찾을 때까지 그 절차의 자동 실행을 멈춘다.</li>
@@ -1470,19 +1470,19 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>수집 범위</td>
-<td><strong>장비 뷰어 창(RCS 창 또는 VDI 브라우저 창)만</strong> 캡처한다. 데스크톱 전체는 찍지 않는다. 그 창이 맨 앞에 없거나 다른 창이 위에 덮인 구간은 저장하지 않는다. 남기는 것은 장비 화면, 조작 기록, VLM 응답, 좌표. 키 입력은 기록하지 않고, 계정·비밀번호 입력 구간은 가린다</td>
+<td><strong>장비 뷰어 창(RCS 창 또는 VDI 브라우저 창)만</strong> 캡처한다. 데스크톱 전체는 찍지 않는다. 그 창이 맨 앞에 없거나 다른 창이 위에 덮인 구간은 저장하지 않는다. 남기는 것은 장비 화면, 조작 기록, VLM 응답, 좌표. 키 입력은 기록하지 않고, 계정, 비밀번호 입력 구간은 가린다</td>
 </tr>
 <tr>
 <td>접근 권한</td>
 <td>TF 구성원만. 장비군 담당은 자기 장비군 데이터만 본다</td>
 </tr>
 <tr>
-<td>보존·삭제</td>
+<td>보존, 삭제</td>
 <td>보존 기간 ⟨확인⟩, 기간이 지나면 삭제. 학습 자료로 쓸 것은 따로 표시해 남긴다</td>
 </tr>
 <tr>
 <td>교육 자료로 쓸 때</td>
-<td>장비명·Lot·수치를 가린 사본만 쓰고, 리드가 승인한다. 사내 환경 밖으로 내보내지 않는다</td>
+<td>장비명, Lot, 수치를 가린 사본만 쓰고, 리드가 승인한다. 사내 환경 밖으로 내보내지 않는다</td>
 </tr>
 </tbody>
 </table></div>
@@ -1497,7 +1497,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>MI 현업 엔지니어가 AI Agent로 레시피를 자동화할 때 알아야 할 배경 지식을 쌓는 TF 전용 실무 과정.</p>
 </blockquote>
 <h2 id="04-onboarding--왜-필요한가">왜 필요한가</h2>
-<p>담당 엔지니어는 장비와 레시피는 잘 알지만, LLM·VLM이 무엇을 잘하고 무엇을 못하는지는 모른다. 이걸 모르면 두 가지가 생긴다.</p>
+<p>담당 엔지니어는 장비와 레시피는 잘 알지만, LLM, VLM이 무엇을 잘하고 무엇을 못하는지는 모른다. 이걸 모르면 두 가지가 생긴다.</p>
 <ul>
 <li>Agent에게 맡기면 안 되는 판단(정밀 좌표, 반복 가능한 판정)을 맡기는 절차를 쓴다.</li>
 <li>Agent가 실패했을 때 원인이 모델인지, 화면 품질인지, 절차 정의인지 구분하지 못한다.</li>
@@ -1508,7 +1508,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><strong>Python 기초는 다루지 않는다.</strong> 코드를 읽고 간단히 고칠 수 있는 정도의 소양은 갖고 온다.</li>
 <li>겸직 시간(주 5시간: 근무일마다 1시간, 8주 합계 40시간) 안에서 진행한다. 강의는 짧게 하고 실습을 길게 한다.</li>
 <li>강사는 리드와 공통 플랫폼 팀이 맡는다.</li>
-<li>1차·2차 담당 엔지니어가 모두 듣는다.</li>
+<li>1차, 2차 담당 엔지니어가 모두 듣는다.</li>
 </ul>
 <h2 id="04-onboarding--과정">과정</h2>
 <div class="tbl"><table>
@@ -1529,7 +1529,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>2</td>
-<td>LLM·VLM의 특성</td>
+<td>LLM, VLM의 특성</td>
 <td>잘하는 것(화면 의미 이해, 설명), 못하는 것(좌표가 흔들림, 기억 없음, 환각), 프롬프트가 결과를 바꾸는 방식</td>
 <td>같은 화면을 여러 번 물어보고 답이 흔들리는 것 확인하기</td>
 </tr>
@@ -1543,7 +1543,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>4</td>
 <td>컴퓨터 사용 Agent의 동작</td>
 <td>화면 캡처 → 판단 → 조작 → 검증 순환, 실패 유형(화면 품질, 모델, 절차)</td>
-<td>플랫폼으로 비생산 화면에서 클릭·입력 시켜 보기</td>
+<td>플랫폼으로 비생산 화면에서 클릭, 입력 시켜 보기</td>
 </tr>
 <tr>
 <td>5</td>
@@ -1588,11 +1588,11 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>구간</td>
-<td>자동화 대상 구간(측정 위치·Align 셋업)의 시작 화면과 끝 화면</td>
+<td>자동화 대상 구간(측정 위치, Align 셋업)의 시작 화면과 끝 화면</td>
 </tr>
 <tr>
 <td>소요 시간</td>
-<td>구간 안의 실패·재작업·수동 인계를 포함한 시간. 승인 대기는 따로</td>
+<td>구간 안의 실패, 재작업, 수동 인계를 포함한 시간. 승인 대기는 따로</td>
 </tr>
 <tr>
 <td>예정에 없던 개입</td>
@@ -1649,14 +1649,14 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </thead>
 <tbody>
 <tr>
-<td>사내 화면 이해 모델(VLM·OCR) 서빙</td>
+<td>사내 화면 이해 모델(VLM, OCR) 서빙</td>
 <td>운영 중</td>
 <td>화면 이해의 기반. 모델 교체는 측정으로 결정</td>
 </tr>
 <tr>
 <td>2단계 좌표 찾기 (대략 위치 → 정밀 좌표) + OCR 확인</td>
 <td>검증 완료</td>
-<td>장비 화면 클릭·입력</td>
+<td>장비 화면 클릭, 입력</td>
 </tr>
 <tr>
 <td>VLM/CV 역할 분리 원칙</td>
@@ -1669,7 +1669,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>이미 등록된 Key를 다시 찾는 데 쓴다. 신규 등록 위치 선정은 아래 "새로 풀어야 하는 것"</td>
 </tr>
 <tr>
-<td>상태 머신 기반 실행·판정 계층</td>
+<td>상태 머신 기반 실행, 판정 계층</td>
 <td>판정 계층 구현, 실행 엔진은 데모 단계</td>
 <td>레시피 셋업 절차 실행</td>
 </tr>
@@ -1684,7 +1684,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>장비군 담당의 절차 정의</td>
 </tr>
 <tr>
-<td>실패 회복 기록 (알람 1건의 시도·판정을 한 줄로 기록)</td>
+<td>실패 회복 기록 (알람 1건의 시도, 판정을 한 줄로 기록)</td>
 <td>구현 완료</td>
 <td>셋업 시도 기록과 지표</td>
 </tr>
@@ -1711,7 +1711,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>장비군 담당</td>
 </tr>
 <tr>
-<td>신규 Align·측정 위치 선정 (좋은 위치를 고르고 장비 자체 알고리즘으로 통하는지 확인)</td>
+<td>신규 Align, 측정 위치 선정 (좋은 위치를 고르고 장비 자체 알고리즘으로 통하는지 확인)</td>
 <td>PoC는 이미 등록된 Key를 찾기만 했다. 위치 제안은 구현하지 않았다</td>
 <td>플랫폼 + 장비군 담당 (실장비 검증)</td>
 </tr>
@@ -1737,8 +1737,8 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>VDI 경유 조작 (웹 VDI → 가상 Windows → RCS/Radmin)</td>
-<td>PoC는 로컬 RCS 경로만 다뤘다. 두 번 원격을 거쳐 화질 저하, 지연, 브라우저의 단축키 가로채기, VDI 잠김·세션 끊김이 생길 수 있다</td>
-<td>플랫폼 + VeritySEM·Thickness 담당</td>
+<td>PoC는 로컬 RCS 경로만 다뤘다. 두 번 원격을 거쳐 화질 저하, 지연, 브라우저의 단축키 가로채기, VDI 잠김, 세션 끊김이 생길 수 있다</td>
+<td>플랫폼 + VeritySEM, Thickness 담당</td>
 </tr>
 <tr>
 <td>배포 (개발 도구 없는 PC에서 실행)</td>
@@ -1759,8 +1759,8 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li>⟨확인: Align Key 탐색의 현장 실데이터 검증⟩</li>
 <li>⟨확인: 녹화 → 절차서 추출의 현장 실행⟩</li>
 <li>설치형 프로그램 패키징 (배포 방식은 엔지니어 본인 PC 설치로 결정)</li>
-<li>입력 주입 테스트: <strong>리드 본인 PC</strong>에서 로컬 RCS 경로와 VDI 경로(본인 계정) 각각 "캡처 → 클릭·입력 → 화면 변화 확인" 한 바퀴. 다른 사람 화면이 끼지 않게 본인 PC에서만 하고, 녹화·로그는 저장하지 않으며, 승인이 필요 없는 조작(창 전환, 탭 클릭)만 쓴다. 측정 실행과 저장은 하지 않는다. 화면 캡처는 두 경로 모두 막히지 않음을 확인했다 (2026-11-02)</li>
-<li>⟨확인: VDI 화면의 워터마크 오버레이 여부 (OCR·CV 매칭에 영향)⟩</li>
+<li>입력 주입 테스트: <strong>리드 본인 PC</strong>에서 로컬 RCS 경로와 VDI 경로(본인 계정) 각각 "캡처 → 클릭, 입력 → 화면 변화 확인" 한 바퀴. 다른 사람 화면이 끼지 않게 본인 PC에서만 하고, 녹화, 로그는 저장하지 않으며, 승인이 필요 없는 조작(창 전환, 탭 클릭)만 쓴다. 측정 실행과 저장은 하지 않는다. 화면 캡처는 두 경로 모두 막히지 않음을 확인했다 (2026-11-02)</li>
+<li>⟨확인: VDI 화면의 워터마크 오버레이 여부 (OCR, CV 매칭에 영향)⟩</li>
 </ul>
 <p>PoC의 수치(대상 장비 수, 주간 발생 건수, 대응 시간, 정확도)는 사내용 문서에만 적는다.</p>
 <h2 id="05-poc-assets--관련-문서">관련 문서</h2>
@@ -1768,7 +1768,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
 <li><a href="#04-onboarding">온보딩 학습 과정</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="06-platform-prd"><p class="file"><span class="num">07</span>06-platform-prd.md</p><h1>ARC 플랫폼 1차 PRD — 측정 위치·Align 셋업 반자동화</h1>
+<section class="doc" id="06-platform-prd"><p class="file"><span class="num">07</span>06-platform-prd.md</p><h1>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</h1>
 <blockquote>
 <p>2027년에 공통 플랫폼 팀이 만들고 1차 장비군 담당(CD-SEM, VeritySEM, Thickness)이 검증할 제품의 요구사항. 무엇을 만들고, 무엇으로 합격을 판단하고, 무엇은 만들지 않는가.</p>
 </blockquote>
@@ -1787,7 +1787,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>검토</td>
-<td>공통 플랫폼 팀, 1차 담당 엔지니어 (⟨확인: VeritySEM·Thickness 담당 명단⟩)</td>
+<td>공통 플랫폼 팀, 1차 담당 엔지니어 (⟨확인: VeritySEM, Thickness 담당 명단⟩)</td>
 </tr>
 <tr>
 <td>독자</td>
@@ -1817,7 +1817,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </table></div>
 <hr />
 <h2 id="06-platform-prd--1-요약-executive-summary">1. 요약 (Executive Summary)</h2>
-<p>MI 엔지니어가 레시피 셋업의 <strong>측정 위치·Align 셋업 구간</strong>을 맡길 수 있는 반자동 Agent를 만든다. Agent는 엔지니어 본인 PC에서 돌고, 엔지니어가 보는 원격 화면(RCS, 웹 VDI → RCS/Radmin)을 읽고 같은 화면에 입력한다. 측정 실행과 저장은 엔지니어가 승인한다. 지금 이 구간은 숙련자가 "측정 → 실패 → 재조정"을 손으로 되풀이하는 곳이고, 레시피 셋업 전체에 평균 30~60분이 든다(현업 경험치). 2027년 말까지 1차 장비군마다 대표 레시피 유형 1개에서 이 구간의 건당 소요 시간을 ⟨확인⟩% 줄이고, 오조작으로 잘못 저장된 레시피는 0건을 지킨다.</p>
+<p>MI 엔지니어가 레시피 셋업의 <strong>측정 위치, Align 셋업 구간</strong>을 맡길 수 있는 반자동 Agent를 만든다. Agent는 엔지니어 본인 PC에서 돌고, 엔지니어가 보는 원격 화면(RCS, 웹 VDI → RCS/Radmin)을 읽고 같은 화면에 입력한다. 측정 실행과 저장은 엔지니어가 승인한다. 지금 이 구간은 숙련자가 "측정 → 실패 → 재조정"을 손으로 되풀이하는 곳이고, 레시피 셋업 전체에 평균 30~60분이 든다(현업 경험치). 2027년 말까지 1차 장비군마다 대표 레시피 유형 1개에서 이 구간의 건당 소요 시간을 ⟨확인⟩% 줄이고, 오조작으로 잘못 저장된 레시피는 0건을 지킨다.</p>
 <h2 id="06-platform-prd--2-문제-problem-statement">2. 문제 (Problem Statement)</h2>
 <p>상세는 <a href="#00-problem-statement">문제 정의</a>에 있다. 여기서는 요구사항으로 이어지는 부분만 적는다.</p>
 <h3 id="06-platform-prd--누가">누가</h3>
@@ -1846,7 +1846,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>구간 실측</td>
-<td>측정 위치·Align 구간만의 소요 시간</td>
+<td>측정 위치, Align 구간만의 소요 시간</td>
 <td>⟨확인: 온보딩 8주차⟩</td>
 </tr>
 <tr>
@@ -1857,7 +1857,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>엔지니어 목소리</td>
 <td>리드(CD-SEM) 본인의 경험</td>
-<td>🔶 가정: VeritySEM·Thickness도 같다. 온보딩 첫 주 인터뷰로 확인</td>
+<td>🔶 가정: VeritySEM, Thickness도 같다. 온보딩 첫 주 인터뷰로 확인</td>
 </tr>
 <tr>
 <td>기술 가능성</td>
@@ -1870,10 +1870,10 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <h3 id="06-platform-prd--주-사용자-1차-담당-엔지니어">주 사용자: 1차 담당 엔지니어</h3>
 <ul>
 <li><strong>역할</strong>: 자기 장비군의 레시피 셋업 담당. TF에는 주 5시간(근무일마다 1시간) 겸직으로 참여한다.</li>
-<li><strong>기술 수준</strong>: Python 코드를 읽고 간단히 고칠 수 있다. LLM·VLM의 특성은 온보딩에서 배운다.</li>
+<li><strong>기술 수준</strong>: Python 코드를 읽고 간단히 고칠 수 있다. LLM, VLM의 특성은 온보딩에서 배운다.</li>
 <li><strong>원하는 것</strong>: 시행착오 구간을 맡기고, 결과만 확인해 승인하는 것.</li>
 <li><strong>걱정하는 것</strong>: Agent가 생산 레시피를 잘못 건드리는 것. 그래서 저장과 위험 조작의 최종 승인권을 엔지니어가 갖는다.</li>
-<li><strong>장비군별 차이</strong>: CD-SEM은 엔지니어 PC → RCS로 바로 접속한다. VeritySEM·Thickness는 웹 VDI를 한 번 더 거친다. 화질, 지연, 단축키 처리가 다르다.</li>
+<li><strong>장비군별 차이</strong>: CD-SEM은 엔지니어 PC → RCS로 바로 접속한다. VeritySEM, Thickness는 웹 VDI를 한 번 더 거친다. 화질, 지연, 단축키 처리가 다르다.</li>
 </ul>
 <h3 id="06-platform-prd--부-사용자">부 사용자</h3>
 <ul>
@@ -1890,7 +1890,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <h3 id="06-platform-prd--사업-목표">사업 목표</h3>
 <ul>
 <li>ITC AIX 로드맵의 레시피 셋업 자동화 과제다. 🔵 열린 질문: 이 과제가 걸린 조직 KPI나 OKR이 있는가, 있다면 무엇인가. 보고 대상 임원(AI TF 담당 임원, 기반기술센터장)과 12월 보고 전에 확인한다.</li>
-<li>회사에 남는 것: 회수되는 엔지니어 시간(월 ⟨확인⟩시간), 신규 제품·공정 도입 때 셋업 대기 단축, 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않는 구조.</li>
+<li>회사에 남는 것: 회수되는 엔지니어 시간(월 ⟨확인⟩시간), 신규 제품, 공정 도입 때 셋업 대기 단축, 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않는 구조.</li>
 </ul>
 <h3 id="06-platform-prd--대안-비교">대안 비교</h3>
 <div class="tbl"><table>
@@ -1902,7 +1902,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </thead>
 <tbody>
 <tr>
-<td>장비 API·스크립트 자동화</td>
+<td>장비 API, 스크립트 자동화</td>
 <td>장비에 외부 조작 API가 없다</td>
 </tr>
 <tr>
@@ -1921,7 +1921,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </table></div>
 <h3 id="06-platform-prd--왜-지금인가">왜 지금인가</h3>
 <ul>
-<li>Align Fail PoC가 끝나 화면 이해·조작·안전 규칙이라는 출발점이 있다. 지금 이어 가지 않으면 PoC 자산이 흩어진다.</li>
+<li>Align Fail PoC가 끝나 화면 이해, 조작, 안전 규칙이라는 출발점이 있다. 지금 이어 가지 않으면 PoC 자산이 흩어진다.</li>
 <li>2027년 TF 구성(01 기획안)이 12월에 승인되면 담당 엔지니어 시간이 생긴다. 제품 요구사항이 그 전에 정해져 있어야 1월 온보딩에서 무엇을 재고 무엇을 녹화할지가 정해진다.</li>
 </ul>
 <h2 id="06-platform-prd--5-해결책-개요-solution-overview">5. 해결책 개요 (Solution Overview)</h2>
@@ -1950,32 +1950,32 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 </thead>
 <tbody>
 <tr>
-<td>화면 이해·조작</td>
-<td>원격 화면 캡처, 대략 위치 → 정밀 좌표 → OCR 확인 순서로 클릭·입력</td>
+<td>화면 이해, 조작</td>
+<td>원격 화면 캡처, 대략 위치 → 정밀 좌표 → OCR 확인 순서로 클릭, 입력</td>
 <td>2단계 좌표 찾기, VLM/CV 역할 분리</td>
 </tr>
 <tr>
 <td>실행 엔진</td>
 <td>장비군별 절차를 단계별로 실행하고, 단계마다 성공 조건을 검증</td>
-<td>상태 머신 기반 실행·판정 계층 (데모 단계 → 제품화)</td>
+<td>상태 머신 기반 실행, 판정 계층 (데모 단계 → 제품화)</td>
 </tr>
 <tr>
-<td>Align·측정 위치 셋업</td>
+<td>Align, 측정 위치 셋업</td>
 <td>기존 Key 재탐색, 신규 위치 후보 제안</td>
 <td>기준 이미지 기반 Align Key 탐색 (신규 제안은 새로 만든다)</td>
 </tr>
 <tr>
 <td>승인 화면</td>
 <td>위험 조작과 저장 전 엔지니어 승인, 진행 상황 표시</td>
-<td>알림·확정 버튼 (대화형으로 확장)</td>
+<td>알림, 확정 버튼 (대화형으로 확장)</td>
 </tr>
 <tr>
-<td>중단·인계</td>
-<td>즉시 중단, 마우스·키보드 반환, 마지막 화면과 단계 전달</td>
+<td>중단, 인계</td>
+<td>즉시 중단, 마우스, 키보드 반환, 마지막 화면과 단계 전달</td>
 <td>검증 실패 시 중단 규칙</td>
 </tr>
 <tr>
-<td>기록·지표</td>
+<td>기록, 지표</td>
 <td>시도마다 화면, VLM 응답, 좌표, 판정, 소요 시간 기록</td>
 <td>실패 회복 기록</td>
 </tr>
@@ -1994,7 +1994,7 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 <h2 id="06-platform-prd--6-성공-지표-success-metrics">6. 성공 지표 (Success Metrics)</h2>
 <p>측정 규칙(구간의 시작과 끝, 무엇을 개입으로 세는가)은 <a href="#01-tf-proposal--효과">기획안의 측정 규칙</a>과 <a href="#04-onboarding--기준선-측정-양식">온보딩의 기준선 측정 양식</a>을 그대로 쓴다.</p>
 <h3 id="06-platform-prd--주-지표">주 지표</h3>
-<p><strong>자동화 대상 구간(측정 위치·Align 셋업)의 건당 소요 시간</strong>
+<p><strong>자동화 대상 구간(측정 위치, Align 셋업)의 건당 소요 시간</strong>
 - 현재: ⟨확인: 온보딩 8주차 실측⟩. 참고로 셋업 전체는 30~60분
 - 목표: ⟨확인⟩% 단축. 실측 전에는 숫자로 약속하지 않는다
 - 시점: 2027-07~09 파일럿, 1차 장비군마다 대표 유형 1개</p>
@@ -2060,75 +2060,75 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 <p>가드레일을 하나라도 넘으면 주 지표가 좋아도 그 장비군은 파일럿을 통과하지 못한다.</p>
 <h2 id="06-platform-prd--7-요구사항-user-stories--requirements">7. 요구사항 (User Stories &amp; Requirements)</h2>
 <h3 id="06-platform-prd--가설-epic-hypothesis">가설 (Epic Hypothesis)</h3>
-<p>측정 위치·Align 셋업 구간을 반자동 Agent에 맡기면, 담당 엔지니어의 이 구간 건당 소요 시간이 ⟨확인⟩% 줄 것이다. 지금은 숙련자가 화면에서 시행착오를 손으로 되풀이하는 것 말고는 방법이 없기 때문이다. 파일럿에서 기준선과 같은 양식으로 재서 확인한다.</p>
+<p>측정 위치, Align 셋업 구간을 반자동 Agent에 맡기면, 담당 엔지니어의 이 구간 건당 소요 시간이 ⟨확인⟩% 줄 것이다. 지금은 숙련자가 화면에서 시행착오를 손으로 되풀이하는 것 말고는 방법이 없기 때문이다. 파일럿에서 기준선과 같은 양식으로 재서 확인한다.</p>
 <h3 id="06-platform-prd--사용자-스토리">사용자 스토리</h3>
 <p>우선순위: <strong>필수</strong>(1차 구축 통과에 필요), <strong>권장</strong>(파일럿 전까지), <strong>나중</strong>(2차 이후).</p>
-<p><strong>S1. 구간을 Agent에 맡기기</strong> — 필수
-담당 엔지니어로서, 레시피 기본 정보를 입력한 뒤 측정 위치·Align 셋업을 Agent에게 넘기고 싶다. 그래야 시행착오 구간에서 손을 뗄 수 있다.
+<p><strong>S1. 구간을 Agent에 맡기기</strong>, 필수
+담당 엔지니어로서, 레시피 기본 정보를 입력한 뒤 측정 위치, Align 셋업을 Agent에게 넘기고 싶다. 그래야 시행착오 구간에서 손을 뗄 수 있다.
 - [ ] 엔지니어가 시작 화면에서 "시작"을 누르면 Agent가 그 화면을 절차의 시작 화면으로 인식한다. 시작 화면이 아니면 시작하지 않고 이유를 보여준다
 - [ ] 실행 중에는 현재 단계와 다음 단계가 승인 화면에 보인다
 - [ ] 끝나면 끝 화면, 등록된 위치, 소요 시간을 보여주고 제어권을 엔지니어에게 돌려준다</p>
-<p><strong>S2. Align Key 등록</strong> — 필수
+<p><strong>S2. Align Key 등록</strong>, 필수
 담당 엔지니어로서, Agent가 Align Key를 장비 자체 알고리즘이 통하는 위치로 등록하기를 원한다.
 - [ ] 이미 성공 이미지가 있는 레시피 유형은 기준 이미지로 Key 후보를 찾는다
 - [ ] 후보마다 CV 매칭 점수를 남기고, 점수가 기준 ⟨확인: 담당 엔지니어가 정함⟩ 미만이면 VLM 답으로 덮어쓰지 않고 중단한다
 - [ ] 등록 뒤 장비의 Align이 성공했는지 화면으로 확인한다
 - 🔵 열린 질문: 성공 이미지가 없는 <strong>신규</strong> 레시피에서 좋은 Key 위치를 어떻게 고르는가. PoC는 기존 Key 재탐색만 다뤘다. 1차 구축 초기에 장비군 담당과 기준을 정한다</p>
-<p><strong>S3. 측정 위치 등록</strong> — 필수
+<p><strong>S3. 측정 위치 등록</strong>, 필수
 담당 엔지니어로서, Agent가 레시피 유형의 측정 위치를 절차대로 등록하기를 원한다.
 - [ ] 담당 엔지니어가 정한 절차의 단계마다 성공 조건을 검증한다
 - [ ] 측정 실행이 필요한 단계는 S4의 승인을 거친다
 - [ ] 측정 결과를 담당 엔지니어가 정한 판정 기준(성공/실패, 위치 오프셋)으로 판정하고, 판정 근거 화면을 남긴다</p>
-<p><strong>S4. 위험 조작 승인</strong> — 필수
-담당 엔지니어로서, 측정 실행, 저장·적용, 삭제, 덮어쓰기, 모드 변경 전에 승인하고 싶다. Agent가 생산 레시피를 혼자 확정하면 안 된다.
+<p><strong>S4. 위험 조작 승인</strong>, 필수
+담당 엔지니어로서, 측정 실행, 저장, 적용, 삭제, 덮어쓰기, 모드 변경 전에 승인하고 싶다. Agent가 생산 레시피를 혼자 확정하면 안 된다.
 - [ ] <a href="#03-operating-rhythm--조작별-승인">운영 방식의 조작별 승인 표</a>대로 승인이 필요한 조작은 승인 없이 실행되지 않는다
 - [ ] 승인 화면에 무엇을 하려는지, 근거 화면, 되돌릴 수 있는지가 보인다
 - [ ] 1차에서는 삭제, 덮어쓰기, 모드 변경을 Agent의 조작 목록에서 뺀다</p>
-<p><strong>S5. 즉시 중단과 인계</strong> — 필수
+<p><strong>S5. 즉시 중단과 인계</strong>, 필수
 담당 엔지니어로서, 언제든 Agent를 멈추고 이어서 직접 하고 싶다.
-- [ ] 중단 수단(⟨확인: 버튼·단축키⟩)을 누르면 진행 중인 조작이 끝난 직후 멈추고 마우스·키보드에서 손을 뗀다
-- [ ] 검증 실패, 예상 밖 화면, VDI 잠김·세션 끊김이면 Agent가 스스로 중단한다
+- [ ] 중단 수단(⟨확인: 버튼, 단축키⟩)을 누르면 진행 중인 조작이 끝난 직후 멈추고 마우스, 키보드에서 손을 뗀다
+- [ ] 검증 실패, 예상 밖 화면, VDI 잠김, 세션 끊김이면 Agent가 스스로 중단한다
 - [ ] 중단하면 마지막 화면, 진행 단계, 이유를 엔지니어에게 넘긴다
 - [ ] 되돌릴 수 없는 조작이 실패하면 자동으로 다시 실행하지 않는다</p>
-<p><strong>S6. 시도 기록과 지표</strong> — 필수
+<p><strong>S6. 시도 기록과 지표</strong>, 필수
 TF 리드로서, 시도마다 무엇을 했고 어디서 실패했는지 남기고 싶다. 그래야 기준선과 비교하고 원인을 찾을 수 있다.
 - [ ] 시도 1건마다 조작 전후 화면, VLM 응답, 좌표, CV 점수, 판정, 구간 소요 시간, 개입 여부를 기록한다
-- [ ] 소요 시간은 기준선 측정 양식과 같은 시작·끝 화면 기준으로 잰다. 승인 대기 시간은 따로 적는다
+- [ ] 소요 시간은 기준선 측정 양식과 같은 시작, 끝 화면 기준으로 잰다. 승인 대기 시간은 따로 적는다
 - [ ] 기록은 장비 뷰어 창만 담는다. 데스크톱 전체와 키 입력은 기록하지 않는다 (<a href="#03-operating-rhythm--데이터-취급">데이터 취급</a>)</p>
-<p><strong>S7. 장비군별 절차 정의</strong> — 필수
+<p><strong>S7. 장비군별 절차 정의</strong>, 필수
 담당 엔지니어로서, 내 장비의 절차를 코드를 크게 고치지 않고 플랫폼에 정의하고 싶다.
 - [ ] 절차는 단계, 각 단계의 성공 조건, 실패 시 행동, 조작별 승인 분류로 정의한다
 - [ ] 정의한 절차를 녹화본에 대고 모의 실행할 수 있다 (온보딩 7주차 실습)
 - [ ] 장비군별 절차는 공통 저장소 안의 장비군 폴더로 나누고, 공통 엔진은 고치지 않는다
 - 🔶 가정: 세 장비군의 차이를 절차 정의만으로 담을 수 있다. 담기지 않으면 결정 기록에 남기고 범위를 조정한다 (위험 R4)</p>
-<p><strong>S8. VDI 경유 장비군 지원</strong> — 필수 (VeritySEM·Thickness 담당)
-VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에서도 같은 Agent를 쓰고 싶다.
+<p><strong>S8. VDI 경유 장비군 지원</strong>, 필수 (VeritySEM, Thickness 담당)
+VeritySEM, Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에서도 같은 Agent를 쓰고 싶다.
 - [ ] VDI 브라우저가 전체 화면(F11), 배율 100%가 아니면 시작하지 않는다
 - [ ] 조작마다 화면이 바뀔 때까지 기다린 뒤 검증한다
 - [ ] 절차는 클릭과 일반 문자 입력 위주로 만들고, 로컬 OS가 가로채는 단축키는 쓰지 않는다
 - [ ] CD-SEM에서 통과한 결과를 근거로 쓰지 않고 장비군마다 따로 검증한다
 - 🔵 열린 질문: 엔지니어 PC의 입력 주입이 VDI 경로에서 막히지 않는가. 리드 본인 PC 테스트 대기 (위험 R16)</p>
-<p><strong>S9. 작업 녹화 → 절차서</strong> — 권장
+<p><strong>S9. 작업 녹화 → 절차서</strong>, 권장
 담당 엔지니어로서, 내가 셋업하는 모습을 녹화해 한국어 절차서로 바꾸고 싶다. 그래야 노하우가 남고 S7의 재료가 된다.
 - [ ] 녹화는 본인 동의를 받고 녹화 중임을 화면에 표시한다
 - [ ] 녹화본에서 조작 타임라인을 뽑고 한국어 절차서 초안을 만든다
-- [ ] 계정·비밀번호 입력 구간은 가린다</p>
-<p><strong>S10. 설치형 배포</strong> — 필수
+- [ ] 계정, 비밀번호 입력 구간은 가린다</p>
+<p><strong>S10. 설치형 배포</strong>, 필수
 담당 엔지니어로서, 개발 도구 없이 내 PC에 설치해 쓰고 싶다.
 - [ ] 엔지니어 PC에 설치 프로그램 하나로 설치된다. 장비 PC와 VDI 안에는 설치하지 않는다
 - [ ] 사내 VLM 엔드포인트에만 연결한다
 - 🔵 열린 질문: 보안 승인 범위와 절차 (위험 R6). 2027-03 전 확정</p>
-<p><strong>S11. 성공 이미지 수집</strong> — 권장
+<p><strong>S11. 성공 이미지 수집</strong>, 권장
 플랫폼 팀으로서, 셋업이 성공할 때마다 Align 성공 이미지를 모으고 싶다. 기준 이미지 방식은 이미지가 쌓여야 효과가 난다.
 - [ ] 엔지니어가 성공을 승인한 셋업의 Align 화면을 레시피 유형별로 저장한다
 - [ ] 담당 엔지니어가 초기 이미지를 직접 넣을 수 있다</p>
 <h3 id="06-platform-prd--제약과-예외-상황">제약과 예외 상황</h3>
 <ul>
 <li><strong>장비 API 없음</strong>: 모든 조작은 화면으로만 한다.</li>
-<li><strong>사내 모델만</strong>: 외부 LLM API는 쓰지 않는다. 화면 이해는 사내 VLM·OCR로 한다.</li>
+<li><strong>사내 모델만</strong>: 외부 LLM API는 쓰지 않는다. 화면 이해는 사내 VLM, OCR로 한다.</li>
 <li><strong>화면 크기</strong>: FHD 모니터 기준. 🔵 열린 질문: FHD가 아닌 모니터를 쓰는 엔지니어가 있는가.</li>
-<li><strong>VDI 워터마크</strong>: 🔵 열린 질문: VDI 화면에 워터마크 오버레이가 있는가. 있으면 OCR·CV 매칭 기준을 다시 맞춘다.</li>
-<li><strong>모델·화면 변경</strong>: VLM 모델, 플랫폼, 장비 화면, 절차 중 하나라도 바뀌면 이전 검증 결과를 쓰지 않고 재검증한다.</li>
+<li><strong>VDI 워터마크</strong>: 🔵 열린 질문: VDI 화면에 워터마크 오버레이가 있는가. 있으면 OCR, CV 매칭 기준을 다시 맞춘다.</li>
+<li><strong>모델, 화면 변경</strong>: VLM 모델, 플랫폼, 장비 화면, 절차 중 하나라도 바뀌면 이전 검증 결과를 쓰지 않고 재검증한다.</li>
 <li><strong>추론 서비스 장애</strong>: Agent가 멈추면 장비군 담당은 수동 셋업으로 돌아간다. 장애가 진행 중인 레시피에 흔적을 남기지 않아야 한다.</li>
 </ul>
 <h2 id="06-platform-prd--8-범위-밖-out-of-scope">8. 범위 밖 (Out of Scope)</h2>
@@ -2197,7 +2197,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <td>2027-03 전</td>
 </tr>
 <tr>
-<td>설치형 프로그램 배포·녹화 보안 승인</td>
+<td>설치형 프로그램 배포, 녹화 보안 승인</td>
 <td>정보보안</td>
 <td>2027-03 전</td>
 </tr>
@@ -2225,7 +2225,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </thead>
 <tbody>
 <tr>
-<td>R5·R13 오조작</td>
+<td>R5, R13 오조작</td>
 <td>S4, S5</td>
 <td>조작별 승인, 즉시 중단, 원본 백업, 가드레일 지표</td>
 </tr>
@@ -2245,7 +2245,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <td>가동 전 테스트, 막히면 VDI 안 설치 대안</td>
 </tr>
 <tr>
-<td>R17 VDI 화질·지연·세션 끊김</td>
+<td>R17 VDI 화질, 지연, 세션 끊김</td>
 <td>S8</td>
 <td>화면 변화 대기, 클릭 우선, VDI 화면 아니면 중단</td>
 </tr>
@@ -2269,7 +2269,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <tbody>
 <tr>
 <td>Q1</td>
-<td>신규 레시피에서 좋은 Align Key·측정 위치를 고르는 기준은 무엇인가 (S2)</td>
+<td>신규 레시피에서 좋은 Align Key, 측정 위치를 고르는 기준은 무엇인가 (S2)</td>
 <td>장비군 담당 + 플랫폼</td>
 <td>1차 구축 초기</td>
 </tr>
@@ -2293,14 +2293,14 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>Q5</td>
-<td>이 과제가 걸린 조직 KPI·OKR (4절)</td>
+<td>이 과제가 걸린 조직 KPI, OKR (4절)</td>
 <td>보고 대상 임원</td>
 <td>2026-12 보고 전</td>
 </tr>
 <tr>
 <td>Q6</td>
 <td>VDI 워터마크, FHD 외 모니터 (7절 제약)</td>
-<td>VeritySEM·Thickness 담당</td>
+<td>VeritySEM, Thickness 담당</td>
 <td>온보딩 중</td>
 </tr>
 <tr>
@@ -2311,8 +2311,8 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>Q8</td>
-<td>VeritySEM·Thickness 엔지니어도 문제 정의에 동의하는가 (2절)</td>
-<td>VeritySEM·Thickness 담당</td>
+<td>VeritySEM, Thickness 엔지니어도 문제 정의에 동의하는가 (2절)</td>
+<td>VeritySEM, Thickness 담당</td>
 <td>온보딩 첫 주</td>
 </tr>
 </tbody>
@@ -2323,10 +2323,10 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <li><strong>가장 단단한 절</strong>: 7절 요구사항과 8절 범위 밖. PoC 자산, 안전 원칙, 결정 기록이 이미 있어서 수용 기준을 근거로 쓸 수 있었다.</li>
 <li><strong>가장 약한 절</strong>: 6절 성공 지표. 주 지표의 현재 값과 목표가 모두 ⟨확인⟩이다. 온보딩 8주차 실측 전에는 이 PRD로 효과를 약속할 수 없다.</li>
 <li><strong>먼저 검증할 가정</strong>:</li>
-<li>Q3 입력 주입 — 막히면 S8, S10의 구조가 바뀐다</li>
-<li>Q1 신규 위치 선정 기준 — S2의 신규 레시피 지원 여부가 여기에 달렸다</li>
-<li>S7의 가정 — 세 장비군 차이를 절차 정의만으로 담을 수 있는가</li>
-<li><strong>공유 전 다음 단계</strong>: 플랫폼 팀과 7절 스토리를 함께 읽고 우선순위를 맞춘다. VeritySEM·Thickness 담당 엔지니어가 정해지면 3절과 S8을 같이 검토한다.</li>
+<li>Q3 입력 주입, 막히면 S8, S10의 구조가 바뀐다</li>
+<li>Q1 신규 위치 선정 기준, S2의 신규 레시피 지원 여부가 여기에 달렸다</li>
+<li>S7의 가정, 세 장비군 차이를 절차 정의만으로 담을 수 있는가</li>
+<li><strong>공유 전 다음 단계</strong>: 플랫폼 팀과 7절 스토리를 함께 읽고 우선순위를 맞춘다. VeritySEM, Thickness 담당 엔지니어가 정해지면 3절과 S8을 같이 검토한다.</li>
 </ul>
 <h2 id="06-platform-prd--관련-문서">관련 문서</h2>
 <ul>
@@ -2367,18 +2367,18 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <tr>
 <td>2026-10-29</td>
 <td>1차는 2~3개 장비군(CD-SEM/VeritySEM 포함), 다른 장비군 엔지니어도 1월에 함께 합류</td>
-<td>플랫폼이 안정되기 전에 장비군을 다 열면 흩어진다. 2차 셀은 학습과 녹화·절차서로 미리 준비한다</td>
+<td>플랫폼이 안정되기 전에 장비군을 다 열면 흩어진다. 2차 셀은 학습과 녹화, 절차서로 미리 준비한다</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-10-29</td>
-<td>1차 범위는 측정 위치·Align 셋업 구간, 최종 목표는 전 과정</td>
+<td>1차 범위는 측정 위치, Align 셋업 구간, 최종 목표는 전 과정</td>
 <td>PoC 자산이 바로 이어지고, 시행착오가 가장 많은 구간이다</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-10-29</td>
-<td>레시피 저장·적용 직전에는 셀 엔지니어가 승인 (반자동)</td>
+<td>레시피 저장, 적용 직전에는 셀 엔지니어가 승인 (반자동)</td>
 <td>PoC와 같은 원칙이고, 현업이 받아들이기 쉽다</td>
 <td>확정</td>
 </tr>
@@ -2391,13 +2391,13 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <tr>
 <td>2026-10-29</td>
 <td>2027-01~02 온보딩 8주, Python 기초는 제외</td>
-<td>엔지니어는 AI·LLM 특성을 모른다. Python 소양은 갖고 오기를 기대한다</td>
+<td>엔지니어는 AI, LLM 특성을 모른다. Python 소양은 갖고 오기를 기대한다</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-10-29</td>
 <td>일정: 11월 기획안, 12월 임원 승인, 2027-01 가동</td>
-<td>—</td>
+<td>-</td>
 <td>확정</td>
 </tr>
 <tr>
@@ -2414,13 +2414,13 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>2026-10-29</td>
-<td>공개 문서에는 PoC 수치·실명·팀명을 쓰지 않고 사내용 문서에만 둔다</td>
+<td>공개 문서에는 PoC 수치, 실명, 팀명을 쓰지 않고 사내용 문서에만 둔다</td>
 <td>공개 저장소다</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-10-29</td>
-<td>Codex 검토 12건 반영: 2027 목표를 측정 위치·Align 구간으로 한정, 조작별 승인과 중단·복구, 온보딩은 녹화본·모의 실행으로 수료, 측정 규칙·단계 통과 결정·데이터 취급·파일럿 이후 책임 추가, 공개본에서 시스템 운영 상태 제거</td>
+<td>Codex 검토 12건 반영: 2027 목표를 측정 위치, Align 구간으로 한정, 조작별 승인과 중단, 복구, 온보딩은 녹화본, 모의 실행으로 수료, 측정 규칙, 단계 통과 결정, 데이터 취급, 파일럿 이후 책임 추가, 공개본에서 시스템 운영 상태 제거</td>
 <td>범위와 약속이 어긋나 있었고, 승인 지점이 저장 직전뿐이었고, 온보딩이 아직 없는 기능에 기대고 있었다</td>
 <td>확정</td>
 </tr>
@@ -2433,25 +2433,25 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <tr>
 <td>2026-11-02</td>
 <td>셀 엔지니어 겸직은 주 5시간 (근무일마다 1시간)</td>
-<td>—</td>
+<td>-</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-11-02</td>
 <td>공통 플랫폼 팀 개발 인력은 본인 포함 2명</td>
-<td>—</td>
+<td>-</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-11-02</td>
 <td>보고 대상은 AI TF 담당 임원과 기반기술센터장</td>
-<td>—</td>
+<td>-</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-11-02</td>
 <td>실장비 검증은 장비 사용 인가를 받아 하루 1시간</td>
-<td>—</td>
+<td>-</td>
 <td>확정</td>
 </tr>
 <tr>
@@ -2468,7 +2468,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>2026-11-02</td>
-<td>접속 경로가 다른 두 방식을 모두 엔지니어 PC의 설치형 프로그램 하나로 다룬다 (CD-SEM: 로컬 RCS, VeritySEM·Thickness: 웹 VDI → RCS/Radmin)</td>
+<td>접속 경로가 다른 두 방식을 모두 엔지니어 PC의 설치형 프로그램 하나로 다룬다 (CD-SEM: 로컬 RCS, VeritySEM, Thickness: 웹 VDI → RCS/Radmin)</td>
 <td>두 경로 모두 화면 캡처가 된다. 배포 방식을 하나로 유지한다. 입력 주입이 막히면 VDI 안 설치를 대안으로 검토</td>
 <td>확정, 입력 주입은 테스트 대기</td>
 </tr>
@@ -2486,13 +2486,13 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>2026-11-06</td>
-<td>Align Fail 자동 대응을 2027 상반기 <strong>빠른 첫 통과</strong>로 CD-SEM·Thickness 완성까지 다시 진행한다 (2026-10-29 "PoC로 마감"을 바꿈). 2027-06 관문 판정, 산출물로 요소 목록</td>
+<td>Align Fail 자동 대응을 2027 상반기 <strong>빠른 첫 통과</strong>로 CD-SEM, Thickness 완성까지 다시 진행한다 (2026-10-29 "PoC로 마감"을 바꿈). 2027-06 관문 판정, 산출물로 요소 목록</td>
 <td>AI 임원이 2027 상반기 완성을 원한다. 작은 대상 하나를 플랫폼 부품으로 끝까지 만들면 장기 플랫폼에 필요한 요소가 드러난다</td>
 <td>확정</td>
 </tr>
 <tr>
 <td>2026-11-06</td>
-<td>2027 관찰·지식화는 상반기 녹화 축적 → 3분기 절차화 → 4분기 지식 자산·돌파구 추천, 채팅은 2028-01~03. 셋업 시간 단축 약속은 2028부터</td>
+<td>2027 관찰과 지식화는 상반기 녹화 축적 → 3분기 절차화 → 4분기 지식 자산, 돌파구 추천, 채팅은 2028-01~03. 셋업 시간 단축 약속은 2028부터</td>
 <td>리드가 상반기 Align Fail을 전담한다. 채팅은 관문 밖 기능이다</td>
 <td>확정</td>
 </tr>
@@ -2510,7 +2510,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>2026-11-06</td>
-<td>개발 2명(리드 포함)은 TF 전담이 아니라 개인 과제와 병행해 각 50% 투입 (실질 1명). 상반기는 Align Fail 우선, 관찰·지식화는 녹화 축적까지만, 상시 관찰 모드는 3분기 초로</td>
+<td>개발 2명(리드 포함)은 TF 전담이 아니라 개인 과제와 병행해 각 50% 투입 (실질 1명). 상반기는 Align Fail 우선, 관찰과 지식화는 녹화 축적까지만, 상시 관찰 모드는 3분기 초로</td>
 <td>두 사람 모두 개인 과제가 있다. 임원 약속인 상반기 Align Fail을 지킨다</td>
 <td>확정</td>
 </tr>
@@ -2550,7 +2550,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>R2</td>
-<td>엔지니어가 AI·LLM 특성을 몰라 Agent에 맞지 않는 절차를 쓴다</td>
+<td>엔지니어가 AI, LLM 특성을 몰라 Agent에 맞지 않는 절차를 쓴다</td>
 <td>높음</td>
 <td>중간</td>
 <td>온보딩 8주, 2~3주차에서 VLM 한계를 직접 확인하는 실습</td>
@@ -2562,7 +2562,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <td>Python 소양이 장비군마다 다르다</td>
 <td>중간</td>
 <td>중간</td>
-<td>합류 전 기대 수준 공지, 실습은 코드 작성보다 읽기·수정 중심</td>
+<td>합류 전 기대 수준 공지, 실습은 코드 작성보다 읽기, 수정 중심</td>
 <td>리드</td>
 <td>열림</td>
 </tr>
@@ -2634,7 +2634,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <td>공개 문서에 사내 정보가 섞인다 (수치뿐 아니라 시스템 운영 상태도)</td>
 <td>낮음</td>
 <td>높음</td>
-<td>수치·실명·장비 상세·시스템 운영 상태는 <code>*_사내용.md</code>(git 제외)에만</td>
+<td>수치, 실명, 장비 상세, 시스템 운영 상태는 <code>*_사내용.md</code>(git 제외)에만</td>
 <td>리드</td>
 <td>열림</td>
 </tr>
@@ -2649,7 +2649,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>R13</td>
-<td>위험 조작(측정 실행·삭제·모드 변경) 오조작</td>
+<td>위험 조작(측정 실행, 삭제, 모드 변경) 오조작</td>
 <td>중간</td>
 <td>높음</td>
 <td>조작별 승인, 즉시 중단 수단, 원본 백업과 복구 절차 (<a href="#03-operating-rhythm">운영 방식</a>)</td>
@@ -2658,7 +2658,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>R14</td>
-<td>녹화·화면 데이터의 동의·보존·반출 문제</td>
+<td>녹화, 화면 데이터의 동의, 보존, 반출 문제</td>
 <td>중간</td>
 <td>높음</td>
 <td>데이터 취급 규칙(장비 뷰어 창만 캡처, 키 입력 기록 안 함), 보안 담당 협의</td>
@@ -2667,7 +2667,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>R15</td>
-<td>모델·절차가 바뀐 뒤에도 예전 검증 결과를 계속 믿는다</td>
+<td>모델, 절차가 바뀐 뒤에도 예전 검증 결과를 계속 믿는다</td>
 <td>중간</td>
 <td>중간</td>
 <td>변경 시 비생산 검증 시간에 재완주 후 반영 (<a href="#02-roles-and-teams">참여 팀과 역할</a>)</td>
@@ -2676,7 +2676,7 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>R16</td>
-<td>엔지니어 PC의 가상 입력(마우스·키보드 주입)이 원격 제어 툴이나 보안 솔루션에 막힌다</td>
+<td>엔지니어 PC의 가상 입력(마우스, 키보드 주입)이 원격 제어 툴이나 보안 솔루션에 막힌다</td>
 <td>⟨확인⟩</td>
 <td>높음</td>
 <td>2027-01 가동 전에 리드 본인 PC에서 로컬 RCS와 VDI 경로 각각 입력 주입 테스트 (저장 없음, 승인 불필요 조작만). 막히면 VDI 안에 설치하는 대안을 VDI 관리 조직과 협의</td>
@@ -2685,11 +2685,11 @@ VeritySEM·Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 </tr>
 <tr>
 <td>R17</td>
-<td>VDI 경유 장비군(VeritySEM·Thickness)에서 화질 저하·지연·단축키 가로채기·세션 끊김으로 조작이 흔들린다</td>
+<td>VDI 경유 장비군(VeritySEM, Thickness)에서 화질 저하, 지연, 단축키 가로채기, 세션 끊김으로 조작이 흔들린다</td>
 <td>중간</td>
 <td>중간</td>
 <td>조작마다 화면이 바뀔 때까지 기다린 뒤 검증, 단축키보다 클릭 우선, VDI 화면이 아니면 중단하고 엔지니어에게 넘김, CV 점수 기준을 VDI 화면으로 다시 맞춤</td>
-<td>플랫폼 + VeritySEM·Thickness 담당</td>
+<td>플랫폼 + VeritySEM, Thickness 담당</td>
 <td>열림</td>
 </tr>
 </tbody>

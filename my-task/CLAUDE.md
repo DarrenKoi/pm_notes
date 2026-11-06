@@ -19,6 +19,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - 과제·성과 항목은 기능(What)보다 **문제 → 안 하면 생기는 일 → 효과 → 측정 지표**를 먼저 쓴다.
 - 근거 수치가 없으면 지어내지 않고 `⟨확인: 무엇을⟩` 자리로 남긴다.
+- 보고서 문체: 목록과 표 칸은 개조식(~임/~함/명사, 마침표 없음), 서술 문단은 ~입니다/~습니다. ~다/~한다 평서체 금지
+- 최종본은 docx와 pptx: `.md`가 원본이고 `arc-tf/deliverables/build_docx.py`, `build_pptx.py`로 다시 만든다. pptx 내용은 스크립트에 직접 적혀 있어 `.md`를 고치면 손으로 맞춰야 한다
 
 ## 명령어 (마크다운 → PPTX)
 
