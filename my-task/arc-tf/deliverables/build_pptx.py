@@ -12,7 +12,7 @@ from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
-from pptx.util import Inches, Pt
+from pptx.util import Emu, Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "arc-tf-proposal.pptx"
@@ -26,13 +26,14 @@ AMBER = RGBColor(0xD9, 0x82, 0x2B)    # 강조: 사람이 결정할 곳, 요청
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 PALE = RGBColor(0xB8, 0xC4, 0xCE)
 
-W, H = Inches(13.333), Inches(7.5)
+W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
 M = Inches(0.6)
 TITLE_Y, TITLE_H = Inches(0.45), Inches(0.9)
 BODY_Y = Inches(1.6)
 
 prs = Presentation()
 prs.slide_width, prs.slide_height = W, H
+prs.part._element.find('{http://schemas.openxmlformats.org/presentationml/2006/main}sldSz').attrib.pop('type', None)
 BLANK = prs.slide_layouts[6]
 
 
@@ -377,14 +378,14 @@ footer(s)
 
 # ---------- 10. 확인 필요 사항 ----------
 s = slide("녹화 DB 접근 가능 여부 12월 확정 요청과 스토리지 계획",
-          "R&D MI H/W 담당자께 확인이 필요한 사항이 하나 있습니다. 장비 화면 녹화분 DB에 직접 접근할 수 있는지입니다. 가능하면 녹화분을 바로 받아 써서 개발 속도가 빨라집니다. 불가능하면 RCS에서 GUI 자동화로 녹화분을 하나씩 내려받아야 해서 느리고 불편합니다. 또 스크린샷과 녹화 영상을 매우 많이 쓰기 때문에 스토리지 소모가 큽니다. 2027년에는 할당 자원 안에서 보존 기한을 정해 운영하고, 사용량을 실측해 추후 스토리지 자산 확보를 요청드리겠습니다.")
+          "R&D MI H/W 담당자께 확인이 필요한 사항이 하나 있습니다. 장비 화면 녹화분 DB에 직접 접근할 수 있는지입니다. 가능하면 녹화분을 바로 받아 써서 개발 속도가 빨라집니다. 불가능하면 RCS에서 GUI 자동화로 녹화분을 내려받아야 합니다. 속도가 느리고, 다운로드 받는 자동화 작업이 별도로 필요합니다. 또 스크린샷과 녹화 영상을 매우 많이 쓰기 때문에 스토리지 소모가 큽니다. 2027년에는 할당 자원 안에서 보존 기한을 정해 운영하고, 사용량을 실측해 추후 스토리지 자산 확보를 요청드리겠습니다.")
 box(s, M, BODY_Y + Inches(0.6), Inches(3.6), Inches(2.2), fill=INK)
 text(s, M + Inches(0.3), BODY_Y + Inches(0.6), Inches(3.0), Inches(2.2),
      [[("확인 필요", {"size": 13, "color": AMBER, "bold": True})], "장비 화면 녹화분 DB 직접 접근", [("확인 담당: R&D MI H/W", {"size": 13, "color": PALE})], [("기한: 2026-12", {"size": 13, "color": PALE})]],
      size=18, bold=True, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
 for i, (h, b, fill, fg) in enumerate([
         ("가능하면", "녹화분을 바로 받아 사용, 개발 속도가 빨라짐", MIST, INK),
-        ("불가능하면", "RCS에서 GUI 자동화로 야간 다운로드, 느리고 불편해 관찰 일정 재산정", WHITE, INK)]):
+        ("불가능하면", "RCS에서 GUI 자동화로 다운로드, 속도 느림, 다운로드 자동화 작업 별도 필요", WHITE, INK)]):
     y = BODY_Y + i * Inches(1.75)
     x = M + Inches(4.4)
     ln = s.shapes.add_connector(1, M + Inches(3.6), BODY_Y + Inches(1.7), x, y + Inches(0.75))
@@ -463,5 +464,13 @@ for i, (when, what) in enumerate(asks):
 text(s, M, Inches(6.5), W - 2 * M, Inches(0.4), "음영 행: 12월에 결정을 요청하는 항목", size=12, color=INK_SOFT)
 footer(s)
 
+# Windows PowerPoint flags non-integer EMU (e.g. x="4673498.33") as needing repair.
+# Divisions like W / 2 yield floats, so round every coordinate once here.
+for sl in prs.slides:
+    for el in sl._element.iter():
+        for k in ("x", "y", "cx", "cy", "w", "h"):
+            v = el.get(k)
+            if v and "." in v:
+                el.set(k, str(round(float(v))))
 prs.save(OUT)
 print(f"wrote {OUT.name}, {len(prs.slides)} slides")
