@@ -37,6 +37,7 @@ ARC 자동화 공통 플랫폼의 **단계별 개발 일정안(2027~2029, 1년�
 - [엔지니어 PC에서 상시 관찰할 때 자원을 얼마나 쓰는가](tickets/02-client-footprint.md): WGC 창 단위 캡처 + 타일 비교 변화 감지. 추정 예산 평균 CPU 2%·RAM 150MB·업로드 300kbps 이하. 캡처 보호가 켜지면 불가 (현재 두 경로는 캡처됨). 실측은 별도 티켓
 - [서버 스택(MinIO·OpenSearch·Redis)으로 1단계를 운영할 수 있는가](tickets/01-server-stack.md): 대부분 가능. PostgreSQL(권한·감사) 추가, 화면 검색은 VLM 설명 텍스트 + BGE-M3로 우회, OpenSearch 2.19 이상. MinIO·Redis는 라이선스 검토 필요
 - [녹화에서 절차와 노하우를 자동으로 뽑아낼 수 있는 수준은 어디까지인가](tickets/03-procedure-extraction.md): 절차는 AI 초안 + 엔지니어 검토. 키 입력·수치·단계 묶기는 사람 몫. 노하우는 결정 지점 질문에 대한 엔지니어 답변에서 나옴. 녹화 1건에 VLM 약 100~250회 호출(추정)
+- [2027 단계의 통과 기준 (Align Fail 자동 대응 + 관찰·지식화)](tickets/05-phase1-gate.md): Align Fail은 CD-SEM, 상반기 반자동 → 하반기 무인 전환, 통과 지표 자동 해결률·대표 숫자 회수 가동 시간. 관찰·지식화는 절차서 수·추천 채택률·PC 자원 한도 3개. 두 관문 따로 판정, 2028 진입은 관찰·지식화 통과가 조건. 2027-06 반기 점검
 
 ## Not yet specified
 
