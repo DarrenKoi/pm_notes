@@ -195,7 +195,7 @@ def cover(doc):
     doc.add_paragraph("ARC TF 구성 기획안", style="Title")
     add_inline(doc.add_paragraph(), "레시피(Recipe) 셋업 자동화 태스크포스", size=14, color=GREY)
     doc.add_paragraph()
-    add_inline(doc.add_paragraph(), "보고 대상: AI TF 담당 임원, 기반기술센터장", size=11)
+    add_inline(doc.add_paragraph(), "보고 대상: AI TF 담당 임원(1차 승인) → 기반기술센터장(2차 최종 승인)", size=11)
     add_inline(doc.add_paragraph(), f"작성: TF 리드 · {date.today():%Y-%m-%d} · 초안", size=11)
     doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
