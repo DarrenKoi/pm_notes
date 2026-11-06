@@ -75,9 +75,42 @@ def shade(cell, fill):
     tcpr.append(shd)
 
 
+KANBAN_LANES = ["FBE3CC", "DCE6F1", "EDEDED"]  # 트랙별 칸 색 (Align Fail, 관찰과 지식화, 2차)
+
+
+def add_kanban(doc, header, body):
+    """'트랙'으로 시작하는 표: 행 = 트랙(스윔레인), 열 = 기간, 칸 = 작업 카드."""
+    table = doc.add_table(rows=1 + len(body), cols=len(header))
+    table.style = "Table Grid"
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table.autofit = False
+    first = Cm(2.6)
+    rest = Cm((16.6 - 2.6) / (len(header) - 1))
+    for j, col in enumerate(table.columns):
+        col.width = first if j == 0 else rest
+    for i, row in enumerate([header] + body):
+        for j in range(len(header)):
+            cell = table.cell(i, j)
+            cell.width = first if j == 0 else rest
+            items = (row[j] if j < len(row) else "").split("<br>")
+            for k, item in enumerate(items):
+                par = cell.paragraphs[0] if k == 0 else cell.add_paragraph()
+                par.paragraph_format.space_after = Pt(2)
+                prefix = "" if i == 0 or j == 0 or item.strip() in ("", "-") else "▪ "
+                add_inline(par, prefix + item.strip(), bold=(i == 0 or j == 0), size=9,
+                           color=RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else None)
+            if i == 0:
+                shade(cell, "1F497D")
+            else:
+                shade(cell, KANBAN_LANES[(i - 1) % len(KANBAN_LANES)])
+    doc.add_paragraph()
+
+
 def add_table(doc, rows):
     cells = [[c.strip() for c in r.strip().strip("|").split("|")] for r in rows]
     header, body = cells[0], cells[2:]
+    if header[0] == "트랙":
+        return add_kanban(doc, header, body)
     table = doc.add_table(rows=1 + len(body), cols=len(header))
     table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -92,7 +125,7 @@ def add_table(doc, rows):
             cell = table.cell(i, j)
             cell.width = widths[j]
             par = cell.paragraphs[0]
-            add_inline(par, row[j] if j < len(row) else "", bold=(i == 0), size=9.5)
+            add_inline(par, (row[j] if j < len(row) else "").replace("<br>", ", "), bold=(i == 0), size=9.5)
             if i == 0:
                 shade(cell, TABLE_HEAD_FILL)
     doc.add_paragraph()
@@ -190,13 +223,13 @@ def setup(doc):
 
 
 def cover(doc):
-    for _ in range(6):
+    for _ in range(8):
         doc.add_paragraph()
-    doc.add_paragraph("ARC TF 구성 기획안", style="Title")
-    add_inline(doc.add_paragraph(), "레시피(Recipe) 셋업 자동화 태스크포스", size=14, color=GREY)
-    doc.add_paragraph()
-    add_inline(doc.add_paragraph(), "보고 대상: AI TF 담당 임원(1차 승인) → 기반기술센터장(2차 최종 승인)", size=11)
-    add_inline(doc.add_paragraph(), f"작성: TF 리드, {date.today():%Y-%m-%d}, 초안", size=11)
+    title = doc.add_paragraph("Auto Recipe Creation TF 구성 기획안", style="Title")
+    title.alignment = 1  # center
+    sub = doc.add_paragraph()
+    sub.alignment = 1
+    add_inline(sub, f"{date.today():%Y-%m}", size=12, color=GREY)
     doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
 
