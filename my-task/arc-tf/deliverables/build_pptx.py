@@ -125,7 +125,7 @@ text(s, M, Inches(5.4), Inches(10), Inches(0.9),
 s = slide("2027년 1월부터 ARC TF 운영을 승인해 주십시오",
           "오늘 결정을 부탁드리는 것은 두 가지입니다. TF 구성 승인과, 장비군별 MI 엔지니어의 겸직 참여입니다. 겸직은 근무일마다 1시간, 주 5시간입니다. 첫 성과는 2027년 6월, CD-SEM과 Thickness의 Align Fail 자동 대응 완성으로 보고드리겠습니다.")
 for i, (head, body) in enumerate([
-    ("TF 구성 승인", "공통 플랫폼 팀(개발 2명)과 장비군별 셀로 구성된 ARC TF를 2027-01부터 운영"),
+    ("TF 구성 승인", "공통 플랫폼 팀(개발 2명)과 장비군 담당으로 구성된 ARC TF를 2027-01부터 운영"),
     ("MI 엔지니어 겸직 참여", "1차 장비군(CD-SEM, VeritySEM, Thickness)마다 1~2명, 주 5시간 (근무일마다 1시간)"),
 ]):
     x = M + i * Inches(6.2)
@@ -140,7 +140,7 @@ footer(s, 2)
 
 # ---------- 3. 문제 ----------
 s = slide("숙련 엔지니어가 레시피 셋업에 손으로 매달려 있습니다",
-          "레시피 셋업은 레시피 한 건에 평균 30~60분이 듭니다. 현업 경험치입니다. 특히 측정 위치와 Align을 잡는 구간에서 측정, 실패, 재조정을 되풀이합니다. 장비에 조작 API가 없어 원격 화면에서 사람이 직접 해야 하고, 그 판단은 숙련자에게만 있습니다. 정확한 구간 시간은 온보딩 기간에 셀 엔지니어가 직접 재서 확정합니다.")
+          "레시피 셋업은 레시피 한 건에 평균 30~60분이 듭니다. 현업 경험치입니다. 특히 측정 위치와 Align을 잡는 구간에서 측정, 실패, 재조정을 되풀이합니다. 장비에 조작 API가 없어 원격 화면에서 사람이 직접 해야 하고, 그 판단은 숙련자에게만 있습니다. 정확한 구간 시간은 온보딩 기간에 담당 엔지니어가 직접 재서 확정합니다.")
 box(s, M, BODY_Y, Inches(4.3), Inches(4.9), fill=INK)
 text(s, M + Inches(0.4), BODY_Y + Inches(0.6), Inches(3.6), Inches(1.4), "30~60분", size=60, bold=True, color=WHITE)
 text(s, M + Inches(0.4), BODY_Y + Inches(2.1), Inches(3.6), Inches(1.2),
@@ -194,7 +194,7 @@ for i, row in enumerate(metrics):
         r.font.bold = i == 0
         r.font.color.rgb = WHITE if i == 0 else (TBD if "⟨확인⟩" in val else INK)
 text(s, M, Inches(6.3), W - 2 * M, Inches(0.4),
-     "⟨확인⟩은 2027-01~02 온보딩 기간에 셀 엔지니어가 직접 측정해 확정한다. 측정 전에는 숫자로 약속하지 않는다.",
+     "⟨확인⟩은 2027-01~02 온보딩 기간에 담당 엔지니어가 직접 측정해 확정한다. 측정 전에는 숫자로 약속하지 않는다.",
      size=12, color=INK_SOFT)
 footer(s, 4)
 
@@ -209,8 +209,8 @@ cols = [("확인한 것", INK, WHITE, [
         ("아직 남은 것", MIST, INK, [
             "현장 신뢰성: 실알람 완주, 실장비 Align 검증 → 플랫폼",
             "실행 엔진 제품화 (현재 데모 단계) → 플랫폼",
-            "신규 레시피의 위치 선정 (PoC는 기존 Key만) → 플랫폼 + 셀",
-            "장비군마다 다른 화면·절차 → 셀 (현업 지식 필요)"])]
+            "신규 레시피의 위치 선정 (PoC는 기존 Key만) → 플랫폼 + 장비군 담당",
+            "장비군마다 다른 화면·절차 → 장비군 담당 (현업 지식 필요)"])]
 for i, (head, fill, fg, items) in enumerate(cols):
     x = M + i * Inches(6.2)
     box(s, x, BODY_Y, Inches(5.9), Inches(4.9), fill=fill)
@@ -243,7 +243,7 @@ footer(s, 6)
 
 # ---------- 7. TF 구성 ----------
 s = slide("엔진은 한 곳에서, 절차는 장비를 아는 사람이 만듭니다",
-          "장비마다 자동화를 따로 만들면 화면 인식, 조작, 안전 장치를 장비 수만큼 다시 만들게 됩니다. 반대로 개발자가 모든 장비의 레시피 절차를 알 수는 없습니다. 그래서 공통 플랫폼 팀이 엔진을 만들고, 장비군별 셀의 MI 엔지니어가 절차와 판정 기준을 맡습니다. 2차 장비군 엔지니어도 1월에 함께 합류해 미리 학습하고 자기 장비 작업을 녹화해 둡니다.")
+          "장비마다 자동화를 따로 만들면 화면 인식, 조작, 안전 장치를 장비 수만큼 다시 만들게 됩니다. 반대로 개발자가 모든 장비의 레시피 절차를 알 수는 없습니다. 그래서 공통 플랫폼 팀이 엔진을 만들고, 장비군 담당의 MI 엔지니어가 절차와 판정 기준을 맡습니다. 2차 장비군 엔지니어도 1월에 함께 합류해 미리 학습하고 자기 장비 작업을 녹화해 둡니다.")
 top_w = Inches(9.0)
 tx = (W - top_w) / 2
 box(s, tx, BODY_Y, top_w, Inches(1.45), fill=INK)
@@ -251,8 +251,8 @@ text(s, tx + Inches(0.4), BODY_Y + Inches(0.2), top_w - Inches(0.8), Inches(0.5)
      "TF 리드 + 공통 플랫폼 팀 (개발 2명)", size=20, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 text(s, tx + Inches(0.4), BODY_Y + Inches(0.8), top_w - Inches(0.8), Inches(0.5),
      "화면 인식·조작 엔진 · 안전 규칙 · 승인 화면 · VLM 연동 · 교육", size=15, color=PALE, align=PP_ALIGN.CENTER)
-cells = [("셀 A", "CD-SEM", "리드 직접 담당", True), ("셀 B", "VeritySEM", "MI 엔지니어", True),
-         ("셀 C", "Thickness", "MI 엔지니어", True), ("2차 셀", "나머지 장비군", "학습·작업 녹화", False)]
+cells = [("CD-SEM 담당", "CD-SEM", "리드 직접 담당", True), ("VeritySEM 담당", "VeritySEM", "MI 엔지니어", True),
+         ("Thickness 담당", "Thickness", "MI 엔지니어", True), ("2차 장비군 담당", "나머지 장비군", "학습·작업 녹화", False)]
 cw = Inches(2.8)
 gap = (W - 2 * M - 4 * cw) / 3
 for i, (a, b, c, first) in enumerate(cells):
@@ -265,7 +265,7 @@ for i, (a, b, c, first) in enumerate(cells):
     text(s, x + Inches(0.3), y + Inches(0.7), cw - Inches(0.6), Inches(0.5), b, size=19, bold=True)
     text(s, x + Inches(0.3), y + Inches(1.25), cw - Inches(0.6), Inches(0.4), c, size=14, color=INK_SOFT)
 text(s, M, Inches(5.95), W - 2 * M, Inches(0.6),
-     "셀이 맡는 일: 장비별 레시피 절차 정의, 성공 판정 기준, 기준선 측정, 현장 검증, 저장 최종 승인", size=15)
+     "담당 엔지니어가 맡는 일: 장비별 레시피 절차 정의, 성공 판정 기준, 기준선 측정, 현장 검증, 저장 최종 승인", size=15)
 footer(s, 7)
 
 # ---------- 8. 타임라인 ----------
@@ -291,7 +291,7 @@ for i, (when, name, what) in enumerate(phases):
 box(s, M, Inches(5.2), W - 2 * M, Inches(1.25), fill=MIST)
 text(s, M + Inches(0.4), Inches(5.2), W - 2 * M - Inches(0.8), Inches(1.25),
      [[("단계 통과 결정  ", {"bold": True}),
-       ("리드가 통과 기준과 결과를 정리 → 셀 엔지니어 품질 확인 → 월간 임원 보고에서 승인. 미달이면 보완·축소·중단 중 하나를 정함", {})]],
+       ("리드가 통과 기준과 결과를 정리 → 담당 엔지니어 품질 확인 → 월간 임원 보고에서 승인. 미달이면 보완·축소·중단 중 하나를 정함", {})]],
      size=15, anchor=MSO_ANCHOR.MIDDLE)
 footer(s, 8)
 
@@ -319,7 +319,7 @@ s = slide("요청 사항",
           "요청 사항은 일곱 가지이고, 오늘 결정을 부탁드리는 것은 12월 항목 네 가지입니다. 보안 승인은 관찰과 입력을 나눠, 입력 심사가 늦어도 녹화가 막히지 않게 하겠습니다. 나머지는 1월 가동 전까지 협의하겠습니다.")
 asks = [("시점", "요청"),
         ("2026-12", "ARC TF 구성 승인"),
-        ("2026-12", "장비군별 MI 엔지니어 겸직 지정 (셀당 1~2명, 주 5시간)"),
+        ("2026-12", "장비군별 MI 엔지니어 겸직 지정 (장비군마다 1~2명, 주 5시간)"),
         ("2026-12", "공통 플랫폼 팀 개발 인력 배정 (본인 포함 2명, 교육 포함)"),
         ("2026-12", "보안 승인 두 건: 관찰(설치형 프로그램, 화면 녹화)과 입력(Align Fail 한정)"),
         ("2027-01 전", "사내 추론 인프라 사용 보장, 추가 비용 승인 주체 지정"),
@@ -344,14 +344,14 @@ text(s, M, Inches(6.4), W - 2 * M, Inches(0.4), "음영 행: 오늘 결정을 �
 footer(s, 10)
 
 # ---------- 11. 마무리 ----------
-s = slide(None, "다시 한 번 요청드립니다. 2027년 1월부터 ARC TF 운영과 MI 엔지니어 겸직 참여를 승인해 주십시오. 승인해 주시면 1월에 온보딩을 시작하고, 2월 말에 셀별 기준선을 측정해 효과 목표를 숫자로 보고드리겠습니다.", dark=True)
+s = slide(None, "다시 한 번 요청드립니다. 2027년 1월부터 ARC TF 운영과 MI 엔지니어 겸직 참여를 승인해 주십시오. 승인해 주시면 1월에 온보딩을 시작하고, 2월 말에 장비군별 기준선을 측정해 효과 목표를 숫자로 보고드리겠습니다.", dark=True)
 text(s, M, Inches(1.9), W - 2 * M, Inches(1.0), "결정을 요청드립니다", size=40, bold=True, color=WHITE)
 for i, t in enumerate(["ARC TF 구성 승인 (2027-01 가동)", "1차 장비군 MI 엔지니어 겸직 지정 (주 5시간)", "공통 플랫폼 팀 개발 2명 배정"]):
     y = Inches(3.2) + i * Inches(0.8)
     badge(s, M, y, str(i + 1), fill=AMBER, d=Inches(0.5), size=15)
     text(s, M + Inches(0.8), y, Inches(10), Inches(0.5), t, size=20, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
 text(s, M, Inches(6.0), W - 2 * M, Inches(0.6),
-     "승인 후: 2027-01 온보딩 시작 → 2027-02 셀별 기준선 측정 → 효과 목표를 숫자로 보고", size=16, color=PALE)
+     "승인 후: 2027-01 온보딩 시작 → 2027-02 장비군별 기준선 측정 → 효과 목표를 숫자로 보고", size=16, color=PALE)
 
 prs.save(OUT)
 print(f"wrote {OUT.name}, {len(prs.slides)} slides")
