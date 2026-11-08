@@ -27,7 +27,7 @@ classified_on: "2026-10-05"
 
 ## 과제 한 줄 정의
 
-**Auto Recipe Creation — VLM 기반 GUI 제어(computer-use)로 CD-SEM Recipe를 자동 생성·등록한다.** VLM이 SEM 화면을 직접 보며 GUI를 클릭·입력해 Recipe를 생성하고, **실측 시작 시 발생하는 좌표 shift·align 실패·패턴 오인식을 실시간으로 재정합·수정**한다(1차 PoC = Align fail 대응 자동화 = **Align Agent**). 엔지니어는 모니터링하다 **예외만 개입(Human-in-the-loop)** 한다. 완전자동화는 목표가 아니다.
+**Auto Recipe Creation — VLM 기반 GUI 제어(computer-use)로 CD-SEM Recipe를 자동 생성·등록한다.** VLM이 SEM 화면을 직접 보며 GUI를 클릭·입력해 Recipe를 생성하고, **실측 시작 시 발생하는 좌표 shift·align 실패·패턴 오인식을 실시간으로 재정합·수정**한다(1차 PoC = Align fail 대응 자동화 = **Align 자동 대응 Agent**). 엔지니어는 모니터링하다 **예외만 개입(Human-in-the-loop)** 한다. 완전자동화는 목표가 아니다.
 
 ## 왜 이 과제인가? (Why)
 

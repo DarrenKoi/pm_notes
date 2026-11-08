@@ -102,7 +102,7 @@ classified_on: "2026-10-05"
 | 문서 | 유형 |
 |---|---|
 | [AIX 적용 사례 — CD-SEM Auto Recipe Creation (기획/Discovery)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/03-%EC%A0%81%EC%9A%A9_CDSEM%EA%B8%B0%ED%9A%8D.md) | 설계·계획 |
-| [Align Agent — CD-SEM Align Fail 대응 자동화](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/README.md) | 목차 |
+| [Align 자동 대응 Agent — CD-SEM Align Fail 대응 자동화](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/README.md) | 목차 |
 
 ### 기술·To-Be 설계
 
@@ -144,7 +144,7 @@ classified_on: "2026-10-05"
 | [09 · KSF·제약 정의 — 발표 장표 (2매)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/07-%EC%A0%81%EC%9A%A9_CDSEM_%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D/09-ksf-%EC%A0%9C%EC%95%BD-%EC%A0%95%EC%9D%98_%EC%9E%A5%ED%91%9C.md) | 발표 자료 |
 | [10 · 개발 일정 수립 — 발표 장표 (2매)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/07-%EC%A0%81%EC%9A%A9_CDSEM_%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D/10-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A0%95-%EC%88%98%EB%A6%BD_%EC%9E%A5%ED%91%9C.md) | 발표 자료 |
 | [11 · Review — 발표 장표 (2매)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/07-%EC%A0%81%EC%9A%A9_CDSEM_%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D/11-review-%EC%82%B0%EC%B6%9C%EB%AC%BC-%EB%B0%9C%ED%91%9C_%EC%9E%A5%ED%91%9C.md) | 발표 자료 |
-| [CD-SEM Align Agent · 실행기획 발표 장표 통합 (07~11, 10매)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/07-%EC%A0%81%EC%9A%A9_CDSEM_%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D/%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D_%EB%B0%9C%ED%91%9C%EC%9E%A5%ED%91%9C_%ED%86%B5%ED%95%A9.md) | 발표 자료 |
+| [CD-SEM Align 자동 대응 Agent · 실행기획 발표 장표 통합 (07~11, 10매)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/07-%EC%A0%81%EC%9A%A9_CDSEM_%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D/%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D_%EB%B0%9C%ED%91%9C%EC%9E%A5%ED%91%9C_%ED%86%B5%ED%95%A9.md) | 발표 자료 |
 | [AIX 실행기획 발표 요약 — CD-SEM Auto Recipe Creation (11단계 압축)](./AIX_POC/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_smart_align_agent/07-%EC%A0%81%EC%9A%A9_CDSEM_%EC%8B%A4%ED%96%89%EA%B8%B0%ED%9A%8D_%EB%B0%9C%ED%91%9C%EC%9A%94%EC%95%BD.md) | 발표 자료 |
 
 ## 업무 보고
