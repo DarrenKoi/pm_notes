@@ -378,7 +378,7 @@ def s_phases():  # 추진 방향: 선발대 → 확장
                 "6월 베타 판정 뒤 __본격 참여__: 교육, 화면 영역 지도, 절차 정의",
                 ],
             h=Inches(3.7), size=15)
-    note_line(s, Inches(6.0), "베타 기준", "선발대 PC에서 엔지니어가 시작하는 관찰, 녹화와 Align Fail 입력, 즉시 중단이 ⟨확인⟩주 문제없이 운영 / PC 자원 한도 / 절차 정의만으로 장비 추가", size=13)
+    note_line(s, Inches(6.0), "베타 기준 (6월 판정)", "① 선발대 PC에서 관찰, 녹화, Align Fail 입력, 즉시 중단 ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 장비별 코드 없이 절차 정의만으로 새 장비 추가 가능", size=13)
     footer(s)
 
 def s_options():  # 검토한 대안
@@ -482,7 +482,7 @@ def s_kanban():  # 일정 칸반
                      color=WHITE if gate else INK, anchor=MSO_ANCHOR.MIDDLE)
         y += lh + Inches(0.06)
     text(s, M, y + Inches(0.04), W - 2 * M, Inches(0.85),
-         [[("6월 관문  ", {"bold": True, "color": BLUE})] + runs_of("자동 해결률 기준, __오측정 0건__ / 베타 기준(선발대 PC 운영, PC 자원 한도, 절차 정의만으로 장비 추가)"),
+         [[("6월 관문  ", {"bold": True, "color": BLUE})] + runs_of("자동 해결률 기준, __오측정 0건__ / 베타 기준(① 선발대 PC ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 절차 정의만으로 새 장비 추가)"),
           [("12월 관문  ", {"bold": True, "color": BLUE})] + runs_of("선발대 절차서 ⟨N⟩개, 2차 장비군이 장비별 코드 없이 합류"),
           [("2028 진입  ", {"bold": True, "color": BLUE})] + runs_of("지식화 관문 통과와 입력 실행기 안전 요건 충족")],
          size=12, color=SUB, spacing=1.0, gap=0.3)
