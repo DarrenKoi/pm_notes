@@ -49,7 +49,7 @@ RED = RGBColor(0xD7, 0x26, 0x3D)
 ORANGE = RGBColor(0xF3, 0x8B, 0x1F)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 TBD = ORANGE  # ⟨확인⟩ 표시 색
-LANE = [RGBColor(0xFD, 0xEB, 0xD9), BLUE_PALE, RGBColor(0xEE, 0xEE, 0xEE)]
+LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
 M = Inches(0.5)
@@ -166,7 +166,6 @@ def footer(s):
 def message(s, msg, y=MSG_Y, h=MSG_H):
     """중앙 상단 핵심 메시지 (파란색 강조)."""
     box(s, M, y, W - 2 * M, h, fill=BLUE_PALE)
-    box(s, M, y, Inches(0.08), h, fill=BLUE)
     text(s, M + Inches(0.3), y, W - 2 * M - Inches(0.6), h, msg, size=20, bold=True, color=BLUE,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
 
@@ -201,13 +200,13 @@ def two_col(s, left_head, left, right_head, right, y=COL_Y, h=COL_H, size=17, ar
         return
     a = s.shapes.add_shape(MSO_SHAPE.CHEVRON, M + cw + Inches(0.17), y + h / 2 - Inches(0.25), Inches(0.26), Inches(0.5))
     a.fill.solid()
-    a.fill.fore_color.rgb = ORANGE
+    a.fill.fore_color.rgb = GRAY
     a.line.fill.background()
     a.shadow.inherit = False
 
 
 def note_line(s, y, label, body, size=14):
-    text(s, M, y, W - 2 * M, Inches(0.4), [[(label + "  ", {"bold": True, "color": ORANGE})] + runs_of(body)], size=size)
+    text(s, M, y, W - 2 * M, Inches(0.4), [[(label + "  ", {"bold": True, "color": BLUE})] + runs_of(body)], size=size)
 
 
 def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, shade=None):
@@ -287,8 +286,8 @@ def s_effects():  # 효과
     table(s, metrics, M, COL_Y, [Inches(2.6), Inches(4.4), Inches(2.0), Inches(2.0), Emu(W - 2 * M - Inches(11.0))],
           size=14, row_h=Inches(0.46), bold_col0=True, shade=lambda r: r[4].startswith("2027"))
     text(s, M, Inches(5.85), W - 2 * M, Inches(0.8),
-         [[("측정 기준  ", {"bold": True, "color": ORANGE})] + runs_of("Recipe setup에서 __Agent가 진행한 셋업 단계 비율(%)을 Recipe별로__ 표기, 실패와 재작업 포함, 승인 대기 별도 기록"),
-          [("확정 시점  ", {"bold": True, "color": ORANGE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / Align Fail 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
+         [[("측정 기준  ", {"bold": True, "color": BLUE})] + runs_of("Recipe setup에서 __Agent가 진행한 셋업 단계 비율(%)을 Recipe별로__ 표기, 실패와 재작업 포함, 승인 대기 별도 기록"),
+          [("확정 시점  ", {"bold": True, "color": BLUE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / Align Fail 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
          size=13, color=SUB, spacing=1.0)
     footer(s)
 
@@ -483,9 +482,9 @@ def s_kanban():  # 일정 칸반
                      color=WHITE if gate else INK, anchor=MSO_ANCHOR.MIDDLE)
         y += lh + Inches(0.06)
     text(s, M, y + Inches(0.04), W - 2 * M, Inches(0.85),
-         [[("6월 관문  ", {"bold": True, "color": ORANGE})] + runs_of("자동 해결률 기준, __오측정 0건__ / 베타 기준(선발대 PC 운영, PC 자원 한도, 절차 정의만으로 장비 추가)"),
-          [("12월 관문  ", {"bold": True, "color": ORANGE})] + runs_of("선발대 절차서 ⟨N⟩개, 2차 장비군이 장비별 코드 없이 합류"),
-          [("2028 진입  ", {"bold": True, "color": ORANGE})] + runs_of("지식화 관문 통과와 입력 실행기 안전 요건 충족")],
+         [[("6월 관문  ", {"bold": True, "color": BLUE})] + runs_of("자동 해결률 기준, __오측정 0건__ / 베타 기준(선발대 PC 운영, PC 자원 한도, 절차 정의만으로 장비 추가)"),
+          [("12월 관문  ", {"bold": True, "color": BLUE})] + runs_of("선발대 절차서 ⟨N⟩개, 2차 장비군이 장비별 코드 없이 합류"),
+          [("2028 진입  ", {"bold": True, "color": BLUE})] + runs_of("지식화 관문 통과와 입력 실행기 안전 요건 충족")],
          size=12, color=SUB, spacing=1.0, gap=0.3)
     footer(s)
 
