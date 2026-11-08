@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-"""ARC TF 기획안 .md -> .docx.
+"""ARC TF .md -> 독자별 .docx 3종.
 
 원본은 .md 다. 이 .docx 는 손으로 고치지 않고 다시 만든다.
-    python my-task/arc-tf/deliverables/build_docx.py
+    python my-task/arc-tf/deliverables/build_docx.py          # 3종 모두
+    python my-task/arc-tf/deliverables/build_docx.py boss     # team | boss | exec 중 하나
+
+  team  팀원용 전체본: 문제 정의, 기획안, PRD, 기술 설계, 운영 문서, 위험, 결정 기록
+  boss  담당 임원용 기획안: 기획안 본문 + 별첨 A 문제 정의
+  exec  최고 임원용 한 장 요약
 필요: python-docx. 한글 폰트: 맑은 고딕 (회사 PC 기준, Mac 에서는 대체 폰트로 보인다).
 
 지원하는 마크다운: frontmatter, # ~ ####, 문단, - / 1. 목록, > 인용, 표, ``` 코드, **굵게**, `코드`, [링크](...).
@@ -21,9 +26,17 @@ from docx.shared import Cm, Pt, RGBColor
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-OUT = HERE / "arc-tf-proposal.docx"
-# (파일, 별첨 제목 또는 None)
-SOURCES = [("01-tf-proposal.md", None), ("00-problem-statement.md", "별첨 A")]
+# 대상: (출력 파일, 표지 제목, [(원본 .md, 별첨 제목 또는 None)])
+TARGETS = {
+    "team": ("arc-tf-team-full.docx", "ARC TF 팀원용 전체 문서", [
+        ("00-problem-statement.md", None), ("01-tf-proposal.md", None), ("06-platform-prd.md", None),
+        ("07-platform-architecture.md", None), ("02-roles-and-teams.md", None), ("03-operating-rhythm.md", None),
+        ("04-onboarding.md", None), ("05-poc-assets.md", None), ("risk-register.md", None),
+        ("decision-log.md", None)]),
+    "boss": ("arc-tf-proposal.docx", "Auto Recipe Creation TF 구성 기획안", [
+        ("01-tf-proposal.md", None), ("00-problem-statement.md", "별첨 A")]),
+    "exec": ("arc-tf-exec-summary.docx", None, [("08-exec-summary.md", None)]),
+}
 SKIP_SECTIONS = {"관련 문서"}
 
 FONT = "맑은 고딕"
@@ -187,7 +200,7 @@ def render(doc, md, appendix):
             add_inline(par, line.lstrip("> ").strip(), color=GREY)
         elif re.match(r"^\s*- ", line):
             par = doc.add_paragraph(style="List Bullet 2" if line.startswith("  ") else "List Bullet")
-            add_inline(par, re.sub(r"^\s*- ", "", line))
+            add_inline(par, re.sub(r"^\s*- (\[ \] )?", lambda m: "☐ " if m.group(1) else "", line))
         elif re.match(r"^\d+\. ", line):
             par = doc.add_paragraph(style="List Number")
             add_inline(par, re.sub(r"^\d+\. ", "", line))
@@ -222,10 +235,10 @@ def setup(doc):
         set_font(styles[name])
 
 
-def cover(doc):
+def cover(doc, title_text):
     for _ in range(8):
         doc.add_paragraph()
-    title = doc.add_paragraph("Auto Recipe Creation TF 구성 기획안", style="Title")
+    title = doc.add_paragraph(title_text, style="Title")
     title.alignment = 1  # center
     sub = doc.add_paragraph()
     sub.alignment = 1
@@ -233,16 +246,27 @@ def cover(doc):
     doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
 
-def main():
+def build(target):
+    out_name, cover_title, sources = TARGETS[target]
     doc = Document()
     setup(doc)
-    cover(doc)
-    for k, (name, appendix) in enumerate(SOURCES):
+    if cover_title:
+        cover(doc, cover_title)
+    else:  # exec 한 장 요약: 표지 없이, 한 쪽에 들어가게 촘촘히
+        doc.styles["Normal"].font.size = Pt(10)
+        doc.styles["Normal"].paragraph_format.line_spacing = 1.1
+    for k, (name, appendix) in enumerate(sources):
         if k:
             doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         render(doc, (ROOT / name).read_text(encoding="utf-8"), appendix)
-    doc.save(OUT)
-    print(f"wrote {OUT.relative_to(ROOT.parent.parent)}")
+    out = HERE / out_name
+    doc.save(out)
+    print(f"wrote {out.relative_to(ROOT.parent.parent)}")
+
+
+def main():
+    for target in sys.argv[1:] or TARGETS:
+        build(target)
 
 
 if __name__ == "__main__":

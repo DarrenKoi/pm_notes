@@ -69,8 +69,11 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#04-onboarding"><span class="num">05</span>온보딩 학습 과정 (2027-01~02, 8주)</a></li>
 <li><a href="#05-poc-assets"><span class="num">06</span>PoC 자산과 남은 과제</a></li>
 <li><a href="#06-platform-prd"><span class="num">07</span>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</a></li>
-<li><a href="#decision-log"><span class="num">08</span>결정 기록</a></li>
-<li><a href="#risk-register"><span class="num">09</span>위험 목록</a></li>
+<li><a href="#07-platform-architecture"><span class="num">08</span>공통 플랫폼 기술 설계: 녹화에서 절차를 뽑고, 화면을 확인하며 한 단계씩 실행</a></li>
+<li><a href="#08-exec-summary"><span class="num">09</span>Auto Recipe Creation TF: 한 장 요약</a></li>
+<li><a href="#codex-readme"><span class="num">10</span>Video-to-Workflow 발표자료 아카이브</a></li>
+<li><a href="#decision-log"><span class="num">11</span>결정 기록</a></li>
+<li><a href="#risk-register"><span class="num">12</span>위험 목록</a></li>
 </ol></nav>
 <section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>ARC TF: 레시피 자동 생성 태스크포스</h1>
 <blockquote>
@@ -137,7 +140,28 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td><a href="#06-platform-prd">플랫폼 1차 PRD</a></td>
 <td>플랫폼 팀, 담당 엔지니어</td>
 <td>무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문</td>
-<td>초안, 검토 전</td>
+<td>초안, 일정 기획안과 맞춤 (2026-11-08)</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="#07-platform-architecture">공통 플랫폼 기술 설계</a></td>
+<td>플랫폼 팀, 담당 엔지니어</td>
+<td>어떻게 만드나: Offline 지식화와 Online 실행, 판단과 규칙 확인과 실행 분리, 안전 관문, 평가, 단계별 구현 순서. Codex 설계 검토 결과</td>
+<td>초안, 제안 설계</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="#08-exec-summary">한 장 요약</a></td>
+<td>최고 임원</td>
+<td>문제, 해결 방향, 단계별 타겟, 요청 사항</td>
+<td>초안, 2026-12 최종 승인용</td>
+</tr>
+<tr>
+<td>-</td>
+<td><a href="#codex-readme">Codex 설계 원문</a></td>
+<td>플랫폼 팀</td>
+<td>MP4 기반 Video-to-Workflow Agent 발표자료 22장의 본문과 이미지 (원문 보존, 수정하지 않음)</td>
+<td>보관</td>
 </tr>
 <tr>
 <td>-</td>
@@ -156,32 +180,39 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tbody>
 </table></div>
 <h2 id="readme--최종-산출물-docx-pptx">최종 산출물 (docx, pptx)</h2>
-<p>임원에게 내는 기획안의 최종본은 Word와 PowerPoint 파일이다. <code>.md</code>가 원본이고, 두 파일은 손으로 고치지 않고 다시 만든다. 필요 패키지: <code>python-docx</code>, <code>python-pptx</code>. 한글 폰트는 맑은 고딕.</p>
+<p>독자별로 3종을 만든다. 팀원은 전체, 담당 임원(AI TF 담당 임원, 1차 승인)은 기획안, 최고 임원(기반기술센터장, 2차 최종 승인)은 한 장 요약이다. <code>.md</code>가 원본이고, 두 파일은 손으로 고치지 않고 다시 만든다. 필요 패키지: <code>python-docx</code>, <code>python-pptx</code>. 한글 폰트는 맑은 고딕.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
-<th>파일</th>
-<th>내용</th>
-<th>만드는 명령</th>
+<th>독자</th>
+<th>docx</th>
+<th>pptx</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx">deliverables/arc-tf-proposal.docx</a></td>
-<td>기획안 본문(01) + 별첨 A 문제 정의(00)</td>
-<td><code>python my-task/arc-tf/deliverables/build_docx.py</code></td>
+<td>팀원 (전체)</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx">arc-tf-team-full.docx</a>: 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx">arc-tf-team-full.pptx</a>: 20장 (담당 임원 deck + 기술 설계 6장)</td>
 </tr>
 <tr>
-<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx">deliverables/arc-tf-proposal.pptx</a></td>
-<td>2026-12 임원 보고 deck 11장, 슬라이드마다 발표자 노트</td>
-<td><code>python my-task/arc-tf/deliverables/build_pptx.py</code></td>
+<td>담당 임원</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx">arc-tf-proposal.docx</a>: 기획안(01) + 별첨 A 문제 정의(00)</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx">arc-tf-proposal.pptx</a>: 14장 (공통 플랫폼 구조 1장 포함)</td>
+</tr>
+<tr>
+<td>최고 임원</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx">arc-tf-exec-summary.docx</a>: 한 장 요약(08), 1쪽</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx">arc-tf-exec-summary.pptx</a>: 4장</td>
 </tr>
 </tbody>
 </table></div>
+<pre><code class="language-bash">python my-task/arc-tf/deliverables/build_docx.py          # 3종 모두, 하나만: team | boss | exec
+python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나만: team | boss | exec
+</code></pre>
 <ul>
-<li>docx는 01, 00 <code>.md</code>를 그대로 변환한다. <code>.md</code>를 고치면 명령만 다시 실행한다.</li>
-<li>pptx는 01, 00의 <strong>요약</strong>이라 내용이 <code>build_pptx.py</code> 안에 있다. 01, 00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.</li>
-<li>플랫폼 PRD(06)는 팀 작업 문서라 최종 산출물에 넣지 않는다.</li>
+<li>docx는 <code>.md</code>를 그대로 변환한다. <code>.md</code>를 고치면 명령만 다시 실행한다.</li>
+<li>pptx는 01, 07, 08의 <strong>요약</strong>이라 내용이 <code>build_pptx.py</code> 안에 있다(슬라이드 하나 = 함수 하나, 맨 아래 <code>DECKS</code>가 deck별 순서). <code>.md</code>에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.</li>
 </ul>
 <h2 id="readme--일정">일정</h2>
 <div class="tbl"><table>
@@ -685,6 +716,35 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 </tbody>
 </table></div>
+<h3 id="01-tf-proposal--공통-플랫폼-구조">공통 플랫폼 구조</h3>
+<p>공통 플랫폼은 두 갈래로 만듭니다. 장비와 무관한 부분은 플랫폼 팀이 한 번 만들고, 장비별 절차와 판정 기준만 장비군 담당이 채웁니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>갈래</th>
+<th>하는 일</th>
+<th>시기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Offline: 지식화</td>
+<td>엔지니어 작업 녹화 → 화면 변화 → 의미 단계 → 여러 녹화 비교로 분기 후보 → <strong>담당 엔지니어 승인</strong> → 지식 자산</td>
+<td>2027 관찰과 지식화</td>
+</tr>
+<tr>
+<td>Online: 실행</td>
+<td>현재 화면 확인 → 비슷한 사례 검색 → AI 판단 → <strong>규칙 확인</strong> → 승인된 조작 1개만 실행 → 결과 확인 후 다음 단계</td>
+<td>2027 입력 없는 제안, 2028 보조, 2029 자율</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>AI는 다음 조작을 <strong>제안만</strong> 함. 허용 여부는 서버의 규칙 확인이 다시 판단하고, 정해진 조작 단위만 실행함</li>
+<li>결과가 불명확하거나 화면이 예상과 다르면 멈추고 엔지니어를 부름. 덮어쓰기와 운영 적용은 기본 금지</li>
+<li>2027년에는 화면에 입력하지 않고 "다음에 할 일"을 제안만 해서 판단 정확도를 먼저 검증함. 화면 입력은 2028 보조 단계부터 (Align Fail 무인 대응은 승인된 예외)</li>
+</ul>
+<p>상세 설계는 <a href="#07-platform-architecture">공통 플랫폼 기술 설계</a>에 있습니다.</p>
 <h3 id="01-tf-proposal--자동화-수준과-안전-원칙">자동화 수준과 안전 원칙</h3>
 <ul>
 <li><strong>반자동(Supervised Autonomy)이 원칙임</strong>: Agent가 조작하고, 위험 조작(측정 실행, 삭제, 모드 변경)과 레시피 저장, 적용 직전에는 엔지니어가 승인</li>
@@ -1098,6 +1158,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#03-operating-rhythm">운영 방식</a></li>
 <li><a href="#04-onboarding">온보딩 학습 과정</a></li>
 <li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
+<li><a href="#07-platform-architecture">공통 플랫폼 기술 설계</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="02-roles-and-teams"><p class="file"><span class="num">03</span>02-roles-and-teams.md</p><h1>참여 팀과 역할</h1>
 <blockquote>
@@ -1875,7 +1936,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="06-platform-prd"><p class="file"><span class="num">07</span>06-platform-prd.md</p><h1>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</h1>
 <blockquote>
-<p>2027년에 공통 플랫폼 팀이 만들고 1차 장비군 담당(CD-SEM, VeritySEM, Thickness)이 검증할 제품의 요구사항. 무엇을 만들고, 무엇으로 합격을 판단하고, 무엇은 만들지 않는가.</p>
+<p>공통 플랫폼 팀이 2027년에 바탕(관찰, 절차, 입력 없는 제안)을 만들고 2028 보조 단계에서 1차 장비군 담당(CD-SEM, VeritySEM, Thickness)이 검증할 제품의 요구사항. 무엇을 만들고, 무엇으로 합격을 판단하고, 무엇은 만들지 않는가.</p>
 </blockquote>
 <h2 id="06-platform-prd--문서-정보">문서 정보</h2>
 <div class="tbl"><table>
@@ -1918,11 +1979,16 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>2026-11-06</td>
 <td>초안</td>
 </tr>
+<tr>
+<td>2026-11-08</td>
+<td>일정을 기획안에 맞춤 (화면 입력은 2028 보조), S12 Shadow 제안, S13 판단과 실행 분리 추가, 기술 설계(07) 연결</td>
+</tr>
 </tbody>
 </table></div>
 <hr />
 <h2 id="06-platform-prd--1-요약-executive-summary">1. 요약 (Executive Summary)</h2>
-<p>MI 엔지니어가 레시피 셋업의 <strong>측정 위치, Align 셋업 구간</strong>을 맡길 수 있는 반자동 Agent를 만든다. Agent는 엔지니어 본인 PC에서 돌고, 엔지니어가 보는 원격 화면(RCS, 웹 VDI → RCS/Radmin)을 읽고 같은 화면에 입력한다. 측정 실행과 저장은 엔지니어가 승인한다. 지금 이 구간은 숙련자가 "측정 → 실패 → 재조정"을 손으로 되풀이하는 곳이고, 레시피 셋업 전체에 평균 30~60분이 든다(현업 경험치). 2027년 말까지 1차 장비군마다 대표 레시피 유형 1개에서 이 구간의 건당 소요 시간을 ⟨확인⟩% 줄이고, 오조작으로 잘못 저장된 레시피는 0건을 지킨다.</p>
+<p>MI 엔지니어가 레시피 셋업의 <strong>측정 위치, Align 셋업 구간</strong>을 맡길 수 있는 반자동 Agent를 만든다. Agent는 엔지니어 본인 PC에서 돌고, 엔지니어가 보는 원격 화면(RCS, 웹 VDI → RCS/Radmin)을 읽고 같은 화면에 입력한다. 측정 실행과 저장은 엔지니어가 승인한다. 지금 이 구간은 숙련자가 "측정 → 실패 → 재조정"을 손으로 되풀이하는 곳이고, 레시피 셋업 전체에 평균 30~60분이 든다(현업 경험치). 일정은 <a href="#01-tf-proposal">기획안</a>의 단계를 따른다. 2027년에는 화면 입력 없이 관찰, 절차화, Shadow 제안(S12)까지 만들고, 화면 입력(S1~S5, S8)은 2028 보조 단계에서 연다. 2028 보조 단계 파일럿에서 1차 장비군마다 대표 레시피 유형 1개의 이 구간 건당 소요 시간을 ⟨확인⟩% 줄이고, 오조작으로 잘못 저장된 레시피는 0건을 지킨다. Align Fail 무인 대응의 화면 입력은 기획안의 승인된 예외로 따로 다룬다.</p>
+<p>플랫폼 구조(Offline 지식화, Online 실행, 판단과 규칙 확인과 실행의 분리, 안전 관문)는 <a href="#07-platform-architecture">공통 플랫폼 기술 설계</a>에 있다.</p>
 <h2 id="06-platform-prd--2-문제-problem-statement">2. 문제 (Problem Statement)</h2>
 <p>상세는 <a href="#00-problem-statement">문제 정의</a>에 있다. 여기서는 요구사항으로 이어지는 부분만 적는다.</p>
 <h3 id="06-platform-prd--누가">누가</h3>
@@ -2102,7 +2168,7 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 <p><strong>자동화 대상 구간(측정 위치, Align 셋업)의 건당 소요 시간</strong>
 - 현재: ⟨확인: 온보딩 8주차 실측⟩. 참고로 셋업 전체는 30~60분
 - 목표: ⟨확인⟩% 단축. 실측 전에는 숫자로 약속하지 않는다
-- 시점: 2027-07~09 파일럿, 1차 장비군마다 대표 유형 1개</p>
+- 시점: 2028 보조 단계 파일럿, 1차 장비군마다 대표 유형 1개. 2027년에는 Shadow 제안의 판단 정확도만 잰다 (S12)</p>
 <h3 id="06-platform-prd--보조-지표">보조 지표</h3>
 <div class="tbl"><table>
 <thead>
@@ -2167,7 +2233,8 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 <h3 id="06-platform-prd--가설-epic-hypothesis">가설 (Epic Hypothesis)</h3>
 <p>측정 위치, Align 셋업 구간을 반자동 Agent에 맡기면, 담당 엔지니어의 이 구간 건당 소요 시간이 ⟨확인⟩% 줄 것이다. 지금은 숙련자가 화면에서 시행착오를 손으로 되풀이하는 것 말고는 방법이 없기 때문이다. 파일럿에서 기준선과 같은 양식으로 재서 확인한다.</p>
 <h3 id="06-platform-prd--사용자-스토리">사용자 스토리</h3>
-<p>우선순위: <strong>필수</strong>(1차 구축 통과에 필요), <strong>권장</strong>(파일럿 전까지), <strong>나중</strong>(2차 이후).</p>
+<p>우선순위: <strong>필수</strong>(해당 단계 통과에 필요), <strong>권장</strong>(파일럿 전까지), <strong>나중</strong>(2차 이후).</p>
+<p><strong>단계 구분</strong> (2026-11-08 기획안과 맞춤): 2027 관찰과 지식화에서 만드는 것은 S6, S7, S9, S10, S11, S12. 화면에 입력하는 S1~S5, S8과 S13은 2028 보조 단계에서 연다. 2027년에 S1~S5의 설계와 녹화본 모의 실행은 해도 되지만 실장비 입력은 하지 않는다.</p>
 <p><strong>S1. 구간을 Agent에 맡기기</strong>, 필수
 담당 엔지니어로서, 레시피 기본 정보를 입력한 뒤 측정 위치, Align 셋업을 Agent에게 넘기고 싶다. 그래야 시행착오 구간에서 손을 뗄 수 있다.
 - [ ] 엔지니어가 시작 화면에서 "시작"을 누르면 Agent가 그 화면을 절차의 시작 화면으로 인식한다. 시작 화면이 아니면 시작하지 않고 이유를 보여준다
@@ -2227,6 +2294,17 @@ VeritySEM, Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 플랫폼 팀으로서, 셋업이 성공할 때마다 Align 성공 이미지를 모으고 싶다. 기준 이미지 방식은 이미지가 쌓여야 효과가 난다.
 - [ ] 엔지니어가 성공을 승인한 셋업의 Align 화면을 레시피 유형별로 저장한다
 - [ ] 담당 엔지니어가 초기 이미지를 직접 넣을 수 있다</p>
+<p><strong>S12. 입력 없는 Shadow 제안</strong>, 필수 (2027 4분기)
+담당 엔지니어로서, Agent가 내 화면을 보고 "다음에 무엇을 할지" 제안만 하는 것을 먼저 보고 싶다. 그래야 화면 입력을 맡기기 전에 판단을 믿을 수 있는지 확인할 수 있다.
+- [ ] Agent는 화면에 입력하지 않고, 현재 단계, 다음 조작 단위, 근거 시연, 근거 화면을 승인 화면에 보여준다
+- [ ] 제안마다 담당 엔지니어가 맞음, 틀림, 모름을 표시하고 기록한다
+- [ ] 상태, 분기 정확도와 미승인 행동 제안률을 <a href="#07-platform-architecture--6-평가-방법">기술 설계의 평가 방법</a>대로 집계한다. 평가 시연은 지식 자산에서 뺀다</p>
+<p><strong>S13. 판단, 규칙 확인, 실행 분리</strong>, 필수 (2028 보조)
+TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되지 않기를 원한다.
+- [ ] LLM은 분기, 조작 단위, 근거만 제안하고, 서버의 규칙 확인이 권한, 허용 분기, 인자, 값과 단위를 다시 확인한다
+- [ ] 규칙 확인이 거부한 제안은 실행으로 넘어가지 않고 기록된다
+- [ ] 승인 절차서와 허용 범위는 신뢰 저장소에서만 읽는다. 화면 OCR이나 검색 문서의 글로 바뀌지 않는다
+- [ ] 조작 단위는 사전조건, 인자, 사후조건, 재시도 한도를 가진 계약으로 정의한다 (<a href="#07-platform-architecture--4-조작-단위-계약">조작 단위 계약</a>)</p>
 <h3 id="06-platform-prd--제약과-예외-상황">제약과 예외 상황</h3>
 <ul>
 <li><strong>장비 API 없음</strong>: 모든 조작은 화면으로만 한다.</li>
@@ -2441,9 +2519,663 @@ VeritySEM, Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <li><a href="#03-operating-rhythm">운영 방식</a></li>
 <li><a href="#04-onboarding">온보딩 학습 과정</a></li>
 <li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
+<li><a href="#07-platform-architecture">공통 플랫폼 기술 설계</a></li>
 <li><a href="#risk-register">위험 목록</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="decision-log"><p class="file"><span class="num">08</span>decision-log.md</p><h1>결정 기록</h1>
+<section class="doc" id="07-platform-architecture"><p class="file"><span class="num">08</span>07-platform-architecture.md</p><h1>공통 플랫폼 기술 설계: 녹화에서 절차를 뽑고, 화면을 확인하며 한 단계씩 실행</h1>
+<blockquote>
+<p>공통 플랫폼을 두 갈래로 만듭니다. Offline은 엔지니어 작업 녹화에서 승인된 절차와 노하우를 만들고, Online은 실제 화면 상태를 확인하면서 승인된 조작 단위만 하나씩 실행합니다.</p>
+</blockquote>
+<h2 id="07-platform-architecture--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<ul>
+<li><a href="#01-tf-proposal">기획안</a>과 <a href="#06-platform-prd">PRD</a>는 "무엇을, 언제까지"를 정함. "공통 플랫폼을 어떤 구조로 만드는가"는 비어 있었음</li>
+<li>장비군마다 따로 만들지 않으려면 장비와 무관한 부분(녹화 처리, 저장소, 판단, 안전 관문, 실행 루프)과 장비별 부분(절차, 판정 기준, 화면 영역 지도)의 경계를 먼저 정해야 함</li>
+<li>Codex가 작성한 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/codex/video-to-workflow-agent.md">Video-to-Workflow Agent 설계</a>(슬라이드 22장)가 이 구조를 상세히 다룸. 이 문서는 그 설계를 검토해 TF 용어, 단계, 제약에 맞춘 결과입니다</li>
+</ul>
+<p>이 문서는 플랫폼 팀과 담당 엔지니어용입니다. 담당 임원 보고에는 <a href="#01-tf-proposal">기획안</a> 4절의 요약만 들어갑니다.</p>
+<h2 id="07-platform-architecture--검토-결과-요약">검토 결과 요약</h2>
+<p>2026-11-08 Codex 설계를 검토하고 herdr로 Codex와 쟁점을 확인했습니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>내용</th>
+<th>처리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>채택</td>
+<td>Offline 지식화와 Online 실행의 분리</td>
+<td>플랫폼 기본 구조로 채택</td>
+</tr>
+<tr>
+<td>채택</td>
+<td>판단(LLM), 허용 확인(규칙 엔진), 실행(조작 단위)의 3단 분리</td>
+<td>안전 원칙에 추가</td>
+</tr>
+<tr>
+<td>채택</td>
+<td>관찰 사실, 추정 행동, 승인된 규칙을 다른 상태로 저장</td>
+<td>절차 추출 원칙에 추가</td>
+</tr>
+<tr>
+<td>채택</td>
+<td>4개 저장 영역(절차와 규칙, 실행 상태, 시연 색인, 원본 증거)</td>
+<td>기획안 서버 자원 요청과 대응</td>
+</tr>
+<tr>
+<td>채택</td>
+<td>안전 관문 G1, G2, G3와 즉시 중단 조건</td>
+<td>기존 조작별 승인 표를 확장</td>
+</tr>
+<tr>
+<td>채택</td>
+<td>미사용 시연(held-out) 평가와 6개 지표</td>
+<td>관문 지표의 측정 방법으로 사용</td>
+</tr>
+<tr>
+<td>조정</td>
+<td>첫 Online 대상: Codex 예시는 "승인 Baseline 복사 → Draft 파라미터 수정"</td>
+<td><strong>측정 위치, Align 셋업 유지</strong>. Baseline 복사는 기술 검증 예시로만 씀 (Codex 동의)</td>
+</tr>
+<tr>
+<td>조정</td>
+<td>용어 "Workflow"</td>
+<td>TF 용어 <strong>절차</strong>로 씀. 절차에는 분기와 완료 조건이 포함됨</td>
+</tr>
+<tr>
+<td>조정</td>
+<td>격리 GUI 환경(M4)</td>
+<td>별도 시뮬레이터가 없음. 녹화본 평가 + 입력 없는 실시간 Shadow + 하루 1시간 감독하 실장비 시험으로 대체</td>
+</tr>
+<tr>
+<td>조정</td>
+<td>입력 로그</td>
+<td>TF는 키 입력을 기록하지 않음(2026-11-02 결정). Codex 설계도 MP4만 전제하므로 구조 변경 없음. 복원 불가 구간은 표시만 하고 추정으로 메우지 않음</td>
+</tr>
+<tr>
+<td>발견</td>
+<td>PRD가 2027년 반자동 실행과 시간 단축을 요구해 기획안의 "보조는 2028"과 충돌</td>
+<td>PRD 일정을 기획안에 맞춤 (<a href="#06-platform-prd">PRD</a> 1절)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="07-platform-architecture--핵심-개념-what">핵심 개념 (What)</h2>
+<h3 id="07-platform-architecture--전체-구조">전체 구조</h3>
+<pre><code>[Offline: 지식화]  2027 관찰과 지식화
+  작업 녹화 → 화면 변화 이벤트 → 의미 행동 기록 → 의미 단계 → 여러 시연 정렬 → 분기 후보
+     → 담당 엔지니어 승인 → 버전 관리되는 지식 자산 (절차, 조작 단위, 규칙, 시연, 증거)
+
+[Online: 실행]  2027 Shadow(입력 없음) → 2028 보조 → 2029 자율
+  화면 관찰 → 현재 상태 인식 → 비슷한 시연 검색 → LLM 판단 → 규칙 확인(Policy Gate)
+     → 조작 단위 1개 실행 → 결과 검증 → 체크포인트 저장 → 다음 단계
+</code></pre>
+<ul>
+<li>Online도 2027년에 쓸 수 있음. 단, <strong>화면 입력 없이</strong> 관찰과 추천까지만(Shadow). 화면 입력 권한은 2028 보조 단계에서 엽니다. Align Fail 무인 대응은 승인된 예외로 따로 관리함</li>
+<li>원본 영상 전체를 매번 LLM에 넣지 않음. 승인된 지식과 지금 화면의 검증된 사실만 판단에 씀</li>
+</ul>
+<h3 id="07-platform-architecture--용어-대응">용어 대응</h3>
+<p>Codex 설계를 읽을 때 아래처럼 바꿔 읽습니다. TF 문서에는 오른쪽 말을 씁니다 (<a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/CONTEXT.md">용어</a>).</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Codex 설계</th>
+<th>TF 용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workflow</td>
+<td>절차</td>
+<td>단계의 순서 + 분기 + 단계별 완료 조건</td>
+</tr>
+<tr>
+<td>Semantic Step</td>
+<td>의미 단계</td>
+<td>시작 조건과 완료 조건을 따로 확인할 수 있는 작업 하나 (예: 레시피 사본 만들기)</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>조작 단위</td>
+<td>사전조건, 인자, 사후조건, 재시도 한도가 정해진 화면 조작 묶음</td>
+</tr>
+<tr>
+<td>Demonstration (Demo)</td>
+<td>시연</td>
+<td>엔지니어 녹화에서 뽑은 한 번의 작업 기록</td>
+</tr>
+<tr>
+<td>Policy Engine, Policy Gate</td>
+<td>규칙 확인</td>
+<td>권한, 호환성, 허용 분기를 서버가 다시 확인하는 단계</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>체크포인트</td>
+<td>검증된 단계까지의 실행 위치 기록. 장비 상태를 되돌리지는 않음</td>
+</tr>
+<tr>
+<td>SOP</td>
+<td>승인 절차서</td>
+<td>담당 엔지니어가 승인한 절차서</td>
+</tr>
+<tr>
+<td>Recipe Draft</td>
+<td>작업용 사본</td>
+<td>원본을 바꾸지 않고 수정하는 레시피 사본</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="07-platform-architecture--어떻게-만드는가-how">어떻게 만드는가? (How)</h2>
+<h3 id="07-platform-architecture--1-offline-녹화에서-승인된-절차까지">1. Offline: 녹화에서 승인된 절차까지</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>순서</th>
+<th>단계</th>
+<th>하는 일</th>
+<th>사람의 역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>전처리</td>
+<td>해상도, FPS, 시각 확인. 원본 프레임 번호 보존. 초당 1~2장으로 훑은 뒤 변화 구간만 원본으로 다시 검사</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>변화 감지, 이벤트</td>
+<td>라이브 영역과 커서, 시계 변화는 빼고 조작 영역 변화만 이벤트로 묶음 (전후 화면, ROI, OCR)</td>
+<td>화면 영역 지도 작성 (담당 엔지니어)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>의미 행동 기록</td>
+<td>VLM이 "관찰한 사실"과 "추정한 행동"을 나눠 적고 모든 판단을 원본 프레임에 연결. 모르는 것은 불확실 항목으로 남김</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>의미 단계 묶기</td>
+<td>클릭 여러 개를 시작 조건, 완료 조건이 있는 단계 하나로 묶음</td>
+<td>경계 검토</td>
+</tr>
+<tr>
+<td>5</td>
+<td>여러 시연 정렬</td>
+<td>같은 작업의 녹화 여러 건을 정렬해 공통 경로와 분기 후보를 찾음</td>
+<td>-</td>
+</tr>
+<tr>
+<td>6</td>
+<td>분기 승인</td>
+<td>분기마다 "발견 → 원인 가설 → 승인" 상태를 따로 둠. 승인된 것만 실행에 씀</td>
+<td><strong>분기 조건 승인 (담당 엔지니어)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>영상 하나나 빈도만으로 분기 조건을 확정하지 않음. 분기 이유는 담당 엔지니어와 승인 절차서로 확인</li>
+<li>키 입력을 기록하지 않으므로 정확한 입력 순서, 화면 변화가 없는 실패 입력, 뷰어 창 밖 팝업은 복원할 수 없음. 그 구간은 "미관찰"로 표시하고 추정으로 메우지 않음</li>
+<li>자동 추출물은 실행 가능한 매크로가 아니라 <strong>검토할 절차 초안</strong>임. 이 원칙은 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/wayfinder/tickets/03-procedure-extraction.md">녹화 절차 추출 티켓</a>의 결론(AI 초안 + 엔지니어 검토)과 같음</li>
+<li>VLM이 내는 confidence 숫자는 보정된 확률이 아니므로 실행 승인 기준으로 쓰지 않음</li>
+</ul>
+<h3 id="07-platform-architecture--2-저장-영역-4개">2. 저장 영역 4개</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>저장 영역</th>
+<th>담는 것</th>
+<th>찾는 방식</th>
+<th>기획안 서버 자원</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>절차, 조작 단위, 규칙</td>
+<td>단계, 분기 조건, 조작 단위 계약, 승인 절차서</td>
+<td>ID, 버전으로 정확 조회</td>
+<td>관계형 DB</td>
+</tr>
+<tr>
+<td>실행 상태</td>
+<td>현재 단계, 완료 단계, 시도 횟수, 체크포인트</td>
+<td>트랜잭션, 재개 조회</td>
+<td>관계형 DB, 캐시</td>
+</tr>
+<tr>
+<td>시연 색인</td>
+<td>상태, 목표, 화면 설명 임베딩 + 메타데이터</td>
+<td>호환성 필터 후 유사 검색</td>
+<td>검색 엔진 (BGE-M3)</td>
+</tr>
+<tr>
+<td>원본 증거</td>
+<td>녹화, 중요 프레임, ROI, OCR, 원본 시각</td>
+<td>시연, 이벤트 ID로 추적</td>
+<td>객체 저장소</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>공통 키: 장비 모델, 화면(GUI) 버전, 레시피 유형, 절차 버전, 증거 ID</li>
+<li>논리적 구분이며 저장 시스템 수를 늘리지 않음. <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/wayfinder/tickets/11-server-config.md">서버 구성 티켓</a>의 할당 자원 안에서 시작함</li>
+</ul>
+<h3 id="07-platform-architecture--3-online-한-단계씩-확인하며-실행">3. Online: 한 단계씩 확인하며 실행</h3>
+<p><strong>비슷한 시연 찾기</strong></p>
+<ol>
+<li>호환성 필터: 장비 모델, 화면 버전, 레시피 유형, 승인 범위가 맞지 않으면 제외 (유사도 점수로 보상하지 않음)</li>
+<li>유사도 재순위: 현재 단계, 작업 목표, 화면 구성, 직전 작업 이력. 초기에는 상위 3건</li>
+<li>맞는 시연이 없으면 "검토 요청"이 정상 결과임</li>
+</ol>
+<p><strong>판단, 규칙 확인, 실행의 분리</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>역할</th>
+<th>하는 일</th>
+<th>하지 않는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>판단 (LLM)</td>
+<td>다음 분기, 조작 단위, 근거를 제안</td>
+<td>직접 화면 조작, 사전조건 충족 선언</td>
+</tr>
+<tr>
+<td>규칙 확인 (서버)</td>
+<td>권한, 허용 분기, 인자, 값과 단위, 절차 버전을 다시 확인. 거부하면 실행으로 넘기지 않음</td>
+<td>판단</td>
+</tr>
+<tr>
+<td>실행 (조작 단위)</td>
+<td>지정된 조작 단위 하나만 실행하고 화면을 다시 관찰</td>
+<td>임의 메뉴 탐색, 추가 수정</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>판단 입력 데이터 계약 (Decision Context)</strong></p>
+<p>LLM에 주는 입력을 JSON Schema로 고정합니다. 전체 스키마와 예시는 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/codex/video-to-workflow-agent.md#슬라이드-12-decision-context의-데이터-계약">Codex 설계 슬라이드 12</a>에 있습니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>필드</th>
+<th>내용</th>
+<th>확인 책임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>task, state</td>
+<td>요청, 장비, 레시피 / 현재 단계, 완료 단계</td>
+<td>요청과 절차 버전 확인</td>
+</tr>
+<tr>
+<td>observation</td>
+<td>화면 ID, 프레임 참조, <strong>검증된 사실</strong></td>
+<td>VLM 주장만으로 채우지 않고 OCR, UI 상태 검사 결과를 연결</td>
+</tr>
+<tr>
+<td>retrieved_demonstrations</td>
+<td>호환되는 시연 최대 3건</td>
+<td>메타데이터 필터 강제</td>
+</tr>
+<tr>
+<td>approved_policy</td>
+<td>승인 절차서, 허용 방식, 덮어쓰기 금지, 적용 금지</td>
+<td>신뢰 저장소에서만 읽음. 화면 OCR이나 검색 문서의 글이 덮어쓸 수 없음</td>
+</tr>
+<tr>
+<td>allowed_branches</td>
+<td>승인 조건을 통과한 분기 목록</td>
+<td>서버가 계산하고 다시 확인</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>스키마 통과는 구조 검증일 뿐 승인 절차서 승인을 뜻하지 않음</li>
+<li>화면 안의 글자는 데이터로만 취급함 (지시로 해석하지 않음)</li>
+</ul>
+<p><strong>실행 루프</strong></p>
+<pre><code>관찰 → 상태 인식 → 시연 검색, 판단 → 규칙 확인 → 조작 단위 1개 실행 → 사후조건 검증, 체크포인트 저장
+  모름, 불일치, 시간 초과 → 중단하고 엔지니어 검토
+</code></pre>
+<ul>
+<li>완료 저장은 사후조건을 확인한 뒤에만 함</li>
+<li>체크포인트는 소프트웨어 실행 위치만 복원함. 원격 화면이나 장비를 되돌리지 않음</li>
+<li>통신이 끊겨 실행 여부가 불명확하면 재시도하지 않고 실제 결과부터 조회함</li>
+</ul>
+<h3 id="07-platform-architecture--4-조작-단위-계약">4. 조작 단위 계약</h3>
+<p>예시: 레시피 사본 만들기 (기술 검증용 예시, 첫 제품 범위 아님)</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>사전조건</td>
+<td>장비, 레시피 관리 화면, 승인된 원본 확인</td>
+</tr>
+<tr>
+<td>인자, 범위</td>
+<td>원본 ID, 사본 이름 / 원본 변경 금지</td>
+</tr>
+<tr>
+<td>사후조건</td>
+<td>사본 존재 + 원본 그대로 + 사본 미적용 상태</td>
+</tr>
+<tr>
+<td>전이</td>
+<td>성공 → 다음 단계 / 실패 → 복구 / 모름 → 검토</td>
+</tr>
+<tr>
+<td>재시도, 시간 한도</td>
+<td>조회는 제한적으로 재시도. 저장, 복사 같은 변경 조작은 실행 여부를 확인한 뒤에만 재시도</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>같은 요청을 다시 실행해도 사본이나 저장이 중복되지 않도록 요청 ID와 결과를 연결함</li>
+<li>첫 Online 제품 범위는 <a href="#06-platform-prd">PRD</a>의 측정 위치, Align 셋업입니다. 이 구간의 조작 단위(Align Key 후보 등록, 측정 위치 등록)도 같은 계약 형식으로 정의함</li>
+</ul>
+<h3 id="07-platform-architecture--5-안전-관문">5. 안전 관문</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>관문</th>
+<th>시점</th>
+<th>확인할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G1</td>
+<td>실행 전</td>
+<td>장비, 세션, 권한, 버전 확인. 원본 백업. 변경 대상과 범위 확정</td>
+</tr>
+<tr>
+<td>G2</td>
+<td>작업용 사본 수정, 저장</td>
+<td>허용 필드, 값, 단위 확인. 범위 밖 변경 차단. 저장 후 다시 읽어 차이(Diff) 확인</td>
+</tr>
+<tr>
+<td>G3</td>
+<td>운영 적용</td>
+<td>담당 엔지니어가 백업, 차이, 검증 증거를 보고 별도 승인</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>즉시 중단</strong>: 장비 불일치, 승인되지 않은 분기, 상태 불명, 금지 필드 변경, 검증 실패</li>
+<li>기본 정책: 덮어쓰기 금지, 적용 금지. 운영 적용은 별도 작업과 승인으로 남김</li>
+<li>기존 <a href="#03-operating-rhythm">조작별 승인 표</a>와의 관계: 승인 표는 "누가 승인하는가", G1~G3는 "승인 전후에 무엇을 확인하는가"를 정함. 둘 다 적용함</li>
+<li>감사 기록: 요청, 규칙과 조작 단위 버전, 전후 증거, 차이, 승인자</li>
+</ul>
+<h3 id="07-platform-architecture--6-평가-방법">6. 평가 방법</h3>
+<p><strong>정보 누수 방지</strong></p>
+<ul>
+<li>지식 자산용 시연과 평가용 시연을 나눔. 같은 작업, 파생 영상이 양쪽에 섞이지 않도록 요청, 장비, 시간 기준으로 그룹을 나눔</li>
+<li>시점 t를 평가할 때는 t 이전 관찰만 Agent에 줌. 미래 프레임과 정답 경로는 평가자만 씀</li>
+<li>평가 대상 시연은 시연 색인, 임베딩 캐시, 절차 추출 데이터에서도 뺌</li>
+<li>녹화본 재생 평가로 화면 조작 성공률을 주장하지 않음</li>
+</ul>
+<p><strong>지표 (정의만, 실측값 없음)</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>지표</th>
+<th>정의</th>
+<th>평가 환경</th>
+<th>쓰는 관문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단계 추출 F1</td>
+<td>담당 엔지니어 정답 대비 단계 정밀도, 재현율의 F1</td>
+<td>라벨링한 녹화</td>
+<td>2027-12 관찰과 지식화</td>
+</tr>
+<tr>
+<td>상태, 분기 정확도</td>
+<td>맞힌 상태, 분기 수 / 평가한 상태, 분기 수 (따로 집계)</td>
+<td>미사용 시연 재생</td>
+<td>2027-12, 2028 진입</td>
+</tr>
+<tr>
+<td>미승인 행동 제안률</td>
+<td>미승인 행동 제안 수 / 전체 제안 수</td>
+<td>재생 + Shadow</td>
+<td>2028 진입</td>
+</tr>
+<tr>
+<td>안전 중단률, 자동 결정률</td>
+<td>모르는 상황 중 안전하게 멈춘 비율 / 전체 중 자동 결정 비율</td>
+<td>오류, 미지 상태 포함</td>
+<td>2028, 2029</td>
+</tr>
+<tr>
+<td>검증된 작업 성공률</td>
+<td>사후조건과 정확한 차이를 통과한 작업 / 시도한 작업</td>
+<td>감독하 실장비</td>
+<td>2028 보조</td>
+</tr>
+<tr>
+<td>소요 시간, 사람 투입</td>
+<td>관찰부터 검증까지 p50, p95 / 검토 시간, 개입 횟수</td>
+<td>실제 실행 경로</td>
+<td>2028, 2029</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>위험 실행 0건이 표본에서 나와도 무위험을 증명하지 않음. 잘못된 값 저장, 원본 변경, 적용 건수를 별도 안전 지표로 둠</li>
+<li>수치 목표는 PoC 시작 전 담당 엔지니어와 합의함 (⟨확인⟩)</li>
+</ul>
+<h3 id="07-platform-architecture--7-격리-환경이-없을-때의-검증-순서">7. 격리 환경이 없을 때의 검증 순서</h3>
+<p>Codex 설계는 격리된 GUI 환경을 가정합니다. TF에는 별도 시뮬레이터가 없고 비생산 실장비 시간이 하루 1시간입니다. 그래서 아래 순서로 대신합니다.</p>
+<ol>
+<li><strong>녹화본 평가</strong>: 미사용 시연으로 상태와 다음 행동 판단을 평가</li>
+<li><strong>입력 없는 실시간 Shadow</strong>: 실제 화면을 보고 제안만 내고, 담당 엔지니어가 제안을 검토</li>
+<li>
+<p><strong>감독하 실장비 시험</strong>: 인가된 1시간 안에 작업용 사본과 조작 단위 하나씩 검증. 원본 보존, 적용 금지, 측정 실행 승인, 즉시 중단, 사후 확인</p>
+</li>
+<li>
+<p>작업용 사본만으로 장비 동작까지 격리되지는 않음. 3번 조건을 확보하지 못하면 2028 진입 판단은 Shadow까지만 근거로 씀</p>
+</li>
+</ol>
+<h3 id="07-platform-architecture--8-단계별-구현-순서">8. 단계별 구현 순서</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Codex 단계</th>
+<th>산출물</th>
+<th>TF 시기</th>
+<th>다음 단계 통과 조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 데이터, 정답 구축</td>
+<td>녹화 목록, 메타데이터, 라벨 기준</td>
+<td>2027-01~06 (온보딩, 녹화 축적)</td>
+<td>장비, 화면 버전, 핵심 분기, 예외 표본 확보 (온보딩 종료만으로는 통과 아님)</td>
+</tr>
+<tr>
+<td>M2 Offline 추출</td>
+<td>의미 행동 기록, 의미 단계, 분기 후보</td>
+<td>2027 3분기 (절차화)</td>
+<td>담당 엔지니어 검수, 누락과 오인식 원인 확인</td>
+</tr>
+<tr>
+<td>M3 판단 입력, 재생 평가</td>
+<td>승인 절차, JSON 계약, 시연 검색, 미사용 시연 평가</td>
+<td>2027 4분기 (지식 자산, 돌파구 추천)</td>
+<td>미사용 시연 평가, 미승인 제안과 중단 분석</td>
+</tr>
+<tr>
+<td>M4 Shadow, 감독하 실장비</td>
+<td>입력 없는 제안 → 작업용 사본에서 조작 단위 실행</td>
+<td>2028 보조</td>
+<td>규칙 차단, 저장 차이, 중단과 재개 검증</td>
+</tr>
+<tr>
+<td>M5 제한 운영 검토</td>
+<td>백업, 차이, 감사, 복구 증거</td>
+<td>2028 말 ~ 2029</td>
+<td>담당 엔지니어 승인, 범위와 중단 기준 확정</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>M5는 제한 운영을 <strong>검토</strong>하는 단계이며 2029 자율 완주를 보장하지 않음. 자율 단계의 통과 기준은 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/wayfinder/tickets/06-done-definition.md">완성 정의 티켓</a>을 따름</li>
+<li>첫 범위: 장비와 화면 버전 1종, 레시피 유형 1종</li>
+</ul>
+<h2 id="07-platform-architecture--열린-질문">열린 질문</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th>누가</th>
+<th>언제까지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>측정 위치, Align 셋업 구간을 의미 단계와 조작 단위로 나누면 몇 개이고, 각각의 사후조건은 무엇인가</td>
+<td>장비군 담당 + 플랫폼</td>
+<td>2027 3분기</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>감독하 실장비 시험에서 "작업용 사본"을 만들 수 있는가 (장비군마다 레시피 사본 기능이 있는가)</td>
+<td>장비군 담당</td>
+<td>온보딩 중</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>단계 추출 F1, 분기 정확도의 2027-12 관문 수치</td>
+<td>리드 + 장비군 담당</td>
+<td>2027-03 말 (시범 녹화 실측 후)</td>
+</tr>
+<tr>
+<td>A4</td>
+<td>시연 색인의 화면 설명 임베딩을 BGE-M3 텍스트 임베딩으로 충분히 대신할 수 있는가</td>
+<td>플랫폼</td>
+<td>2027 3분기</td>
+</tr>
+<tr>
+<td>A5</td>
+<td>녹화 DB의 영상 FPS, 길이, 해상도 (전처리 기준)</td>
+<td>R&amp;D MI H/W 담당자</td>
+<td>2026-12</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="07-platform-architecture--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/codex/video-to-workflow-agent.md">Codex 설계 원문: MP4 기반 Video-to-Workflow Agent</a>, <a href="./video_to_workflow_recipe_agent.pptx">발표자료 PPTX</a></li>
+<li><a href="#06-platform-prd">플랫폼 1차 PRD</a></li>
+<li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
+<li><a href="#03-operating-rhythm">운영 방식 (조작별 승인)</a></li>
+<li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/CONTEXT.md">ARC TF 용어</a></li>
+<li><a href="#decision-log">결정 기록</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="08-exec-summary"><p class="file"><span class="num">09</span>08-exec-summary.md</p><h1>Auto Recipe Creation TF: 한 장 요약</h1>
+<blockquote>
+<p>숙련 엔지니어의 레시피 셋업 노하우를 회사 자산으로 남기고, 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않는 구조를 만들고자 합니다.</p>
+</blockquote>
+<h2 id="08-exec-summary--문제">문제</h2>
+<ul>
+<li>MI 장비 레시피 셋업은 숙련 엔지니어가 원격 화면에서 손으로 반복하는 작업임. 레시피당 평균 30~60분 (현업 경험치)</li>
+<li>판단 기준이 사람에게만 있어 담당자가 바뀌면 노하우가 사라짐</li>
+<li>장비, 제품이 늘면 셋업 인력도 같은 비율로 늘어야 함. Align Fail 알람이 나면 사람이 올 때까지 장비가 멈춤</li>
+</ul>
+<h2 id="08-exec-summary--해결-방향">해결 방향</h2>
+<ul>
+<li>엔지니어 작업 녹화에서 절차와 판단 근거를 추출하고 담당 엔지니어가 승인해, 다른 엔지니어가 찾아 쓰는 <strong>지식 자산</strong>으로 축적함</li>
+<li>AI는 현재 화면에 맞는 승인 절차를 찾아 <strong>한 단계씩</strong> 수행하고, 결과가 불명확하면 멈춤. 위험 조작과 저장, 적용은 엔지니어가 승인함</li>
+<li>장비마다 따로 만들지 않고 <strong>공통 플랫폼</strong> 하나 위에 장비별 절차만 얹음. 1차 PoC(Align Fail 대응)에서 API 없는 장비 화면을 사내 AI로 읽고 조작할 수 있음을 확인함</li>
+</ul>
+<h2 id="08-exec-summary--단계별-타겟">단계별 타겟</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>시기</th>
+<th>타겟</th>
+<th>회사에 남는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2027 상반기</td>
+<td>CD-SEM, Thickness Align Fail 무인 대응</td>
+<td>장비 가동 시간 회수</td>
+</tr>
+<tr>
+<td>2027 연말</td>
+<td>1차 3개 장비군 셋업 절차, 노하우 지식 자산화</td>
+<td>노하우의 조직 자산화</td>
+</tr>
+<tr>
+<td>2028</td>
+<td>엔지니어 앞에서 반복 입력 대행</td>
+<td>엔지니어 직접 투입 시간 감소</td>
+</tr>
+<tr>
+<td>2029</td>
+<td>AI가 셋업을 진행하고 특이 사항 때만 엔지니어 개입</td>
+<td>셋업 인력을 장비 수에 비례해 늘리지 않음</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>효과는 엔지니어 직접 투입 시간과 예정에 없던 개입 횟수로 확인함. 기준선은 2027-02 실측, 측정 전에는 목표를 숫자로 정하지 않음</li>
+<li>단계마다 검증 증거를 확인한 뒤에만 다음 단계로 확대함</li>
+</ul>
+<h2 id="08-exec-summary--요청-사항">요청 사항</h2>
+<ul>
+<li><strong>ARC TF 구성 승인</strong> (2027-01~12)</li>
+<li><strong>1차 지정군(CD-SEM, Thickness, VeritySEM) 담당 엔지니어 협업</strong>: 장비군마다 1~2명, 주 5시간</li>
+<li><strong>개발 인력 2명</strong> (TF 리드 포함, 각 50%, 실질 1명)</li>
+<li>새 서버 구매 없음. 기존 사내 AI 서버와 서버 자원 사용, 녹화 스토리지는 2027 하반기에 사용량 실측 후 요청</li>
+</ul>
+<h2 id="08-exec-summary--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
+<li><a href="#00-problem-statement">문제 정의</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="codex-readme"><p class="file"><span class="num">10</span>codex/README.md</p><h1>Video-to-Workflow 발표자료 아카이브</h1>
+<blockquote>
+<p>제작한 발표자료의 슬라이드 이미지와 텍스트를 함께 보관합니다.</p>
+</blockquote>
+<h2 id="codex-readme--왜-필요한가-why">왜 필요한가? (Why)</h2>
+<p>PowerPoint를 열지 않고도 설계 내용을 읽고, 슬라이드별 근거와 JSON 계약을 확인할 수 있도록 정리했습니다.</p>
+<h2 id="codex-readme--핵심-개념-what">핵심 개념 (What)</h2>
+<ul>
+<li><code>video-to-workflow-agent.md</code>: 슬라이드 22장의 본문, 표, JSON 예시와 발표자 노트</li>
+<li><code>images/</code>: 각 슬라이드의 PNG 이미지 22장, 1280 × 720 해상도</li>
+<li>이미지는 완성된 슬라이드의 렌더링입니다. 별도로 생성한 삽화 파일은 없습니다.</li>
+</ul>
+<h2 id="codex-readme--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
+<p><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/codex/video-to-workflow-agent.md">발표자료 전체 텍스트와 이미지</a>를 엽니다. Markdown의 이미지 링크는 <code>images/</code> 폴더를 상대 경로로 참조하므로, 다른 곳으로 옮길 때는 폴더 전체를 함께 복사합니다.</p>
+<p>자료는 제안 설계이며 실장비 검증 결과가 아닙니다. 원본 PPTX는 변경하지 않았습니다.</p>
+<h2 id="codex-readme--참고-자료-references">참고 자료 (References)</h2>
+<ul>
+<li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/codex/video-to-workflow-agent.md">전체 텍스트와 이미지</a></li>
+<li><a href="../video_to_workflow_recipe_agent.pptx">PowerPoint 발표자료</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="decision-log"><p class="file"><span class="num">11</span>decision-log.md</p><h1>결정 기록</h1>
 <blockquote>
 <p>날짜별로 정한 것과 그 이유. 뒤집을 때도 새 줄로 남기고 이전 줄을 지우지 않는다.</p>
 </blockquote>
@@ -2655,9 +3387,39 @@ VeritySEM, Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <td>현업 자산을 버리지 않는다. 영상, 스크린샷 소모가 크다</td>
 <td>확정</td>
 </tr>
+<tr>
+<td>2026-11-08</td>
+<td>Codex의 Video-to-Workflow 설계를 공통 플랫폼의 기술 구조로 채택한다: Offline 지식화와 Online 실행, 판단(LLM)과 규칙 확인과 실행의 분리, 안전 관문 G1~G3, 미사용 시연 평가 (<a href="#07-platform-architecture">기술 설계</a>)</td>
+<td>장비와 무관한 부분과 장비별 절차의 경계가 분명하고, 기존 안전 원칙(엔지니어 승인, 자체 중단)과 맞는다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-08</td>
+<td>첫 Online 대상은 측정 위치, Align 셋업으로 유지한다. Codex 예시의 "Baseline 복사 → Draft 파라미터 수정"은 기술 검증 예시로만 쓴다</td>
+<td>현업 시행착오와 투입 시간을 줄이는 목표에 직접 이어진다. herdr로 Codex와 확인</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-08</td>
+<td>PRD 일정을 기획안에 맞춘다: 2027년은 화면 입력 없는 관찰, 절차화, Shadow 제안까지, 화면 입력과 셋업 시간 단축은 2028 보조부터</td>
+<td>PRD가 2027 반자동 실행과 시간 단축을 요구해 기획안과 어긋나 있었다 (Codex 검토로 발견)</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-08</td>
+<td>격리 GUI 환경 대신 녹화본 평가 → 입력 없는 Shadow → 하루 1시간 감독하 실장비 시험 순서로 검증한다</td>
+<td>별도 시뮬레이터가 없다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-08</td>
+<td>최종 산출물을 독자별 3종으로 나눈다: 팀원(전체), 담당 임원(기획안), 최고 임원(한 장 요약)</td>
+<td>내용이 늘어 한 문서로는 독자마다 과하거나 모자란다</td>
+<td>확정</td>
+</tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="risk-register"><p class="file"><span class="num">09</span>risk-register.md</p><h1>위험 목록</h1>
+<section class="doc" id="risk-register"><p class="file"><span class="num">12</span>risk-register.md</p><h1>위험 목록</h1>
 <blockquote>
 <p>TF 운영과 구현의 위험, 대응, 담당. 실무 회의에서 바뀐 것만 확인한다.</p>
 </blockquote>
@@ -2843,6 +3605,33 @@ VeritySEM, Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에�
 <td>중간</td>
 <td>온보딩 때 기존 스크립트 목록화, 정해진 반복 입력은 재사용, 인식과 판단은 VLM, 스크립트 앞뒤 화면 확인. 2027-06 요소 목록에 반영</td>
 <td>플랫폼 팀 + Thickness 담당</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R20</td>
+<td>키 입력을 기록하지 않아 녹화에서 정확한 입력 순서, 화면 변화가 없는 실패 입력, 뷰어 밖 팝업을 복원할 수 없다</td>
+<td>높음</td>
+<td>중간</td>
+<td>복원 불가 구간은 "미관찰"로 표시하고 추정으로 메우지 않음, 분기 이유는 담당 엔지니어와 승인 절차서로, 저장 결과는 다시 읽어 확인 (<a href="#07-platform-architecture">기술 설계</a>)</td>
+<td>플랫폼 팀</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R21</td>
+<td>격리된 GUI 시험 환경이 없어 화면 입력 검증 근거가 부족하다</td>
+<td>높음</td>
+<td>높음</td>
+<td>녹화본 평가 → 입력 없는 Shadow → 하루 1시간 감독하 실장비 시험 순서. 감독하 시험 조건을 못 갖추면 2028 진입 판단은 Shadow까지만 근거로 씀</td>
+<td>리드 + 장비군 담당</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>R22</td>
+<td>화면 안의 글자나 검색된 문서가 AI 판단을 엉뚱한 조작으로 이끈다</td>
+<td>중간</td>
+<td>높음</td>
+<td>승인 절차서와 허용 범위는 신뢰 저장소에서만 읽음, 화면 글자는 데이터로만 취급, 서버 규칙 확인이 다시 거름</td>
+<td>플랫폼 팀</td>
 <td>열림</td>
 </tr>
 </tbody>

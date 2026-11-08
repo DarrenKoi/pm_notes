@@ -5,7 +5,7 @@ category_middle: "ARC TF (Auto Recipe Creation)"
 category_minor: "전체 목차"
 note_kind: "목차"
 classified_on: "2026-10-29"
-last_updated: 2026-11-06
+last_updated: 2026-11-08
 ---
 
 # ARC TF: 레시피 자동 생성 태스크포스
@@ -26,22 +26,30 @@ last_updated: 2026-11-06
 | 3 | [운영 방식](./03-operating-rhythm.md) | TF 전원 | 회의, 월간 보고 형식, 의사결정, 작업 관리, 안전 원칙 | 초안 |
 | 4 | [온보딩 학습 과정](./04-onboarding.md) | 담당 엔지니어 | 2027-01~02 8주 과정, 수료 기준 | 초안 |
 | 5 | [PoC 자산과 남은 과제](./05-poc-assets.md) | 플랫폼 팀, 임원 | Align Fail PoC에서 가져오는 것, 새로 풀어야 하는 것 | 초안 |
-| 6 | [플랫폼 1차 PRD](./06-platform-prd.md) | 플랫폼 팀, 담당 엔지니어 | 무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문 | 초안, 검토 전 |
+| 6 | [플랫폼 1차 PRD](./06-platform-prd.md) | 플랫폼 팀, 담당 엔지니어 | 무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문 | 초안, 일정 기획안과 맞춤 (2026-11-08) |
+| 7 | [공통 플랫폼 기술 설계](./07-platform-architecture.md) | 플랫폼 팀, 담당 엔지니어 | 어떻게 만드나: Offline 지식화와 Online 실행, 판단과 규칙 확인과 실행 분리, 안전 관문, 평가, 단계별 구현 순서. Codex 설계 검토 결과 | 초안, 제안 설계 |
+| 8 | [한 장 요약](./08-exec-summary.md) | 최고 임원 | 문제, 해결 방향, 단계별 타겟, 요청 사항 | 초안, 2026-12 최종 승인용 |
+| - | [Codex 설계 원문](./codex/README.md) | 플랫폼 팀 | MP4 기반 Video-to-Workflow Agent 발표자료 22장의 본문과 이미지 (원문 보존, 수정하지 않음) | 보관 |
 | - | [결정 기록](./decision-log.md) | 리드 | 날짜별 결정과 이유 | 2026-10-29 |
 | - | [위험 목록](./risk-register.md) | 리드 | 위험, 대응, 담당 | 2026-10-29 |
 
 ## 최종 산출물 (docx, pptx)
 
-임원에게 내는 기획안의 최종본은 Word와 PowerPoint 파일이다. `.md`가 원본이고, 두 파일은 손으로 고치지 않고 다시 만든다. 필요 패키지: `python-docx`, `python-pptx`. 한글 폰트는 맑은 고딕.
+독자별로 3종을 만든다. 팀원은 전체, 담당 임원(AI TF 담당 임원, 1차 승인)은 기획안, 최고 임원(기반기술센터장, 2차 최종 승인)은 한 장 요약이다. `.md`가 원본이고, 두 파일은 손으로 고치지 않고 다시 만든다. 필요 패키지: `python-docx`, `python-pptx`. 한글 폰트는 맑은 고딕.
 
-| 파일 | 내용 | 만드는 명령 |
+| 독자 | docx | pptx |
 |---|---|---|
-| [deliverables/arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx) | 기획안 본문(01) + 별첨 A 문제 정의(00) | `python my-task/arc-tf/deliverables/build_docx.py` |
-| [deliverables/arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx) | 2026-12 임원 보고 deck 11장, 슬라이드마다 발표자 노트 | `python my-task/arc-tf/deliverables/build_pptx.py` |
+| 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 20장 (담당 임원 deck + 기술 설계 6장) |
+| 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 14장 (공통 플랫폼 구조 1장 포함) |
+| 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 1쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 4장 |
 
-- docx는 01, 00 `.md`를 그대로 변환한다. `.md`를 고치면 명령만 다시 실행한다.
-- pptx는 01, 00의 **요약**이라 내용이 `build_pptx.py` 안에 있다. 01, 00에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.
-- 플랫폼 PRD(06)는 팀 작업 문서라 최종 산출물에 넣지 않는다.
+```bash
+python my-task/arc-tf/deliverables/build_docx.py          # 3종 모두, 하나만: team | boss | exec
+python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나만: team | boss | exec
+```
+
+- docx는 `.md`를 그대로 변환한다. `.md`를 고치면 명령만 다시 실행한다.
+- pptx는 01, 07, 08의 **요약**이라 내용이 `build_pptx.py` 안에 있다(슬라이드 하나 = 함수 하나, 맨 아래 `DECKS`가 deck별 순서). `.md`에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.
 
 ## 일정
 
