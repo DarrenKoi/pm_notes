@@ -39,9 +39,9 @@ last_updated: 2026-11-09
 
 | 독자 | docx | pptx |
 |---|---|---|
-| 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 25장 (담당 임원 deck + 기술 설계 7장) |
-| 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 18장 (PoC 교훈, 실행 위치, LLM/VLM 한계, 교육 포함) |
-| 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 1쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 5장 |
+| 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 26장 (담당 임원 deck + 기술 설계 7장) |
+| 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 19장 (PoC 교훈, 실행 위치, LLM/VLM 한계, 대안 비교, 교육 포함) |
+| 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 1쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 6장 |
 
 ```bash
 python my-task/arc-tf/deliverables/build_docx.py          # 3종 모두, 하나만: team | boss | exec
@@ -70,7 +70,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 |---|---|
 | 1차 장비군 (선발대) | CD-SEM(리드 직접 담당), Thickness (2026-11-09 변경, 2차: VeritySEM, Provision, Inspection) |
 | 겸직 시간 | 주 5시간 (근무일마다 1시간) |
-| 공통 플랫폼 팀 | 개발 2명 (본인 포함) |
+| 공통 플랫폼 팀 | 개발 3명: 본인 + 임원, 팀장급 지정 2명 (백엔드, 프론트엔드), 각 50% (2026-11-09 변경, 이전 2명) |
 | 보고 대상 임원 | AI TF 담당 임원(1차 승인) → 기반기술센터장(2차 최종 승인) |
 | 비생산 검증 | 장비 사용 인가를 받아 하루 1시간 실장비 테스트 |
 | 화면 조작 보안 | 설치형 프로그램을 배포해 엔지니어 본인 PC에서 실행. 장비 PC에는 설치하지 않는다 |
@@ -79,7 +79,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 
 ### 아직 남은 것
 
-- ⟨확인: Thickness 담당 참여 엔지니어 (2026-12), 2차 장비군 담당 (2027-05)⟩
+- ⟨확인: Thickness 담당 참여 엔지니어 (2026-12), 2차 장비군 담당 (2026-12), 지정 개발 2명 (2026-12)⟩
 - ⟨확인: Provision, Inspection 장비군 접속 경로⟩
 - ⟨확인: 장비 화면 녹화분 DB 직접 접근 가능 여부 (R&D MI H/W 담당자). 불가하면 RCS에서 GUI 자동화로 다운로드, 다운로드 자동화 작업 별도 필요⟩
 - ⟨확인: 장비군별 자동화 대상 구간 실측, 온보딩 8주차⟩
