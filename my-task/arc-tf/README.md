@@ -14,18 +14,18 @@ last_updated: 2026-11-09
 
 ## 한 문단 요약
 
-1차 PoC(Align Fail 자동 대응)를 리드 혼자 진행하며 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것을 확인했다. 동시에 이 일에는 개발자와 현업 엔지니어 두 역할이 함께 필요하고, 모델 최적화와 운영, 최신 VLM 적용 테스트, 녹화 DB 추출까지 혼자 하기에는 시간이 부족하다는 것도 배웠다. LLM, VLM만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 **공통 플랫폼**이 필요하다. 그래서 **공통 플랫폼 팀**이 엔진을 만들고 **장비군 담당**(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 CD-SEM, Thickness 위주로 Align Fail 자동 대응 지능화와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.
+1차 PoC(Align Fail 자동 대응)를 리드 혼자 진행하며 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것을 확인했다. 동시에 이 일에는 개발자와 현업 엔지니어 두 역할이 함께 필요하고, 모델 최적화와 운영, 최신 VLM 적용 테스트, 녹화 DB 추출까지 혼자 하기에는 시간이 부족하다는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 **공통 플랫폼**이 필요하다. 그래서 **공통 플랫폼 팀**이 엔진을 만들고 **장비군 담당**(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 CD-SEM, Thickness 위주로 Align Fail 자동 대응 지능화와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.
 
 ## 문서
 
 | 순서 | 문서 | 독자 | 내용 | 상태 |
 |---|---|---|---|---|
 | 0 | [문제 정의](./00-problem-statement.md) | 임원, TF 전원 | 누가 무엇을 하려다 왜 막히는가, 한 문장 문제 정의와 판단 지표 | 초안, 담당 엔지니어 확인 전 |
-| 1 | [TF 구성 기획안](./01-tf-proposal.md) | 임원 | PoC 자산과 교훈, LLM, VLM만으로 안 되는 이유, 선발대에서 확장으로, 교육하며 운영, 타임라인, 요청 사항 | 초안, 2026-12 보고용 (2026-11-09 흐름 변경) |
+| 1 | [TF 구성 기획안](./01-tf-proposal.md) | 임원 | PoC 성과와 시사점, LLM 모델만으로 안 되는 이유, 선발대에서 확장으로, 교육하며 운영, 타임라인, 요청 사항 | 초안, 2026-12 보고용 (2026-11-09 흐름 변경) |
 | 2 | [참여 팀과 역할](./02-roles-and-teams.md) | TF 전원 | 플랫폼 팀, 장비군 담당 구성, 장비군 담당 명단, 책임 분담표(RACI) | 초안 |
 | 3 | [운영 방식](./03-operating-rhythm.md) | TF 전원 | 회의, 월간 보고 형식, 의사결정, 작업 관리, 안전 원칙 | 초안 |
 | 4 | [온보딩 학습 과정](./04-onboarding.md) | 담당 엔지니어 | 합류 시점마다 8주 과정 (1기 2027-01~02, 2기 2027-07~08), 수료 기준 | 초안 |
-| 5 | [PoC 자산과 남은 과제](./05-poc-assets.md) | 플랫폼 팀, 임원 | Align Fail PoC에서 가져오는 것, 혼자 진행하며 얻은 교훈, 새로 풀어야 하는 것 | 초안 |
+| 5 | [PoC 자산과 남은 과제](./05-poc-assets.md) | 플랫폼 팀, 임원 | Align Fail PoC에서 가져오는 것, 혼자 진행하며 확인한 시사점, 새로 풀어야 하는 것 | 초안 |
 | 6 | [플랫폼 1차 PRD](./06-platform-prd.md) | 플랫폼 팀, 담당 엔지니어 | 무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문 | 초안, 일정 기획안과 맞춤 (2026-11-08) |
 | 7 | [공통 플랫폼 기술 설계](./07-platform-architecture.md) | 플랫폼 팀, 담당 엔지니어 | 어떻게 만드나: Offline 지식화와 Online 실행, 판단과 규칙 확인과 실행 분리, 안전 관문, 평가, 단계별 구현 순서. Codex 설계 검토 결과 | 초안, 제안 설계 |
 | 8 | [한 장 요약](./08-exec-summary.md) | 최고 임원 | 문제, 해결 방향, 단계별 타겟, 요청 사항 | 초안, 2026-12 최종 승인용 |
@@ -40,7 +40,7 @@ last_updated: 2026-11-09
 | 독자 | docx | pptx |
 |---|---|---|
 | 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 20장 (담당 임원 deck + 기술 설계 5장) |
-| 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 15장 (PoC 교훈, 실행 위치, LLM/VLM 한계, 대안 비교 포함) |
+| 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 15장 (PoC 시사점, 실행 위치, LLM/VLM 한계, 대안 비교 포함) |
 | 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 1쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 5장 |
 
 ```bash
