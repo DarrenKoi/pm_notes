@@ -39,7 +39,7 @@ last_updated: 2026-11-08
 
 | 독자 | docx | pptx |
 |---|---|---|
-| 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 20장 (담당 임원 deck + 기술 설계 6장) |
+| 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 21장 (담당 임원 deck + 기술 설계 7장) |
 | 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 14장 (공통 플랫폼 구조 1장 포함) |
 | 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 1쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 4장 |
 
