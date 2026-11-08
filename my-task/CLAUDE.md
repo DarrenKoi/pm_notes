@@ -35,9 +35,14 @@ python tools/md2pptx.py 프로젝트_smart_align_agent/07-적용_CDSEM_실행기
 
 # 문서 전용: 헤더 구조(#/##/###)로 슬라이드 분할 (Why→What→How 산출물 묶음 → pptx)
 python tools/md2pptx_doc.py <out.pptx> <in1.md> <in2.md> ...
-# 입력 생략 시 도구 기본 경로를 쓰므로, 07 폴더가 프로젝트_smart_align_agent/ 로 이동한 뒤로는
-# 입력 파일들을 명시하는 편이 안전하다(도구 코드는 이 작업 범위 밖).
-python tools/md2pptx_doc.py 세트.pptx 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획/*.md
+# 세트 pptx의 빌드 목록 = 07-적용_CDSEM_실행기획/ 의 01~11 단계 문서 11개.
+# 00-README.md, *_장표.md, README.md, 실행기획_발표장표_통합.md 는 넣지 않는다.
+# *.md 로 넣으면 19개 파일이 들어가 장표 수가 크게 늘어난다. 도구 기본 경로는 _장표.md 까지 넣으므로 쓰지 않는다.
+D=프로젝트_smart_align_agent/07-적용_CDSEM_실행기획
+python tools/md2pptx_doc.py 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획_세트.pptx \
+  $(ls $D/[01][0-9]-*.md | grep -v -e '_장표' -e '/00-')
+# 주의: 발표요약, 세트 pptx는 "기존 첨부로 보호"한다(프로젝트 README). 다시 만들면 2026-10-04 이후 추가된
+# 검토 절(세트 기준 +12장)과 md에 없는 손 수정이 반영되거나 사라진다. 재생성은 사용자 확인 후에만 한다.
 ```
 
 두 변환기의 차이가 핵심이다: `md2pptx.py`는 **`## 장표 N`** 마커로, `md2pptx_doc.py`는 **문서 헤더 트리**로 슬라이드 경계를 잡는다. 일반 산출물 문서를 변환할 땐 후자를 쓴다.
