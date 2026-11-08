@@ -80,7 +80,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.</p>
 </blockquote>
 <h2 id="readme--한-문단-요약">한 문단 요약</h2>
-<p>1차 PoC(Align Fail 자동 대응)를 리드 혼자 진행하며 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것을 확인했다. 동시에 이 일에는 개발자와 현업 엔지니어 두 역할이 함께 필요하고, 모델 최적화와 운영, 최신 VLM 적용 테스트, 녹화 DB 추출까지 혼자 하기에는 시간이 부족하다는 것도 배웠다. LLM, VLM만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 CD-SEM, Thickness 위주로 Align Fail 자동 대응 지능화와 공통 플랫폼 베타까지 가고, 같은 기간 VeritySEM, Provision, Inspection은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
+<p>1차 PoC(Align Fail 자동 대응)를 리드 혼자 진행하며 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것을 확인했다. 동시에 이 일에는 개발자와 현업 엔지니어 두 역할이 함께 필요하고, 모델 최적화와 운영, 최신 VLM 적용 테스트, 녹화 DB 추출까지 혼자 하기에는 시간이 부족하다는 것도 배웠다. LLM, VLM만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 CD-SEM, Thickness 위주로 Align Fail 자동 대응 지능화와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
 <h2 id="readme--문서">문서</h2>
 <div class="tbl"><table>
 <thead>
@@ -241,7 +241,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>2027-07~09</td>
-<td>2차 장비군(VeritySEM, Provision, Inspection) 합류, 온보딩 2기, 선발대 절차화</td>
+<td>2차 장비군(다른 MI 장비군) 합류, 온보딩 2기, 선발대 절차화</td>
 </tr>
 <tr>
 <td>2027-10~12</td>
@@ -261,7 +261,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tbody>
 <tr>
 <td>1차 장비군 (선발대)</td>
-<td>CD-SEM(리드 직접 담당), Thickness (2026-11-09 변경, 2차: VeritySEM, Provision, Inspection)</td>
+<td>CD-SEM(리드 직접 담당), Thickness (2026-11-09 변경, 2차: 다른 MI 장비군)</td>
 </tr>
 <tr>
 <td>겸직 시간</td>
@@ -296,7 +296,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h3 id="readme--아직-남은-것">아직 남은 것</h3>
 <ul>
 <li>⟨확인: Thickness 담당 참여 엔지니어 (2026-12), 2차 장비군 담당 (2026-12), 지정 개발 2명 (2026-12)⟩</li>
-<li>⟨확인: Provision, Inspection 장비군 접속 경로⟩</li>
+<li>⟨확인: 2차 MI 장비군 목록과 장비군별 접속 경로⟩</li>
 <li>⟨확인: 장비 화면 녹화분 DB 직접 접근 가능 여부 (R&amp;D MI H/W 담당자). 불가하면 RCS에서 GUI 자동화로 다운로드, 다운로드 자동화 작업 별도 필요⟩</li>
 <li>⟨확인: 장비군별 자동화 대상 구간 실측, 온보딩 8주차⟩</li>
 <li>SecureVDI 경로 입력 가능 확인 (2026-11). ⟨확인: 로컬 RCS 경로 입력 주입 테스트, 저장 없음⟩</li>
@@ -431,7 +431,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>2차: 영역 확장</td>
 <td>2027 하반기부터 (6월 베타 관문 통과 뒤)</td>
-<td>VeritySEM, Provision, Inspection 장비군</td>
+<td>다른 MI 장비군</td>
 <td>2차 장비군 본격 합류, 공통 플랫폼 위에서 녹화와 지식화 시작</td>
 </tr>
 </tbody>
@@ -444,7 +444,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <ul>
 <li>ARC TF 구성 승인: 조직과 명단은 처음부터 전체로 승인, 초기 개발은 CD-SEM, Thickness 위주로. 2027-01부터 운영</li>
 <li>1차(선발대) Thickness 담당 엔지니어 1~2명, 주 5시간 (CD-SEM은 TF 리드가 직접 담당)</li>
-<li>2차 장비군(VeritySEM, Provision, Inspection) 담당 엔지니어 지정: 장비군마다 1~2명. 상반기는 장비 특징, 작업 절차, 필요한 기능 파악(작업 녹화 포함, 주 1~2시간), 6월 베타 판정 뒤 주 5시간</li>
+<li>2차 장비군(다른 MI 장비군) 담당 엔지니어 지정: 장비군마다 1~2명. 상반기는 장비 특징, 작업 절차, 필요한 기능 파악(작업 녹화 포함, 주 1~2시간), 6월 베타 판정 뒤 주 5시간</li>
 <li>개발 인력 2명 지정 (TF 리드 포함 3명, 1인당 업무 시간 50%: 실질 1.5명, 2027-01 합류)</li>
 </ul>
 <p><strong>확인 필요 사항 (R&amp;D MI H/W 담당자)</strong></p>
@@ -471,7 +471,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>2027 연말</td>
-<td>CD-SEM, Thickness 셋업 절차, 노하우의 <strong>지식 자산</strong> 축적, 2차 장비군 3개가 공통 플랫폼 위에서 녹화 시작</td>
+<td>CD-SEM, Thickness 셋업 절차, 노하우의 <strong>지식 자산</strong> 축적, 2차 장비군 여러 개가 공통 플랫폼 위에서 녹화 시작</td>
 <td>2027-12</td>
 </tr>
 </tbody>
@@ -517,7 +517,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>SecureVDI 경유 화면에 키보드, 마우스 입력 가능 확인 (2026-11)</td>
-<td>Thickness, VeritySEM도 같은 방식으로 조작. Provision, Inspection은 접속 경로 확정 후 시험</td>
+<td>Thickness와 같은 VDI 경유 장비군도 같은 방식으로 조작. 다른 경로의 장비군은 접속 경로 확정 후 시험</td>
 </tr>
 </tbody>
 </table></div>
@@ -739,7 +739,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>2차: 영역 확장</td>
 <td>2027 하반기부터</td>
-<td>VeritySEM, Provision, Inspection 장비군</td>
+<td>다른 MI 장비군</td>
 <td>2차 장비군 본격 합류. 교육, 작업 녹화, 화면 영역 지도, 절차 정의를 공통 플랫폼 위에서 진행. 1차 장비군은 절차화와 지식 자산으로 진행</td>
 <td>2027-12 관문: 지식 자산, 2차 합류</td>
 </tr>
@@ -796,7 +796,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>단점</td>
 <td>LLMOps와 녹화 DB 추출이 TF 리드에게 다시 몰림(PoC 때와 같은 구조), 2차 녹화가 늦음</td>
 <td>요청 인원이 A보다 많음</td>
-<td>플랫폼 없이 3개 장비군 교육과 지원, 장비군마다 따로 만들 위험, 엔지니어 시간 낭비</td>
+<td>플랫폼 없이 여러 장비군 교육과 지원, 장비군마다 따로 만들 위험, 엔지니어 시간 낭비</td>
 </tr>
 </tbody>
 </table></div>
@@ -825,7 +825,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>영역 확장과 지식화</td>
 <td>2027 하반기</td>
-<td>2차 장비군 3개 합류, 선발대 절차와 노하우를 지식 자산으로 축적, 막힌 지점에서 돌파구 추천</td>
+<td>2차 장비군 합류, 선발대 절차와 노하우를 지식 자산으로 축적, 막힌 지점에서 돌파구 추천</td>
 <td>노하우의 조직 자산화, 장비군 확장 구조</td>
 </tr>
 <tr>
@@ -955,11 +955,11 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>2차: 영역 확장</td>
-<td>VeritySEM, Provision, Inspection 장비군. 2027 하반기 본격 합류, 공통 플랫폼을 실제로 적용</td>
+<td>다른 MI 장비군. 2027 하반기 본격 합류, 공통 플랫폼을 실제로 적용</td>
 </tr>
 <tr>
 <td>실행 방식</td>
-<td>설치형 프로그램을 엔지니어에게 배포하고 엔지니어가 <strong>자기 PC에서</strong> AI 자동화 프로그램과 함께 작업. 장비 PC에는 설치하지 않음. 접속 경로는 장비군마다 다름: CD-SEM은 엔지니어 PC에서 RCS로 직접, Thickness와 VeritySEM은 SecureVDI(웹 VDI)의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속 (Provision, Inspection 경로는 ⟨확인⟩). Agent는 어느 경로든 엔지니어가 보는 화면(FHD 모니터 기준)을 캡처하고 같은 화면에 입력</td>
+<td>설치형 프로그램을 엔지니어에게 배포하고 엔지니어가 <strong>자기 PC에서</strong> AI 자동화 프로그램과 함께 작업. 장비 PC에는 설치하지 않음. 접속 경로는 장비군마다 다름: CD-SEM은 엔지니어 PC에서 RCS로 직접, Thickness와 VeritySEM은 SecureVDI(웹 VDI)의 가상 Windows 안에서 RCS나 Radmin Viewer로 접속 (2차 장비군 경로는 ⟨확인⟩). Agent는 어느 경로든 엔지니어가 보는 화면(FHD 모니터 기준)을 캡처하고 같은 화면에 입력</td>
 </tr>
 <tr>
 <td>녹화분 확보</td>
@@ -1038,7 +1038,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>2027-01</td>
 </tr>
 <tr>
-<td>VeritySEM, Provision, Inspection 담당 (2차)</td>
+<td>다른 MI 장비군 담당 (2차)</td>
 <td>장비군마다 MI 엔지니어 1~2명</td>
 <td>위와 같음. 공통 플랫폼을 실제로 적용하는 첫 대상</td>
 <td>2027-01 특징, 절차, 필요 기능 파악 (주 1~2시간), 2027-07 본격 (주 5시간)</td>
@@ -1242,7 +1242,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <th>시기</th>
 <th>단계</th>
 <th>선발대 (CD-SEM, Thickness)</th>
-<th>2차 (VeritySEM, Provision, Inspection)</th>
+<th>2차 (다른 MI 장비군)</th>
 <th>통과 기준</th>
 </tr>
 </thead>
@@ -1298,7 +1298,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>3</td>
-<td>2차 장비군(VeritySEM, Provision, Inspection) 담당 엔지니어 지정 (장비군마다 1~2명. 상반기 장비 특징, 작업 절차, 필요한 기능 파악 주 1~2시간, 2027-07부터 주 5시간). 총 참여 인원 ⟨확인⟩명, 주당 총 투입 ⟨확인⟩시간</td>
+<td>2차 장비군(다른 MI 장비군) 담당 엔지니어 지정 (장비군마다 1~2명. 상반기 장비 특징, 작업 절차, 필요한 기능 파악 주 1~2시간, 2027-07부터 주 5시간). 총 참여 인원 ⟨확인⟩명, 주당 총 투입 ⟨확인⟩시간</td>
 <td>2026-12</td>
 </tr>
 <tr>
@@ -1424,7 +1424,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>영역 확장</td>
-<td>2차 장비군 3개가 한꺼번에 들어와 교육, 지원 부담이 큼</td>
+<td>2차 장비군 여러 개가 한꺼번에 들어와 교육, 지원 부담이 큼</td>
 <td>같은 8주 과정을 한 번에 진행, 장비군 합류 순서를 나눌 수 있게 둠</td>
 <td>2027-07</td>
 </tr>
@@ -1495,7 +1495,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="02-roles-and-teams--왜-나누는가">왜 나누는가</h2>
 <p>장비군마다 자동화를 따로 만들면 화면 인식, 조작, 안전 장치를 장비 수만큼 다시 만든다. 반대로 플랫폼 팀이 모든 장비의 레시피 절차까지 알 수는 없다. 그래서 <strong>엔진은 한 곳(플랫폼)에서</strong>, <strong>절차와 판정 기준은 장비를 아는 사람(장비군 담당)이</strong> 맡는다.</p>
 <p>1차 PoC는 리드 한 사람이 개발자와 CD-SEM 담당 두 역할을 함께 맡아 진행했다. 두 역할이 동시에 필요하다는 것, 그리고 모델 운영, 최신 VLM 테스트, 녹화분 확보까지 한 사람이 하기에는 시간이 부족하다는 것이 이 분업의 근거다 (<a href="#05-poc-assets">PoC 자산과 교훈</a>).</p>
-<p>조직과 명단은 2026-12에 2차까지 한 번에 승인받는다. 초기 개발은 선발대(CD-SEM, Thickness) 위주로 하고, 2차 장비군(VeritySEM, Provision, Inspection)은 상반기에 장비 특징, 작업 절차, 필요한 기능 파악을 하다가 공통 플랫폼이 베타 기준을 통과하면(2027-06) 본격 참여한다.</p>
+<p>조직과 명단은 2026-12에 2차까지 한 번에 승인받는다. 초기 개발은 선발대(CD-SEM, Thickness) 위주로 하고, 2차 장비군(다른 MI 장비군)은 상반기에 장비 특징, 작업 절차, 필요한 기능 파악을 하다가 공통 플랫폼이 베타 기준을 통과하면(2027-06) 본격 참여한다.</p>
 <h2 id="02-roles-and-teams--구성">구성</h2>
 <div class="tbl"><table>
 <thead>
@@ -1527,7 +1527,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>2차 장비군 담당</td>
-<td>VeritySEM, Provision, Inspection 장비군마다 MI 엔지니어 1~2명</td>
+<td>다른 MI 장비군마다 MI 엔지니어 1~2명</td>
 <td>합류 뒤 교육, 작업 녹화, 화면 영역 지도, 절차 정의. 1차 담당과 같은 역할로 공통 플랫폼을 실제로 적용</td>
 <td>2026-12 지정. 상반기 장비 특징, 작업 절차, 필요한 기능 파악 주 1~2시간, 2027-07부터 주 5시간 (6월 베타 판정 뒤)</td>
 </tr>
@@ -1578,29 +1578,15 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>⟨확인⟩</td>
 </tr>
 <tr>
-<td>C</td>
-<td>VeritySEM</td>
+<td>C 이후</td>
+<td>다른 MI 장비군 (⟨확인: 2차 장비군 목록⟩)</td>
 <td>2차</td>
-<td>B와 같음</td>
-<td>⟨확인⟩</td>
-</tr>
-<tr>
-<td>D</td>
-<td>Provision</td>
-<td>2차</td>
-<td>⟨확인⟩</td>
-<td>⟨확인⟩</td>
-</tr>
-<tr>
-<td>E</td>
-<td>Inspection 장비군</td>
-<td>2차</td>
-<td>⟨확인⟩</td>
+<td>장비군마다 ⟨확인⟩ (VDI 경유면 B와 같음)</td>
 <td>⟨확인⟩</td>
 </tr>
 </tbody>
 </table></div>
-<p>Thickness, VeritySEM은 원격 계층이 하나 더 있다. CD-SEM에서 통과한 결과를 이 장비군들의 근거로 쓰지 않고, 장비군마다 따로 검증한다.</p>
+<p>Thickness와 VDI를 거치는 2차 장비군은 원격 계층이 하나 더 있다. CD-SEM에서 통과한 결과를 이 장비군들의 근거로 쓰지 않고, 장비군마다 따로 검증한다.</p>
 <p>실명과 팀명은 사내용 문서(<code>*_사내용.md</code>)에만 적는다.</p>
 <h2 id="02-roles-and-teams--책임-분담표-raci">책임 분담표 (RACI)</h2>
 <p>R=실행, A=최종 책임, C=협의, I=공유</p>
@@ -1908,7 +1894,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>실장비 검증은 장비 사용 인가를 받은 시간(하루 1시간)에만 한다. 이 시간을 이 문서들에서 "비생산 검증 시간"이라 부른다.</li>
 <li>Agent는 엔지니어 본인 PC에 설치한 프로그램으로 돈다. 장비 PC에는 설치하지 않는다.</li>
 </ul>
-<h3 id="03-operating-rhythm--vdi-경유-장비군-화면-규칙-veritysem-thickness">VDI 경유 장비군 화면 규칙 (VeritySEM, Thickness)</h3>
+<h3 id="03-operating-rhythm--vdi-경유-장비군-화면-규칙-thickness-vdi를-거치는-2차-장비군">VDI 경유 장비군 화면 규칙 (Thickness, VDI를 거치는 2차 장비군)</h3>
 <p>Agent는 엔지니어 PC에서 웹 VDI 화면을 통해 RCS/Radmin을 조작한다. VDI 안에는 설치하지 않는다.</p>
 <ul>
 <li>VDI 브라우저는 <strong>전체 화면(F11), 배율 100%</strong> 로 고정한다. FHD 모니터에서 화면 위치와 크기가 늘 같아야 좌표가 흔들리지 않는다.</li>
@@ -2017,7 +2003,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>2기 (2차 장비군)</td>
-<td>VeritySEM, Provision, Inspection 담당 엔지니어</td>
+<td>다른 MI 장비군 담당 엔지니어</td>
 <td>2027-07~08 (6월 베타 판정 뒤)</td>
 <td>선발대가 만든 공통 플랫폼 베타 (입력 없는 모의 실행 중심)</td>
 </tr>
@@ -2296,7 +2282,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>VDI 경유 조작 (웹 VDI → 가상 Windows → RCS/Radmin)</td>
 <td>PoC는 로컬 RCS 경로만 다뤘다. 두 번 원격을 거쳐 화질 저하, 지연, 브라우저의 단축키 가로채기, VDI 잠김, 세션 끊김이 생길 수 있다</td>
-<td>플랫폼 + Thickness 담당 (2차 VeritySEM도 같은 경로)</td>
+<td>플랫폼 + Thickness 담당 (VDI를 거치는 2차 장비군도 같은 경로)</td>
 </tr>
 <tr>
 <td>배포 (개발 도구 없는 PC에서 실행)</td>
@@ -2328,7 +2314,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="06-platform-prd"><p class="file"><span class="num">07</span>06-platform-prd.md</p><h1>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</h1>
 <blockquote>
-<p>공통 플랫폼 팀이 2027년에 바탕(관찰, 절차, 입력 없는 제안)을 만들고 2028 보조 단계에서 장비군 담당(선발대 CD-SEM, Thickness와 2027 하반기에 합류하는 VeritySEM 등 2차 장비군)이 검증할 제품의 요구사항. 무엇을 만들고, 무엇으로 합격을 판단하고, 무엇은 만들지 않는가.</p>
+<p>공통 플랫폼 팀이 2027년에 바탕(관찰, 절차, 입력 없는 제안)을 만들고 2028 보조 단계에서 장비군 담당(선발대 CD-SEM, Thickness와 2027 하반기에 본격 참여하는 다른 MI 장비군)이 검증할 제품의 요구사항. 무엇을 만들고, 무엇으로 합격을 판단하고, 무엇은 만들지 않는가.</p>
 </blockquote>
 <h2 id="06-platform-prd--문서-정보">문서 정보</h2>
 <div class="tbl"><table>
@@ -2384,7 +2370,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="06-platform-prd--2-문제-problem-statement">2. 문제 (Problem Statement)</h2>
 <p>상세는 <a href="#00-problem-statement">문제 정의</a>에 있다. 여기서는 요구사항으로 이어지는 부분만 적는다.</p>
 <h3 id="06-platform-prd--누가">누가</h3>
-<p>계측(MI) 장비의 레시피를 셋업하고 튜닝하는 현업 엔지니어. 선발대(1차)는 CD-SEM, Thickness 담당자이고, 2027 하반기부터 VeritySEM, Provision, Inspection 담당자가 합류한다.</p>
+<p>계측(MI) 장비의 레시피를 셋업하고 튜닝하는 현업 엔지니어. 선발대(1차)는 CD-SEM, Thickness 담당자이고, 2027 하반기부터 다른 MI 장비군 담당자가 합류한다.</p>
 <h3 id="06-platform-prd--무엇이-문제인가">무엇이 문제인가</h3>
 <p>측정 위치와 Align Key를 잡는 동안 측정, 실패, 재조정을 되풀이하고, 그동안 화면 앞을 떠날 수 없다. 그 사이 다른 레시피 요청과 측정 문제의 원인 분석이 밀린다.</p>
 <h3 id="06-platform-prd--왜-아픈가">왜 아픈가</h3>
@@ -2420,7 +2406,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>엔지니어 목소리</td>
 <td>리드(CD-SEM) 본인의 경험</td>
-<td>🔶 가정: VeritySEM, Thickness도 같다. 온보딩 첫 주 인터뷰로 확인</td>
+<td>🔶 가정: Thickness와 2차 장비군도 같다. 온보딩 첫 주 인터뷰로 확인</td>
 </tr>
 <tr>
 <td>기술 가능성</td>
@@ -2436,11 +2422,11 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><strong>기술 수준</strong>: Python 코드를 읽고 간단히 고칠 수 있다. LLM, VLM의 특성은 온보딩에서 배운다.</li>
 <li><strong>원하는 것</strong>: 시행착오 구간을 맡기고, 결과만 확인해 승인하는 것.</li>
 <li><strong>걱정하는 것</strong>: Agent가 생산 레시피를 잘못 건드리는 것. 그래서 저장과 위험 조작의 최종 승인권을 엔지니어가 갖는다.</li>
-<li><strong>장비군별 차이</strong>: CD-SEM은 엔지니어 PC → RCS로 바로 접속한다. VeritySEM, Thickness는 웹 VDI를 한 번 더 거친다. 화질, 지연, 단축키 처리가 다르다.</li>
+<li><strong>장비군별 차이</strong>: CD-SEM은 엔지니어 PC → RCS로 바로 접속한다. Thickness(와 일부 2차 장비군)는 웹 VDI를 한 번 더 거친다. 화질, 지연, 단축키 처리가 다르다.</li>
 </ul>
 <h3 id="06-platform-prd--부-사용자">부 사용자</h3>
 <ul>
-<li><strong>2차 담당 엔지니어</strong> (VeritySEM, Provision, Inspection): 2027-06 베타 판정 뒤 7월에 합류한다. 공통 플랫폼 베타로 작업 녹화, 화면 영역 지도, 절차 정의를 한다. 셋업 입력 자동화는 별도 단계 승인 대상이다.</li>
+<li><strong>2차 담당 엔지니어</strong> (다른 MI 장비군): 2027-06 베타 판정 뒤 7월에 합류한다. 공통 플랫폼 베타로 작업 녹화, 화면 영역 지도, 절차 정의를 한다. 셋업 입력 자동화는 별도 단계 승인 대상이다.</li>
 <li><strong>공통 플랫폼 팀</strong>: 장비군별 절차를 받아 엔진에 담고, 실패 기록으로 원인을 찾는다.</li>
 </ul>
 <h3 id="06-platform-prd--해야-할-일-jobs-to-be-done">해야 할 일 (Jobs-to-be-Done)</h3>
@@ -2664,9 +2650,9 @@ TF 리드로서, 시도마다 무엇을 했고 어디서 실패했는지 남기�
 - [ ] 절차는 단계, 각 단계의 성공 조건, 실패 시 행동, 조작별 승인 분류로 정의한다
 - [ ] 정의한 절차를 녹화본에 대고 모의 실행할 수 있다 (온보딩 7주차 실습)
 - [ ] 장비군별 절차는 공통 저장소 안의 장비군 폴더로 나누고, 공통 엔진은 고치지 않는다
-- 🔶 가정: 선발대 2개 장비군과 2차 3개 장비군의 차이를 절차 정의만으로 담을 수 있다 (2027 하반기 2차 합류로 확인). 담기지 않으면 결정 기록에 남기고 범위를 조정한다 (위험 R4)</p>
-<p><strong>S8. VDI 경유 장비군 지원</strong>, 필수 (VeritySEM, Thickness 담당)
-VeritySEM, Thickness 담당 엔지니어로서, 웹 VDI를 거치는 화면에서도 같은 Agent를 쓰고 싶다.
+- 🔶 가정: 선발대 2개 장비군과 2차 장비군의 차이를 절차 정의만으로 담을 수 있다 (2027 하반기 2차 합류로 확인). 담기지 않으면 결정 기록에 남기고 범위를 조정한다 (위험 R4)</p>
+<p><strong>S8. VDI 경유 장비군 지원</strong>, 필수 (Thickness, VDI를 거치는 2차 장비군 담당)
+Thickness 같은 VDI 경유 장비군 담당 엔지니어로서, 웹 VDI를 거치는 화면에서도 같은 Agent를 쓰고 싶다.
 - [ ] VDI 브라우저가 전체 화면(F11), 배율 100%가 아니면 시작하지 않는다
 - [ ] 조작마다 화면이 바뀔 때까지 기다린 뒤 검증한다
 - [ ] 절차는 클릭과 일반 문자 입력 위주로 만들고, 로컬 OS가 가로채는 단축키는 쓰지 않는다
@@ -2875,7 +2861,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <tr>
 <td>Q6</td>
 <td>VDI 워터마크, FHD 외 모니터 (7절 제약)</td>
-<td>VeritySEM, Thickness 담당</td>
+<td>Thickness 담당 (2차는 합류 때)</td>
 <td>온보딩 중</td>
 </tr>
 <tr>
@@ -2886,8 +2872,8 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 </tr>
 <tr>
 <td>Q8</td>
-<td>VeritySEM, Thickness 엔지니어도 문제 정의에 동의하는가 (2절)</td>
-<td>VeritySEM, Thickness 담당</td>
+<td>Thickness, 2차 장비군 엔지니어도 문제 정의에 동의하는가 (2절)</td>
+<td>Thickness, 2차 장비군 담당</td>
 <td>온보딩 첫 주</td>
 </tr>
 </tbody>
@@ -2900,7 +2886,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <li><strong>먼저 검증할 가정</strong>:</li>
 <li>Q3 입력 주입, 막히면 S8, S10의 구조가 바뀐다</li>
 <li>Q1 신규 위치 선정 기준, S2의 신규 레시피 지원 여부가 여기에 달렸다</li>
-<li>S7의 가정, 장비군 차이를 절차 정의만으로 담을 수 있는가 (선발대 2개, 하반기 2차 3개)</li>
+<li>S7의 가정, 장비군 차이를 절차 정의만으로 담을 수 있는가 (선발대 2개, 하반기 2차 장비군)</li>
 <li><strong>공유 전 다음 단계</strong>: 플랫폼 팀과 7절 스토리를 함께 읽고 우선순위를 맞춘다. Thickness 담당 엔지니어가 정해지면 3절과 S8을 같이 검토하고, 2차 담당은 합류 때 다시 검토한다.</li>
 </ul>
 <h2 id="06-platform-prd--관련-문서">관련 문서</h2>
@@ -3622,7 +3608,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <ul>
 <li>엔지니어 작업 녹화에서 절차와 판단 근거를 추출하고 담당 엔지니어가 승인해, 다른 엔지니어가 찾아 쓰는 <strong>지식 자산</strong>으로 축적함</li>
 <li>AI는 현재 화면에 맞는 승인 절차를 찾아 <strong>한 단계씩</strong> 수행하고, 결과가 불명확하면 멈춤. 위험 조작과 저장, 적용은 엔지니어가 승인함</li>
-<li>초기 개발은 <strong>CD-SEM, Thickness 위주</strong>(Align Fail PoC와 기존 PyAutoGUI 자동화를 재사용)로 공통 플랫폼을 베타까지 만듦. 같은 기간 VeritySEM, Provision, Inspection은 장비 특징, 작업 절차, 필요한 기능을 파악해 설계에 반영하고, 베타 뒤 본격 참여</li>
+<li>초기 개발은 <strong>CD-SEM, Thickness 위주</strong>(Align Fail PoC와 기존 PyAutoGUI 자동화를 재사용)로 공통 플랫폼을 베타까지 만듦. 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악해 설계에 반영하고, 베타 뒤 본격 참여</li>
 <li>개발과 AI에 익숙하지 않은 엔지니어는 합류 시점마다 교육하며 TF를 운영함</li>
 </ul>
 <h2 id="08-exec-summary--단계별-타겟">단계별 타겟</h2>
@@ -3642,7 +3628,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 </tr>
 <tr>
 <td>2027 하반기</td>
-<td>2차 장비군(VeritySEM, Provision, Inspection) 합류, 선발대 셋업 노하우 지식 자산화</td>
+<td>2차 장비군(다른 MI 장비군) 합류, 선발대 셋업 노하우 지식 자산화</td>
 <td>노하우의 조직 자산화</td>
 </tr>
 <tr>
@@ -3659,14 +3645,14 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 </table></div>
 <ul>
 <li>효과는 엔지니어 직접 투입 시간과 예정에 없던 개입 횟수로 확인함. 기준선은 온보딩 때 실측, 측정 전에는 목표를 숫자로 정하지 않음</li>
-<li>검토한 대안: A(선발대만 + 개발 2명)는 LLMOps와 녹화 추출이 리드에게 다시 몰리고, C(처음부터 전체 본격 참여)는 플랫폼 없이 3개 장비군을 지원해야 함. B(조직과 명단은 전체로, 참여는 단계적으로 + 개발 3명)를 권고함</li>
+<li>검토한 대안: A(선발대만 + 개발 2명)는 LLMOps와 녹화 추출이 리드에게 다시 몰리고, C(처음부터 전체 본격 참여)는 플랫폼 없이 여러 장비군을 지원해야 함. B(조직과 명단은 전체로, 참여는 단계적으로 + 개발 3명)를 권고함</li>
 <li>2차 본격 참여는 2027-06 베타 판정을 통과해야 함. 단계마다 검증 증거를 확인한 뒤에만 다음 단계로 확대함</li>
 </ul>
 <h2 id="08-exec-summary--요청-사항">요청 사항</h2>
 <ul>
 <li><strong>ARC TF 구성 승인</strong> (2027-01~12, 조직과 명단은 전체로, 참여는 선발대부터 단계적으로)</li>
 <li><strong>선발대 Thickness 담당 엔지니어 협업</strong>: 1~2명, 주 5시간 (CD-SEM은 TF 리드)</li>
-<li><strong>2차 장비군 담당 엔지니어 지정</strong>: VeritySEM, Provision, Inspection 장비군마다 1~2명. 12월에 함께 지정, 상반기는 장비 특징, 작업 절차, 필요한 기능 파악(주 1~2시간), 베타 통과 후 7월부터 주 5시간</li>
+<li><strong>2차 장비군 담당 엔지니어 지정</strong>: 다른 MI 장비군마다 1~2명. 12월에 함께 지정, 상반기는 장비 특징, 작업 절차, 필요한 기능 파악(주 1~2시간), 베타 통과 후 7월부터 주 5시간</li>
 <li><strong>개발 인력 2명 지정</strong> (백엔드 1, 프론트엔드 1. TF 리드 포함 3명, 각 50%, 실질 1.5명). PoC처럼 리드 혼자 개발하는 구조는 더 이상 유지할 수 없음</li>
 <li>새 서버 구매 없음. 기존 사내 AI 서버와 서버 자원 사용, 녹화 스토리지는 2027 하반기에 사용량 실측 후 요청</li>
 </ul>
@@ -4003,6 +3989,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2차 인원까지 처음부터 확정하므로 작은 TF가 아니다. 초기에 다른 장비군 특징을 알아야 공통 플랫폼이 선발대에만 맞춰지지 않는다</td>
 <td>확정</td>
 </tr>
+<tr>
+<td>2026-11-09</td>
+<td>2차 장비군을 특정 장비명(VeritySEM, Provision, Inspection)으로 적지 않고 "다른 MI 장비군"으로 폭넓게 쓴다. 장비명은 접속 경로 같은 사실 설명에만 남긴다</td>
+<td>MI 장비 전반으로 넓히는 것이 목표이고, 2차 장비군 목록은 지정 때 정한다</td>
+<td>확정</td>
+</tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="risk-register"><p class="file"><span class="num">12</span>risk-register.md</p><h1>위험 목록</h1>
@@ -4054,7 +4046,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>장비군마다 화면과 절차가 크게 달라 공통 플랫폼에 담기지 않는다</td>
 <td>중간</td>
 <td>높음</td>
-<td>선발대를 2개 장비군(CD-SEM, Thickness)으로 제한하고 베타 판정 뒤 2차(VeritySEM, Provision, Inspection)로 확장, 장비별 차이는 절차 정의로 흡수, 안 되면 결정 기록에 남기고 범위 조정</td>
+<td>선발대를 2개 장비군(CD-SEM, Thickness)으로 제한하고 베타 판정 뒤 2차(다른 MI 장비군)로 확장, 장비별 차이는 절차 정의로 흡수, 안 되면 결정 기록에 남기고 범위 조정</td>
 <td>플랫폼 팀</td>
 <td>SecureVDI 경로는 입력 가능 확인 (2026-11). 로컬 RCS 경로는 열림</td>
 </tr>
@@ -4168,11 +4160,11 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 </tr>
 <tr>
 <td>R17</td>
-<td>VDI 경유 장비군(Thickness, 2차 VeritySEM)에서 화질 저하, 지연, 단축키 가로채기, 세션 끊김으로 조작이 흔들린다</td>
+<td>VDI 경유 장비군(Thickness, VDI를 거치는 2차 장비군)에서 화질 저하, 지연, 단축키 가로채기, 세션 끊김으로 조작이 흔들린다</td>
 <td>중간</td>
 <td>중간</td>
 <td>조작마다 화면이 바뀔 때까지 기다린 뒤 검증, 단축키보다 클릭 우선, VDI 화면이 아니면 중단하고 엔지니어에게 넘김, CV 점수 기준을 VDI 화면으로 다시 맞춤</td>
-<td>플랫폼 + Thickness, VeritySEM 담당</td>
+<td>플랫폼 + Thickness, 2차 장비군 담당</td>
 <td>열림</td>
 </tr>
 <tr>
@@ -4231,7 +4223,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 </tr>
 <tr>
 <td>R24</td>
-<td>2차 장비군 3개가 한꺼번에 합류해 교육과 지원 부담이 실질 개발 1.5명을 넘는다</td>
+<td>2차 장비군 여러 개가 한꺼번에 합류해 교육과 지원 부담이 실질 개발 1.5명을 넘는다</td>
 <td>중간</td>
 <td>중간</td>
 <td>같은 8주 과정을 한 번에 운영, 선발대 엔지니어가 실습 조교, 필요하면 장비군 합류 순서를 나눔</td>
