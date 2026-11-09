@@ -291,6 +291,36 @@ def s_effects():  # 효과
          size=13, color=SUB, spacing=1.0)
     footer(s)
 
+def s_status():  # 2026 추진 현황
+    s = slide("2026 ARC 추진 현황: CD, Thickness, Inspection",
+              "장비군별 ARC 추진 중, 공통 과제는 생성형 AI의 작업 방식 학습과 기존 자동화의 도구화",
+              "먼저 2026년 ARC 추진 현황입니다. CD는 CD-SEM ARC의 첫 PoC로 Align Fail 자동 대응 Agent를 개발해 현재 Offline 테스트 중이고, VLM 기반으로 장비를 조작하는 Computer-use 기능을 구현했습니다. Thickness는 의뢰부터 Recipe 생성까지 ARC Pipeline을 구현해 MI 장비군 중 완성도가 가장 높고, 27년까지 의뢰 Recipe의 90% 이상 생성 자동화를 목표로 하고 있습니다. Inspection은 의뢰서 DB화와 Recipe RAG 구축으로 ARC용 DB를 만들고, Recipe 생성과 튜닝을 부분 자동화했습니다. 세 장비군에 공통으로 남은 과제는 두 가지입니다. 하나는 Computer Use 기반 ARC에서 생성형 AI 모델에게 작업 방식을 어떻게 학습시킬지이고, 다른 하나는 PyAutoGUI 같은 Rule 기반 자동화와 기존 Computer Vision, ML/DL을 생성형 모델이 도구로 쓰게 하는 방법입니다.")
+    gap = Inches(0.3)
+    cw = (W - 2 * M - 2 * gap) / 3
+    ch = Inches(2.75)
+    cols = [("CD 추진 현황", [
+                "**Align Fail 자동 대응 Agent 개발**",
+                "CD-SEM ARC의 첫 PoC, 현재 __Offline 테스트 중__",
+                "VLM 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
+            ("Thickness 추진 현황", [
+                "의뢰부터 Recipe 생성까지 **ARC Pipeline 구현**",
+                "MI 장비군 중 __가장 높은 완성도__",
+                "27년까지 의뢰 Recipe의 **90% 이상 생성 자동화** 목표"]),
+            ("Inspection 추진 현황", [
+                "**ARC를 위한 DB 구축**: 의뢰서 DB화, Recipe RAG 구축",
+                "Recipe 생성, 튜닝 __부분 자동화__"])]
+    for i, (head, items) in enumerate(cols):
+        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14)
+    ly = COL_Y + ch + Inches(0.17)
+    box(s, M, ly, W - 2 * M, Inches(1.6), fill=MIST)
+    text(s, M + Inches(0.3), ly + Inches(0.12), W - 2 * M - Inches(0.6), Inches(1.4), [
+        [("Lesson Learned (공통)", {"bold": True, "color": BLUE})],
+        runs_of("1. Computer Use 기반 ARC에서 **생성형 AI 모델에게 작업 방식을 어떻게 학습**시킬 것인가"),
+        runs_of("2. Rule 기반 자동화(PyAutoGUI)와 기존 Computer Vision, ML/DL을 **생성형 모델이 도구로 쓰게** 할 방법")],
+        size=14, gap=0.5)
+    footer(s)
+
+
 def s_assets():  # PoC에서 얻은 것
     s = slide("PoC에서 얻은 것: Align Fail 자동 대응의 자산",
               "API 없는 장비를 사내 AI로 읽고 조작하는 기반 확보",
@@ -718,9 +748,9 @@ def s_exec_roadmap():
     footer(s)
 
 
-BOSS = [s_cover, s_assets, s_lessons, s_where, s_why_not_llm, s_direction, s_phases, s_options, s_effects,
+BOSS = [s_cover, s_status, s_assets, s_lessons, s_where, s_why_not_llm, s_direction, s_phases, s_options, s_effects,
         s_platform, s_team, s_kanban, s_safety, s_decision, s_appendix_asks]
-TEAM = BOSS[:10] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[10:]
+TEAM = BOSS[:11] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[11:]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
         s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
