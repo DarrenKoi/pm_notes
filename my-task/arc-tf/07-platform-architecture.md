@@ -237,7 +237,7 @@ Codex 설계는 격리된 GUI 환경을 가정합니다. TF에는 별도 시뮬�
 | 저장 | 사내 서비스 | 객체 저장소, OpenSearch, PostgreSQL, Redis | 2절의 저장 영역 4개. 새 저장 시스템 없음 |
 | 배포 | 엔지니어 PC | PyInstaller onedir + 회사 인증서 서명 + 사내 배포 경로 | 자체 업데이트 기능은 만들지 않음. 작업 중 업데이트 금지 |
 
-- Python을 고른 이유: 개발 인력이 실질 2.5명(각 50% 겸직), PoC 코드가 Python, Thickness의 PyAutoGUI 스크립트 재사용, 담당 엔지니어가 Python을 읽을 수 있음
+- Python을 고른 이유: 개발 인력이 겸직(약 5명 규모), PoC 코드가 Python, Thickness의 PyAutoGUI 스크립트 재사용, 담당 엔지니어가 Python을 읽을 수 있음
 - C#/.NET은 보류. Python 캡처가 PC 자원 한도를 못 지키면 작은 .NET 캡처, 입력 모듈 + Python 서버가 다음 대안
 - Electron, Tauri는 쓰지 않음. 입력 충돌을 풀지 못하면서 Chromium 프로세스나 Rust 운영 부담만 더함
 - FastAPI 전환은 녹화 재처리가 Online 판단의 p95 지연을 늘리는 것이 실측으로 드러날 때 검토
