@@ -15,7 +15,7 @@ status: 초안, 2026-12 담당 보고용
 
 ## 요약
 
-**2026 현황**: CD(Align Fail 자동 대응 Agent, Offline 테스트 중), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline, 2027년 90% 이상 생성 자동화 목표), Inspection(의뢰서 DB화, Recipe RAG, 부분 자동화)이 각자 추진 중. 공통 과제는 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조
+**2026 현황**: CD(Align Fail 자동 대응 Agent, Offline 테스트 중), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline, 2027년 90% 이상 생성 자동화 목표), Inspection(의뢰서 DB화, Recipe RAG, NAND 1개 Tech에서 DRB 기반 ARC 생성, 2027년 전 디바이스 대상 Optical Inspection 장비군으로 확장 목표)이 각자 추진 중. 공통 과제는 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조
 
 **출발점**: PoC(Align Fail 자동 대응)로 API 없는 장비를 사내 AI로 읽고 조작하는 기반 확보. 동시에 이 일에는 **개발자와 현업 엔지니어 두 역할이 동시에 필요**하고, 모델 최적화와 운영(새 모델 벤치마크와 교체 포함), 녹화 DB 추출까지 혼자 맡기에는 시간 부족
 
@@ -63,7 +63,7 @@ MI 장비군 가운데 CD, Thickness, Inspection이 각자 ARC를 추진하고 �
 |---|---|
 | CD | **Align Fail 자동 대응 Agent 개발**: CD-SEM ARC의 첫 PoC, 현재 Offline 테스트 중. VLM 기반 장비 컨트롤(Computer-use) 기능 구현 |
 | Thickness | 의뢰부터 Recipe 생성까지 **ARC Pipeline 구현** (MI 장비군 중 가장 높은 완성도). 2027년까지 의뢰 Recipe의 **90% 이상 생성 자동화** 목표 |
-| Inspection | **ARC를 위한 DB 구축** (의뢰서 DB화, Recipe RAG 구축). Recipe 생성, 튜닝 부분 자동화 |
+| Inspection | **ARC를 위한 DB 구축** (의뢰서 DB화, Recipe RAG 구축). ARC 부분 자동화: **DRB 기반 ARC 생성** (NAND 1개 Tech). DRB(Design Recipe Builder)는 Mother Recipe 개념으로, 이 DRB를 튜닝하는 방식으로 ARC 구현. 2027년에는 전 디바이스 대상으로 **Optical Inspection 장비군에 ARC 확장** 전개 |
 
 ### Lesson Learned (공통)
 

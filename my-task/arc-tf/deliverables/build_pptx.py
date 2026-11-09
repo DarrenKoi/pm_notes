@@ -296,10 +296,10 @@ def s_effects():  # 효과
 def s_status():  # 2026 추진 현황
     s = slide("2026 ARC 추진 현황: CD, Thickness, Inspection",
               "장비군별 ARC 추진 중, 공통 과제는 Recipe 작업 방식 학습과 기존 자동화와의 결합 구조",
-              "먼저 2026년 ARC 추진 현황입니다. CD는 CD-SEM ARC의 첫 PoC로 Align Fail 자동 대응 Agent를 개발해 현재 Offline 테스트 중이고, VLM 기반으로 장비를 조작하는 Computer-use 기능을 구현했습니다. Thickness는 의뢰부터 Recipe 생성까지 ARC Pipeline을 구현해 MI 장비군 중 완성도가 가장 높고, 27년까지 의뢰 Recipe의 90% 이상 생성 자동화를 목표로 하고 있습니다. Inspection은 의뢰서 DB화와 Recipe RAG 구축으로 ARC용 DB를 만들고, Recipe 생성과 튜닝을 부분 자동화했습니다. 세 장비군에서 공통으로 얻은 교훈은 두 가지입니다. 첫째, 생성형 AI 모델에게 Recipe 작업 방식을 어떻게 학습시킬지 구체화해야 합니다. 둘째, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 반드시 필요합니다.")
+              "먼저 2026년 ARC 추진 현황입니다. CD는 CD-SEM ARC의 첫 PoC로 Align Fail 자동 대응 Agent를 개발해 현재 Offline 테스트 중이고, VLM 기반으로 장비를 조작하는 Computer-use 기능을 구현했습니다. Thickness는 의뢰부터 Recipe 생성까지 ARC Pipeline을 구현해 MI 장비군 중 완성도가 가장 높고, 27년까지 의뢰 Recipe의 90% 이상 생성 자동화를 목표로 하고 있습니다. Inspection은 의뢰서 DB화와 Recipe RAG 구축으로 ARC용 DB를 만들었고, NAND 1개 Tech에서 DRB 기반 ARC 생성으로 부분 자동화했습니다. DRB는 Design Recipe Builder로, Mother Recipe 역할을 합니다. 이 DRB를 튜닝하는 방식으로 ARC를 구현했고, 27년에는 전 디바이스를 대상으로 Optical Inspection 장비군에 ARC를 확장할 계획입니다. 세 장비군에서 공통으로 얻은 교훈은 두 가지입니다. 첫째, 생성형 AI 모델에게 Recipe 작업 방식을 어떻게 학습시킬지 구체화해야 합니다. 둘째, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 반드시 필요합니다.")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
-    ch = Inches(2.75)
+    ch = Inches(3.4)
     cols = [("CD 추진 현황", [
                 "**Align Fail 자동 대응 Agent 개발**",
                 "CD-SEM ARC의 첫 PoC, 현재 __Offline 테스트 중__",
@@ -310,16 +310,18 @@ def s_status():  # 2026 추진 현황
                 "27년까지 의뢰 Recipe의 **90% 이상 생성 자동화** 목표"]),
             ("Inspection 추진 현황", [
                 "**ARC를 위한 DB 구축**: 의뢰서 DB화, Recipe RAG 구축",
-                "Recipe 생성, 튜닝 __부분 자동화__"])]
+                "ARC 부분 자동화: **DRB(Design Recipe Builder) 기반 생성**, NAND 1개 Tech",
+                "DRB(Mother Recipe) __튜닝 방식__으로 ARC 구현",
+                "27년 전 디바이스 대상, **Optical Inspection 장비군**으로 확장 전개"])]
     for i, (head, items) in enumerate(cols):
-        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14)
-    ly = COL_Y + ch + Inches(0.17)
-    box(s, M, ly, W - 2 * M, Inches(1.6), fill=MIST)
-    text(s, M + Inches(0.3), ly + Inches(0.12), W - 2 * M - Inches(0.6), Inches(1.4), [
+        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=13)
+    ly = COL_Y + ch + Inches(0.12)
+    box(s, M, ly, W - 2 * M, Inches(1.13), fill=MIST)
+    text(s, M + Inches(0.3), ly + Inches(0.1), W - 2 * M - Inches(0.6), Inches(1.0), [
         [("Lesson Learned (공통)", {"bold": True, "color": BLUE})],
         runs_of("1. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬 것인지 __구체화 필요__"),
         runs_of("2. Rule 기반 자동화, 이미지 처리(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__")],
-        size=14, gap=0.5)
+        size=14, gap=0.3)
     footer(s)
 
 
