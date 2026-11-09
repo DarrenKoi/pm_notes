@@ -177,7 +177,6 @@ def slide(title, msg, notes):
     header(s, title)
     if msg:
         message(s, msg)
-    s.notes_slide.notes_text_frame.text = notes
     return s
 
 
@@ -234,7 +233,6 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
 def s_cover(title="Auto Recipe Creation TF 구성 기획안",
             sub="R&D MI 현업 엔지니어들과 만드는 레시피 셋업 자동화 공통 플랫폼"):  # 표지
     s = prs.slides.add_slide(BLANK)
-    s.notes_slide.notes_text_frame.text = f"{title}을 보고드리겠습니다."
     text(s, Inches(1.0), Inches(2.45), W - Inches(2.0), Inches(1.0), title, size=40, bold=True)
     box(s, Inches(1.0), Inches(3.62), W - Inches(2.0), Inches(0.03), fill=GRAY)
     gradient_bar(s, Inches(1.0), Inches(3.6), Inches(4.2), Inches(0.07))
@@ -264,7 +262,7 @@ def s_direction():  # 핵심 개발 방향
     two_col(s, "2027 상반기 타겟: 선발대 (6월 판정)", [
                 "**CD-SEM**: Align Fail 시 Recipe 이미지 변경",
                 "**Thickness**: Film 10 Layer 이하 Recipe 90% 자동화",
-                "**Inspection**: Recipe Tuning 최적화와 자동화",
+                "**Inspection**: 전체 디바이스향 DRB 기반 ARC 확장",
                 "**공통 플랫폼 설계 완성, 베타 테스트**"],
             "2027 연말 타겟: 영역 확장 (12월 판정)", [
                 "**2차 장비군 합류** (다른 MI 장비군)",
@@ -301,8 +299,8 @@ def s_status():  # 2026 추진 현황
     cw = (W - 2 * M - 2 * gap) / 3
     ch = Inches(3.4)
     cols = [("CD 추진 현황", [
-                "**Align Fail 자동 대응 Agent 개발**",
-                "CD-SEM ARC의 첫 PoC, 현재 __Offline 테스트 중__",
+                "CD-SEM ARC의 첫 PoC로 **Align Fail 자동 대응 Agent** 개발 진행 중, 현재 __Offline 테스트 중__",
+                "Align Fail 대응에 **Recipe Tuning** 포함",
                 "VLM 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
             ("Thickness 추진 현황", [
                 "의뢰부터 Recipe 생성까지 **ARC Pipeline 구현**",
@@ -436,7 +434,7 @@ def s_options():  # 검토한 대안
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성: 엔진은 공통 플랫폼 팀, 절차는 장비군 담당 엔지니어",
               "1차는 CD-SEM, Thickness, Inspection, 다른 MI 장비군은 2차로 합류",
-              "TF 조직도입니다. 조직과 명단은 처음부터 전체로 12월에 지정합니다. 왼쪽 공통 플랫폼 팀은 장비와 무관한 엔진을 만듭니다. 공통 플랫폼 팀은 개발 5명입니다. 제가 전체 설계를 맡고, 백엔드 2명이 서버와 녹화 DB 추출, LLMOps를, 프론트엔드 2명이 엔지니어 PC 설치형 에이전트와 승인 화면을 맡습니다. 다섯 명 모두 개인 과제와 병행해 각 50%입니다. 1차 MI팀 현업 엔지니어도 개발에 함께 참여할 수 있습니다. 오른쪽은 장비군 담당 엔지니어로, 장비군마다 1~2명이 자기 장비의 절차와 판정 기준을 맡습니다. 1차는 CD-SEM, Thickness, Inspection입니다. 상반기 목표는 CD-SEM이 Align Fail 시 Recipe 이미지 변경, Thickness가 Film 10 Layer 이하 Recipe 90% 자동화, Inspection이 Recipe Tuning 최적화와 자동화입니다. 다른 MI 장비군 담당은 상반기에 인터뷰와 Recipe Workflow 조사로 준비하다가 6월 베타 판정 뒤 7월부터 본격 참여합니다. 현업 엔지니어 대부분은 개발과 AI에 익숙하지 않아, 합류 시점마다 4주 교육을 합니다.")
+              "TF 조직도입니다. 조직과 명단은 처음부터 전체로 12월에 지정합니다. 왼쪽 공통 플랫폼 팀은 장비와 무관한 엔진을 만듭니다. 공통 플랫폼 팀은 개발 5명입니다. 제가 전체 설계를 맡고, 백엔드 2명이 서버와 녹화 DB 추출, LLMOps를, 프론트엔드 2명이 엔지니어 PC 설치형 에이전트와 승인 화면을 맡습니다. 다섯 명 모두 개인 과제와 병행해 각 50%입니다. 1차 MI팀 현업 엔지니어도 개발에 함께 참여할 수 있습니다. 오른쪽은 장비군 담당 엔지니어로, 장비군마다 1~2명이 자기 장비의 절차와 판정 기준을 맡습니다. 1차는 CD-SEM, Thickness, Inspection입니다. 상반기 목표는 CD-SEM이 Align Fail 시 Recipe 이미지 변경, Thickness가 Film 10 Layer 이하 Recipe 90% 자동화, Inspection이 전체 디바이스향 DRB 기반 ARC 확장입니다. 다른 MI 장비군 담당은 상반기에 인터뷰와 Recipe Workflow 조사로 준비하다가 6월 베타 판정 뒤 7월부터 본격 참여합니다. 현업 엔지니어 대부분은 개발과 AI에 익숙하지 않아, 합류 시점마다 4주 교육을 합니다.")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
@@ -445,21 +443,19 @@ def s_team():  # TF 구성 (조직도)
     text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "조직, 명단 전체 12월 지정 / 담당 임원 월간 진척 보고", size=12,
          color=WHITE, align=PP_ALIGN.CENTER)
     goal = lambda t: [[("1차, 상반기 목표", {"bold": True, "color": ORANGE})], t]
-    groups = [("공통 플랫폼 팀: 개발 5명, 각 50%", BLUE, [
-                  ("TF 리드", ["1명", "총괄", "전체 설계"]),
+    groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
                   ("백엔드", ["2명", "서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
                   ("프론트엔드", ["2명", "설치형 에이전트", "승인 화면"]),
-                  ("현업 엔지니어", ["선택 참여", "1차 MI팀 소속", "개발 함께 진행 가능"])]),
+                  ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
               ("장비군 담당: 장비군마다 1~2명", SUB, [
                   ("CD-SEM", goal("Align Fail 시 Recipe 이미지 변경")),
                   ("Thickness", goal("Film 10 Layer 이하 Recipe 90% 자동화")),
-                  ("Inspection", goal("Recipe Tuning 최적화와 자동화")),
+                  ("Inspection", goal("전체 디바이스향 DRB 기반 ARC 확장")),
                   ("다른 MI 장비군", ["2차", "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
     gg = Inches(0.4)
     gw = (W - 2 * M - gg) / 2
     bus_y, gy = COL_Y + Inches(0.92), COL_Y + Inches(1.12)
     bw_g = Inches(0.12)
-    bw = (gw - 3 * bw_g) / 4
     line = lambda x0, y0, x1, y1: setattr(s.shapes.add_connector(1, x0, y0, x1, y1).line.color, "rgb", GRAY)
     line(W / 2, COL_Y + Inches(0.72), W / 2, bus_y)
     line(M + gw / 2, bus_y, W - M - gw / 2, bus_y)
@@ -469,9 +465,10 @@ def s_team():  # TF 구성 (조직도)
         box(s, gx, gy, gw, Inches(0.42), fill=accent)
         text(s, gx, gy, gw, Inches(0.42), head, size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
              anchor=MSO_ANCHOR.MIDDLE)
+        bw = (gw - (len(members) - 1) * bw_g) / len(members)
         for k, (name, lines) in enumerate(members):
             x, y = gx + k * (bw + bw_g), gy + Inches(0.52)
-            dim = k == 3  # 선택 참여, 2차 준비 단계
+            dim = gi == 1 and k == 3  # 2차 준비 단계
             box(s, x, y, bw, Inches(1.9), fill=MIST if dim else WHITE, line=LINE)
             box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else accent)
             text(s, x + Inches(0.06), y + Inches(0.14), bw - Inches(0.12), Inches(0.36), name, size=12, bold=True,
@@ -488,7 +485,7 @@ def s_kanban():  # 일정 칸반
               "2027년 일정을 트랙별로 보여 드립니다. 위 줄은 1차 장비군의 상반기 목표입니다. 1분기에 CD-SEM, Thickness, Inspection의 대상 Recipe를 정해 시험하고, 2분기에 장비군별로 자동화를 운영해 6월에 판정받습니다. 가운데 줄은 공통 플랫폼입니다. 1분기에 선발대 합류 교육과 함께 플랫폼을 설계하고, 2분기에 선발대 PC에 베타를 배포해 6월에 베타 기준을 판정받습니다. 하반기에는 상시 관찰 모드와 선발대 절차서, 지식 자산을 만들어 12월에 판정받습니다. 아래 줄은 영역 확장입니다. 2차 명단은 12월에 함께 정하고, 상반기에는 인터뷰와 Recipe Workflow 조사로 준비해 3월에 플랫폼 설계에 반영합니다. 베타를 통과하면 7월에 다른 MI 장비군 담당이 본격 참여해 4주 교육을 시작합니다. 장비군별 상반기 목표가 기준에 못 미쳐도 지식화 관문과 안전 요건을 채우면 2028 진입을 막지 않고, 미달분은 보완이나 축소로 결정합니다.")
     periods = ["2026-12", "2027 1분기", "2027 2분기", "2027 3분기", "2027 4분기"]
     lanes = [("1차 장비군\n상반기 목표", [["TF 승인", "PC 자원 실측", "녹화 DB 접근 확인"],
-                             ["CD-SEM 입력 시험", "Thickness 대상 Recipe", "Inspection Tuning 대상"],
+                             ["CD-SEM 입력 시험", "Thickness 대상 Recipe", "Inspection DRB 시험"],
                              ["장비군별 자동화 운영", "목표 달성 확인", "★ 6월 관문"],
                              ["자동 운영 유지", "요소 목록 반영"], []]),
              ("공통\n플랫폼", [["최소 녹화기 준비"], ["플랫폼 설계", "모델 서빙, 평가 세트", "1기 4주 합류 교육"],
