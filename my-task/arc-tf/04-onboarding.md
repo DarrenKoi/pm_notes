@@ -2,13 +2,13 @@
 tags: [my-task, arc-tf, onboarding, education, vlm, computer-use]
 category_major: "업무 기획·산출물"
 category_middle: "ARC TF (Auto Recipe Creation)"
-category_minor: "온보딩 학습 과정"
+category_minor: "8주 합류 교육"
 note_kind: "교육 계획"
 classified_on: "2026-10-29"
 last_updated: 2026-11-09
 ---
 
-# 온보딩 학습 과정 (합류 시점마다 8주)
+# 8주 합류 교육 (합류 시점마다)
 
 > 개발과 AI에 익숙하지 않은 MI 현업 엔지니어가 AI Agent로 레시피를 자동화할 때 알아야 할 배경 지식을 쌓는 TF 전용 실무 과정. 교육을 끝내고 시작하지 않고, 합류 시점마다 교육하며 TF를 운영한다.
 
