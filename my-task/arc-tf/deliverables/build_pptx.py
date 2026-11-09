@@ -293,8 +293,8 @@ def s_effects():  # 효과
 
 def s_status():  # 2026 추진 현황
     s = slide("2026 ARC 추진 현황: CD, Thickness, Inspection",
-              "장비군별 ARC 추진 중, 공통 과제는 생성형 AI의 작업 방식 학습과 기존 자동화의 도구화",
-              "먼저 2026년 ARC 추진 현황입니다. CD는 CD-SEM ARC의 첫 PoC로 Align Fail 자동 대응 Agent를 개발해 현재 Offline 테스트 중이고, VLM 기반으로 장비를 조작하는 Computer-use 기능을 구현했습니다. Thickness는 의뢰부터 Recipe 생성까지 ARC Pipeline을 구현해 MI 장비군 중 완성도가 가장 높고, 27년까지 의뢰 Recipe의 90% 이상 생성 자동화를 목표로 하고 있습니다. Inspection은 의뢰서 DB화와 Recipe RAG 구축으로 ARC용 DB를 만들고, Recipe 생성과 튜닝을 부분 자동화했습니다. 세 장비군에 공통으로 남은 과제는 두 가지입니다. 하나는 Computer Use 기반 ARC에서 생성형 AI 모델에게 작업 방식을 어떻게 학습시킬지이고, 다른 하나는 PyAutoGUI 같은 Rule 기반 자동화와 기존 Computer Vision, ML/DL을 생성형 모델이 도구로 쓰게 하는 방법입니다.")
+              "장비군별 ARC 추진 중, 공통 과제는 Recipe 작업 방식 학습과 기존 자동화와의 결합 구조",
+              "먼저 2026년 ARC 추진 현황입니다. CD는 CD-SEM ARC의 첫 PoC로 Align Fail 자동 대응 Agent를 개발해 현재 Offline 테스트 중이고, VLM 기반으로 장비를 조작하는 Computer-use 기능을 구현했습니다. Thickness는 의뢰부터 Recipe 생성까지 ARC Pipeline을 구현해 MI 장비군 중 완성도가 가장 높고, 27년까지 의뢰 Recipe의 90% 이상 생성 자동화를 목표로 하고 있습니다. Inspection은 의뢰서 DB화와 Recipe RAG 구축으로 ARC용 DB를 만들고, Recipe 생성과 튜닝을 부분 자동화했습니다. 세 장비군에서 공통으로 얻은 교훈은 두 가지입니다. 첫째, 생성형 AI 모델에게 Recipe 작업 방식을 어떻게 학습시킬지 구체화해야 합니다. 둘째, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 반드시 필요합니다.")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
     ch = Inches(2.75)
@@ -315,8 +315,8 @@ def s_status():  # 2026 추진 현황
     box(s, M, ly, W - 2 * M, Inches(1.6), fill=MIST)
     text(s, M + Inches(0.3), ly + Inches(0.12), W - 2 * M - Inches(0.6), Inches(1.4), [
         [("Lesson Learned (공통)", {"bold": True, "color": BLUE})],
-        runs_of("1. Computer Use 기반 ARC에서 **생성형 AI 모델에게 작업 방식을 어떻게 학습**시킬 것인가"),
-        runs_of("2. Rule 기반 자동화(PyAutoGUI)와 기존 Computer Vision, ML/DL을 **생성형 모델이 도구로 쓰게** 할 방법")],
+        runs_of("1. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬 것인지 __구체화 필요__"),
+        runs_of("2. Rule 기반 자동화, 이미지 처리(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__")],
         size=14, gap=0.5)
     footer(s)
 
@@ -431,8 +431,8 @@ def s_options():  # 검토한 대안
 
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성: 엔진은 공통 플랫폼 팀, 절차는 장비군 담당 엔지니어",
-              "조직과 명단은 처음부터 전체로, 상반기는 CD-SEM, Thickness 중점 운영",
-              "TF 조직도입니다. 조직과 명단은 처음부터 전체로 12월에 지정합니다. 왼쪽 공통 플랫폼 팀은 장비와 무관한 엔진을 만듭니다. 제가 전체 설계와 Align Fail 지능화를 맡고, 백엔드 개발자가 서버와 녹화 DB 추출, LLMOps를, 프론트엔드 개발자가 엔지니어 PC 설치형 에이전트와 승인 화면을 맡습니다. 세 명 모두 각 50%입니다. 오른쪽은 장비군 담당 엔지니어로, 자기 장비의 절차와 판정 기준을 맡습니다. CD-SEM은 제가 직접, Thickness는 MI 엔지니어 1~2명이 주 5시간 참여합니다. 다른 MI 장비군 담당은 상반기에 인터뷰와 Recipe Workflow 조사로 준비하다가 6월 베타 판정 뒤 7월부터 본격 참여합니다. 현업 엔지니어 대부분은 개발과 AI에 익숙하지 않아, 합류 시점마다 8주 교육을 합니다.")
+              "1차는 CD-SEM, Thickness, Inspection, 다른 MI 장비군은 2차로 합류",
+              "TF 조직도입니다. 조직과 명단은 처음부터 전체로 12월에 지정합니다. 왼쪽 공통 플랫폼 팀은 장비와 무관한 엔진을 만듭니다. 공통 플랫폼 팀은 최소 3명, 최대 5명입니다. 제가 전체 설계와 Align Fail 지능화를 맡고, 백엔드 개발자가 서버와 녹화 DB 추출, LLMOps를, 프론트엔드 개발자가 엔지니어 PC 설치형 에이전트와 승인 화면을 맡습니다. 1차 MI팀 현업 엔지니어도 개발에 함께 참여할 수 있습니다. 오른쪽은 장비군 담당 엔지니어로, 장비군마다 1~2명이 자기 장비의 절차와 판정 기준을 맡습니다. 1차는 CD-SEM, Thickness, Inspection입니다. 상반기 목표는 CD-SEM이 Align Fail 시 Recipe 이미지 변경, Thickness가 Film 10 Layer 이하 Recipe 90% 자동화, Inspection이 Recipe Tuning 최적화와 자동화입니다. 다른 MI 장비군 담당은 상반기에 인터뷰와 Recipe Workflow 조사로 준비하다가 6월 베타 판정 뒤 7월부터 본격 참여합니다. 현업 엔지니어 대부분은 개발과 AI에 익숙하지 않아, 합류 시점마다 8주 교육을 합니다.")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
@@ -440,19 +440,22 @@ def s_team():  # TF 구성 (조직도)
          align=PP_ALIGN.CENTER)
     text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "조직, 명단 전체 12월 지정 / 담당 임원 월간 진척 보고", size=12,
          color=WHITE, align=PP_ALIGN.CENTER)
-    groups = [("공통 플랫폼 팀: 개발 3명, 각 50%", BLUE, [
-                  ("TF 리드", ["전체 설계", "Align Fail 지능화", "CD-SEM 담당 겸임"]),
-                  ("개발 A: 백엔드", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps (서빙, 평가)"]),
-                  ("개발 B: 프론트엔드", ["설치형 에이전트", "승인 화면", "베타 병목, 우선 모집"])]),
-              ("장비군 담당: 절차, 판정 기준, 실장비 검증", SUB, [
-                  ("CD-SEM (1차)", ["TF 리드 직접", "Align Fail PoC 재사용", "상반기 중점 운영"]),
-                  ("Thickness (1차)", ["MI 엔지니어 1~2명", "주 5시간", "PyAutoGUI 재사용"]),
-                  ("다른 MI 장비군", ["2차, 장비군마다 1~2명", "상반기 인터뷰, Workflow 조사", "7월 본격, 주 5시간"])])]
+    goal = lambda t: [[("1차, 상반기 목표", {"bold": True, "color": ORANGE})], t]
+    groups = [("공통 플랫폼 팀: 최소 3명, 최대 5명", BLUE, [
+                  ("TF 리드", ["총괄", "전체 설계", "Align Fail 지능화"]),
+                  ("개발 A", ["백엔드", "서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
+                  ("개발 B", ["프론트엔드", "설치형 에이전트", "승인 화면", "우선 모집"]),
+                  ("현업 엔지니어", ["선택 참여", "1차 MI팀 소속", "개발 함께 진행 가능"])]),
+              ("장비군 담당: 장비군마다 1~2명", SUB, [
+                  ("CD-SEM", goal("Align Fail 시 Recipe 이미지 변경")),
+                  ("Thickness", goal("Film 10 Layer 이하 Recipe 90% 자동화")),
+                  ("Inspection", goal("Recipe Tuning 최적화와 자동화")),
+                  ("다른 MI 장비군", ["2차", "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
     gg = Inches(0.4)
     gw = (W - 2 * M - gg) / 2
     bus_y, gy = COL_Y + Inches(0.92), COL_Y + Inches(1.12)
     bw_g = Inches(0.12)
-    bw = (gw - 2 * bw_g) / 3
+    bw = (gw - 3 * bw_g) / 4
     line = lambda x0, y0, x1, y1: setattr(s.shapes.add_connector(1, x0, y0, x1, y1).line.color, "rgb", GRAY)
     line(W / 2, COL_Y + Inches(0.72), W / 2, bus_y)
     line(M + gw / 2, bus_y, W - M - gw / 2, bus_y)
@@ -464,14 +467,14 @@ def s_team():  # TF 구성 (조직도)
              anchor=MSO_ANCHOR.MIDDLE)
         for k, (name, lines) in enumerate(members):
             x, y = gx + k * (bw + bw_g), gy + Inches(0.52)
-            dim = gi == 1 and k == 2  # 2차는 상반기 준비 단계
-            box(s, x, y, bw, Inches(1.62), fill=MIST if dim else WHITE, line=LINE)
+            dim = k == 3  # 선택 참여, 2차 준비 단계
+            box(s, x, y, bw, Inches(1.9), fill=MIST if dim else WHITE, line=LINE)
             box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else accent)
-            text(s, x + Inches(0.08), y + Inches(0.14), bw - Inches(0.16), Inches(0.36), name, size=14, bold=True,
+            text(s, x + Inches(0.06), y + Inches(0.14), bw - Inches(0.12), Inches(0.36), name, size=12, bold=True,
                  align=PP_ALIGN.CENTER)
-            text(s, x + Inches(0.08), y + Inches(0.55), bw - Inches(0.16), Inches(1.0), lines, size=11, color=SUB,
+            text(s, x + Inches(0.06), y + Inches(0.6), bw - Inches(0.12), Inches(1.0), lines, size=11, color=SUB,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(5.92), "교육", "합류 시점마다 **8주 과정**: 1기 선발대 2027-01~02, 2기 2차 장비군 2027-07~08 (__베타 플랫폼으로 실습__)", size=13)
+    note_line(s, Inches(5.92), "교육", "합류 시점마다 **8주 과정**: 1기 1차 장비군 2027-01~02, 2기 2차 장비군 2027-07~08 (__베타 플랫폼으로 실습__)", size=13)
     note_line(s, Inches(6.3), "목표", "개발, AI 비전문가도 자기 장비 절차를 Agent 실행 형태로 정의하고 __결과 판정__ 가능", size=13)
     footer(s)
 
@@ -748,9 +751,9 @@ def s_exec_roadmap():
     footer(s)
 
 
-BOSS = [s_cover, s_status, s_assets, s_lessons, s_where, s_why_not_llm, s_direction, s_phases, s_options, s_effects,
-        s_platform, s_team, s_kanban, s_safety, s_decision, s_appendix_asks]
-TEAM = BOSS[:11] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[11:]
+BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_why_not_llm, s_direction, s_phases, s_options, s_effects,
+        s_platform, s_kanban, s_safety, s_decision, s_appendix_asks]
+TEAM = BOSS[:12] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[12:]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
         s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
