@@ -66,7 +66,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#01-tf-proposal"><span class="num">02</span>Auto Recipe Creation TF 구성 기획안</a></li>
 <li><a href="#02-roles-and-teams"><span class="num">03</span>참여 팀과 역할</a></li>
 <li><a href="#03-operating-rhythm"><span class="num">04</span>운영 방식</a></li>
-<li><a href="#04-onboarding"><span class="num">05</span>8주 합류 교육 (합류 시점마다)</a></li>
+<li><a href="#04-onboarding"><span class="num">05</span>4주 합류 교육 (합류 시점마다)</a></li>
 <li><a href="#05-poc-assets"><span class="num">06</span>PoC 자산과 남은 과제</a></li>
 <li><a href="#06-platform-prd"><span class="num">07</span>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</a></li>
 <li><a href="#07-platform-architecture"><span class="num">08</span>공통 플랫폼 기술 설계: 녹화에서 절차를 뽑고, 화면을 확인하며 한 단계씩 실행</a></li>
@@ -123,9 +123,9 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>4</td>
-<td><a href="#04-onboarding">8주 합류 교육</a></td>
+<td><a href="#04-onboarding">4주 합류 교육</a></td>
 <td>담당 엔지니어</td>
-<td>합류 시점마다 8주 과정 (1기 2027-01~02, 2기 2027-07~08), 수료 기준</td>
+<td>합류 시점마다 4주 과정 (1기 2027-01, 2기 2027-07), 수료 기준</td>
 <td>초안</td>
 </tr>
 <tr>
@@ -298,7 +298,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>⟨확인: 선발대 CD-SEM, Thickness, Inspection 담당 참여 엔지니어 (2026-12), 2차 장비군 담당 (2026-12), 지정 개발 4명 (2026-12)⟩</li>
 <li>⟨확인: 2차 MI 장비군 목록과 장비군별 접속 경로⟩</li>
 <li>⟨확인: 장비 화면 녹화분 DB 직접 접근 가능 여부 (R&amp;D MI H/W 담당자). 불가하면 RCS에서 GUI 자동화로 다운로드, 다운로드 자동화 작업 별도 필요⟩</li>
-<li>⟨확인: 장비군별 자동화 대상 구간 실측, 합류 교육 8주차⟩</li>
+<li>⟨확인: 장비군별 자동화 대상 구간 실측, 기준선 측정(2027-02)⟩</li>
 <li>SecureVDI 경로 입력 가능 확인 (2026-11). ⟨확인: 로컬 RCS 경로 입력 주입 테스트, 저장 없음⟩</li>
 <li>⟨확인: VDI 워터마크 여부⟩</li>
 <li>⟨확인: 작업 관리 도구⟩</li>
@@ -360,7 +360,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>셋업이 짧아졌나</td>
 <td>자동화 대상 구간(측정 위치, Align)의 건당 소요 시간</td>
-<td>셋업 전체 30~60분 (경험치). 구간 실측은 합류 교육 8주차</td>
+<td>셋업 전체 30~60분 (경험치). 구간 실측은 기준선 측정(2027-02)</td>
 <td>⟨확인⟩% 단축</td>
 </tr>
 <tr>
@@ -387,7 +387,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="00-problem-statement--검증-방법">검증 방법</h2>
 <ul>
 <li><strong>담당 엔지니어에게 읽어 주기</strong>: 합류 교육 첫 주에 선발대 담당 엔지니어(2차 장비군은 2기 합류 교육 첫 주)에게 "최종 문제 정의"를 읽어 주고, "맞다"는 반응이 나오는지 본다. 다르면 "그런데"와 "왜냐하면"을 고친다.</li>
-<li><strong>기준선 측정</strong>: 합류 교육 8주차 실측 값으로 "30~60분"을 자동화 대상 구간 기준으로 바꾼다.</li>
+<li><strong>기준선 측정</strong>: 기준선 측정(2027-02) 실측 값으로 "30~60분"을 자동화 대상 구간 기준으로 바꾼다.</li>
 <li><strong>임원 보고 전 점검</strong>: 이 문서의 한 문장만 들어도 "그건 풀 가치가 있다"고 고개를 끄덕일 수 있는지 본다. 끄덕이지 않으면 ⟨확인: 장비군별 월 셋업 수요⟩를 먼저 채운다.</li>
 </ul>
 <h2 id="00-problem-statement--해결-방향-이-문서-범위-밖">해결 방향 (이 문서 범위 밖)</h2>
@@ -439,7 +439,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </table></div>
 <ul>
 <li>선발대 지정 사유: CD-SEM의 Align Fail PoC(화면 인식, Align Key 탐색, 반자동 운영), Thickness의 기존 PyAutoGUI 자동화와 ARC Pipeline, Inspection의 의뢰서 DB와 Recipe RAG를 재사용할 수 있음</li>
-<li>개발과 AI에 익숙하지 않은 엔지니어는 교육을 받으며 TF에 참여함. 교육은 합류 시점마다 진행 (1차 2027-01~02, 2차 2027-07~08)</li>
+<li>개발과 AI에 익숙하지 않은 엔지니어는 교육을 받으며 TF에 참여함. 교육은 합류 시점마다 진행 (1차 2027-01, 2차 2027-07, 각 4주)</li>
 </ul>
 <p><strong>요청 사항 (2026-12)</strong></p>
 <ul>
@@ -697,7 +697,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>정해진 순서의 반복 입력: 검증된 PyAutoGUI 스크립트를 그대로 재사용</li>
 <li>화면 인식과 판단이 필요한 구간 (위치 확인, 예외 화면, 막힘): VLM이 맡음</li>
 <li>PyAutoGUI 스크립트 앞뒤에 VLM 화면 확인을 붙여 화면이 예상과 다르면 멈추게 함</li>
-<li>2027-01~02 합류 교육 때 Thickness 기존 스크립트를 목록화하고 2027-06 요소 목록에 혼합 방식을 반영함</li>
+<li>2027-01 합류 교육 때 Thickness 기존 스크립트를 목록화하고 2027-06 요소 목록에 혼합 방식을 반영함</li>
 </ul>
 <p><strong>아직 확인하지 못한 것</strong>과 확인 시점:</p>
 <div class="tbl"><table>
@@ -921,7 +921,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 </tbody>
 </table></div>
-<p>자동화 대상 구간의 실측값과 나머지 현재 값은 장비군마다 합류 교육 기간(선발대 2027-01~02, 2차 2027-07~08)에 담당 엔지니어가 직접 측정해 확정하겠습니다. 측정하기 전에는 목표를 숫자로 정하지 않습니다.</p>
+<p>자동화 대상 구간의 실측값과 나머지 현재 값은 장비군마다 합류 교육 뒤 기준선 측정 기간(선발대 2027-02, 2차 2027-08)에 담당 엔지니어가 직접 측정해 확정하겠습니다. 측정하기 전에는 목표를 숫자로 정하지 않습니다.</p>
 <p><strong>자동화 측정 기준</strong>: Recipe setup에 Agent가 얼마나 개입해 진행했는지를 Recipe별 비율로 표기합니다.</p>
 <ul>
 <li>자동화 비율 = Agent가 진행한 셋업 단계 수 / 그 Recipe의 전체 셋업 단계 수 (Recipe별 %)</li>
@@ -1143,13 +1143,13 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tbody>
 <tr>
 <td>선발대 (CD-SEM, Thickness, Inspection 담당)</td>
-<td>2027-01~02, 8주</td>
+<td>2027-01, 4주</td>
 <td>주 5시간 안에서 강의 짧게, 실습 길게. 실습은 PoC 녹화본과 모의 실행</td>
 <td>기준선 측정, 대표 레시피 유형 선정, 작업 녹화 시작</td>
 </tr>
 <tr>
 <td>2차 장비군 담당</td>
-<td>2027-07~08, 8주</td>
+<td>2027-07, 4주</td>
 <td>같은 과정. 실습은 선발대에서 만든 공통 플랫폼 베타로</td>
 <td>기준선 측정, 대표 화면의 화면 영역 지도 초안, 작업 녹화 시작 (전체 화면은 4분기)</td>
 </tr>
@@ -1165,7 +1165,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>목표는 AI 개발자를 만드는 것이 아니라, 엔지니어가 <strong>자기 장비 절차를 Agent가 실행할 수 있는 형태로 정의하고 결과를 판정</strong>할 수 있게 하는 것임</li>
 <li>강사는 TF 리드와 공통 플랫폼 팀이 맡음. 교육 시간은 개발 인력 배분에 포함함</li>
 </ul>
-<p>상세 과정은 <a href="#04-onboarding">8주 합류 교육</a>에 있습니다.</p>
+<p>상세 과정은 <a href="#04-onboarding">4주 합류 교육</a>에 있습니다.</p>
 <h2 id="01-tf-proposal--7-일정">7. 일정</h2>
 <p>2027년은 상반기 선발대, 하반기 영역 확장으로 진행합니다. 상반기에 <strong>1차 장비군별 상반기 목표(CD-SEM Align Fail 시 Recipe 이미지 변경, Thickness Film 10 Layer 이하 Recipe 90% 자동화, Inspection Recipe Tuning 최적화와 자동화)를 달성하면서 공통 플랫폼 설계를 완성하고 베타로 운영</strong>합니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고, 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.</p>
 <h3 id="01-tf-proposal--한눈에-보기-칸반">한눈에 보기 (칸반)</h3>
@@ -1192,7 +1192,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>공통 플랫폼</td>
 <td>최소 녹화기 준비</td>
-<td>플랫폼 설계<br>모델 서빙, 평가 세트<br>선발대 8주 합류 교육</td>
+<td>플랫폼 설계<br>모델 서빙, 평가 세트<br>선발대 4주 합류 교육</td>
 <td>베타 배포(선발대 PC)<br>녹화 축적<br><strong>베타 판정</strong></td>
 <td>상시 관찰 모드<br>선발대 절차서 초안</td>
 <td>지식 자산 DB<br>돌파구 추천<br><strong>12월 관문</strong></td>
@@ -1202,7 +1202,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>2차 명단 지정</td>
 <td>인터뷰, Workflow 조사<br>작업 녹화<br>요구사항 1차본(3월)</td>
 <td>녹화 축적<br>요구사항 보완</td>
-<td>본격 참여(주 5시간)<br>8주 합류 교육</td>
+<td>본격 참여(주 5시간)<br>4주 합류 교육</td>
 <td>화면 영역 지도<br>절차 정의 시작</td>
 </tr>
 </tbody>
@@ -1297,7 +1297,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>2027-07~09</td>
 <td>절차화와 합류</td>
 <td>상시 관찰 모드 완성, 녹화에서 절차 초안 추출, 결정 지점 질문으로 노하우 수집, 레시피 의뢰서 연동</td>
-<td>본격 참여(주 5시간), 8주 합류 교육, 기준선 측정, 상반기 녹화를 플랫폼으로 이관</td>
+<td>본격 참여(주 5시간), 4주 합류 교육, 기준선 측정, 상반기 녹화를 플랫폼으로 이관</td>
 <td>선발대 첫 절차서 완성, 2차 녹화가 매주 쌓임</td>
 </tr>
 <tr>
@@ -1471,7 +1471,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>영역 확장</td>
 <td>2차 장비군 여러 개가 한꺼번에 들어와 교육, 지원 부담이 큼</td>
-<td>같은 8주 과정을 한 번에 진행, 장비군 합류 순서를 나눌 수 있게 둠</td>
+<td>같은 4주 과정을 한 번에 진행, 장비군 합류 순서를 나눌 수 있게 둠</td>
 <td>2027-07</td>
 </tr>
 <tr>
@@ -1483,7 +1483,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>공통</td>
 <td>현업 엔지니어가 개발, AI에 익숙하지 않음</td>
-<td>합류 시점마다 8주 교육, 실습 중심, 교육하며 운영 (<a href="#04-onboarding">8주 합류 교육</a>)</td>
+<td>합류 시점마다 4주 교육, 실습 중심, 교육하며 운영 (<a href="#04-onboarding">4주 합류 교육</a>)</td>
 <td>2027-02, 2027-08</td>
 </tr>
 <tr>
@@ -1530,7 +1530,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><a href="#readme">ARC TF 목차</a></li>
 <li><a href="#02-roles-and-teams">참여 팀과 역할</a></li>
 <li><a href="#03-operating-rhythm">운영 방식</a></li>
-<li><a href="#04-onboarding">8주 합류 교육</a></li>
+<li><a href="#04-onboarding">4주 합류 교육</a></li>
 <li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
 <li><a href="#07-platform-architecture">공통 플랫폼 기술 설계</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
@@ -1823,7 +1823,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>개발과 AI에 익숙하지 않아도 된다. 합류 시점마다 교육을 받으며 TF에 참여한다. Python은 읽고 간단히 고치는 정도까지 사전 자료와 1주차 실습으로 맞춘다.</li>
 <li>자기 장비의 레시피 셋업 절차를 설명할 수 있다.</li>
 <li>겸직 시간(근무일마다 1시간) 안에서 기준선 측정, 녹화, 검증을 한다.</li>
-<li>AI, LLM 특성은 몰라도 된다. 합류 교육에서 배운다 (<a href="#04-onboarding">8주 합류 교육</a>). 선발대는 2027-01~02, 2차 장비군은 2027-07~08에 듣는다.</li>
+<li>AI, LLM 특성은 몰라도 된다. 합류 교육에서 배운다 (<a href="#04-onboarding">4주 합류 교육</a>). 선발대는 2027-01, 2차 장비군은 2027-07에 4주 동안 듣는다.</li>
 </ul>
 <h2 id="02-roles-and-teams--관련-문서">관련 문서</h2>
 <ul>
@@ -2027,7 +2027,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><a href="#decision-log">결정 기록</a></li>
 <li><a href="#risk-register">위험 목록</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="04-onboarding"><p class="file"><span class="num">05</span>04-onboarding.md</p><h1>8주 합류 교육 (합류 시점마다)</h1>
+<section class="doc" id="04-onboarding"><p class="file"><span class="num">05</span>04-onboarding.md</p><h1>4주 합류 교육 (합류 시점마다)</h1>
 <blockquote>
 <p>개발과 AI에 익숙하지 않은 MI 현업 엔지니어가 AI Agent로 레시피를 자동화할 때 알아야 할 배경 지식을 쌓는 TF 전용 실무 과정. 교육을 끝내고 시작하지 않고, 합류 시점마다 교육하며 TF를 운영한다.</p>
 </blockquote>
@@ -2044,13 +2044,13 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>1기 (선발대)</td>
 <td>CD-SEM, Thickness, Inspection 담당 엔지니어</td>
-<td>2027-01~02</td>
+<td>2027-01</td>
 <td>PoC 녹화본과 모의 실행</td>
 </tr>
 <tr>
 <td>2기 (2차 장비군)</td>
 <td>다른 MI 장비군 담당 엔지니어</td>
-<td>2027-07~08 (6월 베타 판정 뒤)</td>
+<td>2027-07 (6월 베타 판정 뒤)</td>
 <td>선발대가 만든 공통 플랫폼 베타 (입력 없는 모의 실행 중심)</td>
 </tr>
 </tbody>
@@ -2065,7 +2065,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="04-onboarding--전제">전제</h2>
 <ul>
 <li><strong>Python 기초 문법은 사전 자료로 제공한다.</strong> 과정 안에서는 코드를 읽고 간단히 고치는 정도까지만 1주차 실습으로 맞춘다.</li>
-<li>겸직 시간(주 5시간: 근무일마다 1시간, 8주 합계 40시간) 안에서 진행한다. 강의는 짧게 하고 실습을 길게 한다.</li>
+<li>겸직 시간(주 5시간: 근무일마다 1시간, 4주 합계 20시간) 안에서 진행한다. 3주차에 다 끝내지 못한 절차 정의는 교육 뒤 TF 업무 시간(주 5시간)에 이어 간다. 강의는 짧게 하고 실습을 길게 한다.</li>
 <li>강사는 리드와 공통 플랫폼 팀이 맡는다.</li>
 <li>선발대와 2차 장비군 담당 엔지니어가 각자 합류 시점에 듣는다. 2기는 선발대 엔지니어가 실습 조교로 함께한다.</li>
 </ul>
@@ -2082,57 +2082,33 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tbody>
 <tr>
 <td>1</td>
-<td>TF와 플랫폼 개요, Git</td>
-<td>ARC 목표, 장비군 담당의 역할, 저장소 구조, 브랜치와 리뷰</td>
-<td>저장소 받기, 문서 수정 PR</td>
+<td>TF와 플랫폼 개요, Git, LLM과 VLM의 특성</td>
+<td>ARC 목표, 장비군 담당의 역할, 저장소 구조, 브랜치와 리뷰. LLM, VLM이 잘하는 것(화면 의미 이해, 설명)과 못하는 것(좌표가 흔들림, 기억 없음, 환각), 프롬프트가 결과를 바꾸는 방식</td>
+<td>저장소 받기, 문서 수정 PR. 같은 화면을 여러 번 물어보고 답이 흔들리는 것 확인하기</td>
 </tr>
 <tr>
 <td>2</td>
-<td>LLM, VLM의 특성</td>
-<td>잘하는 것(화면 의미 이해, 설명), 못하는 것(좌표가 흔들림, 기억 없음, 환각), 프롬프트가 결과를 바꾸는 방식</td>
-<td>같은 화면을 여러 번 물어보고 답이 흔들리는 것 확인하기</td>
+<td>VLM과 CV 역할 분리, 컴퓨터 사용 Agent, 안전 규칙</td>
+<td>"어디를 볼지"는 VLM, "정확히 어디인지"는 CV. 화면 캡처 → 판단 → 조작 → 검증 순환과 실패 유형(화면 품질, 모델, 절차). 검증 실패 시 중단, 되돌릴 수 없는 조작, 저장 전 승인, 증거 기록</td>
+<td>PoC의 Align Key 탐색 점수 해석하기. 비생산 화면에서 클릭, 입력 시켜 보기. 실패 기록을 보고 원인 분류하기</td>
 </tr>
 <tr>
 <td>3</td>
-<td>왜 VLM과 CV를 나눠 쓰는가</td>
-<td>"어디를 볼지"는 VLM, "정확히 어디인지"는 CV. 이미지 매칭 점수 읽는 법</td>
-<td>PoC의 Align Key 탐색 결과를 보고 점수 해석하기</td>
+<td>작업 녹화 → 절차서 → 플랫폼 절차 정의</td>
+<td>화면 녹화, 조작 타임라인, 한국어 절차서. 단계, 각 단계의 성공 조건, 실패 시 행동, 조작별 승인 분류</td>
+<td>자기 장비 레시피 셋업 1건을 녹화해 절차서로 만들고, 절차 정의로 옮겨 녹화본에 대고 모의 실행하기</td>
 </tr>
 <tr>
 <td>4</td>
-<td>컴퓨터 사용 Agent의 동작</td>
-<td>화면 캡처 → 판단 → 조작 → 검증 순환, 실패 유형(화면 품질, 모델, 절차)</td>
-<td>플랫폼으로 비생산 화면에서 클릭, 입력 시켜 보기</td>
-</tr>
-<tr>
-<td>5</td>
-<td>안전 규칙과 승인</td>
-<td>검증 실패 시 중단, 되돌릴 수 없는 조작, 저장 전 승인, 증거 기록</td>
-<td>실패 기록을 보고 원인 분류하기</td>
-</tr>
-<tr>
-<td>6</td>
-<td>작업 녹화 → 절차서</td>
-<td>화면 녹화, 조작 타임라인, 한국어 절차서로 바꾸기</td>
-<td>자기 장비 레시피 셋업 1건 녹화하고 절차서 만들기</td>
-</tr>
-<tr>
-<td>7</td>
-<td>절차를 플랫폼에 정의하기</td>
-<td>단계, 각 단계의 성공 조건, 실패 시 행동, 조작별 승인 분류</td>
-<td>6주차 절차서를 절차 정의로 옮기고, 녹화본에 대고 모의 실행하기</td>
-</tr>
-<tr>
-<td>8</td>
-<td>기준선 측정과 판정 기준</td>
-<td>측정 양식으로 현재 셋업 시간 재기, 성공 판정 기준 정하기</td>
-<td>장비군별 기준선과 대표 레시피 유형을 발표</td>
+<td>기준선 측정 준비와 판정 기준</td>
+<td>측정 양식 쓰는 법, 성공 판정 기준 정하기</td>
+<td>장비군별 대표 레시피 유형, 판정 기준, 2월 기준선 측정 계획 발표</td>
 </tr>
 </tbody>
 </table></div>
-<p>1기 때는 공통 플랫폼이 아직 설계 단계다. 그래서 1기 실습은 <strong>녹화본과 모의 실행</strong>으로 하고, 실제 장비 실행은 상반기 구축 단계에서 한다. 2기는 베타 플랫폼으로 6, 7주차 실습(녹화, 절차 정의, 입력 없는 모의 실행)을 한다. 4주차 입력 실습은 1기와 같이 비생산 화면에서 승인이 필요 없는 조작만 쓰고, 실장비 입력은 승인된 Align Fail 범위로 한정한다.</p>
+<p>1기 때는 공통 플랫폼이 아직 설계 단계다. 그래서 1기 실습은 <strong>녹화본과 모의 실행</strong>으로 하고, 실제 장비 실행은 상반기 구축 단계에서 한다. 2기는 베타 플랫폼으로 3주차 실습(녹화, 절차 정의, 입력 없는 모의 실행)을 한다. 2주차 입력 실습은 1기와 같이 비생산 화면에서 승인이 필요 없는 조작만 쓰고, 실장비 입력은 승인된 Align Fail 범위로 한정한다.</p>
 <h2 id="04-onboarding--기준선-측정-양식">기준선 측정 양식</h2>
-<p>8주차에 장비군마다 이 양식으로 잰다. 파일럿에서도 같은 양식을 쓴다.</p>
+<p>4주차에 양식을 익히고, 교육이 끝난 뒤 장비군마다 이 양식으로 잰다 (선발대 2027-02, 2차 장비군 2027-08). 파일럿에서도 같은 양식을 쓴다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -2167,19 +2143,19 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 </tbody>
 </table></div>
-<p>8주차 발표 결과가 <a href="#01-tf-proposal">TF 구성 기획안</a>의 ⟨확인⟩ 칸(현재 셋업 시간, 목표 단축률)을 채운다.</p>
+<p>기준선 측정 결과가 <a href="#01-tf-proposal">TF 구성 기획안</a>의 ⟨확인⟩ 칸(현재 셋업 시간, 목표 단축률)을 채운다.</p>
 <h2 id="04-onboarding--수료-기준">수료 기준</h2>
 <ul>
 <li>자기 장비 레시피 셋업 1건의 절차서가 있다.</li>
 <li>그 절차를 플랫폼 절차로 정의하고, 녹화본에 대고 모의 실행해 봤다.</li>
 <li>Agent 실패 기록을 보고 원인(화면 품질 / 모델 / 절차 정의)을 구분할 수 있다.</li>
-<li>장비군 담당의 기준선과 성공 판정 기준이 정해져 있다.</li>
+<li>장비군 담당의 성공 판정 기준과 기준선 측정 계획(대표 레시피 유형, 표본)이 정해져 있다. 실제 측정은 교육 뒤 2월(2차는 8월)에 한다.</li>
 </ul>
 <h2 id="04-onboarding--선택-과정">선택 과정</h2>
 <p>더 깊이 알고 싶은 엔지니어는 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/../ai-dt-curriculum/README.md">AI/DT 교육 커리큘럼</a>에서 준비 중인 오픈웨이트 LLM 심화 과정을 추가로 들을 수 있다. TF 수료와는 관계없다.</p>
 <h2 id="04-onboarding--준비물">준비물</h2>
 <ul>
-<li>⟨확인: 실습용 PC와 장비군별 작업 녹화본 (6주차 전 녹화 승인 필요)⟩</li>
+<li>⟨확인: 실습용 PC와 장비군별 작업 녹화본 (3주차 전 녹화 승인 필요)⟩</li>
 <li>⟨확인: 실습 중 VLM 호출 한도⟩</li>
 <li>실습 자료: PoC의 공개 가능한 화면 예시와 실패 기록</li>
 </ul>
@@ -2356,7 +2332,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="05-poc-assets--관련-문서">관련 문서</h2>
 <ul>
 <li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
-<li><a href="#04-onboarding">8주 합류 교육</a></li>
+<li><a href="#04-onboarding">4주 합류 교육</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="06-platform-prd"><p class="file"><span class="num">07</span>06-platform-prd.md</p><h1>ARC 플랫폼 1차 PRD: 측정 위치, Align 셋업 반자동화</h1>
 <blockquote>
@@ -2442,7 +2418,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>구간 실측</td>
 <td>측정 위치, Align 구간만의 소요 시간</td>
-<td>⟨확인: 합류 교육 8주차⟩</td>
+<td>⟨확인: 기준선 측정(2027-02)⟩</td>
 </tr>
 <tr>
 <td>셋업 수요</td>
@@ -2590,7 +2566,7 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 <p>측정 규칙(구간의 시작과 끝, 무엇을 개입으로 세는가)은 <a href="#01-tf-proposal--효과">기획안의 측정 규칙</a>과 <a href="#04-onboarding--기준선-측정-양식">합류 교육의 기준선 측정 양식</a>을 그대로 쓴다.</p>
 <h3 id="06-platform-prd--주-지표">주 지표</h3>
 <p><strong>자동화 대상 구간(측정 위치, Align 셋업)의 건당 소요 시간</strong>
-- 현재: ⟨확인: 합류 교육 8주차 실측⟩. 참고로 셋업 전체는 30~60분
+- 현재: ⟨확인: 기준선 측정(2027-02) 실측⟩. 참고로 셋업 전체는 30~60분
 - 목표: ⟨확인⟩% 단축. 실측 전에는 숫자로 약속하지 않는다
 - 시점: 2028 보조 단계 파일럿, 1차 장비군마다 대표 유형 1개. 2027년에는 Shadow 제안의 판단 정확도만 잰다 (S12)</p>
 <h3 id="06-platform-prd--보조-지표">보조 지표</h3>
@@ -2694,7 +2670,7 @@ TF 리드로서, 시도마다 무엇을 했고 어디서 실패했는지 남기�
 <p><strong>S7. 장비군별 절차 정의</strong>, 필수
 담당 엔지니어로서, 내 장비의 절차를 코드를 크게 고치지 않고 플랫폼에 정의하고 싶다.
 - [ ] 절차는 단계, 각 단계의 성공 조건, 실패 시 행동, 조작별 승인 분류로 정의한다
-- [ ] 정의한 절차를 녹화본에 대고 모의 실행할 수 있다 (합류 교육 7주차 실습)
+- [ ] 정의한 절차를 녹화본에 대고 모의 실행할 수 있다 (합류 교육 3주차 실습)
 - [ ] 장비군별 절차는 공통 저장소 안의 장비군 폴더로 나누고, 공통 엔진은 고치지 않는다
 - 🔶 가정: 선발대 3개 장비군과 2차 장비군의 차이를 절차 정의만으로 담을 수 있다 (2027 하반기 2차 합류로 확인). 담기지 않으면 결정 기록에 남기고 범위를 조정한다 (위험 R4)</p>
 <p><strong>S8. VDI 경유 장비군 지원</strong>, 필수 (Thickness, VDI를 거치는 2차 장비군 담당)
@@ -2791,7 +2767,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <tr>
 <td>장비군별 기준선과 대표 레시피 유형</td>
 <td>1차 장비군 담당</td>
-<td>2027-02 (합류 교육 8주차)</td>
+<td>2027-02 (기준선 측정)</td>
 </tr>
 <tr>
 <td>장비별 절차와 성공 판정 기준</td>
@@ -2884,7 +2860,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>Q2</td>
 <td>CV 매칭 점수 기준과 측정 결과 판정 기준 (S2, S3)</td>
 <td>장비군 담당</td>
-<td>합류 교육 8주차</td>
+<td>기준선 측정(2027-02)</td>
 </tr>
 <tr>
 <td>Q3</td>
@@ -2928,7 +2904,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <h2 id="06-platform-prd--자기-점검-self-assessment">자기 점검 (Self-Assessment)</h2>
 <ul>
 <li><strong>가장 단단한 절</strong>: 7절 요구사항과 8절 범위 밖. PoC 자산, 안전 원칙, 결정 기록이 이미 있어서 수용 기준을 근거로 쓸 수 있었다.</li>
-<li><strong>가장 약한 절</strong>: 6절 성공 지표. 주 지표의 현재 값과 목표가 모두 ⟨확인⟩이다. 합류 교육 8주차 실측 전에는 이 PRD로 효과를 약속할 수 없다.</li>
+<li><strong>가장 약한 절</strong>: 6절 성공 지표. 주 지표의 현재 값과 목표가 모두 ⟨확인⟩이다. 기준선 측정(2027-02) 실측 전에는 이 PRD로 효과를 약속할 수 없다.</li>
 <li><strong>먼저 검증할 가정</strong>:</li>
 <li>Q3 입력 주입, 막히면 S8, S10의 구조가 바뀐다</li>
 <li>Q1 신규 위치 선정 기준, S2의 신규 레시피 지원 여부가 여기에 달렸다</li>
@@ -2941,7 +2917,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <li><a href="#00-problem-statement">문제 정의</a></li>
 <li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
 <li><a href="#03-operating-rhythm">운영 방식</a></li>
-<li><a href="#04-onboarding">8주 합류 교육</a></li>
+<li><a href="#04-onboarding">4주 합류 교육</a></li>
 <li><a href="#05-poc-assets">PoC 자산과 남은 과제</a></li>
 <li><a href="#07-platform-architecture">공통 플랫폼 기술 설계</a></li>
 <li><a href="#risk-register">위험 목록</a></li>
@@ -4077,6 +4053,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>세 장비군 모두 2026년에 ARC를 추진해 재사용할 자산이 있음(Align Fail PoC, ARC Pipeline, 의뢰서 DB와 Recipe RAG). 장비군이 셋으로 늘어 개발 인력도 늘림</td>
 <td>확정</td>
 </tr>
+<tr>
+<td>2026-11-09</td>
+<td>합류 교육(이전 "온보딩")을 8주에서 4주로 줄인다. 주 5시간 유지(총 20시간), 1기 2027-01, 2기 2027-07. 배경 지식 주차를 합치고 녹화와 절차 정의 실습은 3주차에 1건 끝까지. 기준선 측정은 교육 뒤 2027-02(2차 2027-08) 그대로</td>
+<td>8주는 현업 합류 부담이 큼. 절차 정의는 교육 뒤 TF 업무로 계속 반복하는 일이라 교육 안에서는 1건이면 충분</td>
+<td>확정</td>
+</tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="risk-register"><p class="file"><span class="num">12</span>risk-register.md</p><h1>위험 목록</h1>
@@ -4110,7 +4092,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>엔지니어가 AI, LLM 특성을 몰라 Agent에 맞지 않는 절차를 쓴다</td>
 <td>높음</td>
 <td>중간</td>
-<td>8주 합류 교육, 2~3주차에서 VLM 한계를 직접 확인하는 실습</td>
+<td>4주 합류 교육, 1~2주차에서 VLM 한계를 직접 확인하는 실습</td>
 <td>플랫폼 팀</td>
 <td>SecureVDI 경로는 입력 가능 확인 (2026-11). 로컬 RCS 경로는 열림</td>
 </tr>
@@ -4182,7 +4164,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>기준선(현재 셋업 시간)이 없어 효과를 증명하지 못한다</td>
 <td>중간</td>
 <td>높음</td>
-<td>합류 교육 8주차까지 장비군별 기준선 측정을 수료 기준으로 둔다</td>
+<td>합류 교육 4주차에 측정 계획을 세우고, 교육 뒤 기준선 측정(선발대 2027-02, 2차 2027-08)을 마쳐야 다음 단계로 간다</td>
 <td>장비군 담당</td>
 <td>열림</td>
 </tr>
@@ -4308,7 +4290,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2차 장비군 여러 개가 한꺼번에 합류해 교육과 지원 부담이 실질 개발 2.5명을 넘는다</td>
 <td>중간</td>
 <td>중간</td>
-<td>같은 8주 과정을 한 번에 운영, 선발대 엔지니어가 실습 조교, 필요하면 장비군 합류 순서를 나눔</td>
+<td>같은 4주 과정을 한 번에 운영, 선발대 엔지니어가 실습 조교, 필요하면 장비군 합류 순서를 나눔</td>
 <td>리드</td>
 <td>열림</td>
 </tr>
