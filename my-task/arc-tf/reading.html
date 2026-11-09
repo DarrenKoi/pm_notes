@@ -80,7 +80,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.</p>
 </blockquote>
 <h2 id="readme--한-문단-요약">한 문단 요약</h2>
-<p>PoC(Align Fail 자동 대응)를 리드 혼자 진행하며 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것을 확인했다. 동시에 이 일에는 개발자와 현업 엔지니어 두 역할이 함께 필요하고, 모델 최적화와 운영, 최신 VLM 적용 테스트, 녹화 DB 추출까지 혼자 하기에는 시간이 부족하다는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 CD-SEM, Thickness 위주로 Align Fail 자동 대응 지능화와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
+<p>2026년 현재 CD(Align Fail 자동 대응 Agent), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(ARC용 DB 구축, 부분 자동화)이 각자 ARC를 추진 중이고, 생성형 AI에게 작업 방식을 학습시키는 방법과 기존 자동화를 생성형 모델의 도구로 쓰게 하는 방법이 공통 과제로 남았다. PoC(Align Fail 자동 대응)를 리드 혼자 진행하며 사내 VLM으로 API 없는 장비 화면을 보고 조작할 수 있다는 것을 확인했다. 동시에 이 일에는 개발자와 현업 엔지니어 두 역할이 함께 필요하고, 모델 최적화와 운영(새 모델 벤치마크와 교체 포함), 녹화 DB 추출까지 혼자 하기에는 시간이 부족하다는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 CD-SEM, Thickness 위주로 Align Fail 자동 대응 지능화와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
 <h2 id="readme--문서">문서</h2>
 <div class="tbl"><table>
 <thead>
@@ -409,6 +409,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <p>Align Fail 자동 대응 PoC를 혼자 진행하며 얻은 성과와 시사점을 바탕으로, MI 장비 레시피 셋업 자동화(ARC)를 공통 플랫폼 위에서 R&amp;D MI 현업 엔지니어들과 함께 확장하고자 합니다.</p>
 </blockquote>
 <h2 id="01-tf-proposal--요약">요약</h2>
+<p><strong>2026 현황</strong>: CD(Align Fail 자동 대응 Agent, Offline 테스트 중), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline, 2027년 90% 이상 생성 자동화 목표), Inspection(의뢰서 DB화, Recipe RAG, 부분 자동화)이 각자 추진 중. 공통 과제는 생성형 AI에게 작업 방식을 학습시키는 방법과 기존 자동화(PyAutoGUI, CV, ML/DL)를 생성형 모델의 도구로 쓰게 하는 방법</p>
 <p><strong>출발점</strong>: PoC(Align Fail 자동 대응)로 API 없는 장비를 사내 AI로 읽고 조작하는 기반 확보. 동시에 이 일에는 <strong>개발자와 현업 엔지니어 두 역할이 동시에 필요</strong>하고, 모델 최적화와 운영(새 모델 벤치마크와 교체 포함), 녹화 DB 추출까지 혼자 맡기에는 시간 부족</p>
 <p><strong>결론</strong>: MI 장비 전반으로 ARC를 넓히려면 장비마다 한 사람이 처음부터 다 만드는 방식으로는 안 되고 <strong>공통 플랫폼</strong>을 만들어 개발(플랫폼 팀)과 장비 지식(장비군 담당)을 나눠 맡아야 함</p>
 <p><strong>추진 방식</strong></p>
@@ -480,6 +481,35 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>셋업 시간 단축은 2028 보조 단계부터, Agent가 레시피 셋업을 진행하는 자율 단계는 2029 타겟임</li>
 <li>필요 자원: 개발 3명(TF 리드 포함, 각 50%, 실질 1.5명), 담당 엔지니어 겸직, 기존 사내 VLM 서버와 사내 서버 자원, 녹화 스토리지. 새 서버 구매 없음</li>
 </ul>
+<h2 id="01-tf-proposal--2026-arc-추진-현황">2026 ARC 추진 현황</h2>
+<p>MI 장비군 가운데 CD, Thickness, Inspection이 각자 ARC를 추진하고 있습니다. 진행 방식은 장비군마다 다르지만 남은 과제는 같습니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>장비군</th>
+<th>추진 현황</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CD</td>
+<td><strong>Align Fail 자동 대응 Agent 개발</strong>: CD-SEM ARC의 첫 PoC, 현재 Offline 테스트 중. VLM 기반 장비 컨트롤(Computer-use) 기능 구현</td>
+</tr>
+<tr>
+<td>Thickness</td>
+<td>의뢰부터 Recipe 생성까지 <strong>ARC Pipeline 구현</strong> (MI 장비군 중 가장 높은 완성도). 2027년까지 의뢰 Recipe의 <strong>90% 이상 생성 자동화</strong> 목표</td>
+</tr>
+<tr>
+<td>Inspection</td>
+<td><strong>ARC를 위한 DB 구축</strong> (의뢰서 DB화, Recipe RAG 구축). Recipe 생성, 튜닝 부분 자동화</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="01-tf-proposal--lesson-learned-공통">Lesson Learned (공통)</h3>
+<ol>
+<li>Computer Use 기반 ARC에서 생성형 AI 모델에게 작업 방식을 어떻게 학습시킬 것인가</li>
+<li>Rule 기반 자동화(PyAutoGUI)와 기존 Computer Vision, ML/DL을 생성형 모델이 도구로 쓰게 할 방법</li>
+</ol>
 <h2 id="01-tf-proposal--1-poc에서-얻은-성과와-시사점">1. PoC에서 얻은 성과와 시사점</h2>
 <p>ARC는 처음부터 레시피 자동 생성을 목표로 했습니다. PoC로는 범위가 좁고 효과를 재기 쉬운 <strong>Align Fail 자동 대응</strong>을 골랐고 TF 리드가 CD-SEM 담당 엔지니어이자 개발자로 혼자 진행했습니다. 이 PoC에서 레시피 자동 생성에 그대로 쓸 기반을 얻었고 동시에 이 방식으로는 다른 장비군까지 넓힐 수 없다는 시사점도 얻었습니다.</p>
 <h3 id="01-tf-proposal--얻은-자산">얻은 자산</h3>

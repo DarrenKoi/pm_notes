@@ -15,6 +15,8 @@ status: 초안, 2026-12 담당 보고용
 
 ## 요약
 
+**2026 현황**: CD(Align Fail 자동 대응 Agent, Offline 테스트 중), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline, 2027년 90% 이상 생성 자동화 목표), Inspection(의뢰서 DB화, Recipe RAG, 부분 자동화)이 각자 추진 중. 공통 과제는 생성형 AI에게 작업 방식을 학습시키는 방법과 기존 자동화(PyAutoGUI, CV, ML/DL)를 생성형 모델의 도구로 쓰게 하는 방법
+
 **출발점**: PoC(Align Fail 자동 대응)로 API 없는 장비를 사내 AI로 읽고 조작하는 기반 확보. 동시에 이 일에는 **개발자와 현업 엔지니어 두 역할이 동시에 필요**하고, 모델 최적화와 운영(새 모델 벤치마크와 교체 포함), 녹화 DB 추출까지 혼자 맡기에는 시간 부족
 
 **결론**: MI 장비 전반으로 ARC를 넓히려면 장비마다 한 사람이 처음부터 다 만드는 방식으로는 안 되고 **공통 플랫폼**을 만들어 개발(플랫폼 팀)과 장비 지식(장비군 담당)을 나눠 맡아야 함
@@ -52,6 +54,21 @@ status: 초안, 2026-12 담당 보고용
 
 - 셋업 시간 단축은 2028 보조 단계부터, Agent가 레시피 셋업을 진행하는 자율 단계는 2029 타겟임
 - 필요 자원: 개발 3명(TF 리드 포함, 각 50%, 실질 1.5명), 담당 엔지니어 겸직, 기존 사내 VLM 서버와 사내 서버 자원, 녹화 스토리지. 새 서버 구매 없음
+
+## 2026 ARC 추진 현황
+
+MI 장비군 가운데 CD, Thickness, Inspection이 각자 ARC를 추진하고 있습니다. 진행 방식은 장비군마다 다르지만 남은 과제는 같습니다.
+
+| 장비군 | 추진 현황 |
+|---|---|
+| CD | **Align Fail 자동 대응 Agent 개발**: CD-SEM ARC의 첫 PoC, 현재 Offline 테스트 중. VLM 기반 장비 컨트롤(Computer-use) 기능 구현 |
+| Thickness | 의뢰부터 Recipe 생성까지 **ARC Pipeline 구현** (MI 장비군 중 가장 높은 완성도). 2027년까지 의뢰 Recipe의 **90% 이상 생성 자동화** 목표 |
+| Inspection | **ARC를 위한 DB 구축** (의뢰서 DB화, Recipe RAG 구축). Recipe 생성, 튜닝 부분 자동화 |
+
+### Lesson Learned (공통)
+
+1. Computer Use 기반 ARC에서 생성형 AI 모델에게 작업 방식을 어떻게 학습시킬 것인가
+2. Rule 기반 자동화(PyAutoGUI)와 기존 Computer Vision, ML/DL을 생성형 모델이 도구로 쓰게 할 방법
 
 ## 1. PoC에서 얻은 성과와 시사점
 
