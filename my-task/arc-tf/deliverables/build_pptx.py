@@ -293,7 +293,7 @@ def s_status():  # 2026 추진 현황
               "장비군별 ARC 추진 중, 공통 과제는 Recipe 작업 방식 학습과 기존 자동화와의 결합 구조")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
-    ch = Inches(3.4)
+    ch = Inches(3.0)
     cols = [("CD 추진 현황", [
                 "CD-SEM ARC의 첫 PoC로 **Align Fail 자동 대응 Agent** 개발 진행 중, 현재 __Offline 테스트 중__",
                 "Align Fail 대응에 **Recipe Tuning** 포함",
@@ -308,11 +308,12 @@ def s_status():  # 2026 추진 현황
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=13)
     ly = COL_Y + ch + Inches(0.12)
-    box(s, M, ly, W - 2 * M, Inches(1.13), fill=MIST)
-    text(s, M + Inches(0.3), ly + Inches(0.1), W - 2 * M - Inches(0.6), Inches(1.0), [
+    box(s, M, ly, W - 2 * M, Inches(1.53), fill=MIST)
+    text(s, M + Inches(0.3), ly + Inches(0.1), W - 2 * M - Inches(0.6), Inches(1.4), [
         [("Lesson Learned (공통)", {"bold": True, "color": BLUE})],
         runs_of("1. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬 것인지 __구체화 필요__"),
-        runs_of("2. Rule 기반 자동화, 이미지 처리(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__")],
+        runs_of("2. Rule 기반 자동화, 이미지 처리(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__"),
+        runs_of("3. LLM 모델만으로는 정밀 좌표, 장비 절차, 결과 확인, 화면 조작을 해결 못 함 → **공통 플랫폼**이 채워야 함 (별첨)")],
         size=14, gap=0.3)
     footer(s)
 
@@ -352,7 +353,7 @@ def s_lessons():  # 시사점
     footer(s)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
-    s = slide("LLM 모델만으로는 ARC 자동화가 안 되는 이유",
+    s = slide("별첨: LLM 모델만으로는 ARC 자동화가 안 되는 이유",
               "모델은 \"화면을 보고 다음 할 일을 판단\"하는 한 부분, 나머지는 플랫폼이 채워야 함")
     rows = [("항목", "모델만 쓸 때의 한계", "플랫폼이 채우는 것"),
             ("좌표 정밀도", "같은 화면도 물을 때마다 위치가 다름", "CV 정밀 좌표, OCR 결과 확인"),
@@ -726,9 +727,9 @@ def s_exec_roadmap():
     footer(s)
 
 
-BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_why_not_llm, s_direction, s_phases, s_options, s_effects,
-        s_platform, s_kanban, s_safety, s_decision, s_appendix_asks]
-TEAM = BOSS[:12] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[12:]
+BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_direction, s_phases, s_options, s_effects,
+        s_platform, s_kanban, s_safety, s_decision, s_appendix_asks, s_why_not_llm]
+TEAM = BOSS[:11] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[11:]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
         s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
