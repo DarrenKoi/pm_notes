@@ -402,23 +402,6 @@ def s_phases():  # 추진 방향: 선발대 → 확장
     note_line(s, Inches(6.0), "베타 기준 (6월 판정)", "① 1차 장비군 PC에서 관찰, 녹화, 입력, 즉시 중단 ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 장비별 코드 없이 절차 정의만으로 새 장비 추가 가능", size=13)
     footer(s)
 
-def s_options():  # 검토한 대안
-    s = slide("검토한 대안: 단계적 참여 + 개발자 약 5명으로 시작",
-              "조직과 명단은 처음부터 전체로, 상반기는 1차 3개 장비군 중점, 개발 약 5명")
-    rows = [("", "A: 선발대만 + 개발 2명", "B: 처음부터 전체 + 개발 약 5명 (권고)"),
-            ("조직, 명단", "선발대만, 2차는 5월 지정", "전체를 12월에 지정"),
-            ("상반기 운영", "CD-SEM, Thickness, Inspection", "CD-SEM, Thickness, Inspection 중점"),
-            ("나머지 장비군", "참여 없음", "인터뷰, Recipe Workflow 조사로 준비 (주 1~2시간)"),
-            ("개발", "리드 + 1명", "리드 + 지정 4명 + 현업 엔지니어"),
-            ("장점", "요청 인원 최소", "승인 한 번, 장비군 Workflow를 설계에 반영, 녹화 6개월 선행"),
-            ("단점", "LLMOps, 녹화 추출의 리드 집중 재발", "요청 인원이 A보다 많음")]
-    cw = Emu((W - 2 * M - Inches(1.9)) / 2)
-    table(s, rows, M, COL_Y, [Inches(1.9), cw, cw], size=13, row_h=Inches(0.46), bold_col0=True)
-    note_line(s, Inches(5.55), "제외한 안", "전체 장비군 동시 시작: 플랫폼 없이 여러 장비군 교육, 지원 필요, __현실적으로 불가능__", size=13)
-    note_line(s, Inches(5.95), "개발 약 5명", "백엔드 2명: 서버, 녹화 DB 추출, __LLMOps__ / 프론트엔드 2명: 설치형 에이전트, 승인 화면 / 1차 MI팀 현업 엔지니어 개발 참여", size=13)
-    note_line(s, Inches(6.35), "일부만 지정되면", "프론트엔드 먼저 (6월 베타가 병목), 백엔드 일은 리드가 최소 유지", size=13)
-    footer(s)
-
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성: 엔진은 공통 플랫폼 팀, 절차는 장비군 담당 엔지니어",
               "1차는 CD-SEM, Thickness, Inspection, 다른 MI 장비군은 2차로 합류")
@@ -727,9 +710,9 @@ def s_exec_roadmap():
     footer(s)
 
 
-BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_direction, s_phases, s_options, s_effects,
+BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_direction, s_phases, s_effects,
         s_platform, s_kanban, s_safety, s_decision, s_appendix_asks, s_why_not_llm]
-TEAM = BOSS[:11] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[11:]
+TEAM = BOSS[:10] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[10:]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
         s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
