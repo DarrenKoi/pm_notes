@@ -417,7 +417,7 @@ def s_team():  # TF 구성 (조직도)
     box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
     text(s, tx, COL_Y + Inches(0.06), top_w, Inches(0.36), "ARC TF (TF 리드 총괄)", size=17, bold=True, color=WHITE,
          align=PP_ALIGN.CENTER)
-    text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "조직, 명단 전체 12월 지정 / 담당 임원 월간 진척 보고", size=12,
+    text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "명단 12월 지정 / 격주 회의: 개발자, 현업 진행 공유 / 월간 임원 보고", size=12,
          color=WHITE, align=PP_ALIGN.CENTER)
     goal = lambda t: [[("목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
