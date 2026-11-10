@@ -352,10 +352,10 @@ def s_lessons():  # 시사점
                 "공통 플랫폼으로: **Agent의 마우스, 키보드 조작**",
                 "함께 필요한 업무: **AI 모델 최적화, 운영 유지**, **녹화 DB 추출**",
                 "**기술 부채 해소**: Vibe Coding으로 __원리 확인 없이 진행한 사항__ 대부분",
-                "TF로 공유: **Reverse Engineering 등 노하우**를 장비군끼리 공유",
+                "TF로 공유: **주기적 세미나**로 ARC 작업 방법 공유 (Reverse Engineering, 자동화 방법, 사내 DB 테이블 등)",
                 "장비군마다 따로 하면 __같은 작업 반복__"],
             h=Inches(3.7), size=14, arrow=False)
-    note_line(s, Inches(6.0), "결론", "ARC 필수 요소(조작, 모델 최적화와 운영, 녹화 추출)는 **공통 플랫폼으로 해결**, Reverse Engineering 등 노하우는 **TF에서 공유**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
+    note_line(s, Inches(6.0), "결론", "ARC 필수 요소(조작, 모델 최적화와 운영, 녹화 추출)는 **공통 플랫폼으로 해결**, 효율적인 작업 방법은 **TF 세미나로 공유**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
     footer(s)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
@@ -591,7 +591,7 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
                "추출 내용 **라벨링**, Workflow 검토와 승인",
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"], BLUE, size=13)
-    note_line(s, Inches(6.1), "범위 밖", "외부 Recipe 파일 편집은 장비마다 파일 구조가 달라 __장비군별 도구__로 진행, Reverse Engineering 노하우는 **TF에서 공유**", size=13)
+    note_line(s, Inches(6.1), "범위 밖", "외부 Recipe 파일 편집은 장비마다 파일 구조가 달라 __장비군별 도구__로 진행, 공통 플랫폼에는 넣지 않음", size=13)
     footer(s)
 
 
