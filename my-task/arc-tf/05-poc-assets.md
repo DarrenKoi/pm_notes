@@ -91,4 +91,4 @@ PoC의 수치(대상 장비 수, 주간 발생 건수, 대응 시간, 정확도)
 ## 관련 문서
 
 - [TF 구성 기획안](./01-tf-proposal.md)
-- [4주 합류 교육](./04-onboarding.md)
+- [ARC 노하우 공유 세미나](./04-onboarding.md)
