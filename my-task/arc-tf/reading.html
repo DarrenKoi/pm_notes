@@ -80,7 +80,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.</p>
 </blockquote>
 <h2 id="readme--한-문단-요약">한 문단 요약</h2>
-<p>2026년 현재 CD(Align Fail 자동 대응 Agent), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(ARC용 DB 구축, DRB 기반 ARC 생성)이 각자 ARC를 추진 중이고, 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 공통 과제로 남았다. PoC(Align Fail 자동 대응)에서 Agent가 Recipe를 다루는 장비군 공통 방식 두 가지(VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성)를 확보했다. 동시에 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 두 역할의 유기적인 협업이 필요하고, 조작, Reverse Engineering, 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 장비군 공통 과제라는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 1차 장비군 CD-SEM, Thickness, Inspection 위주로 장비군별 목표와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
+<p>2026년 현재 CD(Align Fail 자동 대응 Agent), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(ARC용 DB 구축, DRB 기반 ARC 생성)이 각자 ARC를 추진 중이고, 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 공통 과제로 남았다. PoC(Align Fail 자동 대응)에서 Agent가 Recipe를 다루는 장비군 공통 방식 두 가지(VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성)를 확보했다. 동시에 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 두 역할의 유기적인 협업이 필요하고, 조작, 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 공통 플랫폼으로 풀고 Reverse Engineering 같은 노하우는 TF에서 공유해야 한다는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 1차 장비군 CD-SEM, Thickness, Inspection 위주로 장비군별 목표와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 판정 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
 <h2 id="readme--문서">문서</h2>
 <div class="tbl"><table>
 <thead>
@@ -410,7 +410,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </blockquote>
 <h2 id="01-tf-proposal--요약">요약</h2>
 <p><strong>2026 현황</strong>: CD(Align Fail 자동 대응 Agent, Offline 테스트 중), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(의뢰서 DB화, Recipe RAG, NAND 1개 Tech에서 DRB 기반 ARC 생성)이 각자 추진 중. 공통 과제는 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조</p>
-<p><strong>출발점</strong>: PoC(Align Fail 자동 대응)로 Agent가 Recipe를 다루는 두 가지 공통 방식 확보 (VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성). 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 <strong>두 역할의 유기적인 협업</strong>이 필요하고, 조작, Reverse Engineering, 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 장비군 공통 과제</p>
+<p><strong>출발점</strong>: PoC(Align Fail 자동 대응)로 Agent가 Recipe를 다루는 두 가지 공통 방식 확보 (VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성). 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 <strong>두 역할의 유기적인 협업</strong>이 필요하고, 조작, 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 공통 플랫폼으로, Reverse Engineering 등 노하우는 TF에서 공유하는 장비군 공통 과제</p>
 <p><strong>결론</strong>: MI 장비 전반으로 ARC를 넓히려면 장비마다 한 사람이 처음부터 다 만드는 방식으로는 안 되고 <strong>공통 플랫폼</strong>을 만들어 개발(플랫폼 팀)과 장비 지식(장비군 담당)을 나눠 맡아야 함</p>
 <p><strong>추진 방식</strong></p>
 <div class="tbl"><table>
@@ -580,7 +580,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>Reverse Engineering</td>
 <td>외부 파일 편집 방식은 Recipe 파일 구조 해석이 전제</td>
-<td>파일 구조 해석 방법과 도구를 공통으로 정리</td>
+<td>도구는 장비군별로 두고, 해석 방법과 경험은 TF 안에서 장비군끼리 공유</td>
 </tr>
 <tr>
 <td>AI 모델 최적화와 운영 유지</td>
@@ -640,7 +640,8 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </table></div>
 <h3 id="01-tf-proposal--결론-mi-장비-전반의-arc는-공통-플랫폼으로">결론: MI 장비 전반의 ARC는 공통 플랫폼으로</h3>
 <ul>
-<li>ARC를 하기 위한 필수 요소들(화면 인식, 조작 엔진, Reverse Engineering, 안전 규칙, 모델 서빙과 평가, 녹화분 수집)은 <strong>공통 플랫폼으로 해결</strong></li>
+<li>ARC를 하기 위한 필수 요소들(화면 인식, 조작 엔진, 안전 규칙, 모델 서빙과 평가, 녹화분 수집)은 <strong>공통 플랫폼으로 해결</strong></li>
+<li>Reverse Engineering 등 장비군마다 따로 해야 하는 일의 노하우는 <strong>TF 안에서 서로 공유</strong></li>
 <li>장비 노하우와 판정은 <strong>장비군 담당자</strong>(MI 엔지니어)의 역할</li>
 <li>개발자가 장비를 다 알 필요도, 엔지니어가 개발을 다 할 필요도 없게 만드는 것이 TF의 목적임</li>
 </ul>
@@ -698,7 +699,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>⟨확인: 신규 제품, 공정 도입 때 레시피 셋업 대기로 늦어지는 기간⟩</li>
 <li>⟨확인: 장비군별 레시피 셋업에 쓰는 엔지니어 시간 (월 기준)⟩</li>
 <li>⟨확인: Align Fail 알람으로 멈추는 장비 시간 (월 기준)⟩</li>
-<li>장비군마다 따로 자동화를 시도하면 공통 과제(조작, Reverse Engineering, 모델 운영, 녹화분 확보)와 안전 장치를 매번 새로 풀게 됨</li>
+<li>장비군마다 따로 자동화를 시도하면 공통 과제(조작, 모델 운영, 녹화분 확보)와 안전 장치를 매번 새로 풀게 되고, Reverse Engineering 같은 노하우도 장비군 사이에 공유되지 않음</li>
 </ul>
 <h2 id="01-tf-proposal--3-추진-방향-선발대에서-영역-확장으로">3. 추진 방향: 선발대에서 영역 확장으로</h2>
 <h3 id="01-tf-proposal--핵심-개발-방향">핵심 개발 방향</h3>
@@ -955,7 +956,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <ul>
 <li><strong>공통 플랫폼 팀이 만드는 것</strong>: 녹화 내용 추출, RAG DB와 Workflow 생성, Computer Use 실행 엔진, 준수 확인과 즉시 중단</li>
 <li><strong>현업 엔지니어가 하는 것</strong>: 추출 내용 라벨링, Workflow 검토와 승인, 실행 중 개입과 수정, 녹화본으로 미리 실험, 실전 사용 후 개발자에게 피드백 (개발자가 플랫폼에 반영)</li>
-<li><strong>범위 밖</strong>: 외부 Recipe 파일 편집(Reverse Engineering)은 장비마다 파일 구조가 달라 장비군별 도구로 진행하고 공통 플랫폼에는 넣지 않음. 장비별 작업 공간을 백엔드와 화면에 따로 두면 장비군 수만큼 플랫폼이 커지기 때문</li>
+<li><strong>범위 밖</strong>: 외부 Recipe 파일 편집은 장비마다 파일 구조가 달라 장비군별 도구로 진행하고 공통 플랫폼에는 넣지 않음. Reverse Engineering 노하우는 TF에서 공유함. 장비별 작업 공간을 백엔드와 화면에 따로 두면 장비군 수만큼 플랫폼이 커지기 때문</li>
 <li>AI가 정한 다음 조작은 서버의 규칙 확인이 허용 여부를 다시 판단하고, 정해진 조작 단위만 실행함. 결과가 불명확하거나 화면이 예상과 다르면 멈추고 엔지니어를 부름</li>
 <li>2027년에는 1차 장비군의 승인된 조작(장비군별 목표)만 자동 운영하고, 그 밖에는 화면 입력 없이 "다음에 할 일"을 제안만 해서 판단 정확도를 먼저 검증함. 일반 화면 입력은 2028 보조 단계부터</li>
 </ul>
@@ -1018,7 +1019,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><strong>인프라(GPU, VLM 서빙)</strong>: 필요 시점에 합류. 장비 벤더는 필요할 때 자문</li>
 </ul>
 <p><strong>개발 인력 배분 (TF 리드 + 지정 4명 + 1차 MI팀 현업 엔지니어)</strong></p>
-<p>개발 4명(백엔드 2, 프론트엔드 2)은 임원, 팀장급에서 지정을 요청합니다. 장비군 공통 과제(조작, Reverse Engineering, 모델 운영, 녹화 DB 추출, 기술 부채 해소)를 나눠 맡을 개발 인력이 필요합니다.</p>
+<p>개발 4명(백엔드 2, 프론트엔드 2)은 임원, 팀장급에서 지정을 요청합니다. 장비군 공통 과제(조작, 모델 운영, 녹화 DB 추출, 기술 부채 해소)를 나눠 맡을 개발 인력이 필요합니다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -2226,7 +2227,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>Reverse Engineering</td>
-<td>Recipe 파일 구조 해석 방법과 도구를 공통으로 정리한다</td>
+<td>도구는 장비군별로 두고, 파일 구조 해석 방법과 경험은 TF 안에서 장비군끼리 공유한다</td>
 </tr>
 <tr>
 <td>AI 모델 최적화와 운영 유지</td>
@@ -3654,7 +3655,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <ul>
 <li>PoC로 Agent가 Recipe를 다루는 장비군 공통 방식 확보: VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성</li>
 <li><strong>개발자와 현업 엔지니어 두 역할의 유기적인 협업</strong> 필요: 현업 MI 엔지니어의 노하우와 Recipe 셋업 방식을 AI가 활용할 수 있는 구조로 개발자가 구현</li>
-<li>Agent의 마우스, 키보드 조작, Reverse Engineering, AI 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 장비군 공통 과제라 공통 플랫폼으로 대응</li>
+<li>Agent의 마우스, 키보드 조작, AI 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 장비군 공통 과제라 공통 플랫폼으로 대응. Reverse Engineering 등 노하우는 TF 안에서 장비군끼리 공유</li>
 <li>LLM 모델만으로는 안 됨: 정밀 좌표가 흔들리고, 장비 절차를 모르고, 성공/실패 여부를 스스로 확인하지 못하며, 진행 상태를 기억하지 못하고, 화면을 직접 조작하지 못함. 모델은 판단 한 부분이고 정밀 좌표(CV), 승인된 절차, 규칙 확인과 결과 검증, 입력 실행은 플랫폼이 채워야 함</li>
 <li>처음에는 Agent 전용 PC를 따로 두려 했으나, 사무 PC를 계속 늘리는 방식은 PC 추가 확보 절차, 장비 접속 권한, 별도 관리 부담, 아무도 보지 않는 화면 같은 제약이 많음. 그래서 공통 플랫폼을 개발해 <strong>엔지니어 본인 PC에 설치</strong>하는 방향으로 바꿈</li>
 <li>결론: MI 장비 전반으로 넓히려면 <strong>공통 플랫폼</strong>을 만들어 개발(플랫폼 팀)과 장비 지식(장비군 담당)을 나눠야 함</li>
@@ -4173,6 +4174,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2026-11-10</td>
 <td>공통 플랫폼은 Computer Use 기반 RAG Workflow 순환으로 정의한다: 녹화 추출과 현업 라벨링 → RAG 저장 → Workflow 생성과 Agent 실행 → 준수 확인, 틀리면 엔지니어 수정 → RAG 보완. 외부 Recipe 파일 편집(Reverse Engineering)은 장비군별 도구로 두고 공통 플랫폼에서 뺀다</td>
 <td>장비별 파일 구조가 달라 백엔드와 화면에 장비별 작업 공간을 두면 장비군 수만큼 플랫폼이 커진다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-10</td>
+<td>Reverse Engineering은 공통 플랫폼 기능이 아니라 TF 안에서 장비군끼리 공유하는 노하우로 둔다 (도구는 장비군별)</td>
+<td>5쪽에 넣은 뜻은 플랫폼 개발이 아니라 TF를 통한 노하우 공유였다</td>
 <td>확정</td>
 </tr>
 </tbody>
