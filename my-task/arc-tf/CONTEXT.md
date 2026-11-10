@@ -13,7 +13,7 @@ _피할 말_: 레시피 작업, 튜닝(튜닝은 셋업의 일부인 "기존 레
 _피할 말_: 셀(어색하다, 2026-11-06 변경), 팀(공통 플랫폼 팀과 헷갈린다). "장비군"만 쓰면 장비 자체를 가리킨다
 
 **선발대 (1차 장비군), 2차 장비군**
-선발대(1차 장비군)는 2027 상반기에 개발을 먼저 진행하는 CD-SEM, Thickness, Inspection이다. 세 장비군 모두 ARC 부분 기능이 이미 있어(CD-SEM Align Fail PoC, Thickness ARC Pipeline, Inspection 의뢰서 DB와 Recipe RAG), 장비군별 목표(CD-SEM Align Fail 시 Recipe 이미지 변경, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))와 공통 플랫폼 설계, 베타를 맡는다. 2차 장비군은 다른 MI 장비군이고, 2027-06 베타 판정 뒤 2027 하반기에 본격 합류해 공통 플랫폼을 실제로 적용한다 (2026-11-09 변경)
+선발대(1차 장비군)는 2027 상반기에 개발을 먼저 진행하는 CD-SEM, Thickness, Inspection이다. 세 장비군 모두 ARC 부분 기능이 이미 있어(CD-SEM Align Fail PoC, Thickness ARC Pipeline, Inspection 의뢰서 DB와 Recipe RAG), 장비군별 목표(CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))와 공통 플랫폼 설계, 베타를 맡는다. 2차 장비군은 다른 MI 장비군이고, 2027-06 베타 판정 뒤 2027 하반기에 본격 합류해 공통 플랫폼을 실제로 적용한다 (2026-11-09 변경)
 _피할 말_: 1차 지정군, 2차 지정군 (이전 구성: 1차 CD-SEM, Thickness, VeritySEM, 2차 Inspection 선택)
 
 **단계적 참여**
@@ -96,7 +96,7 @@ _피할 말_: 완성도(한 장비군의 "완성"과 헷갈린다)
 녹화 원본을 서버에서 다시 처리해 영구 보관하기로 고른 화면. 조작 직전, 직후, 화면 전환, 값 변경, 팝업, 경고.
 
 **빠른 첫 통과 (Fast first pass)**
-작은 대상(2027 상반기 장비군별 목표: CD-SEM Align Fail 시 Recipe 이미지 변경, Thickness Film 10 Layer 이하 Recipe 자동 생성, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))을 플랫폼 부품으로 먼저 끝까지 만들어, 장기 플랫폼에 필요한 요소를 찾아내는 방식. 버리는 시제품이 아님.
+작은 대상(2027 상반기 장비군별 목표: CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 Recipe 자동 생성, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))을 플랫폼 부품으로 먼저 끝까지 만들어, 장기 플랫폼에 필요한 요소를 찾아내는 방식. 버리는 시제품이 아님.
 _피할 말_: PoC(이미 끝난 1차 PoC와 헷갈린다)
 
 **요소 목록 (Element list)**

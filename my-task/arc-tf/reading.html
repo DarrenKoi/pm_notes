@@ -467,7 +467,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tbody>
 <tr>
 <td>2027 상반기</td>
-<td>1차 장비군별 목표: CD-SEM <strong>Align Fail 시 Recipe 이미지 변경</strong>, Thickness <strong>Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화</strong>, Inspection <strong>전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)</strong> (엔지니어 상주), <strong>공통 플랫폼 설계 완성과 베타 테스트</strong></td>
+<td>1차 장비군별 목표: CD-SEM <strong>Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현</strong>, Thickness <strong>Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화</strong>, Inspection <strong>전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)</strong> (엔지니어 상주), <strong>공통 플랫폼 설계 완성과 베타 테스트</strong></td>
 <td>2027-06</td>
 </tr>
 <tr>
@@ -757,7 +757,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>1차: 선발대</td>
 <td>2027 상반기</td>
 <td>CD-SEM, Thickness, Inspection</td>
-<td>장비군별 목표 (CD-SEM Align Fail 시 Recipe 이미지 변경, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)). 이 과정에서 공통 플랫폼 설계를 완성하고 베타 버전을 세 장비군 담당 엔지니어 PC에서 운영</td>
+<td>장비군별 목표 (CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)). 이 과정에서 공통 플랫폼 설계를 완성하고 베타 버전을 세 장비군 담당 엔지니어 PC에서 운영</td>
 <td>2027-06 관문: 장비군별 목표와 플랫폼 베타를 따로 판정, 2차 합류는 베타 판정으로 결정</td>
 </tr>
 <tr>
@@ -849,7 +849,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>영역 확장과 지식화</td>
 <td>2027 하반기</td>
-<td>2차 장비군 합류, 선발대 절차와 노하우를 지식 자산으로 축적, 막힌 지점에서 돌파구 추천</td>
+<td>2차 장비군 합류, 선발대 절차와 노하우를 지식 자산으로 축적, 1차 장비군 ARC 과정에서 얻은 노하우로 2차 장비군에 빠르게 적용</td>
 <td>노하우의 조직 자산화, 장비군 확장 구조</td>
 </tr>
 <tr>
@@ -952,7 +952,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>2027 상반기 선행 과제</td>
-<td><strong>장비군별 목표</strong> (CD-SEM Align Fail 시 Recipe 이미지 변경, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)). 플랫폼 부품으로 만들어 공통 플랫폼 설계를 완성하고 베타로 운영</td>
+<td><strong>장비군별 목표</strong> (CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)). 플랫폼 부품으로 만들어 공통 플랫폼 설계를 완성하고 베타로 운영</td>
 </tr>
 <tr>
 <td>레시피 셋업 자동화 대상 구간</td>
@@ -1037,7 +1037,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>CD-SEM 담당 (선발대)</td>
 <td>MI 엔지니어 1~2명</td>
-<td>장비별 레시피 절차, 성공 판정 기준, 현장 검증. 목표: Align Fail 시 Recipe 이미지 변경</td>
+<td>장비별 레시피 절차, 성공 판정 기준, 현장 검증. 목표: Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현</td>
 <td>2027-01</td>
 </tr>
 <tr>
@@ -1161,7 +1161,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </ul>
 <p>상세 과정은 <a href="#04-onboarding">4주 합류 교육</a>에 있습니다.</p>
 <h2 id="01-tf-proposal--7-일정">7. 일정</h2>
-<p>2027년은 상반기 선발대, 하반기 영역 확장으로 진행합니다. 상반기에 <strong>1차 장비군별 목표(CD-SEM Align Fail 시 Recipe 이미지 변경, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))를 달성하면서 공통 플랫폼 설계를 완성하고 베타로 운영</strong>합니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고, 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.</p>
+<p>2027년은 상반기 선발대, 하반기 영역 확장으로 진행합니다. 상반기에 <strong>1차 장비군별 목표(CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))를 달성하면서 공통 플랫폼 설계를 완성하고 베타로 운영</strong>합니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고, 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.</p>
 <h3 id="01-tf-proposal--한눈에-보기-칸반">한눈에 보기 (칸반)</h3>
 <div class="tbl"><table>
 <thead>
@@ -1212,7 +1212,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tbody>
 <tr>
 <td>CD-SEM</td>
-<td>Align Fail 시 Recipe 이미지 변경</td>
+<td>Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현</td>
 </tr>
 <tr>
 <td>Thickness</td>
@@ -4140,6 +4140,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2026-11-10</td>
 <td>별도 운영 PC의 제약을 "PC 추가 확보 절차(자산 신청, 자리 확보), 장비 접속 권한 별도 발급, 별도 관리 부담"으로 줄이고, "PC 증가 없음", "한 벌", "PC 자원 한도를 베타 기준에 포함"은 6쪽에서 뺀다. 화면 일시 제어는 변경 시 부작용으로 변경 컬럼에 둔다. 시사점 결론은 "ARC 필수 요소는 공통 플랫폼으로 해결, 장비 노하우와 판정은 장비군 담당자의 역할"</td>
 <td>PC는 회사가 바로 지급하고 보안 프로그램과 계정은 미리 설치되어 오며, 업데이트는 자동이고 장애는 거의 없다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-10</td>
+<td>CD-SEM 목표를 "Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현"으로 바꾼다. 8쪽 연말 타겟의 돌파구 추천 문구는 "1차 장비군 ARC 과정에서 얻은 노하우로 2차 장비군에 빠르게 적용"으로, 하단 "문제" 줄은 빼고 "플랫폼의 역할: 2028 보조, 2029 자율이 될 수 있도록 점진적 발전"으로 둔다</td>
+<td>돌파구 추천 표현이 장표에서 어색했고, 목표 문구가 하는 일을 다 담지 못했다</td>
 <td>확정</td>
 </tr>
 </tbody>

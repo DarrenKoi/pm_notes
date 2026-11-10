@@ -259,17 +259,16 @@ def s_direction():  # 핵심 개발 방향
             a = s.shapes.add_shape(MSO_SHAPE.CHEVRON, x + fw + fg / 2 - Inches(0.1), COL_Y + Inches(0.45), Inches(0.2), Inches(0.35))
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
     two_col(s, "2027 상반기 타겟: 선발대 (6월 판정)", [
-                "**CD-SEM**: Align Fail 시 Recipe 이미지 변경",
+                "**CD-SEM**: Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현",
                 "**Thickness**: 의뢰 Recipe 90% 이상 생성 자동화",
                 "**Inspection**: 전 디바이스 DRB 기반 ARC 확장",
                 "**공통 플랫폼 설계 완성, 베타 테스트**"],
             "2027 연말 타겟: 영역 확장 (12월 판정)", [
                 "**2차 장비군 합류** (다른 MI 장비군)",
                 "선발대 셋업 절차와 노하우를 __지식 자산__으로 축적",
-                "막힌 지점에서 바로 찾아 쓰는 돌파구 추천"],
-            y=Inches(3.55), h=Inches(2.45), size=15)
-    note_line(s, Inches(6.12), "문제", "레시피 1건당 셋업 30~60분 소요. __WIP에 영향을 주는 Wafer Align 문제__부터 자동화 시도", size=13)
-    note_line(s, Inches(6.45), "이후", "2028 보조 (엔지니어 앞에서 반복 입력 대행, 셋업 시간 단축)  →  2029 자율 (Agent가 셋업 진행)", size=13)
+                "1차 장비군 ARC 과정에서 얻은 노하우로 __2차 장비군에 빠르게 적용__"],
+            y=Inches(3.5), h=Inches(2.75), size=15)
+    note_line(s, Inches(6.38), "플랫폼의 역할", "2028 보조 (엔지니어 앞에서 반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)이 될 수 있도록 __점진적 발전__", size=13)
     footer(s)
 
 def s_effects():  # 효과
@@ -435,7 +434,7 @@ def s_team():  # TF 구성 (조직도)
                   ("프론트엔드", ["2명", "설치형 에이전트", "승인 화면"]),
                   ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
               ("장비군 담당: 장비군마다 1~2명", BLUE, [
-                  ("CD-SEM\n(1차)", goal("Align Fail 시 Recipe 이미지 변경")),
+                  ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현")),
                   ("Thickness\n(1차)", goal("Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화")),
                   ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체 디바이스향 DRB 기반 ARC 확장")),
                   ("다른 MI 장비군\n(2차)", [ "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
