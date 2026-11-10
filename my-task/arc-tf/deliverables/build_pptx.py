@@ -281,15 +281,14 @@ def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표: 타겟 시점별로 확인",
               "측정하기 전에는 목표를 숫자로 정하지 않고, 합류 교육 기간에 기준선을 재서 채움")
     metrics = [("효과", "측정 지표", "현재", "목표", "타겟 시점"),
-               ("확장성", "2차 장비군 합류 기간, 장비별 새 코드", "-", "장비별 코드 없이", "2027 연말"),
-               ("지식 자산화", "절차서로 정리된 레시피 유형 수", "0", "선발대마다 ⟨N⟩개", "2027 연말"),
-               ("자동화 비율", "Recipe별 셋업 단계 중 Agent 진행 비율", "0%", "Recipe별 ⟨확인⟩%", "2028"),
-               ("셋업 시간 단축", "대상 구간 셋업 경과 시간", "대상 구간 실측 예정", "⟨확인⟩% 단축", "2028"),
-               ("품질 균일화", "셋업 뒤 첫 측정 성공률", "⟨확인⟩", "⟨확인⟩", "2029")]
-    table(s, metrics, M, COL_Y, [Inches(2.6), Inches(4.4), Inches(2.0), Inches(2.0), Emu(W - 2 * M - Inches(11.0))],
+               ("지식 자산화", "Agent가 이해할 수 있는 DB로 정리한 Recipe 셋업 수", "0건", "⟨X⟩건", "2027 연말"),
+               ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "⟨확인⟩", "⟨확인⟩%", "2028"),
+               ("Agent 개입 범위", "Recipe당 셋업 단계 중 ARC Agent가 진행한 비율", "0%", "Recipe별 ⟨확인⟩%", "2028"),
+               ("셋업 시간 단축", "Recipe 1건 셋업 경과 시간", "대상 구간 실측 예정", "⟨확인⟩% 단축", "2028")]
+    table(s, metrics, M, COL_Y, [Inches(2.3), Inches(5.3), Inches(1.9), Inches(1.8), Emu(W - 2 * M - Inches(11.3))],
           size=14, row_h=Inches(0.46), bold_col0=True, shade=lambda r: r[4].startswith("2027"))
     text(s, M, Inches(5.85), W - 2 * M, Inches(0.8),
-         [[("측정 기준  ", {"bold": True, "color": BLUE})] + runs_of("Recipe setup에서 __Agent가 진행한 셋업 단계 비율(%)을 Recipe별로__ 표기, 실패와 재작업 포함, 승인 대기 별도 기록"),
+         [[("측정 기준  ", {"bold": True, "color": BLUE})] + runs_of("ARC 적용 비율은 __Recipe 의뢰 수 기준__, Agent 개입 범위는 __Recipe별 셋업 단계 비율(%)__, 실패와 재작업 포함, 승인 대기 별도 기록"),
           [("확정 시점  ", {"bold": True, "color": BLUE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / 장비군별 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
          size=13, color=SUB, spacing=1.0)
     footer(s)

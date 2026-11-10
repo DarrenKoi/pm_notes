@@ -377,9 +377,9 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>노하우가 남았나</td>
-<td>절차서로 정리된 레시피 유형 수</td>
-<td>0</td>
-<td>장비군마다 1개 이상</td>
+<td>Recipe 셋업 절차를 Agent가 이해할 수 있는 DB로 정리한 Recipe 수</td>
+<td>0건</td>
+<td>⟨X⟩건</td>
 </tr>
 </tbody>
 </table></div>
@@ -824,46 +824,40 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </thead>
 <tbody>
 <tr>
-<td>확장성</td>
-<td>2차 장비군 합류에 드는 기간, 장비별로 새로 짠 코드 양</td>
-<td>-</td>
-<td>장비별 코드 없이 합류</td>
-<td>2027 연말</td>
-</tr>
-<tr>
 <td>지식 자산화</td>
-<td>절차서로 정리된 레시피 유형 수</td>
-<td>0</td>
-<td>선발대 장비군마다 ⟨N⟩개 이상</td>
+<td>Recipe 셋업 절차를 Agent가 이해할 수 있는 DB로 정리한 Recipe 수</td>
+<td>0건</td>
+<td>⟨X⟩건</td>
 <td>2027 연말</td>
 </tr>
 <tr>
-<td>자동화 비율</td>
-<td>Recipe별 셋업 단계 가운데 Agent가 진행한 비율</td>
+<td>ARC 적용 비율</td>
+<td>Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율</td>
+<td>⟨확인⟩</td>
+<td>⟨확인⟩%</td>
+<td>2028</td>
+</tr>
+<tr>
+<td>Agent 개입 범위</td>
+<td>Recipe당 셋업 단계 가운데 ARC Agent가 진행한 비율</td>
 <td>0%</td>
 <td>Recipe별 ⟨확인⟩%</td>
 <td>2028</td>
 </tr>
 <tr>
 <td>셋업 시간 단축</td>
-<td>레시피 1건 셋업 경과 시간</td>
+<td>Recipe 1건 셋업 경과 시간</td>
 <td>레시피당 30~60분 (셋업 전체 기준)</td>
 <td>⟨확인⟩% 단축</td>
 <td>2028</td>
 </tr>
-<tr>
-<td>품질 균일화</td>
-<td>셋업 뒤 첫 측정 성공률</td>
-<td>⟨확인⟩</td>
-<td>⟨확인⟩</td>
-<td>2029</td>
-</tr>
 </tbody>
 </table></div>
 <p>자동화 대상 구간의 실측값과 나머지 현재 값은 장비군마다 합류 교육 뒤 기준선 측정 기간(선발대 2027-02, 2차 2027-08)에 담당 엔지니어가 직접 측정해 확정하겠습니다. 측정하기 전에는 목표를 숫자로 정하지 않습니다.</p>
-<p><strong>자동화 측정 기준</strong>: Recipe setup에 Agent가 얼마나 개입해 진행했는지를 Recipe별 비율로 표기합니다.</p>
+<p><strong>자동화 측정 기준</strong>: ARC가 얼마나 넓게 쓰였는지는 Recipe 의뢰 수 기준으로, Recipe 하나에 Agent가 얼마나 개입했는지는 Recipe별 비율로 표기합니다.</p>
 <ul>
-<li>자동화 비율 = Agent가 진행한 셋업 단계 수 / 그 Recipe의 전체 셋업 단계 수 (Recipe별 %)</li>
+<li>ARC 적용 비율 = ARC를 적용한 Recipe 수 / 같은 기간 Recipe 의뢰 수 (%)</li>
+<li>Agent 개입 범위 = Agent가 진행한 셋업 단계 수 / 그 Recipe의 전체 셋업 단계 수 (Recipe별 %)</li>
 <li>작업 경과 시간: 셋업 시작부터 끝까지 걸린 시간 (셋업 시간 단축 지표에 씀)</li>
 </ul>
 <p><strong>측정 규칙</strong> (기준선과 이후 측정을 같은 조건으로 비교하기 위해 합류 교육 측정 양식에 고정)</p>
@@ -872,8 +866,8 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>포함: 그 구간 안의 실패, 재작업, 수동 인계 시간. 승인 대기 시간은 별도 기록</li>
 <li>단계 구분: Recipe별 셋업 단계는 절차서의 의미 단계를 기준으로 셈. 반드시 거치는 엔지니어 승인(저장 전 등)은 Agent 진행에서 빼지 않음</li>
 </ul>
-<h3 id="01-tf-proposal--자동화-비율이-오르면-회사에-무엇이-남는가">자동화 비율이 오르면 회사에 무엇이 남는가</h3>
-<pre><code>레시피 셋업 수요(건/월) × 건당 셋업 시간 × Recipe별 자동화 비율
+<h3 id="01-tf-proposal--arc-적용-비율과-agent-개입-범위가-오르면-회사에-무엇이-남는가">ARC 적용 비율과 Agent 개입 범위가 오르면 회사에 무엇이 남는가</h3>
+<pre><code>레시피 셋업 수요(건/월) × ARC 적용 비율 × 건당 셋업 시간 × Agent 개입 범위
   → 엔지니어 손을 거치지 않은 셋업 시간 (월 ⟨확인⟩시간)
   → 신규 제품, 공정 도입 때 셋업 대기 단축, 엔지니어가 분석, 개선 업무로 이동
   → 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않아도 됨
@@ -2628,9 +2622,9 @@ Agent: 화면 확인 → Align Key 후보 탐색 → 등록 → 측정 위치 �
 <td>⟨확인⟩</td>
 </tr>
 <tr>
-<td>절차서로 정리된 레시피 유형 수</td>
-<td>0</td>
-<td>장비군마다 1개 이상</td>
+<td>Recipe 셋업 절차를 Agent가 이해할 수 있는 DB로 정리한 Recipe 수</td>
+<td>0건</td>
+<td>⟨X⟩건</td>
 </tr>
 </tbody>
 </table></div>
@@ -4149,6 +4143,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2026-11-10</td>
 <td>핵심 개발 방향 장표의 2027 상반기, 연말 타겟 컬럼을 추진 방향 장표로 합쳐 상반기, 하반기 구조로 만들고, 핵심 개발 방향에는 세 가지 핵심 요소(지식 자산화, 생성형 AI + 기존 자동화 결합, 공통 실행 엔진)를 둔다</td>
 <td>두 장표의 내용이 겹쳤다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-10</td>
+<td>효과 지표에서 확장성과 품질 균일화를 뺀다. 지식 자산화는 "Agent가 이해할 수 있는 DB로 정리한 Recipe 수(X건)", 자동화는 "Recipe 의뢰 수 기준 ARC 적용 비율"과 "Recipe당 ARC Agent 개입 범위(%)" 두 지표로 나누고, 셋업 시간 단축은 유지한다</td>
+<td>모든 장비가 100% ARC로 확장하는 것이 아니라 확장성은 지표화가 애매하고, 품질 균일화는 내용이 애매하다</td>
 <td>확정</td>
 </tr>
 </tbody>
