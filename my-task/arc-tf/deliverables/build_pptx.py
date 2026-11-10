@@ -258,16 +258,22 @@ def s_direction():  # 핵심 개발 방향
         if i < 3:
             a = s.shapes.add_shape(MSO_SHAPE.CHEVRON, x + fw + fg / 2 - Inches(0.1), COL_Y + Inches(0.45), Inches(0.2), Inches(0.35))
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
-    two_col(s, "2027 상반기 타겟: 선발대 (6월 판정)", [
-                "**CD-SEM**: Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현",
-                "**Thickness**: 의뢰 Recipe 90% 이상 생성 자동화",
-                "**Inspection**: 전 디바이스 DRB 기반 ARC 확장",
-                "**공통 플랫폼 설계 완성, 베타 테스트**"],
-            "2027 연말 타겟: 영역 확장 (12월 판정)", [
-                "**2차 장비군 합류** (다른 MI 장비군)",
-                "선발대 셋업 절차와 노하우를 __지식 자산__으로 축적",
-                "1차 장비군 ARC 과정에서 얻은 노하우로 __2차 장비군에 빠르게 적용__"],
-            y=Inches(3.5), h=Inches(2.75), size=15)
+    gap = Inches(0.3)
+    cw = (W - 2 * M - 2 * gap) / 3
+    cols = [("1. 지식 자산화", [
+                "엔지니어 작업 녹화에서 __절차, 노하우, 결정 지점__ 추출",
+                "현업 엔지니어가 라벨링, 승인",
+                "Recipe 작업 방식을 **AI가 학습할 수 있는 형태**로"]),
+            ("2. 생성형 AI + 기존 자동화 결합", [
+                "생성형 AI: **다음 할 일 판단**",
+                "Rule, CV, ML/DL: __정밀 좌표, 규칙 확인, 결과 검증__",
+                "새 모델은 **공통 평가 세트**로 재고 교체"]),
+            ("3. 공통 실행 엔진", [
+                "**Computer Use** (VLM, PyAutoGUI, Win32)",
+                "**외부 Recipe 파일 편집** (Reverse Engineering)",
+                "엔지니어 승인, __즉시 중단__, 제어권 인계"])]
+    for i, (head, items) in enumerate(cols):
+        column(s, M + i * (cw + gap), Inches(3.5), cw, Inches(2.75), head, items, BLUE, size=14)
     note_line(s, Inches(6.38), "플랫폼의 역할", "2028 보조 (엔지니어 앞에서 반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)이 될 수 있도록 __점진적 발전__", size=13)
     footer(s)
 
@@ -384,22 +390,23 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
             size=14, before=True)
     footer(s)
 
-def s_phases():  # 추진 방향: 선발대 → 확장
-    s = slide("추진 방향: 1차 3개 장비군 위주로 개발, 다른 장비군은 먼저 파악",
-              "상반기 선발대로 플랫폼 베타까지, 2차 장비군은 인터뷰, Recipe Workflow 조사로 준비")
-    two_col(s, "1차: 선발대 (2027 상반기 개발 중심)", [
-                "**CD-SEM, Thickness, Inspection** (장비군마다 1~2명, 주 5시간)",
-                "사유: CD-SEM __Align Fail PoC__, Thickness __PyAutoGUI, ARC Pipeline__, Inspection __의뢰서 DB, Recipe RAG__ 재사용",
-                "**장비군별 목표** 달성",
-                "**공통 플랫폼 설계 완성, 베타 테스트**까지"],
-            "2차: 영역 확장 (2027 하반기부터)", [
-                "**다른 MI 장비군**",
-                "명단은 __12월에 함께 지정__, 상반기는 주 1~2시간",
-                "상반기: __인터뷰, Recipe Workflow 조사__로 준비 (3월 요구사항을 설계에 반영)",
+def s_phases():  # 추진 방향: 상반기 선발대 → 하반기 확장
+    s = slide("추진 방향: 상반기 1차 장비군 개발, 하반기 2차 장비군으로 확장",
+              "상반기에 장비군별 목표와 플랫폼 베타, 하반기에 2차 장비군 합류와 지식 자산화")
+    two_col(s, "2027 상반기: 1차 선발대 (6월 판정)", [
+                "**CD-SEM, Thickness, Inspection** 개발 중심 (장비군마다 1~2명, 주 5시간)",
+                "**CD-SEM**: Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현",
+                "**Thickness**: 의뢰 Recipe 90% 이상 생성 자동화",
+                "**Inspection**: 전 디바이스 DRB 기반 ARC 확장",
+                "**공통 플랫폼 설계 완성, 베타 테스트**",
+                "2차 장비군: __인터뷰, Workflow 조사__ (주 1~2시간)"],
+            "2027 하반기: 영역 확장 (12월 판정)", [
+                "**2차 장비군 합류** (다른 MI 장비군, 명단은 12월에 함께 지정)",
                 "6월 베타 판정 뒤 __본격 참여__: 교육, 화면 영역 지도, 절차 정의",
-                ],
-            h=Inches(3.7), size=15)
-    note_line(s, Inches(6.0), "베타 기준 (6월 판정)", "① 1차 장비군 PC에서 관찰, 녹화, 입력, 즉시 중단 ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 장비별 코드 없이 절차 정의만으로 새 장비 추가 가능", size=13)
+                "선발대 셋업 절차와 노하우를 __지식 자산__으로 축적",
+                "1차 장비군 ARC 과정에서 얻은 노하우로 __2차 장비군에 빠르게 적용__"],
+            h=Inches(3.85), size=14)
+    note_line(s, Inches(6.08), "베타 기준 (6월 판정)", "① 1차 장비군 PC에서 관찰, 녹화, 입력, 즉시 중단 ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 장비별 코드 없이 절차 정의만으로 새 장비 추가 가능", size=13)
     footer(s)
 
 def s_team():  # TF 구성 (조직도)
