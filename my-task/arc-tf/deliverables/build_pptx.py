@@ -279,7 +279,7 @@ def s_direction():  # 핵심 개발 방향
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표: 타겟 시점별로 확인",
-              "측정하기 전에는 목표를 숫자로 정하지 않고, 합류 교육 기간에 기준선을 재서 채움")
+              "측정하기 전에는 목표를 숫자로 정하지 않고, 합류 첫 달에 기준선을 재서 채움")
     metrics = [("효과", "측정 지표", "현재", "목표", "타겟 시점"),
                ("지식 자산화", "Agent가 이해할 수 있는 DB로 정리한 Recipe 셋업 수", "0건", "⟨X⟩건", "2027 연말"),
                ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "⟨확인⟩", "⟨확인⟩%", "2028"),
@@ -295,37 +295,35 @@ def s_effects():  # 효과
 
 def s_status():  # 2026 추진 현황
     s = slide("2026 ARC 추진 현황: CD, Thickness, Inspection",
-              "장비군별 ARC 추진 중, 공통 과제는 Recipe 작업 방식 학습과 기존 자동화와의 결합 구조")
+              "장비군별 ARC 추진 중, 생성형 AI 모델만으로는 어려워 기존 자동화와 함께 쓰는 구조 필요")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
     ch = Inches(3.0)
     cols = [("CD 추진 현황", [
-                "CD-SEM ARC의 첫 PoC로 **Align Fail 자동 대응 Agent** 개발 진행 중, 현재 __Offline 테스트 중__",
-                "Align Fail 대응에 **Recipe Tuning** 포함",
-                "VLM 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
+                "**Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 __Offline 테스트 중__",
+                "**소형 VLM**(Vision Language Model) 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
             ("Thickness 추진 현황", [
-                "의뢰부터 Recipe 생성까지 **ARC Pipeline 구현**",
-                "MI 장비군 중 __가장 높은 완성도__"]),
+                "의뢰부터 Recipe 생성까지 **ARC Pipeline** 진행",
+                "DL 기반 Align Fail 대응 __Offline 테스트 중__",
+                "MI 장비군 중 __가장 높은 자동화__ 구현"]),
             ("Inspection 추진 현황", [
-                "**ARC를 위한 DB 구축**: 의뢰서 DB화, Recipe RAG 구축",
-                "ARC 부분 자동화: **DRB(Design Recipe Builder) 기반 생성**, NAND 1개 Tech",
-                "DRB(Mother Recipe) __튜닝 방식__으로 ARC 구현"])]
+                "**DRB(Design Recipe Builder)**를 __Tuning하는 방식__으로 ARC 진행 중 (NAND Tech 1개 대상)"])]
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=13)
     ly = COL_Y + ch + Inches(0.12)
     box(s, M, ly, W - 2 * M, Inches(1.53), fill=MIST)
     text(s, M + Inches(0.3), ly + Inches(0.1), W - 2 * M - Inches(0.6), Inches(1.4), [
-        [("Lesson Learned (공통)", {"bold": True, "color": BLUE})],
-        runs_of("1. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬 것인지 __구체화 필요__"),
-        runs_of("2. Rule 기반 자동화, 이미지 처리(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__"),
-        runs_of("3. LLM 모델만으로는 정밀 좌표, 장비 절차, 결과 확인, 화면 조작을 해결 못 함 → **공통 플랫폼**이 채워야 함 (별첨)")],
+        [("Lesson Learned", {"bold": True, "color": BLUE})],
+        runs_of("1. **생성형 AI 모델만으로 ARC 구현 어려움** (정밀 좌표 클릭, 셋업 절차, 결과 판단, 화면 조작 등의 문제)"),
+        runs_of("2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__"),
+        runs_of("3. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬지 __구체화 필요__")],
         size=14, gap=0.3)
     footer(s)
 
 
 def s_assets():  # PoC에서 얻은 것
-    s = slide("PoC에서 얻은 것: 장비군 공통으로 쓸 수 있는 자산",
-              "Agent가 Recipe를 다루는 두 가지 방식 확보: 화면 조작(Computer Use)과 외부 파일 편집")
+    s = slide("업무 전략 1: Agent가 Recipe를 다루는 방식",
+              "화면 조작(Computer Use)과 외부 파일 편집 두 방식에, 최적화된 소형 모델을 함께 사용")
     two_col(s, "1. Agent가 Recipe를 다루는 방식: Computer Use", [
                 "API 없는 장비에서 Agent가 Recipe를 다루는 __여러 접근 방식 시험__",
                 "**VLM**: 화면을 보고 다음 조작 판단",
@@ -335,27 +333,28 @@ def s_assets():  # PoC에서 얻은 것
             "2. 장비 밖에서 Recipe 파일을 편집해 생성", [
                 "장비 화면 조작이 아닌, **외부에서 Recipe 파일을 편집**해 작성",
                 "장비 화면을 거치지 않아 __조작 단계 축소__",
-                "Recipe 파일 구조 해석(**Reverse Engineering**) 필요",
-                "Recipe 저장과 적용은 __엔지니어 승인__"], size=14, arrow=False)
-    note_line(s, Inches(6.5), "의미", "Computer Use는 장비군과 무관해 __공통 플랫폼의 기반__, 외부 파일 편집은 장비별 파일 구조 해석이 필요해 __장비군별 도구__로 활용", size=13)
+                "장비별 **Recipe 파일 구조 해석** 필요",
+                "Recipe 저장과 적용은 __엔지니어 승인__"], h=Inches(3.6), size=14, arrow=False)
+    note_line(s, Inches(5.85), "소형 모델", "**기반기술센터**에서 __최적화된 소형 모델__을 운영해 자동화 작업에 함께 사용", size=13)
+    note_line(s, Inches(6.25), "의미", "Computer Use는 장비군과 무관해 __공통 플랫폼의 기반__, 외부 파일 편집은 장비별 파일 구조 해석이 필요해 __장비군별 도구__로 활용", size=13)
     footer(s)
 
 def s_lessons():  # 시사점
-    s = slide("PoC 시사점: 두 역할의 유기적 협업, 공통 과제는 공통 플랫폼과 TF로",
+    s = slide("업무 전략 2: 두 역할의 유기적 협업, 공통 과제는 공통 플랫폼과 TF로",
               "현업 노하우를 AI가 쓰는 구조로 개발자가 구현하고, ARC 필수 요소는 공통 플랫폼으로 해결")
-    two_col(s, "시사점 1: 두 역할의 유기적인 협업 필요", [
+    two_col(s, "1. 두 역할의 유기적인 협업", [
                 "**개발자**: 화면 인식, 조작 엔진, 안전 규칙, 모델 서빙",
                 "**현업 엔지니어**: Recipe 셋업 절차, 성공 판정 기준, 실장비 검증, 결과 책임",
                 "현업 MI 엔지니어의 **업무 노하우와 Recipe 셋업 방식**을 AI가 활용할 수 있는 구조로 __개발자가 구현__",
                 "한쪽만으로는 자동화 대상 선정이나 구현 불가"],
-            "시사점 2: ARC 공통 과제는 공통 플랫폼과 TF로", [
+            "2. ARC 공통 과제는 공통 플랫폼과 TF로", [
                 "공통 플랫폼으로: **Agent의 마우스, 키보드 조작**",
-                "함께 필요한 업무: **AI 모델 최적화, 운영 유지**, **녹화 DB 추출**",
+                "함께 필요한 업무: **최적화된 소형 모델 운영** (기반기술센터), **녹화 DB 추출**",
                 "**기술 부채 해소**: Vibe Coding으로 __원리 확인 없이 진행한 사항__ 대부분",
-                "TF로 공유: **주기적 세미나**로 ARC 작업 방법 공유 (Reverse Engineering, 자동화 방법, 사내 DB 테이블 등)",
+                "TF로 공유: **주기적 세미나**로 ARC 작업 방법 공유 (자동화 방법, 사내 DB 테이블 등)",
                 "장비군마다 따로 하면 __같은 작업 반복__"],
             h=Inches(3.7), size=14, arrow=False)
-    note_line(s, Inches(6.0), "결론", "ARC 필수 요소(조작, 모델 최적화와 운영, 녹화 추출)는 **공통 플랫폼으로 해결**, 효율적인 작업 방법은 **TF 세미나로 공유**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
+    note_line(s, Inches(6.0), "결론", "ARC 필수 요소(조작, 소형 모델 운영, 녹화 추출)는 **공통 플랫폼으로 해결**, 효율적인 작업 방법은 **TF 세미나로 공유**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
     footer(s)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
@@ -373,7 +372,7 @@ def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     footer(s)
 
 def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
-    s = slide("실행 위치: 별도 운영 PC 대신 엔지니어 PC에 공통 플랫폼 설치",
+    s = slide("업무 전략 3: 별도 운영 PC 대신 엔지니어 PC에 공통 플랫폼 설치",
               "사무 PC를 늘리는 방식은 제약이 많아, 엔지니어가 이미 쓰는 PC에서 엔지니어가 보는 화면으로 운영")
     two_col(s, "처음 계획: 별도 운영 PC", [
                 "장비군, 엔지니어가 늘 때마다 **PC 추가 확보 절차** (자산 신청, 자리 확보 등)",
@@ -402,7 +401,7 @@ def s_phases():  # 추진 방향: 상반기 선발대 → 하반기 확장
                 "2차 장비군: __인터뷰, Workflow 조사__ (주 1~2시간)"],
             "2027 하반기: 영역 확장 (12월 판정)", [
                 "**2차 장비군 합류** (다른 MI 장비군, 명단은 12월에 함께 지정)",
-                "6월 베타 판정 뒤 __본격 참여__: 교육, 화면 영역 지도, 절차 정의",
+                "6월 베타 판정 뒤 __본격 참여__: 세미나 합류, 화면 영역 지도, 절차 정의",
                 "선발대 셋업 절차와 노하우를 __지식 자산__으로 축적",
                 "1차 장비군 ARC 과정에서 얻은 노하우로 __2차 장비군에 빠르게 적용__"],
             h=Inches(3.85), size=14)
@@ -419,10 +418,10 @@ def s_team():  # TF 구성 (조직도)
          align=PP_ALIGN.CENTER)
     text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "명단 12월 지정 / 격주 회의: 개발자, 현업 진행 공유 / 월간 임원 보고", size=12,
          color=WHITE, align=PP_ALIGN.CENTER)
-    goal = lambda t: [[("목표", {"bold": True, "color": ORANGE})], t]
+    goal = lambda t: [[("2027년 상반기 목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
                   ("백엔드", ["2명", "서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
-                  ("프론트엔드", ["2명", "설치형 에이전트", "승인 화면"]),
+                  ("프론트엔드", ["2명", "설치형 에이전트", "Agent 대화형 챗 UI", "승인 화면"]),
                   ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
               ("장비군 담당: 장비군마다 1~2명", BLUE, [
                   ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현")),
@@ -452,7 +451,7 @@ def s_team():  # TF 구성 (조직도)
                  align=PP_ALIGN.CENTER)
             text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.1), lines, size=11, color=SUB,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(5.92), "교육", "합류 시점마다 **4주 과정** (주 5시간): 1기 1차 장비군 2027-01, 2기 2차 장비군 2027-07 (__베타 플랫폼으로 실습__)", size=13)
+    note_line(s, Inches(5.92), "교육", "**ARC 노하우 공유 세미나**와 **장비군별 진행사항 공유 미팅**을 __주기적으로__ 운영 (2차 장비군도 합류 시점부터 참여)", size=13)
     note_line(s, Inches(6.3), "목표", "개발, AI 비전문가도 자기 장비 절차를 Agent 실행 형태로 정의하고 __결과 판정__ 가능", size=13)
     footer(s)
 
@@ -464,10 +463,10 @@ def s_kanban():  # 일정 칸반
                              ["CD-SEM Align Fail 시험", "Thickness 대상 Recipe", "Inspection DRB 시험"],
                              ["장비군별 자동화 운영", "목표 달성 확인", "★ 6월 관문"],
                              ["자동 운영 유지", "요소 목록 반영"], ["자동 운영 유지", "2차에 노하우 적용"]]),
-             ("공통\n플랫폼", [["최소 녹화기 준비"], ["플랫폼 설계", "모델 서빙, 평가 세트", "1기 4주 합류 교육"],
+             ("공통\n플랫폼", [["최소 녹화기 준비"], ["플랫폼 설계", "모델 서빙, 평가 세트", "ARC 노하우 세미나 시작"],
                               ["녹화 추출, 라벨링", "RAG 구축, 베타 배포", "★ 베타 판정"], ["Workflow 생성, 실행", "준수 확인, 수정", "수정 내용 RAG 보완"],
                               ["2차 장비군 RAG 반영", "★ 12월 관문"]]),
-             ("영역 확장\n(2차)", [["2차 명단 지정"], ["인터뷰, Workflow 조사"], ["요구사항 보완"], ["본격 참여, 2기 교육"], ["화면 영역 지도"]])]
+             ("영역 확장\n(2차)", [["2차 명단 지정"], ["인터뷰, Workflow 조사"], ["요구사항 보완"], ["본격 참여, 세미나 합류"], ["화면 영역 지도"]])]
     lw = Inches(1.45)
     colw = (W - 2 * M - lw) / len(periods)
     hy = COL_Y - Inches(0.05)
@@ -524,10 +523,10 @@ def s_decision():  # 결정 요청
                 "**개발 인력 4명 지정**: 백엔드 2, 프론트엔드 2 (현업 엔지니어와 함께 약 5명 규모)",
                 "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, 상반기 인터뷰, Recipe Workflow 조사, __7월부터 주 5시간__"],
             "승인 후 진행", [
-                "2027-01: 1기 합류 교육, 플랫폼 설계 시작, 녹화 DB 접근 방식 확정",
+                "2027-01: ARC 노하우 세미나 시작, 플랫폼 설계 시작, 녹화 DB 접근 방식 확정",
                 "2027-02: 1차 장비군 __기준선 측정__",
                 "2027-06: 장비군별 목표, __플랫폼 베타__ 관문",
-                "2027-07: 2차 합류, 2기 합류 교육 / 2027-12: 지식 자산 관문"])
+                "2027-07: 2차 합류, 세미나와 공유 미팅 참여 / 2027-12: 지식 자산 관문"])
     footer(s)
 
 def s_appendix_asks():  # 별첨
@@ -721,13 +720,13 @@ def s_exec_roadmap():
             ("2029", "셋업 인력을 장비 수에 비례해 늘리지 않음")]
     table(s, rows, M, Inches(3.85), [Inches(3.0), Emu(W - 2 * M - Inches(3.0))], size=15, row_h=Inches(0.45),
           bold_col0=True)
-    note_line(s, Inches(6.3), "측정", "Recipe별 셋업 단계 중 Agent가 진행한 비율(%). 기준선은 합류 교육 때 실측, 측정 전 목표 숫자 없음", size=13)
+    note_line(s, Inches(6.3), "측정", "Recipe별 셋업 단계 중 Agent가 진행한 비율(%). 기준선은 합류 첫 달에 실측, 측정 전 목표 숫자 없음", size=13)
     footer(s)
 
 
 BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_direction, s_phases, s_effects,
-        s_platform, s_kanban, s_safety, s_decision, s_appendix_asks, s_why_not_llm]
-TEAM = BOSS[:10] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[10:]
+        s_platform, s_kanban, s_safety, s_decision, s_appendix_asks]
+TEAM = BOSS[:10] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[10:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
         s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
