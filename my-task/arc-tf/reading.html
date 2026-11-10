@@ -531,7 +531,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>장비 밖에서 Recipe 파일을 편집해 생성</td>
 <td>장비 화면 조작이 아닌, 외부에서 Recipe 파일을 편집해 작성. 장비 화면을 거치지 않아 조작 단계 축소. Recipe 파일 구조 해석(Reverse Engineering) 필요</td>
-<td>화면 조작 없이 Recipe 생성. 저장과 적용은 엔지니어 승인</td>
+<td>화면 조작 없이 Recipe 생성. 장비별 파일 구조 해석이 필요해 장비군별 도구로 활용. 저장과 적용은 엔지니어 승인</td>
 </tr>
 </tbody>
 </table></div>
@@ -724,7 +724,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>3. 공통 실행 엔진</td>
-<td>Computer Use(VLM, PyAutoGUI, Win32)와 외부 Recipe 파일 편집(Reverse Engineering). 엔지니어 승인, 즉시 중단, 제어권 인계</td>
+<td>Computer Use(VLM, PyAutoGUI, Win32)로 실행하고 Workflow 준수를 확인. 틀리면 엔지니어가 수정. 엔지니어 승인, 즉시 중단, 제어권 인계</td>
 <td>PoC 공통 자산</td>
 </tr>
 </tbody>
@@ -920,32 +920,42 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tbody>
 </table></div>
 <h3 id="01-tf-proposal--공통-플랫폼-구조">공통 플랫폼 구조</h3>
-<p>공통 플랫폼은 현업 엔지니어가 자기 작업을 AI가 이해하는 형태로 바꾸고, 시험해 보고, Agent로 실행하는 작업 공간입니다. ARC를 하기 위한 필수 요소들은 공통 플랫폼으로 해결하고, 장비 노하우와 판정은 장비군 담당자가 맡습니다.</p>
+<p>공통 플랫폼은 Computer Use 기반으로, RAG에 쌓은 엔지니어 지식에서 Recipe 셋업 Workflow를 만들고 Agent가 그 Workflow를 지키는지 확인합니다. 틀리면 엔지니어가 개입해 고치고, 고친 내용은 다시 RAG에 저장해 다음 Workflow를 보완합니다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
-<th>엔지니어가 하는 일</th>
-<th>내용</th>
+<th>단계</th>
+<th>하는 일</th>
+<th>누가</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>① 지식 자산화</td>
-<td>자기 작업을 녹화해 AI가 이해할 수 있는 형태(절차, 노하우, 결정 지점)로 변환. 엔지니어가 검토하고 직접 승인. 결과는 Agent가 쓰는 Recipe DB로 축적</td>
+<td>① 녹화 추출, 라벨링</td>
+<td>녹화 비디오에서 작업 내용을 추출하고, 현업 엔지니어가 라벨링</td>
+<td>추출은 플랫폼, 라벨링은 현업 엔지니어</td>
 </tr>
 <tr>
-<td>② 실험</td>
-<td>녹화본으로 절차를 모의 실행해 보고 수정. 모델, 프롬프트, 절차를 바꿔 결과 비교. 실장비에 쓰기 전 미리 검증</td>
+<td>② RAG 저장</td>
+<td>라벨링한 내용을 Recipe 셋업 지식 DB(절차, 노하우, 결정 지점)로 저장</td>
+<td>플랫폼</td>
 </tr>
 <tr>
-<td>③ 실행</td>
-<td>Computer Use(VLM, PyAutoGUI, Win32로 화면 조작)와 외부 Recipe 파일 편집(Reverse Engineering). 엔지니어 승인, 즉시 중단, 제어권 인계</td>
+<td>③ Workflow 생성, 실행</td>
+<td>RAG에서 Recipe 셋업 Workflow를 만들고 Agent가 Computer Use(VLM, PyAutoGUI, Win32)로 실행</td>
+<td>플랫폼, 엔지니어 검토와 승인</td>
+</tr>
+<tr>
+<td>④ 준수 확인, 수정</td>
+<td>Agent가 Workflow를 지키는지 확인(생성형 AI + Rule, CV, ML/DL). 틀리면 엔지니어가 개입해 수정하고, 수정 내용은 ②로 돌아가 RAG를 보완</td>
+<td>플랫폼, 현업 엔지니어</td>
 </tr>
 </tbody>
 </table></div>
 <ul>
-<li><strong>공통 기반 (공통 플랫폼 팀)</strong>: 모델 서빙과 평가(생성형 AI + Rule, CV, ML/DL), 녹화 DB 수집, 안전 규칙과 실행 로그, 설치형 에이전트와 사내 배포</li>
-<li><strong>개선 순환</strong>: 엔지니어가 실전에서 사용 → 개발자에게 피드백 → 개발자가 플랫폼에 반영 → 다시 실전 사용, 반복. 플랫폼은 처음부터 완성해서 넘기는 것이 아니라 현업 사용과 피드백으로 함께 키움</li>
+<li><strong>공통 플랫폼 팀이 만드는 것</strong>: 녹화 내용 추출, RAG DB와 Workflow 생성, Computer Use 실행 엔진, 준수 확인과 즉시 중단</li>
+<li><strong>현업 엔지니어가 하는 것</strong>: 추출 내용 라벨링, Workflow 검토와 승인, 실행 중 개입과 수정, 녹화본으로 미리 실험, 실전 사용 후 개발자에게 피드백 (개발자가 플랫폼에 반영)</li>
+<li><strong>범위 밖</strong>: 외부 Recipe 파일 편집(Reverse Engineering)은 장비마다 파일 구조가 달라 장비군별 도구로 진행하고 공통 플랫폼에는 넣지 않음. 장비별 작업 공간을 백엔드와 화면에 따로 두면 장비군 수만큼 플랫폼이 커지기 때문</li>
 <li>AI가 정한 다음 조작은 서버의 규칙 확인이 허용 여부를 다시 판단하고, 정해진 조작 단위만 실행함. 결과가 불명확하거나 화면이 예상과 다르면 멈추고 엔지니어를 부름</li>
 <li>2027년에는 1차 장비군의 승인된 조작(장비군별 목표)만 자동 운영하고, 그 밖에는 화면 입력 없이 "다음에 할 일"을 제안만 해서 판단 정확도를 먼저 검증함. 일반 화면 입력은 2028 보조 단계부터</li>
 </ul>
@@ -4157,6 +4167,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2026-11-10</td>
 <td>기획안과 메인 장표의 공통 플랫폼 구조를 Offline/Online 구분 대신 엔지니어가 하는 일(지식 자산화, 실험, 실행) + 공통 기반 + 개선 순환(실전 사용 → 개발자 피드백 → 반영)으로 설명한다. 실행에는 Computer Use와 외부 Recipe 파일 편집을 모두 둔다. 기술 설계 문서와 팀 상세 장표의 Offline/Online 구분은 내부 설계 용어로 유지</td>
 <td>Offline/Online 구분이 애매하고, 현업 엔지니어가 플랫폼에서 실험과 지식화를 직접 할 수 있어야 하며, 실전 피드백으로 개발자가 반영하는 형태여야 한다</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-10</td>
+<td>공통 플랫폼은 Computer Use 기반 RAG Workflow 순환으로 정의한다: 녹화 추출과 현업 라벨링 → RAG 저장 → Workflow 생성과 Agent 실행 → 준수 확인, 틀리면 엔지니어 수정 → RAG 보완. 외부 Recipe 파일 편집(Reverse Engineering)은 장비군별 도구로 두고 공통 플랫폼에서 뺀다</td>
+<td>장비별 파일 구조가 달라 백엔드와 화면에 장비별 작업 공간을 두면 장비군 수만큼 플랫폼이 커진다</td>
 <td>확정</td>
 </tr>
 </tbody>

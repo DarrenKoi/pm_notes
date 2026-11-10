@@ -270,7 +270,7 @@ def s_direction():  # 핵심 개발 방향
                 "새 모델은 **공통 평가 세트**로 재고 교체"]),
             ("3. 공통 실행 엔진", [
                 "**Computer Use** (VLM, PyAutoGUI, Win32)",
-                "**외부 Recipe 파일 편집** (Reverse Engineering)",
+                "Workflow 준수 확인, 틀리면 __엔지니어가 수정__",
                 "엔지니어 승인, __즉시 중단__, 제어권 인계"])]
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), Inches(3.5), cw, Inches(2.75), head, items, BLUE, size=14)
@@ -337,7 +337,7 @@ def s_assets():  # PoC에서 얻은 것
                 "장비 화면을 거치지 않아 __조작 단계 축소__",
                 "Recipe 파일 구조 해석(**Reverse Engineering**) 필요",
                 "Recipe 저장과 적용은 __엔지니어 승인__"], size=14, arrow=False)
-    note_line(s, Inches(6.5), "의미", "두 방식 모두 __특정 장비군에 묶이지 않음__ → 공통 플랫폼의 출발점", size=13)
+    note_line(s, Inches(6.5), "의미", "Computer Use는 장비군과 무관해 __공통 플랫폼의 기반__, 외부 파일 편집은 장비별 파일 구조 해석이 필요해 __장비군별 도구__로 활용", size=13)
     footer(s)
 
 def s_lessons():  # 시사점
@@ -569,33 +569,28 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
 
 
 def s_platform():  # 공통 플랫폼 구조 (boss, team)
-    s = slide("공통 플랫폼 구조: 엔지니어가 지식화, 실험, 실행을 한 곳에서",
-              "엔지니어가 지식화, 실험, 실행을 하고, 실전 피드백으로 개발자와 함께 키우는 플랫폼")
-    gap = Inches(0.3)
-    cw = (W - 2 * M - 2 * gap) / 3
-    ch = Inches(2.6)
-    cols = [("① 지식 자산화", [
-                "자기 작업을 녹화해 **AI가 이해할 수 있는 형태**로 변환",
-                "절차, 노하우, 결정 지점을 검토하고 __직접 승인__",
-                "결과는 **Agent가 쓰는 Recipe DB**로 축적"]),
-            ("② 실험", [
-                "녹화본으로 절차를 __모의 실행__해 보고 수정",
-                "모델, 프롬프트, 절차를 바꿔 **결과 비교**",
-                "실장비에 쓰기 전 __미리 검증__"]),
-            ("③ 실행", [
-                "**Computer Use**: VLM, PyAutoGUI, Win32로 화면 조작",
-                "**외부 Recipe 파일 편집** (Reverse Engineering)",
-                "엔지니어 승인, __즉시 중단__, 제어권 인계"])]
-    for i, (head, items) in enumerate(cols):
-        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=13)
-    by = COL_Y + ch + Inches(0.15)
-    box(s, M, by, W - 2 * M, Inches(0.95), fill=MIST)
-    text(s, M + Inches(0.3), by + Inches(0.1), W - 2 * M - Inches(0.6), Inches(0.8), [
-        [("공통 기반 (공통 플랫폼 팀)", {"bold": True, "color": BLUE})],
-        runs_of("모델 서빙과 평가 (**생성형 AI + Rule, CV, ML/DL**)  /  녹화 DB 수집  /  안전 규칙, 실행 로그  /  설치형 에이전트, 사내 배포")],
-        size=14, gap=0.2)
-    note_line(s, Inches(5.92), "개선 순환", "엔지니어가 **실전에서 사용** → 개발자에게 __피드백__ → 개발자가 **플랫폼에 반영** → 다시 실전 사용, 반복", size=13)
-    note_line(s, Inches(6.3), "역할", "ARC 필수 요소는 **공통 플랫폼으로 해결**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
+    s = slide("공통 플랫폼 구조: Computer Use 기반 RAG Workflow 순환",
+              "RAG에 쌓은 엔지니어 지식으로 Agent가 셋업하고, 고친 내용은 다시 RAG로")
+    flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
+             ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
+             ("③ Workflow 생성, 실행", "RAG에서 셋업 Workflow 생성\nAgent가 Computer Use로 실행"),
+             ("④ 준수 확인, 수정", "Workflow를 지키는지 확인\n틀리면 엔지니어가 개입, 수정")],
+         COL_Y, h=Inches(1.3), fills=[(BLUE, WHITE)] * 4, head_size=16, body_size=12)
+    text(s, M, COL_Y + Inches(1.38), W - 2 * M, Inches(0.36),
+         [[("순환  ", {"bold": True})] + runs_of("④에서 엔지니어가 고친 내용은 __②RAG에 다시 저장__, 다음 Workflow에 반영")], size=14, color=BLUE,
+         align=PP_ALIGN.CENTER)
+    gap = Inches(0.6)
+    cw = (W - 2 * M - gap) / 2
+    cy, chh = Inches(3.95), Inches(2.0)
+    column(s, M, cy, cw, chh, "공통 플랫폼 팀이 만드는 것", [
+               "녹화 내용 추출, **RAG DB**, Workflow 생성",
+               "**Computer Use** 실행 엔진 (VLM, PyAutoGUI, Win32)",
+               "준수 확인 (__생성형 AI + Rule, CV, ML/DL__), 즉시 중단"], BLUE, size=13)
+    column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어가 하는 것", [
+               "추출 내용 **라벨링**, Workflow 검토와 승인",
+               "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
+               "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"], BLUE, size=13)
+    note_line(s, Inches(6.1), "범위 밖", "외부 Recipe 파일 편집(Reverse Engineering)은 장비마다 파일 구조가 달라 __장비군별 도구__로 진행, 공통 플랫폼에는 넣지 않음", size=13)
     footer(s)
 
 
