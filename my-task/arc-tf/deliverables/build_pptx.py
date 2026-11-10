@@ -189,11 +189,11 @@ def column(s, x, y, w, h, head, items, accent, size=15, mark="▪ "):
          [[(mark, {"color": accent, "bold": True})] + runs_of(t) for t in items], size=size, gap=0.6)
 
 
-def two_col(s, left_head, left, right_head, right, y=COL_Y, h=COL_H, size=17, arrow=True):
-    """좌: 문제, 기존 (회색) → 우: 해결 방향, 개선 (파랑)."""
+def two_col(s, left_head, left, right_head, right, y=COL_Y, h=COL_H, size=17, arrow=True, before=False):
+    """두 컬럼 모두 파랑. before=True면 좌: 기존, 문제 (회색) → 우: 변경, 해결 (파랑)."""
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
-    column(s, M, y, cw, h, left_head, left, SUB, size)
+    column(s, M, y, cw, h, left_head, left, SUB if before else BLUE, size)
     column(s, M + cw + gap, y, cw, h, right_head, right, BLUE, size)
     if not arrow:
         return
@@ -260,8 +260,8 @@ def s_direction():  # 핵심 개발 방향
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
     two_col(s, "2027 상반기 타겟: 선발대 (6월 판정)", [
                 "**CD-SEM**: Align Fail 시 Recipe 이미지 변경",
-                "**Thickness**: Film 10 Layer 이하 Recipe 90% 자동화",
-                "**Inspection**: 전체 디바이스향 DRB 기반 ARC 확장",
+                "**Thickness**: 의뢰 Recipe 90% 이상 생성 자동화",
+                "**Inspection**: 전 디바이스 DRB 기반 ARC 확장",
                 "**공통 플랫폼 설계 완성, 베타 테스트**"],
             "2027 연말 타겟: 영역 확장 (12월 판정)", [
                 "**2차 장비군 합류** (다른 MI 장비군)",
@@ -301,13 +301,11 @@ def s_status():  # 2026 추진 현황
                 "VLM 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
             ("Thickness 추진 현황", [
                 "의뢰부터 Recipe 생성까지 **ARC Pipeline 구현**",
-                "MI 장비군 중 __가장 높은 완성도__",
-                "27년까지 의뢰 Recipe의 **90% 이상 생성 자동화** 목표"]),
+                "MI 장비군 중 __가장 높은 완성도__"]),
             ("Inspection 추진 현황", [
                 "**ARC를 위한 DB 구축**: 의뢰서 DB화, Recipe RAG 구축",
                 "ARC 부분 자동화: **DRB(Design Recipe Builder) 기반 생성**, NAND 1개 Tech",
-                "DRB(Mother Recipe) __튜닝 방식__으로 ARC 구현",
-                "27년 전 디바이스 대상, **Optical Inspection 장비군**으로 확장 전개"])]
+                "DRB(Mother Recipe) __튜닝 방식__으로 ARC 구현"])]
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=13)
     ly = COL_Y + ch + Inches(0.12)
@@ -382,7 +380,7 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
                 "공통 플랫폼 한 벌을 __사내 배포로 일괄 갱신__",
                 "엔지니어가 보는 화면에서 운영, **즉시 확인, 중단**",
                 "**엔지니어가 원할 때 Agent 실행**, 작업에 대한 책임 (__Human on Command__)"],
-            h=Inches(3.7), size=14)
+            h=Inches(3.7), size=14, before=True)
     note_line(s, Inches(6.0), "Agent가 엔지니어 화면을 일시적으로 제어", "관찰, 판단은 백그라운드, 입력 때만 __제어권 인계__(몇 초), PC 자원 한도를 베타 기준에 포함", size=13)
     footer(s)
 
@@ -392,7 +390,7 @@ def s_phases():  # 추진 방향: 선발대 → 확장
     two_col(s, "1차: 선발대 (2027 상반기 개발 중심)", [
                 "**CD-SEM, Thickness, Inspection** (장비군마다 1~2명, 주 5시간)",
                 "사유: CD-SEM __Align Fail PoC__, Thickness __PyAutoGUI, ARC Pipeline__, Inspection __의뢰서 DB, Recipe RAG__ 재사용",
-                "**장비군별 상반기 목표** 달성",
+                "**장비군별 목표** 달성",
                 "**공통 플랫폼 설계 완성, 베타 테스트**까지"],
             "2차: 영역 확장 (2027 하반기부터)", [
                 "**다른 MI 장비군**",
@@ -431,16 +429,16 @@ def s_team():  # TF 구성 (조직도)
          align=PP_ALIGN.CENTER)
     text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "조직, 명단 전체 12월 지정 / 담당 임원 월간 진척 보고", size=12,
          color=WHITE, align=PP_ALIGN.CENTER)
-    goal = lambda t: [[("1차, 상반기 목표", {"bold": True, "color": ORANGE})], t]
+    goal = lambda t: [[("목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
                   ("백엔드", ["2명", "서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
                   ("프론트엔드", ["2명", "설치형 에이전트", "승인 화면"]),
                   ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
-              ("장비군 담당: 장비군마다 1~2명", SUB, [
-                  ("CD-SEM", goal("Align Fail 시 Recipe 이미지 변경")),
-                  ("Thickness", goal("Film 10 Layer 이하 Recipe 90% 자동화")),
-                  ("Inspection", goal("전체 디바이스향 DRB 기반 ARC 확장")),
-                  ("다른 MI 장비군", ["2차", "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
+              ("장비군 담당: 장비군마다 1~2명", BLUE, [
+                  ("CD-SEM\n(1차)", goal("Align Fail 시 Recipe 이미지 변경")),
+                  ("Thickness\n(1차)", goal("Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화")),
+                  ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체 디바이스향 DRB 기반 ARC 확장")),
+                  ("다른 MI 장비군\n(2차)", [ "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
     gg = Inches(0.4)
     gw = (W - 2 * M - gg) / 2
     bus_y, gy = COL_Y + Inches(0.92), COL_Y + Inches(1.12)
@@ -460,9 +458,9 @@ def s_team():  # TF 구성 (조직도)
             dim = gi == 1 and k == 3  # 2차 준비 단계
             box(s, x, y, bw, Inches(1.9), fill=MIST if dim else WHITE, line=LINE)
             box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else accent)
-            text(s, x + Inches(0.06), y + Inches(0.14), bw - Inches(0.12), Inches(0.36), name, size=12, bold=True,
+            text(s, x + Inches(0.06), y + Inches(0.12), bw - Inches(0.12), Inches(0.5), name.split("\n"), size=12, bold=True, gap=0,
                  align=PP_ALIGN.CENTER)
-            text(s, x + Inches(0.06), y + Inches(0.6), bw - Inches(0.12), Inches(1.0), lines, size=11, color=SUB,
+            text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.1), lines, size=11, color=SUB,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
     note_line(s, Inches(5.92), "교육", "합류 시점마다 **4주 과정** (주 5시간): 1기 1차 장비군 2027-01, 2기 2차 장비군 2027-07 (__베타 플랫폼으로 실습__)", size=13)
     note_line(s, Inches(6.3), "목표", "개발, AI 비전문가도 자기 장비 절차를 Agent 실행 형태로 정의하고 __결과 판정__ 가능", size=13)
@@ -470,9 +468,9 @@ def s_team():  # TF 구성 (조직도)
 
 def s_kanban():  # 일정 칸반
     s = slide("2027 일정: 상반기 1차 장비군 목표와 플랫폼 베타, 하반기 영역 확장",
-              "6월 관문에서 장비군별 상반기 목표와 베타를, 12월 관문에서 지식 자산과 2차 합류를 판정받음")
+              "6월 관문에서 장비군별 목표와 베타를, 12월 관문에서 지식 자산과 2차 합류를 판정받음")
     periods = ["2026-12", "2027 1분기", "2027 2분기", "2027 3분기", "2027 4분기"]
-    lanes = [("1차 장비군\n상반기 목표", [["TF 승인", "PC 자원 실측", "녹화 DB 접근 확인"],
+    lanes = [("1차 장비군\n목표", [["TF 승인", "PC 자원 실측", "녹화 DB 접근 확인"],
                              ["CD-SEM 입력 시험", "Thickness 대상 Recipe", "Inspection DRB 시험"],
                              ["장비군별 자동화 운영", "목표 달성 확인", "★ 6월 관문"],
                              ["자동 운영 유지", "요소 목록 반영"], []]),
@@ -504,7 +502,7 @@ def s_kanban():  # 일정 칸반
                      color=WHITE if gate else INK, anchor=MSO_ANCHOR.MIDDLE)
         y += lh + Inches(0.06)
     text(s, M, y + Inches(0.04), W - 2 * M, Inches(0.85),
-         [[("6월 관문  ", {"bold": True, "color": BLUE})] + runs_of("장비군별 상반기 목표, __오측정 0건__ / 베타 기준(① 1차 장비군 PC ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 절차 정의만으로 새 장비 추가)"),
+         [[("6월 관문  ", {"bold": True, "color": BLUE})] + runs_of("장비군별 목표, __오측정 0건__ / 베타 기준(① 1차 장비군 PC ⟨확인⟩주 무장애 운영 ② PC 자원 사용 한도 준수 ③ 절차 정의만으로 새 장비 추가)"),
           [("12월 관문  ", {"bold": True, "color": BLUE})] + runs_of("선발대 절차서 ⟨N⟩개, 2차 장비군이 장비별 코드 없이 합류"),
           [("2028 진입  ", {"bold": True, "color": BLUE})] + runs_of("지식화 관문 통과와 입력 실행기 안전 요건 충족")],
          size=12, color=SUB, spacing=1.0, gap=0.3)
@@ -538,7 +536,7 @@ def s_decision():  # 결정 요청
             "승인 후 진행", [
                 "2027-01: 1기 합류 교육, 플랫폼 설계 시작, 녹화 DB 접근 방식 확정",
                 "2027-02: 1차 장비군 __기준선 측정__",
-                "2027-06: 장비군별 상반기 목표, __플랫폼 베타__ 관문",
+                "2027-06: 장비군별 목표, __플랫폼 베타__ 관문",
                 "2027-07: 2차 합류, 2기 합류 교육 / 2027-12: 지식 자산 관문"])
     footer(s)
 
@@ -707,13 +705,13 @@ def s_exec_onepage():
                 "AI가 승인된 절차를 __한 단계씩__ 수행, 불명확하면 멈춤",
                 "위험 조작, 저장은 **엔지니어 승인**",
                 "**공통 플랫폼** 하나 위에 장비별 절차만 추가, 선발대 뒤 확장"],
-            size=16)
+            size=16, before=True)
     footer(s)
 
 
 def s_exec_roadmap():
     s = slide("단계별 타겟: 검증 증거를 확인하며 단계적으로 확대",
-              "2027 1차 장비군 상반기 목표와 플랫폼 베타부터, 2029 AI 셋업 진행까지")
+              "2027 1차 장비군 목표와 플랫폼 베타부터, 2029 AI 셋업 진행까지")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028", "반복 입력 대행"), ("2029", "1차 장비군\nAI가 셋업 진행")],
          COL_Y, h=Inches(1.5), fills=[(BLUE, WHITE), (BLUE, WHITE), (MIST, INK), (ORANGE, WHITE)],
