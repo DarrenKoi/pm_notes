@@ -416,7 +416,7 @@ def s_team():  # TF 구성 (조직도)
          align=PP_ALIGN.CENTER)
     text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "명단 12월 지정 / 월간 임원 보고", size=12,
          color=WHITE, align=PP_ALIGN.CENTER)
-    goal = lambda t: [[("2027년 상반기 목표", {"bold": True, "color": ORANGE})], t]
+    goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
                   ("백엔드", ["2명", "서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
                   ("프론트엔드", ["2명", "설치형 에이전트", "Agent 대화형 챗 UI", "승인 화면"]),
@@ -443,13 +443,13 @@ def s_team():  # TF 구성 (조직도)
         for k, (name, lines) in enumerate(members):
             x, y = gx + k * (bw + bw_g), gy + Inches(0.52)
             dim = gi == 1 and k == 3  # 2차 준비 단계
-            box(s, x, y, bw, Inches(1.9), fill=MIST if dim else WHITE, line=LINE)
+            box(s, x, y, bw, Inches(2.15), fill=MIST if dim else WHITE, line=LINE)
             box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else accent)
             text(s, x + Inches(0.06), y + Inches(0.12), bw - Inches(0.12), Inches(0.5), name.split("\n"), size=12, bold=True, gap=0,
                  align=PP_ALIGN.CENTER)
-            text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.1), lines, size=11, color=SUB,
+            text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(6.05), "운영", "**매주 미팅**에서 __개발 노하우 공유__, 현재와 앞으로의 __진행사항 체크__ (2차 장비군도 합류 시점부터 참여)", size=13)
+    note_line(s, Inches(6.2), "운영", "**매주 미팅**에서 __개발 노하우 공유__, 현재와 앞으로의 __진행사항 체크__ (2차 장비군도 합류 시점부터 참여)", size=13)
     footer(s)
 
 def s_kanban():  # 일정 칸반
