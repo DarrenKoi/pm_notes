@@ -649,7 +649,7 @@ def s_eval():  # 평가 지표 (team)
     table(s, rows, M, COL_Y, [Inches(3.2), Inches(6.4), Emu(W - 2 * M - Inches(9.6))], size=13, row_h=Inches(0.48),
           bold_col0=True, shade=lambda r: r[2].startswith("2027"))
     note_line(s, Inches(5.65), "누수 방지", "같은 작업, 파생 영상은 한쪽에만. 시점 t 평가에는 __t 이전 관찰만__, 정답 경로는 평가자만", size=13)
-    note_line(s, Inches(6.1), "검증 순서", "녹화본 평가 → **입력 없는 Shadow** → 하루 1시간 감독하 실장비 (격리 GUI 환경 대체)", size=13)
+    note_line(s, Inches(6.1), "검증 순서", "녹화본 평가 → **입력 없는 Shadow** → 감독하 실장비 (격리 GUI 환경 대체)", size=13)
     footer(s)
 
 
