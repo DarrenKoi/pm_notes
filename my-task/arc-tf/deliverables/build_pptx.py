@@ -265,8 +265,8 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
     footer(s)
 
 def s_effects():  # 효과
-    s = slide("기대 효과와 측정 지표: 타겟 시점별로 확인",
-              "측정하기 전에는 목표를 숫자로 정하지 않고, 합류 첫 달에 기준선을 재서 채움")
+    s = slide("기대 효과와 측정 지표",
+              "합류 첫 달에 기준선 측정, 측정 전에는 목표를 숫자로 정하지 않음")
     metrics = [("효과", "측정 지표", "현재", "목표", "타겟 시점"),
                ("지식 자산화", "부분 작업 리스트로 정리한 Recipe 셋업을 Agent가 그대로 수행해 성공한 건수", "0건", "⟨X⟩건", "2027 연말"),
                ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "⟨확인⟩", "⟨확인⟩%", "2028"),
@@ -280,7 +280,7 @@ def s_effects():  # 효과
     footer(s)
 
 def s_status():  # 2026 추진 현황
-    s = slide("2026 ARC 추진 현황: CD, Thickness, Inspection",
+    s = slide("2026 ARC 추진 현황",
               "세 장비군이 각자 ARC 추진 중, 공통으로 얻은 Lesson Learned 세 가지")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
@@ -308,8 +308,8 @@ def s_status():  # 2026 추진 현황
 
 
 def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공통 과제
-    s = slide("업무 전략 1: Agent가 Recipe를 다루는 방식과 공통 과제",
-              "화면 조작과 외부 파일 편집으로 Recipe를 다루고, 공통 과제는 공통 플랫폼으로 해결")
+    s = slide("업무 전략 1: Recipe 작업 방식",
+              "화면 조작과 외부 파일 편집으로 Recipe 작업, 공통 과제는 공통 플랫폼으로 해결")
     y0, nh = COL_Y, Inches(0.68)
     ax, aw = M, Inches(2.5)
     mx, mw = Inches(5.4), Inches(2.9)
@@ -370,8 +370,8 @@ def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     footer(s)
 
 def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
-    s = slide("업무 전략 2: 별도 운영 PC 대신 엔지니어 PC에 공통 플랫폼 설치",
-              "사무 PC를 늘리는 방식은 제약이 많아, 엔지니어가 이미 쓰는 PC에서 엔지니어가 보는 화면으로 운영")
+    s = slide("업무 전략 2: 엔지니어 PC 설치",
+              "별도 운영 PC 대신 엔지니어가 이미 쓰는 PC에 공통 플랫폼 설치")
     two_col(s, "처음 계획: 별도 운영 PC", [
                 "장비군, 엔지니어가 늘 때마다 **PC 추가 확보 절차** (자산 신청, 자리 확보 등)",
                 "PC마다 __장비 접속 권한__ 별도 발급",
@@ -407,8 +407,8 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     footer(s)
 
 def s_team():  # TF 구성 (조직도)
-    s = slide("TF 구성: 엔진은 공통 플랫폼 팀, 절차는 장비군 담당 엔지니어",
-              "1차는 CD-SEM, Thickness, Inspection, 다른 MI 장비군은 2차로 합류")
+    s = slide("TF 구성",
+              "엔진은 공통 플랫폼 팀, 절차는 장비군 담당 엔지니어")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
@@ -545,8 +545,8 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
 
 
 def s_platform():  # 공통 플랫폼 구조 (boss, team)
-    s = slide("핵심 개발 방향: Computer Use 기반 RAG Workflow 순환 플랫폼",
-              "RAG에 쌓은 엔지니어 지식으로 Agent가 셋업하고, 고친 내용은 다시 RAG로")
+    s = slide("핵심 개발 방향",
+              "Computer Use 기반 RAG Workflow 순환 플랫폼")
     flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
              ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
              ("③ Workflow 생성, 실행", "RAG에서 셋업 Workflow 생성\nAgent가 Computer Use로 실행"),
