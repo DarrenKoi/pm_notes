@@ -240,43 +240,6 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
     text(s, Inches(1.0), Inches(4.55), W - Inches(2.0), Inches(0.4), "2026-12", size=16, color=BLUE, bold=True)
     footer(s)
 
-def s_direction():  # 핵심 개발 방향
-    s = slide("핵심 개발 방향: AI가 지식 자산으로 레시피를 셋업할 수 있는가",
-              "공통 플랫폼을 통해 AI가 지식 자산화된 마우스, 키보드 조작과 셋업 방법을 수행하는 것")
-    flow = [("엔지니어 작업", "화면 녹화, 마우스, 키보드 조작"), ("지식 자산", "절차, 노하우, 결정 지점"),
-            ("공통 플랫폼", "화면 인식, 입력 실행, 안전 규칙"), ("2029 자율 목표", "Agent가 셋업 진행, 위험 시 엔지니어 개입")]
-    fw = Inches(2.75)
-    fg = (W - 2 * M - 4 * fw) / 3
-    for i, (h_, b_) in enumerate(flow):
-        x = M + i * (fw + fg)
-        fill, fc = [(MIST, INK), (MIST, INK), (BLUE, WHITE), (ORANGE, WHITE)][i]
-        box(s, x, COL_Y, fw, Inches(1.25), fill=fill)
-        text(s, x + Inches(0.15), COL_Y + Inches(0.18), fw - Inches(0.3), Inches(0.45), h_, size=18, bold=True,
-             color=fc, align=PP_ALIGN.CENTER)
-        text(s, x + Inches(0.15), COL_Y + Inches(0.68), fw - Inches(0.3), Inches(0.5), b_, size=12,
-             color=fc if i >= 2 else SUB, align=PP_ALIGN.CENTER)
-        if i < 3:
-            a = s.shapes.add_shape(MSO_SHAPE.CHEVRON, x + fw + fg / 2 - Inches(0.1), COL_Y + Inches(0.45), Inches(0.2), Inches(0.35))
-            a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
-    gap = Inches(0.3)
-    cw = (W - 2 * M - 2 * gap) / 3
-    cols = [("1. 지식 자산화", [
-                "엔지니어 작업 녹화에서 __절차, 노하우, 결정 지점__ 추출",
-                "현업 엔지니어가 라벨링, 승인",
-                "Recipe 작업 방식을 **AI가 학습할 수 있는 형태**로"]),
-            ("2. 생성형 AI + 기존 자동화 결합", [
-                "생성형 AI: **다음 할 일 판단**",
-                "Rule, CV, ML/DL: __정밀 좌표, 규칙 확인, 결과 검증__",
-                "새 모델은 **공통 평가 세트**로 재고 교체"]),
-            ("3. 공통 실행 엔진", [
-                "**Computer Use** (VLM, PyAutoGUI, Win32)",
-                "Workflow 준수 확인, 틀리면 __엔지니어가 수정__",
-                "엔지니어 승인, __즉시 중단__, 제어권 인계"])]
-    for i, (head, items) in enumerate(cols):
-        column(s, M + i * (cw + gap), Inches(3.5), cw, Inches(2.75), head, items, BLUE, size=14)
-    note_line(s, Inches(6.38), "플랫폼의 역할", "2028 보조 (엔지니어 앞에서 반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)이 될 수 있도록 __점진적 발전__", size=13)
-    footer(s)
-
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표: 타겟 시점별로 확인",
               "측정하기 전에는 목표를 숫자로 정하지 않고, 합류 첫 달에 기준선을 재서 채움")
@@ -287,9 +250,8 @@ def s_effects():  # 효과
                ("셋업 시간 단축", "Recipe 1건 셋업 경과 시간", "대상 구간 실측 예정", "⟨확인⟩% 단축", "2028")]
     table(s, metrics, M, COL_Y, [Inches(2.3), Inches(5.3), Inches(1.9), Inches(1.8), Emu(W - 2 * M - Inches(11.3))],
           size=14, row_h=Inches(0.46), bold_col0=True, shade=lambda r: r[4].startswith("2027"))
-    text(s, M, Inches(5.85), W - 2 * M, Inches(0.8),
-         [[("측정 기준  ", {"bold": True, "color": BLUE})] + runs_of("ARC 적용 비율은 __Recipe 의뢰 수 기준__, Agent 개입 범위는 __Recipe별 셋업 단계 비율(%)__, 실패와 재작업 포함, 승인 대기 별도 기록"),
-          [("확정 시점  ", {"bold": True, "color": BLUE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / 장비군별 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
+    text(s, M, Inches(4.75), W - 2 * M, Inches(0.8),
+         [[("확정 시점  ", {"bold": True, "color": BLUE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / 장비군별 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
          size=13, color=SUB, spacing=1.0)
     footer(s)
 
@@ -381,31 +343,10 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
                 "__아무도 보지 않는 화면__에서 Agent 운영, 결과 확인 지연"],
             "변경: 엔지니어 PC에 설치형 공통 플랫폼", [
                 "이미 사용 중인 PC에 **S/W 설치**하는 형태",
-                "엔지니어의 기존 계정과 접속 경로를 그대로 사용, 보안 승인은 프로그램 하나로",
-                "__사내 배포로 일괄 갱신__",
-                "엔지니어가 보는 화면에서 운영, **즉시 확인, 중단**",
-                "**엔지니어가 원할 때 Agent 실행**, 작업에 대한 책임 (__Human on Command__)",
-                "부작용: **Agent가 엔지니어 화면을 일시적으로 제어**. 관찰, 판단은 백그라운드, 입력 때만 __제어권 인계__(몇 초)"],
-            size=14, before=True)
-    footer(s)
-
-def s_phases():  # 추진 방향: 상반기 선발대 → 하반기 확장
-    s = slide("추진 방향: 상반기 1차 장비군 개발, 하반기 2차 장비군으로 확장",
-              "상반기에 장비군별 목표와 플랫폼 베타, 하반기에 2차 장비군 합류와 지식 자산화")
-    two_col(s, "2027 상반기: 1차 선발대 (6월 판정)", [
-                "**CD-SEM, Thickness, Inspection** 개발 중심 (장비군마다 1~2명, 주 5시간)",
-                "**CD-SEM**: Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현",
-                "**Thickness**: 의뢰 Recipe 90% 이상 생성 자동화",
-                "**Inspection**: 전 디바이스 DRB 기반 ARC 확장",
-                "**공통 플랫폼 설계 완성, 베타 테스트**",
-                "2차 장비군: __인터뷰, Workflow 조사__ (주 1~2시간)"],
-            "2027 하반기: 영역 확장 (12월 판정)", [
-                "**2차 장비군 합류** (다른 MI 장비군, 명단은 12월에 함께 지정)",
-                "6월 베타 판정 뒤 __본격 참여__: 주간 미팅 합류, 화면 영역 지도, 절차 정의",
-                "선발대 셋업 절차와 노하우를 __지식 자산__으로 축적",
-                "1차 장비군 ARC 과정에서 얻은 노하우로 __2차 장비군에 빠르게 적용__"],
-            h=Inches(3.85), size=14)
-    note_line(s, Inches(6.08), "베타 기준 (6월 판정)", "① 1차 장비군 PC에서 관찰, 녹화, 입력, 즉시 중단 ⟨확인⟩주 무장애 운영 ② 장비별 코드 없이 절차 정의만으로 새 장비 추가 가능", size=13)
+                "기존 계정과 접속 경로 그대로 사용, __사내 배포로 일괄 갱신__",
+                "**엔지니어가 원할 때 Agent 실행**, 보는 화면에서 즉시 확인, 중단 (__Human on Command__)",
+                "부작용: 입력 때만 Agent가 화면을 __일시 제어__ (몇 초)"],
+            h=Inches(3.0), size=15, before=True)
     footer(s)
 
 def s_team():  # TF 구성 (조직도)
@@ -511,7 +452,7 @@ def s_safety():  # 안전과 위험
                 "주 5시간을 기획안에 명시, 월간 보고에 참여 시간 실적 보고",
                 "공통 엔진과 장비별 절차를 분리, __1차 3개 장비군으로 먼저 다지고__ 베타 뒤 확장"],
             h=Inches(3.65), size=14)
-    note_line(s, Inches(5.95), "가드레일", "1차 장비군 공통: 엔지니어 상주, 입력 때만 제어권 인계, Recipe 저장과 적용은 __엔지니어 승인__, 불확실하면 자체 중단. CD-SEM Align Fail은 위치 재조정, 재측정 재시도, Recipe 이미지 변경. **오측정 0건**", size=13)
+    note_line(s, Inches(5.95), "CD-SEM Align Fail 범위", "위치 재조정, 재측정 재시도, Recipe 이미지 변경", size=13)
     footer(s)
 
 def s_decision():  # 결정 요청
@@ -522,31 +463,13 @@ def s_decision():  # 결정 요청
                 "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 1~2명, __주 5시간__",
                 "**개발 인력 4명 지정**: 백엔드 2, 프론트엔드 2 (현업 엔지니어와 함께 약 5명 규모)",
                 "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, 상반기 인터뷰, Recipe Workflow 조사, __7월부터 주 5시간__"],
-            "승인 후 진행", [
-                "2027-01: 주간 미팅 시작, 플랫폼 설계 시작, 녹화 DB 접근 방식 확정",
-                "2027-02: 1차 장비군 __기준선 측정__",
-                "2027-06: 장비군별 목표, __플랫폼 베타__ 관문",
-                "2027-07: 2차 합류, 주간 미팅 참여 / 2027-12: 지식 자산 관문"])
+            "함께 필요한 지원", [
+                "2027-01 전: **사내 추론 인프라** 사용 보장, 추가 비용 승인 주체 지정",
+                "2027-01 전: **사내 서버 자원** 할당 (새 서버 없음)",
+                "2027-01 전: **비생산 검증용 장비** 사용 인가 (장비군마다 하루 1시간)",
+                "2027 하반기: **녹화 스토리지** 확보 (예상 용량 ⟨확인⟩)",
+                "2026-12 확인: **녹화분 DB 직접 접근** (R&D MI H/W 담당자)"], size=15, arrow=False)
     footer(s)
-
-def s_appendix_asks():  # 별첨
-    s = slide("별첨: 요청 사항 상세", None)
-    asks = [("시점", "요청"),
-            ("2026-12", "ARC TF 구성 승인 (조직, 명단은 전체로, 참여는 단계적으로)"),
-            ("2026-12", "1차 장비군(CD-SEM, Thickness, Inspection) 담당 엔지니어 협업 (장비군마다 1~2명, 주 5시간)"),
-            ("2026-12", "개발 인력 4명 지정: 백엔드 2, 프론트엔드 2 (1차 MI팀 현업 엔지니어의 개발 참여와 함께 약 5명 규모)"),
-            ("2026-12", "2차 장비군(다른 MI 장비군) 담당 지정 (장비군마다 1~2명, 상반기 인터뷰, Recipe Workflow 조사 주 1~2시간, 7월부터 주 5시간)"),
-            ("2027-01 전", "사내 추론 인프라 사용 보장, 추가 비용 승인 주체 지정"),
-            ("2027-01 전", "사내 서버 자원 할당 (저장소, 검색, DB, 캐시, 새 서버 없음)"),
-            ("2027-01 전", "비생산 검증용 장비 사용 인가 (장비군마다 하루 1시간, 2차는 합류 때)"),
-            ("2027 하반기", "녹화 스토리지 자산 확보 (사용량 실측 근거, 예상 용량 ⟨확인⟩)"),
-            ("2026-12 확인", "녹화분 DB 직접 접근 (R&D MI H/W 담당자). 불가하면 RCS GUI 자동화로 다운로드, 속도 저하")]
-    table(s, asks, M, Inches(1.3), [Inches(2.1), Emu(W - 2 * M - Inches(2.1))], size=14, row_h=Inches(0.48),
-          shade=lambda r: r[0] == "2026-12")
-    text(s, M, Inches(6.3), W - 2 * M, Inches(0.35), "음영 행: 12월에 결정을 요청하는 항목", size=12, color=SUB)
-    footer(s)
-
-
 
 # ---------- 공통 플랫폼 구조 (07 기술 설계 요약) ----------
 def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
@@ -569,7 +492,7 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
 
 
 def s_platform():  # 공통 플랫폼 구조 (boss, team)
-    s = slide("공통 플랫폼 구조: Computer Use 기반 RAG Workflow 순환",
+    s = slide("핵심 개발 방향: Computer Use 기반 RAG Workflow 순환 플랫폼",
               "RAG에 쌓은 엔지니어 지식으로 Agent가 셋업하고, 고친 내용은 다시 RAG로")
     flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
              ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
@@ -590,7 +513,7 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
                "추출 내용 **라벨링**, Workflow 검토와 승인",
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"], BLUE, size=13)
-    note_line(s, Inches(6.1), "범위 밖", "외부 Recipe 파일 편집은 장비마다 파일 구조가 달라 __장비군별 도구__로 진행, 공통 플랫폼에는 넣지 않음", size=13)
+    note_line(s, Inches(6.1), "플랫폼의 역할", "2028 보조 (엔지니어 앞에서 반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)이 될 수 있도록 __점진적 발전__", size=13)
     footer(s)
 
 
@@ -724,9 +647,9 @@ def s_exec_roadmap():
     footer(s)
 
 
-BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_direction, s_phases, s_effects,
-        s_platform, s_kanban, s_safety, s_decision, s_appendix_asks]
-TEAM = BOSS[:10] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[10:] + [s_why_not_llm]
+BOSS = [s_cover, s_status, s_team, s_assets, s_lessons, s_where, s_platform, s_effects,
+        s_kanban, s_safety, s_decision]
+TEAM = BOSS[:7] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[7:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
         s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
