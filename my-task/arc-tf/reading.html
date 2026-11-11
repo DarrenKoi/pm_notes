@@ -341,7 +341,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><strong>사내 모델만 사용</strong>: 외부 LLM API는 막혀 있다. 화면 이해는 사내 VLM, OCR로 해야 한다.</li>
 <li><strong>생산 장비 안전</strong>: 잘못 저장된 레시피는 생산 측정에 바로 영향을 준다. 저장, 적용과 위험 조작(측정 실행, 삭제, 모드 변경)은 엔지니어가 최종 승인해야 한다.</li>
 <li><strong>검증 시간</strong>: 실장비 검증은 장비 사용 인가를 받은 하루 1시간뿐이다.</li>
-<li><strong>현업 시간</strong>: 담당 엔지니어는 겸직이다. 주 5시간(근무일마다 1시간)을 넘겨 기대할 수 없다.</li>
+<li><strong>현업 시간</strong>: 담당 엔지니어는 겸직이다. 참여 시간은 정해 두지 않고 탄력적으로 운영한다.</li>
 <li><strong>기밀</strong>: 장비 수치, 실명, 팀명은 사내용 문서에만 둔다.</li>
 </ul>
 <h2 id="00-problem-statement--최종-문제-정의-final-problem-statement">최종 문제 정의 (Final Problem Statement)</h2>
@@ -1534,13 +1534,13 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>1차 장비군 담당 (선발대)</td>
 <td>CD-SEM, Thickness, Inspection (장비군마다 MI 엔지니어 1~2명)</td>
 <td>레시피 절차 정의, 성공 판정 기준, 데이터 수집, 현장 검증, 공통 플랫폼 베타 사용과 피드백</td>
-<td>겸직 주 5시간 (근무일마다 1시간), 2027-01 합류</td>
+<td>겸직, 탄력 운영, 2027-01 합류</td>
 </tr>
 <tr>
 <td>2차 장비군 담당</td>
 <td>다른 MI 장비군마다 MI 엔지니어 1~2명</td>
 <td>합류 뒤 교육, 작업 녹화, 화면 영역 지도, 절차 정의. 1차 담당과 같은 역할로 공통 플랫폼을 실제로 적용</td>
-<td>2026-12 지정. 상반기 인터뷰, Recipe Workflow 조사 주 1~2시간, 2027-07부터 주 5시간 (6월 베타 배포 확인 뒤)</td>
+<td>2026-12 지정. 상반기 인터뷰, Recipe Workflow 조사, 2027-07부터 본격 참여 (6월 베타 배포 확인 뒤)</td>
 </tr>
 <tr>
 <td>인프라</td>
@@ -1787,7 +1787,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <ul>
 <li>개발과 AI에 익숙하지 않아도 된다. 합류 시점마다 교육을 받으며 TF에 참여한다. Python은 읽고 간단히 고치는 정도까지 사전 자료와 1주차 실습으로 맞춘다.</li>
 <li>자기 장비의 레시피 셋업 절차를 설명할 수 있다.</li>
-<li>겸직 시간(근무일마다 1시간) 안에서 기준선 측정, 녹화, 검증을 한다.</li>
+<li>겸직이며 참여 시간은 탄력적으로 운영한다. 그 안에서 기준선 측정, 녹화, 검증을 한다.</li>
 <li>AI, LLM 특성은 몰라도 된다. 주간 미팅에서 배운다 (<a href="#04-onboarding">주간 미팅과 노하우 공유</a>). 2차 장비군은 합류 시점(2027-07)부터 참석한다.</li>
 </ul>
 <h2 id="02-roles-and-teams--관련-문서">관련 문서</h2>
@@ -2026,7 +2026,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="04-onboarding--전제">전제</h2>
 <ul>
 <li><strong>Python 기초 문법은 사전 자료로 제공한다.</strong> 미팅에서는 코드를 읽고 간단히 고치는 정도까지만 실습으로 맞춘다.</li>
-<li>겸직 시간(주 5시간) 안에서 진행한다. 노하우 공유는 짧게 하고, 실습은 미팅 밖 TF 업무 시간에 이어 간다.</li>
+<li>참여 시간은 탄력적으로 운영한다. 노하우 공유는 짧게 하고, 실습은 미팅 밖 TF 업무 시간에 이어 간다.</li>
 <li>기초 주제는 리드와 공통 플랫폼 팀이 발표한다. 작업 방법 공유는 장비군 담당 엔지니어가 돌아가며 발표한다.</li>
 <li>2차 장비군이 합류하면 선발대 엔지니어가 실습을 돕는다.</li>
 </ul>
@@ -2433,7 +2433,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <h2 id="06-platform-prd--3-사용자-target-users--personas">3. 사용자 (Target Users &amp; Personas)</h2>
 <h3 id="06-platform-prd--주-사용자-1차-담당-엔지니어">주 사용자: 1차 담당 엔지니어</h3>
 <ul>
-<li><strong>역할</strong>: 자기 장비군의 레시피 셋업 담당. TF에는 주 5시간(근무일마다 1시간) 겸직으로 참여한다.</li>
+<li><strong>역할</strong>: 자기 장비군의 레시피 셋업 담당. TF에는 겸직으로 참여하고, 참여 시간은 탄력적으로 운영한다.</li>
 <li><strong>기술 수준</strong>: Python 코드를 읽고 간단히 고칠 수 있다. LLM, VLM의 특성은 주간 미팅에서 배운다.</li>
 <li><strong>원하는 것</strong>: 시행착오 구간을 맡기고, 결과만 확인해 승인하는 것.</li>
 <li><strong>걱정하는 것</strong>: Agent가 생산 레시피를 잘못 건드리는 것. 그래서 저장과 위험 조작의 최종 승인권을 엔지니어가 갖는다.</li>
@@ -4201,6 +4201,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>사용자 결정</td>
 <td>확정</td>
 </tr>
+<tr>
+<td>2026-11-11</td>
+<td>운영 문서에서도 담당 엔지니어 참여 시간(주 5시간, 근무일마다 1시간) 표현을 빼고 탄력 운영으로 쓴다. 비생산 검증 시간(하루 1시간)은 장비 사용 시간이라 그대로 둔다</td>
+<td>사용자 결정</td>
+<td>확정</td>
+</tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="risk-register"><p class="file"><span class="num">12</span>risk-register.md</p><h1>위험 목록</h1>
@@ -4225,7 +4231,7 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>겸직이라 담당 엔지니어 시간이 확보되지 않는다</td>
 <td>높음</td>
 <td>높음</td>
-<td>기획안에 주 5시간(근무일마다 1시간) 명시, 월간 보고에 참여 시간 실적 보고, 파일럿 때 파견 요청</td>
+<td>참여 시간은 탄력적으로 운영, 월간 보고에 참여 실적 보고, 파일럿 때 파견 요청</td>
 <td>리드</td>
 <td>열림</td>
 </tr>
