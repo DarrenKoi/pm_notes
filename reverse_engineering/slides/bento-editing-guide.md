@@ -1,7 +1,7 @@
 ---
 tags: [bento, slides, agent-guide, reverse-engineering]
 level: intermediate
-last_updated: 2026-10-26
+last_updated: 2026-11-12
 document_type: guide
 category_major: "리버스 엔지니어링"
 category_middle: "발표 자료"
@@ -143,6 +143,7 @@ codex 리뷰(2026-10-26)에서 지적되어 반영한 항목이다. 문구를 �
 - 웹 관찰은 **관찰을 시작한 뒤에** 버튼을 누르거나 새로고침한다. REA는 연결 전 요청을 기록하지 않는다.
 - HAR에는 쿠키·토큰이 있다. 저장소·공유 폴더에 올리지 않는다.
 - 회사 LLM의 컨텍스트 크기 같은 내부 구성 수치는 공유용 deck에 넣지 않는다.
+- `close_binary`가 Evidence를 지우는 것은 **배포본 6.8.0** 기준이다. main 브랜치에서는 유지하도록 바뀌었으므로 버전 단서를 지우지 않는다. `analyze_function`의 요약 기본값도 **6.8.0부터**다(2026-11-12 반영, 20장과 19장).
 
 장비명, 내부 시스템 상세, 디컴파일 코드 원문, 실제 사내 URL은 넣지 않는다. 예시는 `RecipeTool.exe`, `internal-app.example`처럼 가상 이름을 쓴다.
 

@@ -257,7 +257,7 @@
      "h": 30,
      "rotation": 0,
      "opacity": 1,
-     "html": "2026-10 · 회사 Windows PC + pi 에이전트 기준",
+     "html": "2026-11 · 회사 Windows PC + pi 에이전트 기준",
      "fontSize": 18,
      "fontFamily": "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif",
      "fontWeight": 400,
@@ -6880,7 +6880,7 @@
          "html": "4 경로 추적"
         },
         {
-         "html": "analyze_function, 계산식은 trace_native_values"
+         "html": "analyze_function(요약이 기본) → 본문은 inspect_analysis_view, 계산식은 trace_native_values"
         },
         {
          "html": "메모리 별칭 · 전역 상태를 거치는 값은 미확인으로 남는다"
@@ -6949,7 +6949,7 @@
    "id": "pitfalls",
    "background": "#0E1217",
    "transition": "morph",
-   "notes": "330초는 REA가 Ghidra 첫 가져오기를 기다리는 기본 시간이다. 에이전트의 도구 호출 제한이 이보다 짧으면 에이전트가 먼저 포기하므로, 시간 초과가 나면 어느 쪽 제한인지 먼저 구분한다. 시간 초과 뒤에는 같은 호출을 바로 반복하지 않는다. 가장 아픈 실수는 close_binary로 세션을 닫아서 Evidence를 잃는 것이다. 닫기 전에 반드시 export_evidence_bundle.",
+   "notes": "330초는 REA가 Ghidra 첫 가져오기를 기다리는 기본 시간이다. 에이전트의 도구 호출 제한이 이보다 짧으면 에이전트가 먼저 포기하므로, 시간 초과가 나면 어느 쪽 제한인지 먼저 구분한다. 시간 초과 뒤에는 같은 호출을 바로 반복하지 않는다. 가장 아픈 실수는 close_binary로 세션을 닫아서 Evidence를 잃는 것이다. 닫기 전에 반드시 export_evidence_bundle. 배포본 6.8.0에서는 닫으면 기록이 지워지고, main 브랜치에서는 유지되도록 바뀌었지만 아직 배포되지 않았다. 6.8.0부터 analyze_function은 요약만 돌려주므로 의사 코드가 안 보이면 inspect_analysis_view로 읽는다. 디컴파일 하나가 에이전트 제한을 넘기면 세션이 통째로 닫히므로, 큰 대상은 REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS를 넣어 둔다.",
    "elements": [
     {
      "id": "kicker",
@@ -7067,10 +7067,10 @@
      "x": 96,
      "y": 372,
      "w": 400,
-     "h": 200,
+     "h": 240,
      "rotation": 0,
      "opacity": 1,
-     "html": "REA의 Ghidra 시작 제한(기본값). 에이전트의 도구 호출 제한이 \u003cb>먼저\u003c/b> 끝날 수 있다 → 시간 초과가 나면 주체부터 구분한다. 늘리려면 REA_GHIDRA_STARTUP_TIMEOUT_MS.",
+     "html": "REA의 Ghidra 시작 제한(기본값). 에이전트의 도구 호출 제한이 \u003cb>먼저\u003c/b> 끝날 수 있다 → 시간 초과가 나면 주체부터 구분한다. 늘리려면 REA_GHIDRA_STARTUP_TIMEOUT_MS. 함수 하나의 디컴파일이 길어지면 REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS.",
      "fontSize": 17,
      "fontFamily": "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif",
      "fontWeight": 400,
@@ -7136,10 +7136,10 @@
      "x": 548,
      "y": 252,
      "w": 616,
-     "h": 40,
+     "h": 72,
      "rotation": 0,
      "opacity": 1,
-     "html": "닫으면 세션의 Evidence와 미확인 기록이 지워진다. ID만 적어 두면 원문을 다시 못 본다.",
+     "html": "배포본 6.8.0은 닫으면 세션의 Evidence와 미확인 기록을 지운다. ID만 적어 두면 원문을 다시 못 본다. 새 세션으로 넘길 때도 저장한 파일이 필요하다.",
      "fontSize": 16,
      "fontFamily": "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif",
      "fontWeight": 400,
@@ -7241,7 +7241,7 @@
      "h": 32,
      "rotation": 0,
      "opacity": 1,
-     "html": "결과가 잘려서 오면",
+     "html": "요약만 오거나 잘려서 오면",
      "fontSize": 21,
      "fontFamily": "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif",
      "fontWeight": 800,
@@ -7274,10 +7274,10 @@
      "x": 548,
      "y": 484,
      "w": 616,
-     "h": 40,
+     "h": 72,
      "rotation": 0,
      "opacity": 1,
-     "html": "MCP 응답 크기 제한. inspect_analysis_view로 페이지 단위로 받는다. 끝난 페이지 ≠ 없음.",
+     "html": "6.8.0부터 analyze_function은 요약이 기본이다. 의사 코드 본문과 잘린 결과는 inspect_analysis_view로 페이지 단위로 읽는다. 끝난 페이지 ≠ 없음.",
      "fontSize": 16,
      "fontFamily": "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif",
      "fontWeight": 400,
@@ -7980,7 +7980,7 @@
    "id": "next",
    "background": "#0E1217",
    "transition": "morph",
-   "notes": "처음이라면 쉬운 대상부터. 사내 웹 앱 하나를 골라 DevTools의 Sources 탭에서 소스 맵이 있는지 보고, Network 탭에서 버튼 하나를 눌렀을 때 나가는 요청을 확인한다. 이 두 가지만으로 '진입점 찾기 → 코드 따라가기 → 실행으로 확인'을 한 번 경험할 수 있다. 실무에서는 회사 환경 설정과 설치형 프로그램 문서를 가장 자주 본다. 마지막으로 세 가지 원칙: 허가 범위 안에서만, 관찰·추론·미확인 구분, 분석 결과는 회사 밖으로 내보내지 않는다.",
+   "notes": "처음이라면 쉬운 대상부터. 사내 웹 앱 하나를 골라 DevTools의 Sources 탭에서 소스 맵이 있는지 보고, Network 탭에서 버튼 하나를 눌렀을 때 나가는 요청을 확인한다. 이 두 가지만으로 '진입점 찾기 → 코드 따라가기 → 실행으로 확인'을 한 번 경험할 수 있다. 실무에서는 회사 환경 설정과 설치형 프로그램 문서를 가장 자주 본다. REA를 몇 번 써 본 뒤에는 9번 실전 노하우 문서의 프롬프트를 자기 대상에 맞게 바꿔서 쓴다. 마지막으로 세 가지 원칙: 허가 범위 안에서만, 관찰·추론·미확인 구분, 분석 결과는 회사 밖으로 내보내지 않는다.",
    "elements": [
     {
      "id": "kicker",
@@ -8149,7 +8149,7 @@
      "h": 330,
      "rotation": 0,
      "opacity": 1,
-     "html": "1. re-fundamentals — 기초 개념\u003cbr>2. re-process — 7단계 절차\u003cbr>3. rea-windows-pi-setup — 회사 환경 설정\u003cbr>4. rea-usage-guide — 프롬프트와 대상별 경로\u003cbr>5. source-map-discovery — 소스 맵\u003cbr>6. installed-program-analysis — 설치형 프로그램\u003cbr>7. rea-reference — 명령·도구 참조\u003cbr>8. community-resources — 커뮤니티 작업법",
+     "html": "1. re-fundamentals: 기초 개념\u003cbr>2. re-process: 7단계 절차\u003cbr>3. rea-windows-pi-setup: 회사 환경 설정\u003cbr>4. rea-usage-guide: 프롬프트와 대상별 경로\u003cbr>5. source-map-discovery: 소스 맵\u003cbr>6. installed-program-analysis: 설치형 프로그램\u003cbr>7. rea-reference: 명령, 도구 참조\u003cbr>8. community-resources: 커뮤니티 작업법\u003cbr>9. rea-knowhow: 실전 노하우와 완성형 프롬프트",
      "fontSize": 16,
      "fontFamily": "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif",
      "fontWeight": 400,
