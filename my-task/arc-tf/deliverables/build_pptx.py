@@ -447,8 +447,7 @@ def s_team():  # TF 구성 (조직도)
                  align=PP_ALIGN.CENTER)
             text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(6.1), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(심규찬 담당님) 보고**, **분기 부문장님 보고**", size=13)
-    note_line(s, Inches(6.42), "협의", "TF 리드 총괄 직급: **⟨확인: 팀장급 또는 파트장급⟩**", size=13)
+    note_line(s, Inches(6.2), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(심규찬 담당님) 보고**, **분기 부문장님 보고**", size=13)
     footer(s)
 
 def s_kanban():  # 일정 칸반
