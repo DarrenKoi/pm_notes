@@ -711,7 +711,7 @@ BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
         s_kanban, s_safety, s_decision]
 TEAM = BOSS[:6] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[6:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
-        s_lessons, s_exec_onepage, s_exec_roadmap, s_decision]
+        s_lessons, s_exec_onepage, s_team, s_exec_roadmap, s_decision]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
          "exec": ("arc-tf-exec-summary.pptx", EXEC)}
 
