@@ -203,7 +203,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>최고 임원</td>
 <td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx">arc-tf-exec-summary.docx</a>: 한 장 요약(08), 1쪽</td>
-<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx">arc-tf-exec-summary.pptx</a>: 6장 (TF 구성 조직도 포함)</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx">arc-tf-exec-summary.pptx</a>: 5장 (TF 구성 조직도 포함, 결정 요청 장표 없음)</td>
 </tr>
 </tbody>
 </table></div>
@@ -442,6 +442,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>개발과 AI에 익숙하지 않은 엔지니어는 교육을 받으며 TF에 참여함. 교육 과정을 따로 두지 않고, 매주 미팅에서 개발 노하우를 공유하고 현재와 앞으로의 진행사항을 확인</li>
 </ul>
 <p><strong>요청 사항 (2026-12)</strong></p>
+<p>요청은 <strong>ARC TF 구성(조직도) 승인</strong> 하나입니다. 아래 인원은 그 구성에 포함된 내용이고, 승인 뒤 필요한 자원과 운영은 TF가 자체 추진합니다.</p>
 <ul>
 <li>ARC TF 구성 승인: 조직과 명단은 처음부터 전체로 승인, 초기 개발은 1차 장비군(CD-SEM, Thickness, Inspection) 위주로. 2027-01부터 운영</li>
 <li>1차(선발대) CD-SEM, Thickness, Inspection 담당 엔지니어 장비군마다 1~2명 (참여 시간은 탄력적으로 운영)</li>
@@ -1024,7 +1025,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><strong>인프라(GPU, VLM 서빙)</strong>: 필요 시점에 합류. 장비 벤더는 필요할 때 자문</li>
 </ul>
 <p><strong>개발 인력 배분 (TF 리드 + 지정 4명 + 1차 MI팀 현업 엔지니어)</strong></p>
-<p>개발 4명(백엔드 2, 프론트엔드 2)은 임원, 팀장급에서 지정을 요청합니다. 장비군 공통 과제(조작, 모델 운영, 녹화 DB 추출, 기술 부채 해소)를 나눠 맡을 개발 인력이 필요합니다.</p>
+<p>개발 4명(백엔드 2, 프론트엔드 2)은 TF 구성 승인에 포함된 인원입니다. 장비군 공통 과제(조작, 모델 운영, 녹화 DB 추출, 기술 부채 해소)를 나눠 맡을 개발 인력이 필요합니다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -1295,11 +1296,13 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </ul>
 <p><strong>단계 통과 결정</strong>: 목표 달성 확인 시점마다 리드가 기준과 결과를 정리하고 담당 엔지니어의 품질 확인을 받아 월간 보고에서 승인받겠습니다. 기준에 못 미치면 <strong>보완</strong>(기간 연장), <strong>축소</strong>(대상 유형, 장비군 축소), <strong>중단</strong> 중 하나를 정해 <a href="#decision-log">결정 기록</a>에 남깁니다.</p>
 <h2 id="01-tf-proposal--8-소요-자원과-요청-사항">8. 소요 자원과 요청 사항</h2>
+<p>임원께 요청드리는 것은 <strong>ARC TF 구성(조직도) 승인</strong> 하나입니다. 구성이 승인되면 나머지는 TF가 자체 추진하며 별도 요청은 드리지 않습니다.</p>
+<p><strong>결정 요청 (2026-12): TF 구성 승인</strong></p>
 <div class="tbl"><table>
 <thead>
 <tr>
 <th>#</th>
-<th>요청</th>
+<th>구성 내용</th>
 <th>시점</th>
 </tr>
 </thead>
@@ -1324,13 +1327,25 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>공통 플랫폼 팀 개발 인력 4명 지정 (백엔드 2, 프론트엔드 2, 2027-01~12, 개인 과제와 겸직. 1차 MI팀 현업 엔지니어의 개발 참여와 함께 약 5명 규모. 교육은 TF 리드와 플랫폼 팀이 담당)</td>
 <td>2026-12</td>
 </tr>
+</tbody>
+</table></div>
+<p><strong>승인 후 TF가 자체 추진</strong></p>
+<div class="tbl"><table>
+<thead>
 <tr>
-<td>5</td>
-<td>공통 프로젝트를 위한 HCP 환경 및 자원 (현 H200 2장, 2027 하반기 4장 이상 확보)</td>
+<th>#</th>
+<th>할 일</th>
+<th>시점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>공통 프로젝트를 위한 HCP 환경 및 자원 확보 (현 H200 2장, 2027 하반기 4장 이상)</td>
 <td>2027-01 전</td>
 </tr>
 <tr>
-<td>6</td>
+<td>2</td>
 <td>RCS 녹화 스토리지 접근 여부 확인, 영상 적재를 위한 별도 스토리지 DB 확보</td>
 <td>2027-01 전</td>
 </tr>
@@ -3656,11 +3671,9 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 </ul>
 <h2 id="08-exec-summary--요청-사항">요청 사항</h2>
 <ul>
-<li><strong>ARC TF 구성 승인</strong> (2027-01~12, 조직과 명단은 전체로, 참여는 선발대부터 단계적으로)</li>
-<li><strong>선발대 CD-SEM, Thickness, Inspection 담당 엔지니어 협업</strong>: 장비군마다 1~2명</li>
-<li><strong>2차 장비군 담당 엔지니어 지정</strong>: 다른 MI 장비군마다 1~2명. 12월에 함께 지정, 상반기는 인터뷰, Recipe Workflow 조사, 7월부터 본격 참여</li>
-<li><strong>개발 인력 4명 지정</strong> (백엔드 2, 프론트엔드 2. 1차 MI팀 현업 엔지니어의 개발 참여와 함께 약 5명 규모). 장비군 공통 과제를 나눠 맡을 개발 인력 필요</li>
-<li>함께 필요한 자원: 공통 프로젝트를 위한 HCP 환경 및 자원 (현 H200 2장, 2027 하반기 4장 이상 확보), RCS 녹화 스토리지 접근 여부 확인과 영상 적재를 위한 별도 스토리지 DB 확보 (2027-01 전)</li>
+<li><strong>ARC TF 구성(조직도) 승인</strong> (2027-01~12, 조직과 명단은 전체로, 참여는 선발대부터 단계적으로)</li>
+<li>구성 내용: 공통 플랫폼 팀 개발 인력 4명(백엔드 2, 프론트엔드 2), 1차 CD-SEM, Thickness, Inspection 담당 장비군마다 1~2명, 2차 다른 MI 장비군 담당 장비군마다 1~2명(7월부터 본격 참여)</li>
+<li>승인 뒤 필요한 자원(HCP 환경, 녹화 스토리지)과 운영은 TF가 자체 추진하며 별도 요청은 없음</li>
 </ul>
 <h2 id="08-exec-summary--관련-문서">관련 문서</h2>
 <ul>
@@ -4233,6 +4246,18 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <td>2026-11-11</td>
 <td>최고 임원용 deck(exec-summary.pptx)에 TF 구성 조직도 장표를 넣는다 (5장 → 6장)</td>
 <td>사용자 결정: 조직도는 반드시 포함</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-11</td>
+<td>임원 결정 요청은 TF 구성(조직도) 승인 하나로 한다. HCP 자원, 스토리지 등 나머지는 "승인 후 TF가 자체 추진"으로 옮긴다</td>
+<td>사용자 결정: TF 구성을 허락받으면 나머지는 TF가 알아서 할 일, 임원에게 별도 요청 안 함</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-11</td>
+<td>최고 임원용 deck에서 결정 요청 장표를 뺀다 (6장 → 5장, 조직도는 유지)</td>
+<td>사용자 결정</td>
 <td>확정</td>
 </tr>
 </tbody>

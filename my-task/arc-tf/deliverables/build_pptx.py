@@ -512,14 +512,14 @@ def s_safety():  # 안전과 리스크
 
 def s_decision():  # 결정 요청
     s = slide("결정 요청",
-              "조직과 명단은 전체로 승인, 개발 인력 4명 지정을 요청드립니다")
-    two_col(s, "12월 결정 요청 사항", [
-                "**2027-01~12 ARC TF 운영 승인** (1차, 2차 명단 함께 지정)",
-                "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 1~2명",
-                "**개발 인력 4명 지정**: 백엔드 2, 프론트엔드 2",
-                "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, __7월부터 본격 참여__"],
-            "함께 필요한 자원", [
-                "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
+              "TF 구성(조직도) 승인을 요청드립니다. 나머지는 TF가 자체 추진하겠습니다")
+    two_col(s, "12월 결정 요청: TF 구성 승인", [
+                "**ARC TF 구성(조직도) 승인**: 2027-01~12 운영",
+                "플랫폼 팀: **개발 4명** (백엔드 2, 프론트엔드 2)",
+                "1차 장비군 담당: 장비군마다 1~2명",
+                "2차 장비군 담당: 장비군마다 1~2명 (__7월 참여__)"],
+            "승인 후 TF가 자체 추진", [
+                "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** 확보 (현 H200 2장, 2027 하반기 4장 이상)",
                 "2027-01 전: **RCS 녹화 스토리지 접근** 여부 확인, 영상 적재를 위한 **별도 스토리지 DB** 확보"],
             h=Inches(3.4), size=16, arrow=False)
     footer(s)
@@ -711,7 +711,7 @@ BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
         s_kanban, s_safety, s_decision]
 TEAM = BOSS[:6] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[6:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
-        s_lessons, s_exec_onepage, s_team, s_exec_roadmap, s_decision]
+        s_lessons, s_exec_onepage, s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
          "exec": ("arc-tf-exec-summary.pptx", EXEC)}
 
