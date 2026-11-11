@@ -1,7 +1,7 @@
 ---
 tags: [reverse-engineering, rea, ghidra, mcp]
 level: intermediate
-last_updated: 2026-10-24
+last_updated: 2026-11-11
 document_type: learning
 category_major: "리버스 엔지니어링"
 category_middle: "주제 안내"
@@ -31,6 +31,7 @@ note_kind: "목차"
 | 6 | [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md) | 사용법 | 설치형 프로그램을 분석할 때. 런타임 판별부터 버전 비교까지 |
 | 7 | [REA 명령·도구 참조](./rea-reference.md) | 참조 | 명령어, MCP 도구 이름, 환경 변수를 찾을 때 |
 | 8 | [커뮤니티 자료에서 가져온 작업법](./community-resources.md) | 자료 정리 | 기본을 익힌 뒤. YouTube·Reddit 실무자의 습관과 REA 공식 실습 |
+| 9 | [REA 실전 노하우](./rea-knowhow.md) | 사용법 | REA를 몇 번 써 본 뒤. 컨텍스트를 아끼는 호출 순서, 버전 비교, 재구현 검증 범위, 배포본 6.8.0과 main의 차이 |
 | - | [분석 기록 양식](./templates/investigation-log.md) | 양식 | 분석 하나를 시작할 때 복사해서 쓴다 |
 
 회사 환경은 Windows PC + pi 에이전트(가끔 Hermes, 사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 6번 문서를 가장 자주 본다.

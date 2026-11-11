@@ -179,10 +179,10 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 
 ## 참고 자료 (References)
 
-- REA Windows Ghidra P0: <https://github.com/morluto/rea/blob/main/docs/windows-ghidra-p0.md>
-- REA 클라이언트 설정(Pi 절): <https://github.com/morluto/rea/blob/main/docs/client-configuration.md#pi>
-- REA 클라이언트 설정(Hermes 절): <https://github.com/morluto/rea/blob/main/docs/client-configuration.md#hermes>
-- REA 지원 에이전트 목록: <https://github.com/morluto/rea/blob/main/docs/installation.md#supported-agents>
+- REA Windows Ghidra P0: <https://github.com/morluto/rea/blob/main/docs/providers/windows-ghidra-p0.md>
+- REA 클라이언트 설정(Pi 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#pi>
+- REA 클라이언트 설정(Hermes 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes>
+- REA 지원 에이전트 목록: <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents>
 - pi MCP 문서: <https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md>
 
 ## 관련 문서

@@ -1,7 +1,7 @@
 ---
 tags: [reverse-engineering, rea, ghidra, mcp, agent]
 level: intermediate
-last_updated: 2026-10-24
+last_updated: 2026-11-11
 document_type: learning
 category_major: "리버스 엔지니어링"
 category_middle: "도구"
@@ -147,15 +147,27 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 	"Export" 관련 문자열과 그 문자열을 참조하는 함수를 찾아라. 아직 디컴파일하지 마라.
 	```
 
-2. 진입점 함수가 나오면 그 함수만 깊게 본다. `analyze_function`은 디컴파일, 호출 관계, 참조를 한 번에 돌려준다.
+2. 진입점 함수가 나오면 그 함수만 깊게 본다. `analyze_function`은 디컴파일, 호출 관계, 참조를 한 번에 분석한다. REA 6.8.0부터 MCP에서는 기본으로 요약만 돌아오고 전체 기록은 세션에 보관된다. 의사 코드 본문은 `inspect_analysis_view`로 필요한 페이지만 읽게 한다. 전체를 한 번에 받는 `detail: "complete"`는 작은 함수에만 쓴다.
+
+	```text
+	대상: C:\re-work\tool\tool.exe 의 함수 0x140012340 (방금 찾은 진입점). 프로바이더는 ghidra.
+	질문: 이 함수가 CSV의 열을 어떤 순서로 만들고, 그때 어떤 함수를 부르는가?
+	방법: 정적 분석만 한다. analyze_function은 요약만 받고, 의사 코드는
+	      inspect_analysis_view로 보관된 원본 기록에서 필요한 부분만 읽어라.
+	      다른 함수는 아직 분석하지 마라.
+	결과 형식: 결론마다 Evidence ID와 관찰/추론/미확인 구분을 붙여라.
+	         호출하는 함수는 주소와 제안 이름을 표로 정리하라.
+	```
+
 3. 경로를 따라가면서 함수에 이름을 붙이게 한다(Linux, macOS). 이름은 세션을 닫으면 사라지므로 분석 기록에도 적는다.
 4. 디컴파일 결과가 이상하면 어셈블리를 확인하게 한다. `read_function_instructions`는 디컴파일러를 거치지 않는다.
-5. 끝나기 전에 남길 Evidence를 `export_evidence_bundle`로 파일에 저장한다. `close_binary`는 세션의 Evidence와 미확인 항목 기록을 지운다. Evidence ID만 적어 두면 닫은 뒤에는 원문을 다시 볼 수 없다.
+5. 끝나기 전에 남길 Evidence를 `export_evidence_bundle`로 파일에 저장한다. 배포본 6.8.0의 `close_binary`는 세션의 Evidence와 미확인 항목 기록을 지운다. Evidence ID만 적어 두면 닫은 뒤에는 원문을 다시 볼 수 없다. main 브랜치에서는 `close_binary`가 기록을 유지하고 `reset_investigation`이 지우도록 바뀌었지만(2026-11-11 확인, 미배포), 새 에이전트 프로세스로 넘어가면 어느 쪽이든 기록이 없으므로 저장 습관은 그대로 둔다.
 6. 저장한 뒤 `close_binary`로 세션을 닫는다.
 
 큰 바이너리는 Ghidra 첫 가져오기(import)에 시간이 오래 걸린다. 시간 초과에는 주체가 둘 있으므로, 오류가 어느 쪽에서 났는지 먼저 구분한다.
 
-- **REA의 Ghidra 시작 제한**: 기본 330초. `REA_GHIDRA_STARTUP_TIMEOUT_MS`를 늘리고 MCP 서버를 재시작한다.
+- **REA의 Ghidra 시작 제한**: 기본 330초. `REA_GHIDRA_STARTUP_TIMEOUT_MS`를 늘리고 MCP 서버를 재시작한다. 그래도 자동 분석이 끝나지 않으면 `REA_GHIDRA_DISABLED_ANALYZERS=WindowsResourceReference`로 PE 리소스 참조 분석기를 끈다. upstream의 Windows ARM PE 검증도 이 설정으로 돌렸다. CPU 2개, 힙 512 MiB인 호스트에서 기본 분석기 구성은 900초 안에 끝나지 않았다고 적혀 있다. 끈 분석기가 만들던 정보는 결과에서 빠지고, 그 사실이 결과의 한계에 기록된다.
+- **함수 하나의 디컴파일**: 기본은 제한이 없다. 실행 중인 호출을 취소하면 Ghidra 세션이 통째로 닫히므로, 디컴파일 하나가 에이전트의 제한을 넘기면 가져오기부터 다시 해야 한다. `REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS`(예: `120`)를 넣어 두면 그 디컴파일만 멈추고 세션은 유지된다. 이때 `analyze_function`은 어셈블리, 참조, 기본 블록만 돌려준다.
 - **에이전트(MCP 클라이언트)의 도구 호출 제한**: 클라이언트마다 다르고, REA 제한보다 먼저 끝날 수 있다. pi의 제한 설정 방법은 [회사 환경 설정 7단계](./rea-windows-pi-setup.md#7-큰-바이너리의-시간-초과를-대비한다)를 본다.
 
 시간 초과 뒤에는 같은 호출을 바로 반복하지 않는다. `close_binary`의 정리 결과를 확인한 뒤 대상을 다시 연다. 메모리가 부족하면 `GHIDRA_HEADLESS_MAXMEM`을 올린다(기본 `2G`).
@@ -198,6 +210,8 @@ REA 결과를 받으면 세 가지를 확인한다.
 - **재구현은 검증까지 시킨다.** 계산 로직을 옮길 때는 원본과 같은 입력을 넣어 비교하는 테스트까지 요구한다.
 - **자주 업데이트한다.** REA는 변경이 잦다. 버그를 만나면 `rea update`부터 한다.
 
+호출 순서, 원본 Evidence ID 다루기, 버전 비교, 재구현 검증 범위 같은 더 깊은 요령은 [REA 실전 노하우](./rea-knowhow.md)에 있다.
+
 ### 자주 만나는 문제
 
 | 증상 | 원인 | 해결 |
@@ -206,6 +220,8 @@ REA 결과를 받으면 세 가지를 확인한다.
 | Ghidra 프로바이더를 못 찾는다 | `GHIDRA_INSTALL_DIR`이 MCP 등록 환경에 없다 | MCP 등록의 환경 변수에 넣고 재시작 |
 | JDK가 거부된다 | Rosetta 아래의 x86 JDK, 또는 JDK 21 미만 | 호스트 아키텍처와 같은 JDK 21 이상을 `JAVA_HOME`으로 지정 |
 | 큰 바이너리가 시간 초과된다 | Ghidra 시작이 330초를 넘었거나, 에이전트의 도구 호출 제한이 먼저 끝났다 | 주체를 구분한 뒤 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 또는 클라이언트 제한을 늘린다 |
+| `analyze_function` 결과에 의사 코드 본문이 없다 | 6.8.0부터 MCP 기본값이 요약이다 | `inspect_analysis_view`로 보관된 기록을 페이지 단위로 읽는다. 작은 함수는 `detail: "complete"` |
+| 함수 하나를 디컴파일하다가 세션이 통째로 닫힌다 | 디컴파일에 제한 시간이 없어서 에이전트의 호출 제한이 먼저 끝났다 | `REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS`를 MCP 등록 환경에 넣고 재시작 |
 | 세션을 닫았더니 Evidence가 없다 | `close_binary`가 세션 기록을 지운다 | 닫기 전에 `export_evidence_bundle`로 저장 |
 | 결과가 잘려서 온다 | MCP 응답 크기 제한 | `inspect_analysis_view`로 페이지 단위로 받거나 `export_evidence_bundle`로 파일에 저장 |
 | 붙인 함수 이름이 사라졌다 | Ghidra 세션은 임시 DB를 쓴다 | 이름을 분석 기록에 적어 둔다 |
@@ -213,10 +229,12 @@ REA 결과를 받으면 세 가지를 확인한다.
 ## 참고 자료 (References)
 
 - REA README: <https://github.com/morluto/rea>
-- REA 설치와 Ghidra 설정: <https://github.com/morluto/rea/blob/main/docs/installation.md>
-- REA 네이티브 분석: <https://github.com/morluto/rea/blob/main/docs/native-investigation.md>
-- REA Ghidra 프로바이더 동작: <https://github.com/morluto/rea/blob/main/docs/ghidra-provider.md>
-- REA 웹 페이지 관찰: <https://github.com/morluto/rea/blob/main/docs/browser-observation.md>
+- REA 6.8.0 릴리스 노트: <https://github.com/morluto/rea/releases/tag/rea-agents-6.8.0>
+- REA MCP 계약(`analyze_function` 요약 기본값): <https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md>
+- REA 설치와 Ghidra 설정: <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md>
+- REA 네이티브 분석: <https://github.com/morluto/rea/blob/main/docs/guides/native/native-investigation.md>
+- REA Ghidra 프로바이더 동작: <https://github.com/morluto/rea/blob/main/docs/providers/ghidra-provider.md>
+- REA 웹 페이지 관찰: <https://github.com/morluto/rea/blob/main/docs/guides/web/browser-observation.md>
 - REA 스킬 원문: <https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/SKILL.md>
 
 ## 관련 문서
@@ -225,4 +243,5 @@ REA 결과를 받으면 세 가지를 확인한다.
 - [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md)
 - [리버스 엔지니어링 작업 절차](./re-process.md)
 - [REA 명령·도구 참조](./rea-reference.md)
+- [REA 실전 노하우](./rea-knowhow.md)
 - [분석 기록 양식](./templates/investigation-log.md)

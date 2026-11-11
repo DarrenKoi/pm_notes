@@ -230,7 +230,7 @@ OSI가 승인한 오픈 소스 라이선스(MIT, Apache-2.0, GPL 등)는 회사�
 
 ## 참고 자료 (References)
 
-- REA 네이티브 분석: <https://github.com/morluto/rea/blob/main/docs/native-investigation.md>
+- REA 네이티브 분석: <https://github.com/morluto/rea/blob/main/docs/guides/native/native-investigation.md>
 - REA 설치 폴더 분석: <https://github.com/morluto/rea/blob/main/docs/desktop-applications.md>
 - REA 빌드 간 함수 매칭: <https://github.com/morluto/rea/blob/main/docs/native-function-matching.md>
 - REA 네이티브·패키지 분석 지침: <https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md>
