@@ -103,7 +103,7 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 | Go, Rust 바이너리의 의존성 | `inspect_go_binary`, `inspect_rust_binary` | 아니요 |
 | SQLite DB 파일 | `inspect_sqlite_database` | 아니요 |
 
-명령과 옵션은 [REA 명령·도구 참조](./rea-reference.md)에 있다.
+명령과 옵션은 [REA 명령, 도구 참조](./rea-reference.md)에 있다.
 
 ### 4단계: 대상별 작업 흐름을 따른다
 
@@ -242,6 +242,6 @@ REA 결과를 받으면 세 가지를 확인한다.
 - [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md)
 - [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md)
 - [리버스 엔지니어링 작업 절차](./re-process.md)
-- [REA 명령·도구 참조](./rea-reference.md)
+- [REA 명령, 도구 참조](./rea-reference.md)
 - [REA 실전 노하우](./rea-knowhow.md)
 - [분석 기록 양식](./templates/investigation-log.md)

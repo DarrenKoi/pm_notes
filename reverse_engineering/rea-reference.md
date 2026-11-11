@@ -9,7 +9,7 @@ category_minor: "REA 참조"
 note_kind: "참조"
 ---
 
-# REA 명령·도구 참조
+# REA 명령, 도구 참조
 
 > REA CLI 명령, MCP 도구 이름, 환경 변수 목록. 2026-11-11에 npm 배포본 `rea-agents` 6.8.0(2026-10-25 배포)과 `morluto/rea` main 브랜치 문서로 확인했다. 버전에 따라 다를 수 있으므로 실제 목록은 `rea --help`와 `binary_session`으로 확인한다.
 

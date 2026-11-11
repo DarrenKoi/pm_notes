@@ -9,7 +9,7 @@ category_minor: "Bento deck 편집 지침"
 note_kind: "에이전트 지침"
 ---
 
-# RE·REA 팀 공유 deck 편집 지침
+# RE, REA 팀 공유 deck 편집 지침
 
 > `re-rea-team-share.bento.html`을 이어서 고치는 LLM과 사람을 위한 지침. 고칠 곳은 파일 안의 JSON 블록 하나뿐이고, 내용의 원본은 이 폴더의 `.md` 문서들이다.
 
@@ -54,7 +54,7 @@ Bento 형식 전체 스키마는 <https://bento.page/agents.md>에 있다. 처�
 | 보조 | `#8A939E` | 설명, 각주, 비활성 |
 | 강조(유일한 accent) | `#F2A541` | 머리글, 번호, 경고 테두리, 강조 줄 |
 | 면 | `#171D25`, `#202833` | 카드 배경, 표 머리 |
-| 선 | `rgba(236,232,225,0.14)` | 카드·표 테두리 |
+| 선 | `rgba(236,232,225,0.14)` | 카드, 표 테두리 |
 | 강조 위 글자 | `#14110B` | 강조색으로 채운 상자 안 글자 |
 | 본문 글꼴 | `'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif` | 모든 텍스트 |
 | 코드 글꼴 | `Consolas, 'SF Mono', Menlo, monospace` | 코드 블록, 명령어, 큰 숫자 |
@@ -67,7 +67,7 @@ Bento 형식 전체 스키마는 <https://bento.page/agents.md>에 있다. 처�
 
 | id | 위치(x, y, w, h) | 내용 |
 |---|---|---|
-| `kicker` | 96, 40, 700, 26 | 절 번호와 이름. 예: `03 · REA 사용법`. 16px, 강조색 |
+| `kicker` | 96, 40, 700, 26 | 절 번호와 이름. 예: `03 REA 사용법`. 16px, 강조색 |
 | `title` | 96, 72, 1088, 84 | 슬라이드 제목. 40px, 800, `role: "title"` |
 | `accent-bar` | 96, 160, 48, 4 | 강조색 막대. 표지에서는 크게 있다가 2장에서 작아지며 morph |
 | `pg` | 1024, 668, 160, 24 | `{{page}} / {{pages}}`. 14px, 오른쪽 정렬 |
@@ -110,16 +110,16 @@ Bento 형식 전체 스키마는 <https://bento.page/agents.md>에 있다. 처�
 | 1 | `cover` | 표지 | README.md |
 | 2 | `why` | 왜 필요한가 | re-fundamentals.md |
 | 3 | `compile` | 컴파일은 정보를 버린다 | re-fundamentals.md |
-| 4~6 | `layer-bytes`, `layer-asm`, `layer-pseudo` | 기계어·어셈블리·의사 코드 | re-fundamentals.md |
-| 7 | `static-dynamic` | 정적·동적 분석 | re-fundamentals.md |
-| 8 | `evidence` | 증거의 등급, 한계·커버리지 | re-fundamentals.md, rea-usage-guide.md |
+| 4~6 | `layer-bytes`, `layer-asm`, `layer-pseudo` | 기계어, 어셈블리, 의사 코드 | re-fundamentals.md |
+| 7 | `static-dynamic` | 정적, 동적 분석 | re-fundamentals.md |
+| 8 | `evidence` | 증거의 등급, 한계, 커버리지 | re-fundamentals.md, rea-usage-guide.md |
 | 9~10 | `steps`, `steps-human` | 7단계 절차, 사람의 일, 분석 기록 | re-process.md, templates/investigation-log.md |
 | 11 | `questions` | 좋은 질문 | re-process.md |
 | 12 | `safety` | 허가와 실행 환경 | re-process.md |
 | 13 | `rea-arch` | REA 구성, 결과는 모델로 간다 | rea-usage-guide.md, README.md |
 | 14 | `prompt` (+ `prompt-example`) | 프롬프트 네 가지 | rea-usage-guide.md |
 | 15 | `targets` | 대상별 남는 것과 첫 도구 | re-fundamentals.md, rea-usage-guide.md |
-| 16 | `windows` | Windows + pi 되는 것·안 되는 것 | rea-windows-pi-setup.md |
+| 16 | `windows` | Windows + pi 되는 것과 안 되는 것 | rea-windows-pi-setup.md |
 | 17 | `setup` | pi에 REA 연결 | rea-windows-pi-setup.md |
 | 18 | `web` | 웹 앱 관찰 순서와 소스 맵 | rea-usage-guide.md, source-map-discovery.md |
 | 19 | `installed` | 설치형 프로그램 7단계 | installed-program-analysis.md |
@@ -138,10 +138,10 @@ codex 리뷰(2026-10-26)에서 지적되어 반영한 항목이다. 문구를 �
 - 15바이트, `cmovl` 예제는 **Windows x64, clang -O1** 결과다. 의사 코드는 **실제 Ghidra 출력이 아니라 형태 예시**다.
 - **.NET NativeAOT**는 Ghidra 경로이고, CLI 메타데이터가 없다는 것만으로 NativeAOT라고 확정하지 않는다.
 - 임포트는 **후보 단서**이고 실제 호출을 증명하지 않는다.
-- `trace_native_values`는 메모리 별칭·전역 상태를 거치는 값을 미확인으로 남긴다. `match_native_functions`는 **대응 후보**만 낸다.
+- `trace_native_values`는 메모리 별칭, 전역 상태를 거치는 값을 미확인으로 남긴다. `match_native_functions`는 **대응 후보**만 낸다.
 - 설정 절차는 `/reload`로 끝나지 않는다. **`binary_session`으로 연결을 확인**해야 끝난다. 설치 전제(Node.js, Ghidra 12.1.x, JDK 21)는 setup이 설치하지 않는다.
 - 웹 관찰은 **관찰을 시작한 뒤에** 버튼을 누르거나 새로고침한다. REA는 연결 전 요청을 기록하지 않는다.
-- HAR에는 쿠키·토큰이 있다. 저장소·공유 폴더에 올리지 않는다.
+- HAR에는 쿠키, 토큰이 있다. 저장소, 공유 폴더에 올리지 않는다.
 - 회사 LLM의 컨텍스트 크기 같은 내부 구성 수치는 공유용 deck에 넣지 않는다.
 - `close_binary`가 Evidence를 지우는 것은 **배포본 6.8.0** 기준이다. main 브랜치에서는 유지하도록 바뀌었으므로 버전 단서를 지우지 않는다. `analyze_function`의 요약 기본값도 **6.8.0부터**다(2026-11-12 반영, 20장과 19장).
 
@@ -205,7 +205,7 @@ python3 bento_doc.py inject reverse_engineering/slides/re-rea-team-share.bento.h
 2. 슬라이드 `id`와 요소 `id`를 새로 정한다. 요소 id는 슬라이드 안에서 겹치지 않게 하고, morph로 이어질 요소만 앞 슬라이드와 같은 id를 쓴다.
 3. `transition: "morph"`, `background: "#0E1217"`을 둔다.
 4. `notes`(발표자 노트)를 반드시 쓴다. 발표 원고 역할을 한다.
-5. `kicker`의 절 번호(`01 · 기초` … `08 · 시작하기`)를 앞뒤 슬라이드와 맞춘다.
+5. `kicker`의 절 번호(`01 기초`부터 `08 시작하기`까지)를 앞뒤 슬라이드와 맞춘다.
 6. 위 슬라이드 표와 이 문서의 슬라이드 목록을 갱신한다.
 
 ### 5. 확인한다

@@ -68,7 +68,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#rea-usage-guide"><span class="num">04</span>REA + Ghidra로 분석하는 방법</a></li>
 <li><a href="#source-map-discovery"><span class="num">05</span>소스 맵 찾고 원본 꺼내는 방법</a></li>
 <li><a href="#installed-program-analysis"><span class="num">06</span>설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
-<li><a href="#rea-reference"><span class="num">07</span>REA 명령·도구 참조</a></li>
+<li><a href="#rea-reference"><span class="num">07</span>REA 명령, 도구 참조</a></li>
 <li><a href="#community-resources"><span class="num">08</span>커뮤니티 자료에서 가져온 작업법</a></li>
 <li><a href="#rea-knowhow"><span class="num">09</span>REA 실전 노하우: 질문을 좁히고 근거를 재사용하는 방법</a></li>
 <li><a href="#templates-investigation-log"><span class="num">10</span>분석 기록: ⟨대상 이름⟩</a></li>
@@ -95,7 +95,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>1</td>
 <td><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></td>
 <td>설명</td>
-<td>처음 시작할 때. 정적·동적 분석, 디컴파일, 대상별 특징</td>
+<td>처음 시작할 때. 정적, 동적 분석, 디컴파일, 대상별 특징</td>
 </tr>
 <tr>
 <td>2</td>
@@ -129,7 +129,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>7</td>
-<td><a href="#rea-reference">REA 명령·도구 참조</a></td>
+<td><a href="#rea-reference">REA 명령, 도구 참조</a></td>
 <td>참조</td>
 <td>명령어, MCP 도구 이름, 환경 변수를 찾을 때</td>
 </tr>
@@ -137,7 +137,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>8</td>
 <td><a href="#community-resources">커뮤니티 자료에서 가져온 작업법</a></td>
 <td>자료 정리</td>
-<td>기본을 익힌 뒤. YouTube·Reddit 실무자의 습관과 REA 공식 실습</td>
+<td>기본을 익힌 뒤. YouTube, Reddit 실무자의 습관과 REA 공식 실습</td>
 </tr>
 <tr>
 <td>9</td>
@@ -238,7 +238,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><strong>디스어셈블(Disassemble)</strong>: 기계어 바이트를 어셈블리 명령어로 바꾼다. 정확하지만 읽기 어렵다.</li>
 <li><strong>디컴파일(Decompile)</strong>: 어셈블리를 C 비슷한 의사 코드(Pseudocode)로 바꾼다. 읽기 쉽지만 원본 소스가 아니다. 디컴파일러가 타입을 잘못 추정하면 결과도 틀린다.</li>
 <li><strong>심볼(Symbol)</strong>: 함수와 변수의 이름 정보. 디버그 빌드에는 많고, 릴리스 빌드에서는 스트립(Strip)되어 없을 수 있다.</li>
-<li><strong>임포트·익스포트(Import, Export)</strong>: 프로그램이 외부 라이브러리에서 가져다 쓰는 함수와 밖으로 내보내는 함수. 스트립된 바이너리에서도 대부분 남아 있어서 첫 단서가 된다. 예를 들어 <code>CreateFileW</code>를 임포트하면 파일이나 장치를 열 수 있다는 후보 단서다. 임포트는 실제 호출을 증명하지 않으므로, 호출 경로와 인수를 따로 확인한다.</li>
+<li><strong>임포트, 익스포트(Import, Export)</strong>: 프로그램이 외부 라이브러리에서 가져다 쓰는 함수와 밖으로 내보내는 함수. 스트립된 바이너리에서도 대부분 남아 있어서 첫 단서가 된다. 예를 들어 <code>CreateFileW</code>를 임포트하면 파일이나 장치를 열 수 있다는 후보 단서다. 임포트는 실제 호출을 증명하지 않으므로, 호출 경로와 인수를 따로 확인한다.</li>
 <li><strong>상호 참조(Cross-reference, Xref)</strong>: "이 함수를 누가 부르는가", "이 문자열을 누가 읽는가"의 목록. 문자열 하나에서 출발해 그 문자열을 쓰는 함수로 거슬러 올라가는 것이 가장 흔한 탐색 방법이다.</li>
 <li><strong>호출 그래프(Call Graph)</strong>: 함수 사이의 호출 관계. 호출자(Caller)와 피호출자(Callee)로 나뉜다.</li>
 <li><strong>소스 맵(Source Map)</strong>: 압축된 JavaScript 번들을 원본 파일과 줄 번호로 되돌리는 매핑 파일(<code>.map</code>). 사내 웹 앱은 소스 맵을 지우지 않고 배포하는 경우가 많다. 소스 맵의 <code>sourcesContent</code> 필드에 원본 내용이 들어 있으면 원본 소스를 거의 그대로 얻는다. 이 필드는 선택 사항이므로, 비어 있으면 원본 파일 경로와 줄 번호만 얻는다.</li>
@@ -739,7 +739,7 @@ Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
 <h2 id="rea-windows-pi-setup--관련-문서">관련 문서</h2>
 <ul>
 <li><a href="#rea-usage-guide">REA + Ghidra로 분석하는 방법</a></li>
-<li><a href="#rea-reference">REA 명령·도구 참조</a></li>
+<li><a href="#rea-reference">REA 명령, 도구 참조</a></li>
 <li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
 <section class="doc" id="rea-usage-guide"><p class="file"><span class="num">04</span>rea-usage-guide.md</p><h1>REA + Ghidra로 분석하는 방법</h1>
@@ -866,7 +866,7 @@ Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 
 </tr>
 </tbody>
 </table></div>
-<p>명령과 옵션은 <a href="#rea-reference">REA 명령·도구 참조</a>에 있다.</p>
+<p>명령과 옵션은 <a href="#rea-reference">REA 명령, 도구 참조</a>에 있다.</p>
 <h3 id="rea-usage-guide--4단계-대상별-작업-흐름을-따른다">4단계: 대상별 작업 흐름을 따른다</h3>
 <h4 id="rea-usage-guide--사내-웹-앱-vue-nuxt-react-프런트엔드">사내 웹 앱 (Vue, Nuxt, React 프런트엔드)</h4>
 <p>웹 앱은 Ghidra 없이 끝난다. 코드는 이미 브라우저에 있고, 대부분 소스 맵도 함께 배포된다. 소스 맵을 찾는 순서와 원본을 꺼내는 스크립트는 <a href="#source-map-discovery">소스 맵 찾고 원본 꺼내는 방법</a>에 있다.</p>
@@ -1036,7 +1036,7 @@ C:\re-work\tool\tool.exe 를 ghidra 프로바이더로 열고, binary_overview�
 <li><a href="#rea-windows-pi-setup">회사 Windows + pi 환경 설정</a></li>
 <li><a href="#installed-program-analysis">설치형 Windows 프로그램을 Ghidra로 분석하는 방법</a></li>
 <li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
-<li><a href="#rea-reference">REA 명령·도구 참조</a></li>
+<li><a href="#rea-reference">REA 명령, 도구 참조</a></li>
 <li><a href="#rea-knowhow">REA 실전 노하우</a></li>
 <li><a href="#templates-investigation-log">분석 기록 양식</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
@@ -1694,7 +1694,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <li>REA 네이티브 분석: <a href="https://github.com/morluto/rea/blob/main/docs/guides/native/native-investigation.md">https://github.com/morluto/rea/blob/main/docs/guides/native/native-investigation.md</a></li>
 <li>REA 설치 폴더 분석: <a href="https://github.com/morluto/rea/blob/main/docs/desktop-applications.md">https://github.com/morluto/rea/blob/main/docs/desktop-applications.md</a></li>
 <li>REA 빌드 간 함수 매칭: <a href="https://github.com/morluto/rea/blob/main/docs/native-function-matching.md">https://github.com/morluto/rea/blob/main/docs/native-function-matching.md</a></li>
-<li>REA 네이티브·패키지 분석 지침: <a href="https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md">https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md</a></li>
+<li>REA 네이티브, 패키지 분석 지침: <a href="https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md">https://github.com/morluto/rea/blob/main/.agents/skills/reverse-engineer-anything/references/native-and-artifacts.md</a></li>
 <li>Microsoft x64 호출 규약: <a href="https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention">https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention</a></li>
 <li>System Informer: <a href="https://github.com/winsiderss/systeminformer">https://github.com/winsiderss/systeminformer</a></li>
 <li>Fibratus: <a href="https://github.com/rabbitstack/fibratus">https://github.com/rabbitstack/fibratus</a></li>
@@ -1709,7 +1709,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <li><a href="#re-process">리버스 엔지니어링 작업 절차</a></li>
 <li><a href="#re-fundamentals">리버스 엔지니어링 기초 개념</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="rea-reference"><p class="file"><span class="num">07</span>rea-reference.md</p><h1>REA 명령·도구 참조</h1>
+<section class="doc" id="rea-reference"><p class="file"><span class="num">07</span>rea-reference.md</p><h1>REA 명령, 도구 참조</h1>
 <blockquote>
 <p>REA CLI 명령, MCP 도구 이름, 환경 변수 목록. 2026-11-11에 npm 배포본 <code>rea-agents</code> 6.8.0(2026-10-25 배포)과 <code>morluto/rea</code> main 브랜치 문서로 확인했다. 버전에 따라 다를 수 있으므로 실제 목록은 <code>rea --help</code>와 <code>binary_session</code>으로 확인한다.</p>
 </blockquote>
@@ -2197,7 +2197,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <p>화면에서 값을 바꿔 가며 메모리 검색으로 후보 주소를 줄이고, 그 주소에 값을 쓰는 명령을 찾는다. 실행 중 DLL 주소는 ASLR 때문에 Ghidra 주소와 다르므로 기준 주소를 맞춘 뒤 Ghidra에서 그 함수를 읽는다. 정적 분석에서 출발하지 않고 동적 관찰에서 출발하는 방향이다.</p>
 <ul>
 <li>사내 적용: "이 설정 값은 어디서 바뀌는가"처럼 화면 조작과 연결된 질문. 회사에서는 x64dbg(오픈 소스)로 같은 흐름을 만들 수 있다. 주소 변환식은 <a href="#installed-program-analysis--7-실행해서-확인한다">설치형 프로그램 문서 7단계</a>에 있다. 실행은 테스트 PC나 격리된 VM에서만 한다.</li>
-<li>출처: LiveOverflow, "Windows Game Hacking with Ghidra and Cheat Engine"(2019-08-04)과 같은 내용의 글 "Getting Started With Windows Game Hacking" (부분 확인: 영상 설명·챕터와 글 본문). 영상 기준 05:03 검색 축소, 08:06 쓰는 명령 찾기, 10:27 주소 대응, 11:44 구조체 추론.</li>
+<li>출처: LiveOverflow, "Windows Game Hacking with Ghidra and Cheat Engine"(2019-08-04)과 같은 내용의 글 "Getting Started With Windows Game Hacking" (부분 확인: 영상 설명, 챕터와 글 본문). 영상 기준 05:03 검색 축소, 08:06 쓰는 명령 찾기, 10:27 주소 대응, 11:44 구조체 추론.</li>
 </ul>
 <h3 id="community-resources--4-에이전트-조사-상태를-대화-밖에-남긴다">4. 에이전트 조사 상태를 대화 밖에 남긴다</h3>
 <p>긴 분석은 에이전트의 컨텍스트가 초기화되거나 요약되면서 앞에서 찾은 근거를 잃는다. 발견 사항, 근거(주소, Evidence ID), 다음 단계를 진행 보고서 파일에 계속 갱신하고, 새 세션은 그 파일부터 읽게 한다. 함수 이름, 주석, 구조체 정의에도 근거를 붙여서 사람이 승인하거나 반려할 수 있게 한다.</p>
@@ -2207,10 +2207,10 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <li>출처: r/ghidra "Beyond MCP: A Workspace for Reverse Engineering" 본문과 u/Creative-Brush-6712 댓글 (확인. 글에서 소개하는 외부 서비스는 검토하지 않았다), r/ClaudeAI "My reverse engineering skill for Claude Code" 본문 (확인. 연결된 스킬은 실행하지 않았다)</li>
 </ul>
 <h3 id="community-resources--5-보고서-대신-실행할-수-있는-검증물을-받는다">5. 보고서 대신 실행할 수 있는 검증물을 받는다</h3>
-<p>에이전트에게 "설명해줘"만 요구하지 않고 "같은 결과를 내는 스크립트를 만들어줘"를 함께 요구한다. 스크립트는 실행 결과로 검증하기 쉽다. 설명도 그대로 믿지 않고, 분석자가 따라 할 수 있는 검증 절차를 함께 쓰게 해서 해시·경로·오프셋 같은 근거를 원본과 대조한다. 단, 스크립트가 실제로 입력을 처리하지 않고 결과를 그대로 출력하는 식으로 "속이지" 않는지 코드를 읽고, 실제 입력 파일에 돌려 본다. 저자는 여러 번 검토한 뒤에도 중요한 오류가 남았다고 보고한다.</p>
+<p>에이전트에게 "설명해줘"만 요구하지 않고 "같은 결과를 내는 스크립트를 만들어줘"를 함께 요구한다. 스크립트는 실행 결과로 검증하기 쉽다. 설명도 그대로 믿지 않고, 분석자가 따라 할 수 있는 검증 절차를 함께 쓰게 해서 해시, 경로, 오프셋 같은 근거를 원본과 대조한다. 단, 스크립트가 실제로 입력을 처리하지 않고 결과를 그대로 출력하는 식으로 "속이지" 않는지 코드를 읽고, 실제 입력 파일에 돌려 본다. 저자는 여러 번 검토한 뒤에도 중요한 오류가 남았다고 보고한다.</p>
 <ul>
 <li>사내 적용: 계산 로직 재구현이 질문이면 Python 함수와 비교 테스트까지 요구한다. <a href="#re-process--7-기록하고-보고한다">작업 절차 7단계</a>의 "테스트가 없는 재구현은 추론일 뿐"과 같은 원칙이다.</li>
-<li>출처: Karsten Hahn(G DATA, MalwareAnalysisForHedgehogs), "LLMs in malware analysis: Doing things right is difficult"(2026-03) (확인), 같은 저자의 영상 "Build your own AI based Dynamic Reversing Lab, x64dbg automate"(2026-04-19) (부분 확인: 설명·챕터)</li>
+<li>출처: Karsten Hahn(G DATA, MalwareAnalysisForHedgehogs), "LLMs in malware analysis: Doing things right is difficult"(2026-03) (확인), 같은 저자의 영상 "Build your own AI based Dynamic Reversing Lab, x64dbg automate"(2026-04-19) (부분 확인: 설명, 챕터)</li>
 </ul>
 <h3 id="community-resources--6-검증하는-도구도-검증한다">6. 검증하는 도구도 검증한다</h3>
 <p>REA 프로젝트 블로그의 게임 재구현 사례에서, 원본과 재구현 결과를 비교하는 도구가 명령어 바이트만 비교하고 그 명령이 가리키는 부동소수점 상수 값은 확인하지 않았다. 그래서 원본은 <code>128.0</code>, 재구현은 <code>0.0</code>인 함수가 "정확히 일치"로 통과했다. 이후 감사에서 같은 종류의 오류 12개가 더 나왔다. 비교 도구에 일부러 틀린 값을 넣어 거부되는지 테스트하고, 약한 검사로 통과했던 결과를 다시 봤다.</p>
@@ -2255,7 +2255,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <p>LLM과 Ghidra를 쓰는 아래 두 Reddit 글은 1차 조사에서 확인했지만, 재확인 때 로그인 요구로 다시 열지 못했다(2차 확인 못 함). 둘 다 회사 환경과 가까운 이야기라서 남긴다.</p>
 <ul>
 <li>r/LocalLLaMA "Local LLM harness for reverse engineering software?": 의사 코드를 함수 하나씩 넘기면서 PDB 심볼과 앞에서 붙인 이름을 다음 입력에도 유지하는 방법, pi + GhidraMCP로 Windows 도구에서 연동 명령만 뽑아낸 경험담이 댓글에 있다.</li>
-<li>r/ReverseEngineering "Supercharging Ghidra: Using Local LLMs with GhidraMCP": LLM에게 이름과 주석을 제안하게 하는 활용법과 함께, 비트 연산·CRC·구조체 추정의 그럴듯한 오류가 공유 Ghidra DB에 들어가면 이후 분석까지 오염된다는 반대 경험이 있다. 제안과 확정을 나눠 두는 근거로 읽는다.</li>
+<li>r/ReverseEngineering "Supercharging Ghidra: Using Local LLMs with GhidraMCP": LLM에게 이름과 주석을 제안하게 하는 활용법과 함께, 비트 연산, CRC, 구조체 추정의 그럴듯한 오류가 공유 Ghidra DB에 들어가면 이후 분석까지 오염된다는 반대 경험이 있다. 제안과 확정을 나눠 두는 근거로 읽는다.</li>
 </ul>
 <p>조사에서 .NET이나 PyInstaller만 다루는 상세 영상, 독립적인 버전 비교(diffing) 시연은 찾지 못했다.</p>
 <h2 id="community-resources--참고-자료-references">참고 자료 (References)</h2>

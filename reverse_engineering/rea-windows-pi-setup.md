@@ -188,5 +188,5 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 ## 관련 문서
 
 - [REA + Ghidra로 분석하는 방법](./rea-usage-guide.md)
-- [REA 명령·도구 참조](./rea-reference.md)
+- [REA 명령, 도구 참조](./rea-reference.md)
 - [리버스 엔지니어링 작업 절차](./re-process.md)

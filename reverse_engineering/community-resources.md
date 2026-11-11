@@ -60,7 +60,7 @@ LLM과 MCP로 리버스 엔지니어링을 하는 방법은 빠르게 바뀌고 
 화면에서 값을 바꿔 가며 메모리 검색으로 후보 주소를 줄이고, 그 주소에 값을 쓰는 명령을 찾는다. 실행 중 DLL 주소는 ASLR 때문에 Ghidra 주소와 다르므로 기준 주소를 맞춘 뒤 Ghidra에서 그 함수를 읽는다. 정적 분석에서 출발하지 않고 동적 관찰에서 출발하는 방향이다.
 
 - 사내 적용: "이 설정 값은 어디서 바뀌는가"처럼 화면 조작과 연결된 질문. 회사에서는 x64dbg(오픈 소스)로 같은 흐름을 만들 수 있다. 주소 변환식은 [설치형 프로그램 문서 7단계](./installed-program-analysis.md#7-실행해서-확인한다)에 있다. 실행은 테스트 PC나 격리된 VM에서만 한다.
-- 출처: LiveOverflow, "Windows Game Hacking with Ghidra and Cheat Engine"(2019-08-04)과 같은 내용의 글 "Getting Started With Windows Game Hacking" (부분 확인: 영상 설명·챕터와 글 본문). 영상 기준 05:03 검색 축소, 08:06 쓰는 명령 찾기, 10:27 주소 대응, 11:44 구조체 추론.
+- 출처: LiveOverflow, "Windows Game Hacking with Ghidra and Cheat Engine"(2019-08-04)과 같은 내용의 글 "Getting Started With Windows Game Hacking" (부분 확인: 영상 설명, 챕터와 글 본문). 영상 기준 05:03 검색 축소, 08:06 쓰는 명령 찾기, 10:27 주소 대응, 11:44 구조체 추론.
 
 ### 4. 에이전트 조사 상태를 대화 밖에 남긴다
 
@@ -73,10 +73,10 @@ LLM과 MCP로 리버스 엔지니어링을 하는 방법은 빠르게 바뀌고 
 
 ### 5. 보고서 대신 실행할 수 있는 검증물을 받는다
 
-에이전트에게 "설명해줘"만 요구하지 않고 "같은 결과를 내는 스크립트를 만들어줘"를 함께 요구한다. 스크립트는 실행 결과로 검증하기 쉽다. 설명도 그대로 믿지 않고, 분석자가 따라 할 수 있는 검증 절차를 함께 쓰게 해서 해시·경로·오프셋 같은 근거를 원본과 대조한다. 단, 스크립트가 실제로 입력을 처리하지 않고 결과를 그대로 출력하는 식으로 "속이지" 않는지 코드를 읽고, 실제 입력 파일에 돌려 본다. 저자는 여러 번 검토한 뒤에도 중요한 오류가 남았다고 보고한다.
+에이전트에게 "설명해줘"만 요구하지 않고 "같은 결과를 내는 스크립트를 만들어줘"를 함께 요구한다. 스크립트는 실행 결과로 검증하기 쉽다. 설명도 그대로 믿지 않고, 분석자가 따라 할 수 있는 검증 절차를 함께 쓰게 해서 해시, 경로, 오프셋 같은 근거를 원본과 대조한다. 단, 스크립트가 실제로 입력을 처리하지 않고 결과를 그대로 출력하는 식으로 "속이지" 않는지 코드를 읽고, 실제 입력 파일에 돌려 본다. 저자는 여러 번 검토한 뒤에도 중요한 오류가 남았다고 보고한다.
 
 - 사내 적용: 계산 로직 재구현이 질문이면 Python 함수와 비교 테스트까지 요구한다. [작업 절차 7단계](./re-process.md#7-기록하고-보고한다)의 "테스트가 없는 재구현은 추론일 뿐"과 같은 원칙이다.
-- 출처: Karsten Hahn(G DATA, MalwareAnalysisForHedgehogs), "LLMs in malware analysis: Doing things right is difficult"(2026-03) (확인), 같은 저자의 영상 "Build your own AI based Dynamic Reversing Lab, x64dbg automate"(2026-04-19) (부분 확인: 설명·챕터)
+- 출처: Karsten Hahn(G DATA, MalwareAnalysisForHedgehogs), "LLMs in malware analysis: Doing things right is difficult"(2026-03) (확인), 같은 저자의 영상 "Build your own AI based Dynamic Reversing Lab, x64dbg automate"(2026-04-19) (부분 확인: 설명, 챕터)
 
 ### 6. 검증하는 도구도 검증한다
 
@@ -105,7 +105,7 @@ REA 가이드 사이트에 대상별 실습이 있다. 사내 대상과 가까�
 LLM과 Ghidra를 쓰는 아래 두 Reddit 글은 1차 조사에서 확인했지만, 재확인 때 로그인 요구로 다시 열지 못했다(2차 확인 못 함). 둘 다 회사 환경과 가까운 이야기라서 남긴다.
 
 - r/LocalLLaMA "Local LLM harness for reverse engineering software?": 의사 코드를 함수 하나씩 넘기면서 PDB 심볼과 앞에서 붙인 이름을 다음 입력에도 유지하는 방법, pi + GhidraMCP로 Windows 도구에서 연동 명령만 뽑아낸 경험담이 댓글에 있다.
-- r/ReverseEngineering "Supercharging Ghidra: Using Local LLMs with GhidraMCP": LLM에게 이름과 주석을 제안하게 하는 활용법과 함께, 비트 연산·CRC·구조체 추정의 그럴듯한 오류가 공유 Ghidra DB에 들어가면 이후 분석까지 오염된다는 반대 경험이 있다. 제안과 확정을 나눠 두는 근거로 읽는다.
+- r/ReverseEngineering "Supercharging Ghidra: Using Local LLMs with GhidraMCP": LLM에게 이름과 주석을 제안하게 하는 활용법과 함께, 비트 연산, CRC, 구조체 추정의 그럴듯한 오류가 공유 Ghidra DB에 들어가면 이후 분석까지 오염된다는 반대 경험이 있다. 제안과 확정을 나눠 두는 근거로 읽는다.
 
 조사에서 .NET이나 PyInstaller만 다루는 상세 영상, 독립적인 버전 비교(diffing) 시연은 찾지 못했다.
 
