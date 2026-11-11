@@ -412,10 +412,8 @@ def s_team():  # TF 구성 (조직도)
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
-    text(s, tx, COL_Y + Inches(0.06), top_w, Inches(0.36), "ARC TF (TF 리드 총괄)", size=17, bold=True, color=WHITE,
-         align=PP_ALIGN.CENTER)
-    text(s, tx, COL_Y + Inches(0.4), top_w, Inches(0.3), "명단 12월 지정 / 월간 임원 보고", size=12,
-         color=WHITE, align=PP_ALIGN.CENTER)
+    text(s, tx, COL_Y, top_w, Inches(0.72), "ARC TF (TF 리드 총괄)", size=17, bold=True, color=WHITE,
+         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
                   ("백엔드 (2명)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
@@ -449,7 +447,8 @@ def s_team():  # TF 구성 (조직도)
                  align=PP_ALIGN.CENTER)
             text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(6.2), "운영", "**매주 미팅**에서 __개발 노하우 공유__, 현재와 앞으로의 __진행사항 체크__ (2차 장비군도 합류 시점부터 참여)", size=13)
+    note_line(s, Inches(6.1), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(심규찬 담당님) 보고**, **분기 부문장님 보고**", size=13)
+    note_line(s, Inches(6.42), "협의", "TF 리드 총괄 직급: **⟨확인: 팀장급 또는 파트장급⟩**", size=13)
     footer(s)
 
 def s_kanban():  # 일정 칸반
