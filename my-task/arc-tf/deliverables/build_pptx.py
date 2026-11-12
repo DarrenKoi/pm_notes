@@ -281,7 +281,7 @@ def s_effects():  # 효과
 
 def s_status():  # 2026 추진 현황
     s = slide("2026 ARC 추진 현황",
-              "세 장비군이 각자 ARC 추진 중, 공통으로 얻은 Lesson Learned 세 가지")
+              "장비군별 ARC 추진 현황과 Lesson Learned")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
     ch = Inches(2.8)
@@ -293,7 +293,9 @@ def s_status():  # 2026 추진 현황
                 "DL 기반 Align Fail 대응 __Offline 테스트 중__",
                 "MI 장비군 중 __가장 높은 자동화__ 구현"]),
             ("Inspection 추진 현황", [
-                "**DRB(Design Recipe Builder)**를 __Tuning하는 방식__으로 ARC 진행 중 (NAND Tech 1개 대상)"])]
+                "**DRB(Design Recipe Builder)**를 __Tuning하는 방식__으로 ARC 진행 중 (NAND Tech 1개 대상)",
+                "DRB Tuning에 **Computer-use** 사용",
+                "Recipe Setup AI 활용을 위한 __DB 구축 완료__ (RAG, 마이다스)"])]
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14)
     ly = COL_Y + ch + Inches(0.12)
@@ -408,7 +410,7 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
 
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성",
-              "엔진은 공통 플랫폼 팀, 절차는 장비군 담당 엔지니어")
+              "공통 플랫폼과 장비군 담당 엔지니어의 유기적 협업")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
