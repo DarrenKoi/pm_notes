@@ -1,7 +1,7 @@
 ---
 tags: [reverse-engineering, rea, ghidra, windows, pi, mcp]
 level: intermediate
-last_updated: 2026-10-24
+last_updated: 2026-11-12
 document_type: learning
 category_major: "리버스 엔지니어링"
 category_middle: "도구"
@@ -24,7 +24,7 @@ REA 문서는 macOS와 Linux를 기준으로 쓰인 부분이 많다. Windows에
 | 기능 | Windows | 비고 |
 |---|---|---|
 | 네이티브 PE(`.exe`, `.dll`) Ghidra 분석 | 됨, 읽기 전용 | x86, x86-64, ARM64 PE. 26개 읽기 전용 작업 |
-| Ghidra 함수 이름, 주석 붙이기 | 안 됨 | `annotate_native_function`, `set_address_name`은 Linux, macOS만 |
+| REA로 Ghidra 함수 이름, 주석 붙이기 | 안 됨 | `annotate_native_function`, `set_address_name`은 Linux, macOS만. Ghidra 화면에서 직접 붙이는 것은 되지만 REA가 그 프로젝트를 읽지 못한다 |
 | ELF, Mach-O를 Ghidra로 분석 | 안 됨 | REA의 Windows Ghidra 연동이 PE와 raw 6502 이미지만 받는다. Ghidra 화면에서 직접 열면 분석된다 |
 | .NET 어셈블리 | 됨 | Ghidra를 쓰지 않는 별도 분석기 |
 | PyInstaller, ASAR, JS 정적 분석 | 됨 | 엔진 불필요 |
@@ -45,6 +45,7 @@ Windows의 Ghidra 연동은 **고정 로컬 NTFS 볼륨**의 파일만 받는다
 - 스킬은 `~/.agents/skills` 아래에 설치된다.
 - `PI_CODING_AGENT_DIR`이 설정되어 있으면 그 폴더를 따른다.
 - 프로젝트 폴더의 `.pi/mcp.json`에 같은 이름(`rea`)의 항목이 있으면 사용자 설정을 덮어쓴다. 사용자 등록은 정상인데 특정 프로젝트에서만 REA가 안 보이면 이 파일을 확인한다.
+- `/mcp`를 등록하는 pi 확장(extension)을 쓰면 그 확장이 pi의 기본 MCP 기능을 대신하고 자기 설정 파일을 읽을 수 있다. 등록은 정상인데 어디서도 REA가 안 보이면 이런 확장이 있는지 본다.
 - pi는 `mcp.json`을 엄격한 JSON으로 읽는다. 주석, 끝 쉼표, BOM, 빈 파일은 모두 오류다. 메모장으로 저장하면 BOM이 붙을 수 있으므로 VS Code 같은 편집기로 "UTF-8(BOM 없음)"으로 저장한다.
 
 ## 어떻게 사용하는가? (How)
@@ -55,8 +56,8 @@ REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어
 
 - Windows 10 이상 x64
 - Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm. SQLite 분석(`inspect_sqlite_database`)까지 쓰려면 24.x나 26 이상을 고른다
-- Ghidra 12.1.x(검증된 버전은 12.1.4)
-- 64비트 JDK 21 이상
+- Ghidra 12.1 이상의 12.x(검증된 버전은 12.1.4)
+- 64비트 JDK. Ghidra 12.1.x는 JDK 21 이상, Ghidra 12.2는 JDK 25 이상을 요구한다
 - REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 `npm install --global rea-agents`로 설치한다
 
 ### 2. 환경 변수를 정하고 진단한다
@@ -137,6 +138,29 @@ pi와 다른 점은 아래와 같다.
 - Hermes 프로필을 쓰면 현재 선택된 프로필(`active_profile`)에 등록된다. 선택된 프로필이 없거나 깨져 있으면 setup이 오류를 보고하므로, `hermes profile use default`로 고친 뒤 다시 실행한다.
 - Ghidra 환경 변수(`GHIDRA_INSTALL_DIR`, `JAVA_HOME`)가 `rea` 항목의 `env`에 들어갔는지 pi와 같은 방법으로 확인한다.
 
+### Claude Code를 쓸 때
+
+Claude Code에도 같은 명령으로 등록한다. `--client` 값은 `claude_code`다.
+
+```powershell
+rea setup --client claude_code --dry-run --json
+rea setup --client claude_code --yes --json
+rea doctor --client claude_code --skill --json
+claude mcp list
+```
+
+> [!WARNING] 사내 도구 분석에는 쓰지 않는다
+> Claude Code는 외부 모델을 쓴다. REA의 도구 결과(디컴파일 코드, 문자열, 경로)가 그대로 모델로 넘어가므로, 사내 도구는 사내 LLM에 연결된 pi나 Hermes로만 분석한다. Claude Code는 개인 PC에서 공개 프로그램이나 직접 만든 예제로 연습할 때 쓴다.
+
+pi와 다른 점은 아래와 같다.
+
+- 등록 위치는 `~/.claude.json`의 `mcpServers.rea`이고, 스킬은 `~/.claude/skills`에 설치된다. 사용자 범위 등록이라 Claude Code로 여는 모든 프로젝트에서 REA가 보인다.
+- `CLAUDE_CONFIG_DIR`이 설정되어 있으면 그 폴더의 `.claude.json`과 `skills`를 쓴다. REA를 특정 프로필에서만 보이게 하려면 이 변수를 정한 채로 setup, doctor, `claude`를 모두 실행한다.
+- 등록 뒤에는 Claude Code를 다시 시작한다. `claude mcp list`나 세션 안의 `/mcp`에 `rea`가 보이면 연결된 것이다.
+- Ghidra 환경 변수는 pi와 같은 방법으로 `rea` 항목의 `env`에 들어갔는지 확인한다. macOS, Linux에서는 Ghidra의 이름, 주석 붙이기도 쓸 수 있다.
+- Claude Code는 보통 도구 정의를 필요할 때만 불러오므로(tool search) REA의 도구 170여 개가 컨텍스트를 미리 차지하지 않는다. `ANTHROPIC_BASE_URL`로 다른 업체의 호환 엔드포인트를 쓰면 이 기능이 꺼지고 도구 정의 전체가 매 요청에 실린다. 그때는 `rea setup --client claude_code --tool-families <ids>`로 필요한 도구 묶음만 남긴다.
+- 플러그인으로 설치하는 방법도 upstream main 문서에 있다(`/plugin marketplace add morluto/rea`, `/plugin install rea@rea`). setup 등록과 함께 쓰면 `rea` 서버가 둘이 되므로 하나만 쓴다. 플러그인 설치는 `rea doctor`에 보이지 않는다. 6.8.0 태그에는 플러그인 매니페스트가 없어서 배포본에서 되는지는 확인하지 못했다.
+
 ### 5. 대상을 복사하고 분석한다
 
 ```powershell
@@ -147,7 +171,7 @@ Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
 
 해시를 [분석 기록 양식](./templates/investigation-log.md)에 적고, [REA + Ghidra로 분석하는 방법](./rea-usage-guide.md)의 프롬프트 형식으로 pi에게 묻는다. 경로는 `C:\re-work\recipe-tool\RecipeTool.exe`처럼 절대 경로로 쓴다.
 
-함수 이름을 붙일 수 없으므로, pi에게 "따라간 함수의 주소와 제안 이름을 표로 정리하라"고 요청해서 분석 기록 5절에 붙인다.
+REA로는 함수 이름을 붙일 수 없으므로, pi에게 "따라간 함수의 주소와 제안 이름을 표로 정리하라"고 요청해서 분석 기록 5절에 붙인다.
 
 ### 6. 웹 앱은 Windows Chrome으로 관찰한다
 
@@ -182,6 +206,8 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 - REA Windows Ghidra P0: <https://github.com/morluto/rea/blob/main/docs/providers/windows-ghidra-p0.md>
 - REA 클라이언트 설정(Pi 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#pi>
 - REA 클라이언트 설정(Hermes 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes>
+- REA 클라이언트 설정(Claude Code 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code>
+- REA 설치 문서(Claude Code 등록 위치와 프로필): <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile>
 - REA 지원 에이전트 목록: <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents>
 - pi MCP 문서: <https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md>
 

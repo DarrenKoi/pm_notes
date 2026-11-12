@@ -25,7 +25,7 @@ note_kind: "목차"
 |---|---|---|---|
 | 1 | [리버스 엔지니어링 기초 개념](./re-fundamentals.md) | 설명 | 처음 시작할 때. 정적, 동적 분석, 디컴파일, 대상별 특징 |
 | 2 | [리버스 엔지니어링 작업 절차](./re-process.md) | 절차 | 새 분석을 시작할 때마다. 범위 확인부터 보고까지 7단계 |
-| 3 | [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md) | 사용법 | 회사 PC에 REA를 처음 연결할 때. Windows 제약과 pi 등록 |
+| 3 | [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md) | 사용법 | 회사 PC에 REA를 처음 연결할 때. Windows 제약과 pi, Hermes, Claude Code 등록 |
 | 4 | [REA + Ghidra로 분석하는 방법](./rea-usage-guide.md) | 사용법 | 실제로 에이전트에 일을 시킬 때. 프롬프트 패턴과 대상별 경로 |
 | 5 | [소스 맵 찾고 원본 꺼내는 방법](./source-map-discovery.md) | 사용법 | 웹 앱, Electron 앱을 분석할 때. 맵 찾기부터 원본 추출까지 |
 | 6 | [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./installed-program-analysis.md) | 사용법 | 설치형 프로그램을 분석할 때. 런타임 판별부터 버전 비교까지 |
