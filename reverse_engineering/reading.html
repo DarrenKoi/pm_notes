@@ -1561,7 +1561,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </tbody>
 </table></div>
 <p>계산 로직이 질문이면 <code>trace_native_values</code>가 특히 쓸모 있다. 결과값 하나를 정하고, 그 값이 어느 입력과 상수에서 어떤 연산을 거쳐 만들어지는지 함수 경계를 넘어 추적한다. 메모리 별칭(alias)이나 전역 상태를 거치는 값은 미확인으로 남는다. 그 부분은 어셈블리를 직접 보거나 실행해서 확인한다.</p>
-<p>Windows에서는 Ghidra에 함수 이름을 붙일 수 없다. pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 <a href="#templates-investigation-log">분석 기록</a> 5절에 붙인다.</p>
+<p>Windows에서는 REA로 Ghidra에 함수 이름이나 주석을 붙일 수 없다(Ghidra 화면에서 직접 붙이는 것은 되지만 REA가 그 프로젝트를 읽지 못한다). pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 <a href="#templates-investigation-log">분석 기록</a> 5절에 붙인다.</p>
 <h3 id="installed-program-analysis--6-설정과-데이터-파일을-함께-읽는다">6. 설정과 데이터 파일을 함께 읽는다</h3>
 <p>코드만 보면 동작의 절반만 보인다. 설정 값과 데이터 형식이 동작을 바꾸기 때문이다.</p>
 <ul>
@@ -2104,7 +2104,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 <tbody>
 <tr>
 <td><code>REA_GHIDRA_PROJECT_PATH</code>, <code>REA_GHIDRA_PROGRAM_NAME</code></td>
-<td>이미 만들어 둔 Ghidra 프로젝트(<code>.gpr</code>)를 읽기 전용 사본으로 재사용한다. 사람이 GUI에서 붙인 이름과 주석이 REA 결과에 나온다. Windows에서 되는지는 upstream 문서에 없다(미확인)</td>
+<td>이미 만들어 둔 Ghidra 프로젝트(<code>.gpr</code>)를 읽기 전용 사본으로 재사용한다. 사람이 GUI에서 붙인 이름과 주석이 REA 결과에 나온다. Windows에서는 쓸 수 없다. upstream main 소스가 Windows에서 기존 프로젝트 열기를 막고, 이 변수를 지우라고 안내한다(6.8.0 배포본의 동작은 미확인)</td>
 </tr>
 <tr>
 <td><code>REA_GHIDRA_CHECKPOINT_DIR</code></td>

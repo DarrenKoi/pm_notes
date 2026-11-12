@@ -161,7 +161,7 @@ C:\re-work\recipe-tool\install\RecipeTool.exe 를 ghidra 프로바이더로 열�
 
 계산 로직이 질문이면 `trace_native_values`가 특히 쓸모 있다. 결과값 하나를 정하고, 그 값이 어느 입력과 상수에서 어떤 연산을 거쳐 만들어지는지 함수 경계를 넘어 추적한다. 메모리 별칭(alias)이나 전역 상태를 거치는 값은 미확인으로 남는다. 그 부분은 어셈블리를 직접 보거나 실행해서 확인한다.
 
-Windows에서는 Ghidra에 함수 이름을 붙일 수 없다. pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 [분석 기록](./templates/investigation-log.md) 5절에 붙인다.
+Windows에서는 REA로 Ghidra에 함수 이름이나 주석을 붙일 수 없다(Ghidra 화면에서 직접 붙이는 것은 되지만 REA가 그 프로젝트를 읽지 못한다). pi에게 매번 "지금까지 붙인 제안 이름 표"를 갱신하게 하고, 그 표를 [분석 기록](./templates/investigation-log.md) 5절에 붙인다.
 
 ### 6. 설정과 데이터 파일을 함께 읽는다
 

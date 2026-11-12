@@ -142,7 +142,7 @@ main 전용 설정(6.8.0 배포본에는 없다. 2026-11-11 확인):
 
 | 변수 | 뜻 |
 |---|---|
-| `REA_GHIDRA_PROJECT_PATH`, `REA_GHIDRA_PROGRAM_NAME` | 이미 만들어 둔 Ghidra 프로젝트(`.gpr`)를 읽기 전용 사본으로 재사용한다. 사람이 GUI에서 붙인 이름과 주석이 REA 결과에 나온다. Windows에서 되는지는 upstream 문서에 없다(미확인) |
+| `REA_GHIDRA_PROJECT_PATH`, `REA_GHIDRA_PROGRAM_NAME` | 이미 만들어 둔 Ghidra 프로젝트(`.gpr`)를 읽기 전용 사본으로 재사용한다. 사람이 GUI에서 붙인 이름과 주석이 REA 결과에 나온다. Windows에서는 쓸 수 없다. upstream main 소스가 Windows에서 기존 프로젝트 열기를 막고, 이 변수를 지우라고 안내한다(6.8.0 배포본의 동작은 미확인) |
 | `REA_GHIDRA_CHECKPOINT_DIR` | 분석이 끝난 Program을 `.gzf`로 저장하고 다음 실행에서 이름, 주석, 타입을 복원한다. Linux, macOS 전용 |
 | `REA_MCP_TOOL_FAMILIES` | 노출할 MCP 도구 묶음(family)을 고른다. `rea setup --client pi --tool-families session,enhanced,application`으로 등록에 써 넣는다. 알려진 함수의 네이티브 분석은 `session,enhanced,application`, .NET은 `managed,session`이 upstream 권장 범위다 |
 
