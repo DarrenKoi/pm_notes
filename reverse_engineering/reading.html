@@ -648,7 +648,59 @@ file /absolute/path/to/target.exe</code></p>
 <li>Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm. SQLite 분석(<code>inspect_sqlite_database</code>)까지 쓰려면 24.x나 26 이상을 고른다</li>
 <li>Ghidra 12.1 이상의 12.x(검증된 버전은 12.1.4)</li>
 <li>64비트 JDK. Ghidra 12.1.x는 JDK 21 이상, Ghidra 12.2는 JDK 25 이상을 요구한다</li>
-<li>REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 <code>npm install --global rea-agents</code>로 설치한다</li>
+<li>REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 바로 아래 절의 방법으로 설치한다</li>
+</ul>
+<h3 id="rea-windows-pi-setup--rea를-설치하는-두-가지-방법">REA를 설치하는 두 가지 방법</h3>
+<p>REA는 npm 패키지 <code>rea-agents</code>로 배포된다. 받는 방법이 둘이고, 어느 쪽으로 setup을 돌렸는지에 따라 에이전트 등록이 가리키는 위치가 달라진다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>전역 설치</th>
+<th>패키지 러너(npx)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>명령</td>
+<td><code>npm install --global rea-agents</code> 후 <code>rea setup</code></td>
+<td><code>npx rea-agents@latest setup</code></td>
+</tr>
+<tr>
+<td><code>rea</code> 명령</td>
+<td>PATH에 생긴다. 이 문서의 <code>rea ...</code> 명령을 그대로 쓴다</td>
+<td>생기지 않는다. 매번 <code>npx rea-agents ...</code>로 실행한다</td>
+</tr>
+<tr>
+<td>등록이 가리키는 곳</td>
+<td>전역 설치 폴더</td>
+<td>setup을 실행한 사본. npm 임시 캐시 안일 수 있다</td>
+</tr>
+<tr>
+<td>업데이트</td>
+<td><code>rea update</code></td>
+<td><code>npx rea-agents@latest setup</code>을 다시 실행해 계획을 확인하고 승인한다</td>
+</tr>
+<tr>
+<td>맞는 경우</td>
+<td>계속 쓰는 PC, 에이전트 세션을 여러 개 띄울 때</td>
+<td>한 번 써 보거나 전역 설치를 할 수 없을 때</td>
+</tr>
+</tbody>
+</table></div>
+<p>이 문서는 전역 설치를 기준으로 쓴다. 회사 PC도 전역 설치다.</p>
+<pre><code class="language-powershell">npm install --global rea-agents
+rea --version
+</code></pre>
+<p>알아둘 점은 아래와 같다.</p>
+<ul>
+<li>전역 설치만으로는 에이전트에 등록되지 않는다. 3단계의 <code>rea setup</code>까지 해야 한다. 이미 npx로 등록해 둔 항목도 전역 설치만으로는 바뀌지 않으므로 <code>rea setup</code>을 다시 실행한다.</li>
+<li>npx로 등록했다면 그 캐시 사본을 지우면 안 된다. npm 캐시를 비우면 에이전트가 REA를 띄우지 못한다. 오래 쓸 PC에서 전역 설치를 권하는 이유다.</li>
+<li><code>npx rea-agents setup</code>처럼 <code>@latest</code>를 빼면 npm이 고른 버전(캐시에 남은 예전 버전일 수 있다)이 실행된다. 최신 배포본을 받으려면 <code>@latest</code>를 붙인다.</li>
+<li><code>npx -y</code>의 <code>-y</code>는 패키지 내려받기만 승인한다. setup이 설정 파일을 바꾸는 것은 따로 승인을 받는다.</li>
+<li><code>--global</code> 없이 <code>npm install rea-agents</code>를 하면 현재 폴더의 <code>node_modules</code>에만 들어가고 <code>rea</code> 명령은 생기지 않는다.</li>
+<li>설치와 setup은 분석 대상 폴더 밖에서 실행한다. 패키지 러너는 현재 폴더의 프로젝트 설정과 로컬 패키지를 읽을 수 있다.</li>
+<li>회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.</li>
 </ul>
 <h3 id="rea-windows-pi-setup--2-환경-변수를-정하고-진단한다">2. 환경 변수를 정하고 진단한다</h3>
 <p>PowerShell에서 실행한다. 경로는 실제 설치 위치로 바꾼다.</p>
@@ -705,7 +757,7 @@ rea doctor --client hermes --json
 <li>Ghidra 환경 변수(<code>GHIDRA_INSTALL_DIR</code>, <code>JAVA_HOME</code>)가 <code>rea</code> 항목의 <code>env</code>에 들어갔는지 pi와 같은 방법으로 확인한다.</li>
 </ul>
 <h3 id="rea-windows-pi-setup--claude-code를-쓸-때">Claude Code를 쓸 때</h3>
-<p>Claude Code에도 같은 명령으로 등록한다. <code>--client</code> 값은 <code>claude_code</code>다.</p>
+<p>Claude Code에도 같은 명령으로 등록한다. <code>--client</code> 값은 <code>claude_code</code>다. 전역 설치를 하지 않았다면 <code>rea</code> 자리에 <code>npx rea-agents@latest</code>를 쓴다(예: <code>npx rea-agents@latest setup --client claude_code</code>).</p>
 <pre><code class="language-powershell">rea setup --client claude_code --dry-run --json
 rea setup --client claude_code --yes --json
 rea doctor --client claude_code --skill --json
@@ -755,6 +807,7 @@ Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
 <li>REA 클라이언트 설정(Hermes 절): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes">https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes</a></li>
 <li>REA 클라이언트 설정(Claude Code 절): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code">https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code</a></li>
 <li>REA 설치 문서(Claude Code 등록 위치와 프로필): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile">https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile</a></li>
+<li>REA 설치 방법(전역 설치와 패키지 러너): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#package-runners-and-global-installation">https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#package-runners-and-global-installation</a></li>
 <li>REA 지원 에이전트 목록: <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents">https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents</a></li>
 <li>pi MCP 문서: <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md">https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md</a></li>
 </ul>
@@ -1756,8 +1809,12 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 </thead>
 <tbody>
 <tr>
-<td><code>npx rea-agents setup</code></td>
-<td>에이전트에 MCP 서버와 스킬을 등록한다. 변경 내용을 보여주고 승인을 받는다</td>
+<td><code>npm install --global rea-agents</code></td>
+<td>REA를 전역 설치해 <code>rea</code> 명령을 PATH에 둔다. 이 표의 <code>rea ...</code> 명령은 전역 설치를 전제로 한다</td>
+</tr>
+<tr>
+<td><code>npx rea-agents@latest setup</code> (전역 설치 후에는 <code>rea setup</code>)</td>
+<td>에이전트에 MCP 서버와 스킬을 등록한다. 변경 내용을 보여주고 승인을 받는다. 두 방법의 차이는 <a href="#rea-windows-pi-setup--rea를-설치하는-두-가지-방법">회사 환경 설정</a>에 있다</td>
 </tr>
 <tr>
 <td><code>rea setup --client codex --dry-run --json</code></td>

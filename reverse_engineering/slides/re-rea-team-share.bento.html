@@ -5966,7 +5966,7 @@
    "id": "setup",
    "background": "#0E1217",
    "transition": "morph",
-   "notes": "REA는 Node, Ghidra, JDK를 설치하지 않는다. 먼저 dry-run으로 바뀔 파일과 백업 위치를 보고 적용한다. doctor가 runtime_unavailable을 보고하면 Ghidra나 Java 재설치로는 해결되지 않고, 대부분 임시 폴더가 로컬 NTFS가 아니거나 쓰기 권한이 없는 경우다. PowerShell에서 $env로만 설정하면 이미 떠 있는 MCP 서버에는 반영되지 않으므로 mcp.json의 env에 넣고 /reload 한다. 마지막 binary_session 호출까지 해야 설정이 끝난 것이다. Hermes는 --client hermes, Claude Code는 --client claude_code로 같은 순서로 등록한다. Claude Code는 외부 모델을 쓰므로 사내 도구 분석에는 쓰지 않고, 개인 PC에서 연습할 때만 쓴다.",
+   "notes": "REA는 Node, Ghidra, JDK를 설치하지 않는다. REA 자체는 새 PC라면 npm install --global rea-agents로 전역 설치한 뒤 rea setup을 돌린다. 설치 없이 npx rea-agents@latest setup으로도 되지만, 그 경우 등록이 npm 캐시의 사본을 가리키고 rea 명령이 PATH에 생기지 않는다. 먼저 dry-run으로 바뀔 파일과 백업 위치를 보고 적용한다. doctor가 runtime_unavailable을 보고하면 Ghidra나 Java 재설치로는 해결되지 않고, 대부분 임시 폴더가 로컬 NTFS가 아니거나 쓰기 권한이 없는 경우다. PowerShell에서 $env로만 설정하면 이미 떠 있는 MCP 서버에는 반영되지 않으므로 mcp.json의 env에 넣고 /reload 한다. 마지막 binary_session 호출까지 해야 설정이 끝난 것이다. Hermes는 --client hermes, Claude Code는 --client claude_code로 같은 순서로 등록한다. Claude Code는 외부 모델을 쓰므로 사내 도구 분석에는 쓰지 않고, 개인 PC에서 연습할 때만 쓴다.",
    "elements": [
     {
      "id": "kicker",

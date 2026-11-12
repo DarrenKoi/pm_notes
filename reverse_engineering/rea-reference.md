@@ -31,7 +31,8 @@ note_kind: "참조"
 
 | 명령 | 하는 일 |
 |---|---|
-| `npx rea-agents setup` | 에이전트에 MCP 서버와 스킬을 등록한다. 변경 내용을 보여주고 승인을 받는다 |
+| `npm install --global rea-agents` | REA를 전역 설치해 `rea` 명령을 PATH에 둔다. 이 표의 `rea ...` 명령은 전역 설치를 전제로 한다 |
+| `npx rea-agents@latest setup` (전역 설치 후에는 `rea setup`) | 에이전트에 MCP 서버와 스킬을 등록한다. 변경 내용을 보여주고 승인을 받는다. 두 방법의 차이는 [회사 환경 설정](./rea-windows-pi-setup.md#rea를-설치하는-두-가지-방법)에 있다 |
 | `rea setup --client codex --dry-run --json` | 특정 에이전트의 등록 계획만 보여준다. 아무것도 바꾸지 않는다 |
 | `rea doctor --json` | 전체 환경을 진단한다. 설정을 바꾸지 않는다 |
 | `rea doctor --provider ghidra --json` | Ghidra 연결만 진단한다 |

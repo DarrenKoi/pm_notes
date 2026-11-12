@@ -58,7 +58,36 @@ REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어
 - Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm. SQLite 분석(`inspect_sqlite_database`)까지 쓰려면 24.x나 26 이상을 고른다
 - Ghidra 12.1 이상의 12.x(검증된 버전은 12.1.4)
 - 64비트 JDK. Ghidra 12.1.x는 JDK 21 이상, Ghidra 12.2는 JDK 25 이상을 요구한다
-- REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 `npm install --global rea-agents`로 설치한다
+- REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 바로 아래 절의 방법으로 설치한다
+
+### REA를 설치하는 두 가지 방법
+
+REA는 npm 패키지 `rea-agents`로 배포된다. 받는 방법이 둘이고, 어느 쪽으로 setup을 돌렸는지에 따라 에이전트 등록이 가리키는 위치가 달라진다.
+
+| | 전역 설치 | 패키지 러너(npx) |
+|---|---|---|
+| 명령 | `npm install --global rea-agents` 후 `rea setup` | `npx rea-agents@latest setup` |
+| `rea` 명령 | PATH에 생긴다. 이 문서의 `rea ...` 명령을 그대로 쓴다 | 생기지 않는다. 매번 `npx rea-agents ...`로 실행한다 |
+| 등록이 가리키는 곳 | 전역 설치 폴더 | setup을 실행한 사본. npm 임시 캐시 안일 수 있다 |
+| 업데이트 | `rea update` | `npx rea-agents@latest setup`을 다시 실행해 계획을 확인하고 승인한다 |
+| 맞는 경우 | 계속 쓰는 PC, 에이전트 세션을 여러 개 띄울 때 | 한 번 써 보거나 전역 설치를 할 수 없을 때 |
+
+이 문서는 전역 설치를 기준으로 쓴다. 회사 PC도 전역 설치다.
+
+```powershell
+npm install --global rea-agents
+rea --version
+```
+
+알아둘 점은 아래와 같다.
+
+- 전역 설치만으로는 에이전트에 등록되지 않는다. 3단계의 `rea setup`까지 해야 한다. 이미 npx로 등록해 둔 항목도 전역 설치만으로는 바뀌지 않으므로 `rea setup`을 다시 실행한다.
+- npx로 등록했다면 그 캐시 사본을 지우면 안 된다. npm 캐시를 비우면 에이전트가 REA를 띄우지 못한다. 오래 쓸 PC에서 전역 설치를 권하는 이유다.
+- `npx rea-agents setup`처럼 `@latest`를 빼면 npm이 고른 버전(캐시에 남은 예전 버전일 수 있다)이 실행된다. 최신 배포본을 받으려면 `@latest`를 붙인다.
+- `npx -y`의 `-y`는 패키지 내려받기만 승인한다. setup이 설정 파일을 바꾸는 것은 따로 승인을 받는다.
+- `--global` 없이 `npm install rea-agents`를 하면 현재 폴더의 `node_modules`에만 들어가고 `rea` 명령은 생기지 않는다.
+- 설치와 setup은 분석 대상 폴더 밖에서 실행한다. 패키지 러너는 현재 폴더의 프로젝트 설정과 로컬 패키지를 읽을 수 있다.
+- 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
 
 ### 2. 환경 변수를 정하고 진단한다
 
@@ -140,7 +169,7 @@ pi와 다른 점은 아래와 같다.
 
 ### Claude Code를 쓸 때
 
-Claude Code에도 같은 명령으로 등록한다. `--client` 값은 `claude_code`다.
+Claude Code에도 같은 명령으로 등록한다. `--client` 값은 `claude_code`다. 전역 설치를 하지 않았다면 `rea` 자리에 `npx rea-agents@latest`를 쓴다(예: `npx rea-agents@latest setup --client claude_code`).
 
 ```powershell
 rea setup --client claude_code --dry-run --json
@@ -208,6 +237,7 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 - REA 클라이언트 설정(Hermes 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes>
 - REA 클라이언트 설정(Claude Code 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code>
 - REA 설치 문서(Claude Code 등록 위치와 프로필): <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile>
+- REA 설치 방법(전역 설치와 패키지 러너): <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#package-runners-and-global-installation>
 - REA 지원 에이전트 목록: <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents>
 - pi MCP 문서: <https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md>
 
