@@ -40,11 +40,18 @@ if BRAND_FILE.exists():
     BRAND.update(json.loads(BRAND_FILE.read_text(encoding="utf-8")))
 
 FONT = "맑은 고딕"
-INK = RGBColor(0x26, 0x26, 0x26)
-SUB = RGBColor(0x59, 0x59, 0x59)
-GRAY = RGBColor(0xBF, 0xBF, 0xBF)
-LINE = RGBColor(0xD0, 0xD0, 0xD0)
-MIST = RGBColor(0xF4, 0xF5, 0xF7)
+# 회사에서 자주 쓰는 색 (2026-11-12 사용자 제공, 색 이름만 받았고 hex 값은 근사치):
+#   빨강, 주황, 연한 분홍, 연한 파랑, 짙은 파랑, 베이지, 연노랑, 크림, 흰색, 검정,
+#   짙은 회색, 진회색, 밝은 회색, 연회색
+# 이 deck 은 그중 몇 개만 쓴다: 표와 텍스트 박스는 연회색(MIST), 밝은 회색(SILVER) 바탕에 검정(INK),
+# 강조는 짙은 파랑(BLUE)과 연한 파랑(BLUE_PALE), 주황은 관문, 최종 목표, ⟨확인⟩ 자리에만.
+# 아직 안 쓰는 색: 연한 분홍 FCE4E4, 연노랑 FFF2CC, 크림 FFF9E6, 베이지 F2E6D8, 진회색 404040
+INK = RGBColor(0x26, 0x26, 0x26)     # 검정 (본문)
+SUB = RGBColor(0x59, 0x59, 0x59)     # 짙은 회색 (보조 글자)
+GRAY = RGBColor(0xBF, 0xBF, 0xBF)    # 구분선, 화살표
+LINE = RGBColor(0xD0, 0xD0, 0xD0)    # 박스 테두리
+SILVER = RGBColor(0xD9, 0xD9, 0xD9)  # 밝은 회색 (표, 박스 머리줄)
+MIST = RGBColor(0xF2, 0xF2, 0xF2)    # 연회색 (표 줄무늬, 텍스트 박스 바탕)
 BLUE = RGBColor(0x1F, 0x5A, 0xA6)
 BLUE_PALE = RGBColor(0xE8, 0xF0, 0xFA)
 RED = RGBColor(0xD7, 0x26, 0x3D)
@@ -182,21 +189,22 @@ def slide(title, msg):
     return s
 
 
-def column(s, x, y, w, h, head, items, accent, size=15, mark="▪ "):
-    box(s, x, y, w, Inches(0.5), fill=accent)
-    text(s, x + Inches(0.25), y, w - Inches(0.5), Inches(0.5), head, size=17, bold=True, color=WHITE,
-         anchor=MSO_ANCHOR.MIDDLE)
+def column(s, x, y, w, h, head, items, accent, size=15, mark="▪ ", strong=False):
+    """머리줄은 밝은 회색 + 검정 글자. strong=True(전/후 구성의 '후')만 accent 색 + 흰 글자."""
+    box(s, x, y, w, Inches(0.5), fill=accent if strong else SILVER)
+    text(s, x + Inches(0.25), y, w - Inches(0.5), Inches(0.5), head, size=17, bold=True,
+         color=WHITE if strong else INK, anchor=MSO_ANCHOR.MIDDLE)
     box(s, x, y + Inches(0.5), w, h - Inches(0.5), fill=WHITE, line=LINE)
     text(s, x + Inches(0.3), y + Inches(0.75), w - Inches(0.6), h - Inches(0.95),
          [[(mark, {"color": accent, "bold": True})] + runs_of(t) for t in items], size=size, gap=0.6)
 
 
 def two_col(s, left_head, left, right_head, right, y=COL_Y, h=COL_H, size=17, arrow=True, before=False):
-    """두 컬럼 모두 파랑. before=True면 좌: 기존, 문제 (회색) → 우: 변경, 해결 (파랑)."""
+    """두 컬럼 모두 밝은 회색 머리줄. before=True면 우(변경, 해결)만 파랑 머리줄로 강조."""
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
     column(s, M, y, cw, h, left_head, left, SUB if before else BLUE, size)
-    column(s, M + cw + gap, y, cw, h, right_head, right, BLUE, size)
+    column(s, M + cw + gap, y, cw, h, right_head, right, BLUE, size, strong=before)
     if not arrow:
         return
     a = s.shapes.add_shape(MSO_SHAPE.CHEVRON, M + cw + Inches(0.17), y + h / 2 - Inches(0.25), Inches(0.26), Inches(0.5))
@@ -241,7 +249,7 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
         for j, val in enumerate(row):
             c = t.cell(i, j)
             c.fill.solid()
-            c.fill.fore_color.rgb = BLUE if i == 0 else (BLUE_PALE if hl else (MIST if i % 2 == 0 else WHITE))
+            c.fill.fore_color.rgb = SILVER if i == 0 else (BLUE_PALE if hl else (MIST if i % 2 == 0 else WHITE))
             c.margin_left = c.margin_right = Inches(0.12)
             tf = c.text_frame
             tf.word_wrap = True
@@ -250,7 +258,7 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
             r.text = val
             r.font.name, r.font.size = FONT, Pt(size)
             r.font.bold = i == 0 or (bold_col0 and j == 0) or hl
-            r.font.color.rgb = WHITE if i == 0 else (TBD if "⟨" in val else INK)
+            r.font.color.rgb = TBD if (i and "⟨" in val) else INK
     return t
 
 
@@ -469,8 +477,8 @@ def s_kanban():  # 일정 칸반
     hy = COL_Y - Inches(0.05)
     for j, p in enumerate(periods):
         x = M + lw + j * colw
-        box(s, x + Inches(0.03), hy, colw - Inches(0.06), Inches(0.38), fill=BLUE)
-        text(s, x, hy, colw, Inches(0.38), p, size=13, bold=True, color=WHITE, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+        box(s, x + Inches(0.03), hy, colw - Inches(0.06), Inches(0.38), fill=SILVER)
+        text(s, x, hy, colw, Inches(0.38), p, size=13, bold=True, color=INK, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     card_h, card_g = Inches(0.33), Inches(0.05)
     lane_hs = [Inches(1.3), Inches(1.3), Inches(0.5)]
     y = hy + Inches(0.45)
