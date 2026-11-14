@@ -11,14 +11,14 @@ note_kind: "에이전트 지침"
 
 # RE, REA 입문 deck 편집 지침
 
-> `re-rea-team-intro.pptx`에 회사에서 얻은 REA 실행 결과를 끼워 넣거나 내용을 고치는 LLM과 사람을 위한 지침. 사내 결과는 `extra_사내용.json` 한 파일에만 적는다.
+> `re-rea-team-intro.pptx`와 `re-rea-team-intro.bento.html`에 회사에서 얻은 REA 실행 결과를 끼워 넣거나 내용을 고치는 LLM과 사람을 위한 지침. 사내 결과는 `extra_사내용.json` 한 파일에만 적는다.
 
 ## 왜 필요한가? (Why)
 
 이 deck은 개념과 절차를 설명하는 29장이다. 발표에서는 회사 PC에서 REA를 실제로 돌린 결과를 사이사이에 보여 줄 예정이다. 그 작업은 사내 LLM에 연결된 에이전트(pi)가 이 저장소를 읽고 한다. 이때 세 가지가 깨지기 쉽다.
 
 - **기밀**: 이 저장소는 공개다. 사내 도구의 이름, 경로, 디컴파일 코드가 커밋되면 밖으로 나간다.
-- **구조**: pptx와 md는 스크립트가 만든 결과물이다. 결과물을 직접 고치면 다음 생성 때 사라진다.
+- **구조**: pptx, HTML, md는 스크립트가 만든 결과물이다. 결과물을 직접 고치면 다음 생성 때 사라진다.
 - **모양**: 글이 상자를 넘치면 발표 화면에서 잘린다. 스크립트는 글 길이를 재지 않는다.
 
 ## 핵심 개념 (What)
@@ -28,10 +28,12 @@ note_kind: "에이전트 지침"
 | 파일 | 역할 | git |
 |---|---|---|
 | `build_team_intro.py` | 생성 스크립트. 공개 내용은 `SLIDES` 목록에 있다 | 올린다 |
+| `team_intro_bento.py` | HTML deck을 그리는 부분. 위 스크립트가 부른다 | 올린다 |
 | `re-rea-team-intro.pptx`, `.md` | 공개 deck과 발표 원고. 스크립트가 만든다 | 올린다 |
+| `re-rea-team-intro.bento.html` | 같은 내용의 HTML deck([Bento](https://bento.page) 형식). 브라우저로 열어 **Slideshow**로 발표한다 | 올린다 |
 | `extra_example.json` | 추가 슬라이드의 형식 예시 | 올린다 |
 | `extra_사내용.json` | 회사에서 얻은 결과로 만든 추가 슬라이드 | **제외** |
-| `re-rea-team-intro_사내용.pptx`, `.md` | 추가 슬라이드가 들어간 발표용 결과물 | **제외** |
+| `re-rea-team-intro_사내용.pptx`, `.bento.html`, `.md` | 추가 슬라이드가 들어간 발표용 결과물 | **제외** |
 | `img_사내용/` | 사내 화면 캡처를 두는 폴더(필요할 때 만든다) | **제외** |
 
 `reverse_engineering/.gitignore`가 이름에 `_사내용`이 들어간 파일과 폴더를 모두 제외한다. 사내 내용을 담는 파일은 반드시 이 글자를 이름에 넣는다.
@@ -44,7 +46,9 @@ note_kind: "에이전트 지침"
 | 개념 설명, 용어, 공개 가능한 내용 고치기 | `build_team_intro.py`의 `SLIDES` |
 | 로고, 슬로건, 부서 이름 넣기 | `build_team_intro.py` 위쪽의 `LOGO`, `SLOGAN`, `DEPT`. 값을 바꾼 채로 커밋하지 않는다 |
 
-`.pptx`와 `.md`는 직접 고치지 않는다. 도식을 그리는 함수(`draw_*`)도 고치지 않는다.
+`.pptx`, `.bento.html`, `.md`는 직접 고치지 않는다. 도식을 그리는 함수(`draw_*`)도 고치지 않는다.
+
+HTML deck은 브라우저로 열면 편집기가 뜬다. 편집기에서 **Save**를 누르지 않는다. 손으로 고친 내용은 다음 생성 때 사라지고, 저장한 파일에는 공동 편집용 키(`collab`)가 들어갈 수 있고, 그런 파일은 공개 저장소에 올리면 안 된다. 실수로 저장했으면 스크립트를 다시 실행한다. 문서 전체를 새로 쓰므로 키가 지워진다.
 
 ### 끼워 넣기 좋은 자리
 
@@ -106,11 +110,11 @@ kind별 항목은 아래와 같다. 완전한 예는 `extra_example.json`에 있
 python build_team_intro.py
 ```
 
-`extra_사내용.json`이 있으면 공개 파일 두 개에 더해 `_사내용` 파일 두 개가 생긴다. 발표에는 `re-rea-team-intro_사내용.pptx`를 쓴다. `python-pptx` 패키지가 필요하다. 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
+`extra_사내용.json`이 있으면 공개 파일 세 개에 더해 `_사내용` 파일 세 개가 생긴다. 발표에는 `re-rea-team-intro_사내용.pptx`나 `re-rea-team-intro_사내용.bento.html` 중 하나를 쓴다. HTML deck은 저장소에 있는 `re-rea-team-intro.bento.html`의 앱 부분을 그대로 쓰므로 인터넷 연결 없이 만들어진다. `image` 그림은 HTML 파일 안에 들어간다. `python-pptx` 패키지가 필요하다. 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
 
 ### 4. 확인한다
 
-- PowerPoint로 열어 추가한 슬라이드마다 글이 상자 밖으로 나가거나 잘리지 않는지 본다. 넘치면 글을 줄이거나 슬라이드를 둘로 나눈다. 글자 크기를 줄여서 해결하지 않는다.
+- PowerPoint로(HTML deck은 브라우저의 Slideshow로) 열어 추가한 슬라이드마다 글이 상자 밖으로 나가거나 잘리지 않는지 본다. 넘치면 글을 줄이거나 슬라이드를 둘로 나눈다. 글자 크기를 줄여서 해결하지 않는다.
 - `git status`에 `_사내용` 파일이 보이지 않는지 확인한다. 보이면 커밋하지 않고 `.gitignore`부터 확인한다.
 
 ### 5. 내용 규칙을 지킨다
@@ -137,6 +141,7 @@ python build_team_intro.py
 ## 참고 자료 (References)
 
 - python-pptx 문서: <https://python-pptx.readthedocs.io/>
+- Bento 에이전트용 형식 문서: <https://bento.page/agents.md>
 - REA 저장소: <https://github.com/morluto/rea>
 
 ## 관련 문서

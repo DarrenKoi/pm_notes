@@ -40,11 +40,12 @@ note_kind: "목차"
 
 팀원에게 RE와 REA 사용법을 공유하는 발표 자료가 `slides/`에 두 벌 있다.
 
-**입문 deck (pptx, 29장, 60분)**: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.
+**입문 deck (pptx와 HTML, 29장, 60분)**: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.
 
 - [slides/re-rea-team-intro.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/re-rea-team-intro.pptx): 발표용 PowerPoint. 슬라이드마다 발표자 노트가 있다. GitHub 화면에서 **Download raw file**로 내려받는다.
+- [slides/re-rea-team-intro.bento.html](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/re-rea-team-intro.bento.html): 같은 내용의 [Bento](https://bento.page) HTML. 하얀 배경에 순서대로 나타나는 효과, 움직이는 화살표, 슬라이드 사이 morph가 들어 있다. **Download raw file**로 내려받아 브라우저로 열고 오른쪽 아래 **Slideshow**로 발표한다. 글꼴은 PC의 시스템 글꼴을 쓴다.
 - [발표 원고](./slides/re-rea-team-intro.md): 슬라이드 내용과 발표자 노트를 글로 옮긴 문서.
-- 두 파일은 `slides/build_team_intro.py`가 함께 만든다. 내용을 고칠 때는 이 스크립트의 `SLIDES`를 고치고 다시 실행한다.
+- 세 파일은 `slides/build_team_intro.py`가 함께 만든다. 내용을 고칠 때는 이 스크립트의 `SLIDES`를 고치고 다시 실행한다.
 - [slides/team-intro-editing-guide.md](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/team-intro-editing-guide.md): 회사에서 얻은 REA 실행 결과를 사이사이에 끼워 넣는 LLM과 사람을 위한 지침. 사내 결과는 git에서 제외되는 `slides/extra_사내용.json`에만 적고, 결과물은 `_사내용` 파일로 따로 나온다.
 
 **Bento deck (HTML, 22장)**: 용어를 아는 사람을 위한 자료다.

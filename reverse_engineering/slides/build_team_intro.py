@@ -1,8 +1,8 @@
 """RE, REA 팀 입문 deck 생성기.
 
 실행: python reverse_engineering/slides/build_team_intro.py [추가 슬라이드.json]
-SLIDES 하나에서 re-rea-team-intro.pptx 와 re-rea-team-intro.md 를 함께 만든다.
-두 파일을 직접 고치지 말고 SLIDES 를 고친 뒤 다시 실행한다.
+SLIDES 하나에서 re-rea-team-intro.pptx, .bento.html, .md 를 함께 만든다.
+세 파일을 직접 고치지 말고 SLIDES 를 고친 뒤 다시 실행한다.
 내용의 근거는 이 폴더(reverse_engineering/)의 .md 문서다.
 
 회사에서 얻은 REA 결과는 SLIDES 에 넣지 않는다(공개 저장소다). slides/extra_사내용.json 에
@@ -23,6 +23,8 @@ from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
+
+from team_intro_bento import build_bento
 
 HERE = Path(__file__).parent
 NAME = "re-rea-team-intro"
@@ -193,7 +195,7 @@ SLIDES = [
                "REA도 결과를 이 세 가지로 나눠서 주기 때문에, 기록할 때 이 구분을 지우면 안 됩니다."),
     dict(kind="draw_zones", part=P1, title="대상에 따라 난이도가 다르다",
          msg="무엇으로 만들었는지에 따라 남는 정보가 다릅니다. 쉬운 대상부터 시작합니다",
-         groups=[("쉬움", ["**웹 앱의 화면 쪽**: 코드 전체가 이미 브라우저에 내려와 있다",
+         groups=[("쉬움", ["**웹 앱의 화면 쪽**: 화면 쪽 코드가 이미 브라우저에 내려와 있다",
                         "**웹 기술로 만든 설치형 앱 (Electron)**: 압축을 풀면 웹 앱과 같다",
                         "**일반 .NET 프로그램 (C#)**: 클래스와 메서드 이름이 남는다"]),
                  ("보통", ["**Python 프로그램을 exe로 묶은 것 (PyInstaller)**: 내부 파일 목록이 남는다. 소스 복원은 별도 도구",
@@ -291,7 +293,7 @@ SLIDES = [
                ["Python을 exe로 묶은 프로그램", "됨", "내부 목록과 구조를 본다. 원래 Python 소스로 되돌려 주지는 않는다"],
                ["Electron 앱, 웹 페이지 관찰, HAR 분석", "됨", "Chrome을 분석 전용 프로필로 띄운다"],
                ["REA로 함수에 이름, 주석 붙이기", "안 됨", "에이전트에게 주소와 제안 이름을 표로 정리하게 해서 기록에 남긴다"],
-               ["프로그램 실행 관찰", "안 됨", "테스트 환경에서 사람이 직접 실행해 확인한다"],
+               ["설치형 프로그램의 실행 관찰", "안 됨", "사람이 테스트 환경에서 직접 실행한다. 웹 페이지 관찰은 된다"],
                ["공유 폴더, USB의 파일을 Ghidra로 분석", "안 됨", "고정 로컬 디스크(NTFS)로 복사한 뒤 분석한다"]],
          foot="HAR: 브라우저의 통신 기록 파일. 로그인 상태를 유지하는 인증 정보가 들어 있을 수 있으므로 분석이 끝나면 지운다.",
          notes="REA 문서는 맥과 리눅스 기준으로 쓰인 부분이 많아서, Windows에서 안 되는 기능이 몇 가지 있습니다. "
@@ -333,7 +335,8 @@ SLIDES = [
          foot="도구 이름은 외울 필요가 없다. 에이전트가 고른다.  브라우저에 열린 웹 앱은 Chrome 관찰 도구(inspect_web_page)로 본다.  "
               ".NET이라도 기계어로 빌드한 것(NativeAOT)은 네이티브 경로로 간다.",
          notes="에이전트는 대상의 형식을 보고 첫 도구를 고릅니다. 우리가 알아 둘 것은 하나입니다. 설치 폴더를 받았는데 무엇으로 만든 프로그램인지 모르면 "
-               "폴더째 넘기면 REA가 판별해 줍니다. Ghidra까지 가는 것은 맨 왼쪽 길뿐입니다."),
+               "폴더째 넘기면 REA가 판별해 줍니다. exe 하나가 아니라 폴더째 넘기는 이유는 DLL, 설정, 리소스가 함께 있어야 실제 동작을 설명할 수 있기 때문입니다. "
+               "Ghidra까지 가는 것은 맨 왼쪽 길뿐입니다."),
     dict(kind="draw_native", part=P4, title="네이티브 .exe 분석 흐름",
          msg="넓게 훑은 뒤 한 곳만 깊게 봅니다. 닫기 전에 근거를 저장합니다",
          nodes=[("정찰", "문자열과 임포트로 관련 함수 후보를 찾는다. 아직 디컴파일하지 않는다"),
@@ -365,7 +368,7 @@ SLIDES = [
                 ("연동 정보 파악", "웹 앱이 어떤 주소와 형식으로 데이터를 주고받는가"),
                 ("인수인계 없는 도구 파악", "이 도구가 어떤 파일과 설정을 읽고 쓰는가")],
          md="계산 로직을 옮길 때의 검증: 같은 입력(정상값, 경계값인 0과 음수와 아주 큰 값, 빈 입력)을 원본 도구와 새로 만든 코드에 넣고 "
-            "출력을 비교한다. 같으면 통과, 다르면 다시 분석한다.",
+            "출력을 비교한다. 시험한 입력에서 같으면 통과이고(프로그램 전체가 같다는 뜻은 아니다), 다르면 다시 분석한다.",
          notes="우리 팀에서 쓸 만한 경우 네 가지입니다. 특히 계산 로직을 옮길 때는 아래 그림처럼 옮긴 코드와 원본 도구에 같은 입력을 넣어 비교하는 것까지 해야 합니다. "
                "0, 음수, 빈 값 같은 경계값도 꼭 넣습니다."),
     dict(kind="table", part=P4, title="자주 만나는 문제",
@@ -728,7 +731,7 @@ def draw_uses(sl, y, h, s):
         box(sl, X + 4.4, yy, 3.2, bh / 2 - 0.075, t, 14, GRAY, MSO_ANCHOR.MIDDLE, align=PP_ALIGN.CENTER, bold=True)
         arrow(sl, X + 3.45, by + bh / 2, X + 4.35, yy + bh / 4)
         arrow(sl, X + 7.65, yy + bh / 4, X + 8.55, by + bh / 2)
-    box(sl, X + 8.6, by, W - 8.6, bh, "**출력 비교**\n같으면 통과\n다르면 다시 분석한다", 14, BLUE, MSO_ANCHOR.MIDDLE,
+    box(sl, X + 8.6, by, W - 8.6, bh, "**출력 비교**\n시험한 입력에서 같으면 통과\n다르면 다시 분석한다", 14, BLUE, MSO_ANCHOR.MIDDLE,
         align=PP_ALIGN.CENTER, color=WHITE)
 
 
@@ -810,14 +813,15 @@ note_kind: "발표 원고"
 | 파일 | 역할 |
 |---|---|
 | `{NAME}.pptx` | 발표용 슬라이드. 슬라이드마다 발표자 노트가 있다 |
+| `{NAME}.bento.html` | 같은 내용의 HTML deck(Bento 형식). 브라우저로 열어 Slideshow로 발표한다 |
 | `{NAME}.md` | 이 문서. 슬라이드 내용과 발표자 노트를 글로 옮긴 원고 |
-| `build_team_intro.py` | 두 파일을 만드는 스크립트. 내용은 이 스크립트의 `SLIDES`에 있다 |
+| `build_team_intro.py` | 세 파일을 만드는 스크립트. 내용은 이 스크립트의 `SLIDES`에 있다 |
 
 구성은 4부이고 발표 시간은 질문을 포함해 60분이다. 1부 리버스 엔지니어링이란(3~12장), 2부 작업 절차(13~15장), 3부 Ghidra와 REA(16~19장), 4부 회사 PC에서 써 보기(20~27장), 마무리(28~29장). 슬라이드의 도식은 이 원고에서 목록과 표로 옮겨 적었다.
 
 ## 어떻게 사용하는가? (How)
 
-pptx와 이 문서는 직접 고치지 않는다. `build_team_intro.py`의 `SLIDES`를 고친 뒤 저장소 루트에서 다시 만든다.
+pptx, HTML deck, 이 문서는 직접 고치지 않는다. `build_team_intro.py`의 `SLIDES`를 고친 뒤 저장소 루트에서 다시 만든다.
 
 ```bash
 python reverse_engineering/slides/build_team_intro.py
@@ -892,10 +896,12 @@ if __name__ == "__main__":
         assert not re.search("[—·]", str(s)), s["title"]
     build_pptx(HERE / f"{NAME}.pptx", SLIDES)
     build_md(HERE / f"{NAME}.md", SLIDES)
-    print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md")
+    build_bento(HERE / f"{NAME}.bento.html", SLIDES)
+    print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md, {NAME}.bento.html")
     extra = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "extra_사내용.json"
     if extra.is_file():  # company-only results: separate output files, kept out of git by .gitignore
         slides = with_extras(extra)
         build_pptx(HERE / f"{NAME}_사내용.pptx", slides)
         build_md(HERE / f"{NAME}_사내용.md", slides)
-        print(f"{len(slides)} slides -> {NAME}_사내용.pptx, {NAME}_사내용.md  (git 제외, 올리지 않는다)")
+        build_bento(HERE / f"{NAME}_사내용.bento.html", slides, shell=HERE / f"{NAME}.bento.html")
+        print(f"{len(slides)} slides -> {NAME}_사내용.pptx, .md, .bento.html  (git 제외, 올리지 않는다)")

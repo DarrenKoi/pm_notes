@@ -49,13 +49,13 @@ Bento 형식 전체 스키마는 <https://bento.page/agents.md>에 있다. 처�
 
 | 이름 | 값 | 쓰는 곳 |
 |---|---|---|
-| 배경 | `#0E1217` | 모든 슬라이드 `background` |
-| 본문 | `#ECE8E1` | 기본 글자 |
-| 보조 | `#8A939E` | 설명, 각주, 비활성 |
-| 강조(유일한 accent) | `#F2A541` | 머리글, 번호, 경고 테두리, 강조 줄 |
-| 면 | `#171D25`, `#202833` | 카드 배경, 표 머리 |
-| 선 | `rgba(236,232,225,0.14)` | 카드, 표 테두리 |
-| 강조 위 글자 | `#14110B` | 강조색으로 채운 상자 안 글자 |
+| 배경 | `#FFFFFF` | 모든 슬라이드 `background` |
+| 본문 | `#1B2430` | 기본 글자 |
+| 보조 | `#5F6B7A` | 설명, 각주, 비활성 |
+| 강조(유일한 accent) | `#D9480F` | 머리글, 번호, 경고 테두리, 강조 줄 |
+| 면 | `#F5F6F8`, `#E6E9EE` | 카드 배경, 표 머리 |
+| 선 | `rgba(27,36,48,0.16)` | 카드, 표 테두리 |
+| 강조 위 글자 | `#FFFFFF` | 강조색으로 채운 상자 안 글자 |
 | 본문 글꼴 | `'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif` | 모든 텍스트 |
 | 코드 글꼴 | `Consolas, 'SF Mono', Menlo, monospace` | 코드 블록, 명령어, 큰 숫자 |
 
@@ -203,7 +203,7 @@ python3 bento_doc.py inject reverse_engineering/slides/re-rea-team-share.bento.h
 
 1. 비슷한 슬라이드 하나를 복사해서 시작한다. 공통 틀 네 요소(`kicker`, `title`, `accent-bar`, `pg`)는 그대로 둔다.
 2. 슬라이드 `id`와 요소 `id`를 새로 정한다. 요소 id는 슬라이드 안에서 겹치지 않게 하고, morph로 이어질 요소만 앞 슬라이드와 같은 id를 쓴다.
-3. `transition: "morph"`, `background: "#0E1217"`을 둔다.
+3. `transition: "morph"`, `background: "#FFFFFF"`을 둔다.
 4. `notes`(발표자 노트)를 반드시 쓴다. 발표 원고 역할을 한다.
 5. `kicker`의 절 번호(`01 기초`부터 `08 시작하기`까지)를 앞뒤 슬라이드와 맞춘다.
 6. 위 슬라이드 표와 이 문서의 슬라이드 목록을 갱신한다.
