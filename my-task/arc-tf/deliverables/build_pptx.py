@@ -129,11 +129,9 @@ def box(slide, x, y, w, h, fill=MIST, line=None, shape=MSO_SHAPE.RECTANGLE, radi
     s = slide.shapes.add_shape(shape, x, y, w, h)
     s.fill.solid()
     s.fill.fore_color.rgb = fill
-    if line:
-        s.line.color.rgb = line
-        s.line.width = Pt(1)
-    else:
-        s.line.fill.background()
+    # 선 없는 박스도 채움색 1pt 선을 둔다: 선은 경계 가운데에 그려져서, 선 있는 박스와 폭이 1pt 어긋나기 때문
+    s.line.color.rgb = line or fill
+    s.line.width = Pt(1)
     s.shadow.inherit = False
     if shape == MSO_SHAPE.ROUNDED_RECTANGLE:
         s.adjustments[0] = radius
