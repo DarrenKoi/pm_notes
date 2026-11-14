@@ -1,7 +1,7 @@
 ---
 tags: [reverse-engineering, rea, ghidra, mcp]
 level: intermediate
-last_updated: 2026-11-11
+last_updated: 2026-11-14
 document_type: learning
 category_major: "리버스 엔지니어링"
 category_middle: "주제 안내"
@@ -38,12 +38,21 @@ note_kind: "목차"
 
 ## 발표 자료
 
-팀원에게 RE와 REA 사용법을 공유하는 22장짜리 발표 deck이 `slides/`에 있다.
+팀원에게 RE와 REA 사용법을 공유하는 발표 자료가 `slides/`에 두 벌 있다.
+
+**입문 deck (pptx, 29장, 60분)**: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.
+
+- [slides/re-rea-team-intro.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/re-rea-team-intro.pptx): 발표용 PowerPoint. 슬라이드마다 발표자 노트가 있다. GitHub 화면에서 **Download raw file**로 내려받는다.
+- [발표 원고](./slides/re-rea-team-intro.md): 슬라이드 내용과 발표자 노트를 글로 옮긴 문서.
+- 두 파일은 `slides/build_team_intro.py`가 함께 만든다. 내용을 고칠 때는 이 스크립트의 `SLIDES`를 고치고 다시 실행한다.
+- [slides/team-intro-editing-guide.md](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/team-intro-editing-guide.md): 회사에서 얻은 REA 실행 결과를 사이사이에 끼워 넣는 LLM과 사람을 위한 지침. 사내 결과는 git에서 제외되는 `slides/extra_사내용.json`에만 적고, 결과물은 `_사내용` 파일로 따로 나온다.
+
+**Bento deck (HTML, 22장)**: 용어를 아는 사람을 위한 자료다.
 
 - [slides/re-rea-team-share.bento.html](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/re-rea-team-share.bento.html): [Bento](https://bento.page) 형식. GitHub 화면에서는 HTML 소스로 보이므로 **Download raw file**로 내려받아 브라우저로 연다. 편집기가 뜨면 오른쪽 아래 **Slideshow**로 발표한다. 슬라이드마다 발표자 노트가 있다.
 - [slides/bento-editing-guide.md](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/bento-editing-guide.md): deck을 이어서 고칠 LLM과 사람을 위한 지침. 고칠 곳, 디자인 규칙, 슬라이드별 원본 문서, 줄이면 안 되는 단서를 정리했다.
 
-deck의 내용은 이 폴더 문서의 요약이다. 문서를 고치면 지침의 슬라이드 표를 보고 해당 슬라이드도 함께 고친다.
+두 deck의 내용은 이 폴더 문서의 요약이다. 문서를 고치면 Bento deck은 지침의 슬라이드 표를 보고, 입문 deck은 `SLIDES`에서 해당 슬라이드를 찾아 함께 고친다.
 
 ## 휴대폰, 태블릿에서 읽기
 
