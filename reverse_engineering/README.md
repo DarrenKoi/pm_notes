@@ -52,6 +52,8 @@ note_kind: "목차"
 
 - [slides/re-rea-team-share.bento.html](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/re-rea-team-share.bento.html): [Bento](https://bento.page) 형식. GitHub 화면에서는 HTML 소스로 보이므로 **Download raw file**로 내려받아 브라우저로 연다. 편집기가 뜨면 오른쪽 아래 **Slideshow**로 발표한다. 슬라이드마다 발표자 노트가 있다.
 - [slides/bento-editing-guide.md](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/bento-editing-guide.md): deck을 이어서 고칠 LLM과 사람을 위한 지침. 고칠 곳, 디자인 규칙, 슬라이드별 원본 문서, 줄이면 안 되는 단서를 정리했다.
+- [slides/company-results-prompt.md](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/company-results-prompt.md): 회사 PC의 도구별 폴더에 모은 분석 결과(.md)를 양식(`slides/extra_template.json`)에 채워 deck 두 벌에 넣는 작업 지시. pi에게 이 파일을 읽고 실행하라고 하면 된다. 결과물은 `_사내용` 파일로 따로 나오고 공개 deck은 바뀌지 않는다.
+- [slides/company-folder-survey-prompt.md](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/slides/company-folder-survey-prompt.md): 위 작업 전에 도구별 폴더의 구성을 조사하는 지시. 내용이 아니라 구성(파일 수, 절의 종류, 있음과 없음)만 적은 보고서를 만들어 양식이 실제 기록과 맞는지 확인하는 데 쓴다.
 
 두 deck의 내용은 이 폴더 문서의 요약이다. 문서를 고치면 Bento deck은 지침의 슬라이드 표를 보고, 입문 deck은 `SLIDES`에서 해당 슬라이드를 찾아 함께 고친다.
 

@@ -1,7 +1,7 @@
 ---
 tags: [bento, slides, agent-guide, reverse-engineering]
 level: intermediate
-last_updated: 2026-11-12
+last_updated: 2026-11-16
 document_type: guide
 category_major: "리버스 엔지니어링"
 category_middle: "발표 자료"
@@ -29,6 +29,7 @@ note_kind: "에이전트 지침"
 |---|---|
 | `re-rea-team-share.bento.html` | deck 본체. 브라우저로 열면 편집기가 뜬다. 약 700KB |
 | `bento-editing-guide.md` | 이 문서 |
+| `re-rea-team-share_사내용.bento.html` | 회사에서 얻은 결과를 마지막 슬라이드 앞에 넣은 사본. `build_team_intro.py`가 만들고 git에서 제외된다. 사내 결과는 이 문서의 방법으로 넣지 않고 [사내 결과 채우기 프롬프트](./company-results-prompt.md)를 따른다 |
 | `../*.md` | 내용의 원본. 슬라이드의 모든 사실은 여기에 근거가 있어야 한다 |
 
 deck 안의 문서는 아래 블록 하나에 JSON으로 들어 있다. 이 블록만 고친다.
@@ -237,3 +238,4 @@ findings.filter(f => f.severity !== 'info')
 
 - [리버스 엔지니어링 노트 목차](../README.md)
 - [커뮤니티 자료에서 가져온 작업법](../community-resources.md)
+- [사내 결과 채우기 프롬프트](./company-results-prompt.md)

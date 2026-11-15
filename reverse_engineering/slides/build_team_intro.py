@@ -6,7 +6,9 @@ SLIDES 하나에서 re-rea-team-intro.pptx, .bento.html, .md 를 함께 만든�
 내용의 근거는 이 폴더(reverse_engineering/)의 .md 문서다.
 
 회사에서 얻은 REA 결과는 SLIDES 에 넣지 않는다(공개 저장소다). slides/extra_사내용.json 에
-적으면 사이사이에 끼워 넣은 re-rea-team-intro_사내용.pptx, .md 를 따로 만든다.
+적으면 사이사이에 끼워 넣은 re-rea-team-intro_사내용.pptx, .bento.html, .md 와
+끝에 결과 절을 붙인 re-rea-team-share_사내용.bento.html 을 새 파일로 만든다.
+그때는 공개 deck 파일(_사내용 이 없는 이름)을 읽기만 하고 다시 쓰지 않는다.
 형식과 규칙은 team-intro-editing-guide.md 에 있다.
 """
 import json
@@ -24,7 +26,7 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 
-from team_intro_bento import build_bento
+from team_intro_bento import build_bento, build_share
 
 HERE = Path(__file__).parent
 NAME = "re-rea-team-intro"
@@ -744,16 +746,24 @@ def image(sl, y, h, s):
     pic.left = Inches(X) + (Inches(W) - pic.width) // 2
 
 
-def with_extras(path):
-    """Base slides with the extra slides from a JSON file placed after the base slide numbers they name."""
+def load_extras(path):
+    """Extra slides from a JSON file, checked. `deck` says which deck a slide goes into: both (default), intro, share."""
     extras = json.loads(path.read_text(encoding="utf-8"))
     for e in extras:
-        assert 1 <= e["after"] <= len(SLIDES) and e["kind"] in EXTRA_KINDS, (e.get("title"), e["kind"], e["after"])
+        assert 1 <= e["after"] <= len(SLIDES) and e["kind"] in EXTRA_KINDS and e.get("deck", "both") in DECKS, \
+            (e.get("title"), e["kind"], e["after"], e.get("deck"))
+        assert "⟨" not in json.dumps(e, ensure_ascii=False), f"채우지 않은 ⟨칸⟩이 남아 있다: {e.get('title')}"
         e.setdefault("part", "REA 실행 결과")
         e.setdefault("notes", "")
-    return [x for n, s in enumerate(SLIDES, 1) for x in [s] + [e for e in extras if e["after"] == n]]
+    return extras
 
 
+def with_extras(extras):
+    """Base slides with the intro-deck extras placed after the base slide numbers they name."""
+    return [x for n, s in enumerate(SLIDES, 1) for x in [s] + [e for e in extras if e["after"] == n and e.get("deck") != "share"]]
+
+
+DECKS = ("both", "intro", "share")
 EXTRA_KINDS = ("cards", "two", "table", "code", "image", "draw_result", "draw_chain")
 
 
@@ -894,14 +904,19 @@ if __name__ == "__main__":
     assert 20 <= len(SLIDES) <= 30, len(SLIDES)
     for s in SLIDES:  # 저장소 문장 부호 규칙: em dash와 가운데 점을 쓰지 않는다
         assert not re.search("[—·]", str(s)), s["title"]
-    build_pptx(HERE / f"{NAME}.pptx", SLIDES)
-    build_md(HERE / f"{NAME}.md", SLIDES)
-    build_bento(HERE / f"{NAME}.bento.html", SLIDES)
-    print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md, {NAME}.bento.html")
     extra = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "extra_사내용.json"
-    if extra.is_file():  # company-only results: separate output files, kept out of git by .gitignore
-        slides = with_extras(extra)
+    if not extra.is_file():
+        build_pptx(HERE / f"{NAME}.pptx", SLIDES)
+        build_md(HERE / f"{NAME}.md", SLIDES)
+        build_bento(HERE / f"{NAME}.bento.html", SLIDES)
+        print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md, {NAME}.bento.html")
+    else:  # company results: only new _사내용 files (kept out of git); the public decks are read, never written
+        extras = load_extras(extra)
+        slides = with_extras(extras)
         build_pptx(HERE / f"{NAME}_사내용.pptx", slides)
         build_md(HERE / f"{NAME}_사내용.md", slides)
         build_bento(HERE / f"{NAME}_사내용.bento.html", slides, shell=HERE / f"{NAME}.bento.html")
         print(f"{len(slides)} slides -> {NAME}_사내용.pptx, .md, .bento.html  (git 제외, 올리지 않는다)")
+        share = [e for e in extras if e.get("deck") != "intro"]  # team-share deck: all results as one section before its last slide
+        build_share(HERE / "re-rea-team-share_사내용.bento.html", share, HERE / "re-rea-team-share.bento.html")
+        print(f"+{len(share)} slides -> re-rea-team-share_사내용.bento.html  (git 제외, 올리지 않는다)")

@@ -396,6 +396,11 @@ def cover(b, s):
     b.text(X, 530, 760, 30, s["sub"], 18, MUTE, order=2)
 
 
+def asset(rel):
+    f = HERE / rel
+    return f"data:{mimetypes.guess_type(f.name)[0]};base64,{base64.b64encode(f.read_bytes()).decode()}"
+
+
 def build_doc(slides, title):
     out, assets = [], {}
     for n, s in enumerate(slides, 1):
@@ -419,8 +424,7 @@ def build_doc(slides, title):
                 b.banner(bottom + 14, s["banner"])
             globals()[s["kind"]](b, y, bottom - y, s)
             if "image" in s:
-                f = HERE / s["image"]
-                assets[s["image"]] = f"data:{mimetypes.guess_type(f.name)[0]};base64,{base64.b64encode(f.read_bytes()).decode()}"
+                assets[s["image"]] = asset(s["image"])
         for i, el in enumerate(b.runs):  # dots go on top of everything, without an entrance (it fights the path)
             b.els.append({"id": f"{b.sid}-run{i}", **el, "rotation": 0, "opacity": 1})
         out.append(dict(id=b.sid, background=BG, transition="none" if n == 1 else "morph", notes=s["notes"], elements=b.els))
@@ -442,4 +446,35 @@ def build_bento(path, slides, shell=None):
     m = BLOCK.search(page)
     assert m, "bento-doc block not found"
     payload = json.dumps(build_doc(slides, slides[0]["title"]), ensure_ascii=False).replace("<", "\\u003c")
+    path.write_text(page[:m.start(2)] + "\n" + payload + "\n" + page[m.end(2):], encoding="utf-8")
+
+
+
+def build_share(path, extras, src):
+    """Company-result slides drawn in the team-share deck's frame and placed before its last slide (`next`).
+    Writes a copy of `src` to `path`; `src` (the public deck) is not changed."""
+    page = src.read_text(encoding="utf-8")
+    m = BLOCK.search(page)
+    assert m, "bento-doc block not found"
+    doc, new = json.loads(m.group(2)), []
+    for n, s in enumerate(extras, 1):
+        b = Slide(f"co{n:02d}")
+        b.text(X, 40, 700, 26, s["part"], 16, ACC, 700, lh=1.45, id="kicker", letterSpacing=1)
+        b.text(X, 72, W, 84, s["title"], 40, weight=800, lh=1.2, id="title", role="title")
+        b.rect(X, 160, 48, 4, ACC, radius=2, id="accent-bar")
+        b.text(1024, 668, 160, 24, "{{page}} / {{pages}}", 14, MUTE, align="right", lh=1.45, id="pg")
+        b.text(X, 176, W, 30, s["msg"], 18, MUTE, 700, valign="middle", lh=1.25)
+        y, bottom = 218, 648
+        if s.get("foot"):
+            bottom -= 76
+            b.text(X, bottom + 10, W, 66, s["foot"], 15, MUTE, valign="middle")
+        globals()[s["kind"]](b, y, bottom - y, s)
+        if "image" in s:
+            doc.setdefault("assets", {})[s["image"]] = asset(s["image"])
+        for i, el in enumerate(b.runs):
+            b.els.append({"id": f"{b.sid}-run{i}", **el, "rotation": 0, "opacity": 1})
+        new.append(dict(id=b.sid, background=BG, transition="morph", notes=s["notes"], elements=b.els))
+    at = next(i for i, x in enumerate(doc["slides"]) if x["id"] == "next")
+    doc["slides"][at:at] = new
+    payload = json.dumps(doc, ensure_ascii=False).replace("<", "\\u003c")
     path.write_text(page[:m.start(2)] + "\n" + payload + "\n" + page[m.end(2):], encoding="utf-8")
