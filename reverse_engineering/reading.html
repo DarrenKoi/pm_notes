@@ -249,7 +249,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <ul>
 <li><strong>디스어셈블(Disassemble)</strong>: 기계어 바이트를 어셈블리 명령어로 바꾼다. 정확하지만 읽기 어렵다.</li>
 <li><strong>디컴파일(Decompile)</strong>: 어셈블리를 C 비슷한 의사 코드(Pseudocode)로 바꾼다. 읽기 쉽지만 원본 소스가 아니다. 디컴파일러가 타입을 잘못 추정하면 결과도 틀린다.</li>
-<li><strong>심볼(Symbol)</strong>: 함수와 변수의 이름 정보. 디버그 빌드에는 많고, 릴리스 빌드에서는 스트립(Strip)되어 없을 수 있다.</li>
+<li><strong>심볼(Symbol)</strong>: 함수와 변수의 이름 정보. 정확히는 "이름과 주소의 짝"이다(<code>check_limit</code> = 주소 <code>0x140001000</code>). CPU는 주소만 쓰므로 실행에는 필요 없고, 사람과 도구를 위해 남는다. 디버그 빌드에는 많고, 릴리스 빌드에서는 스트립(Strip)되어 없을 수 있다. 다만 다른 프로그램과 주고받는 이름(임포트, 익스포트)은 실행에 필요해서 늘 남는다. Windows는 이름을 실행 파일 밖의 <code>.pdb</code> 파일에 따로 두는 경우가 많다.</li>
 <li><strong>임포트, 익스포트(Import, Export)</strong>: 프로그램이 외부 라이브러리에서 가져다 쓰는 함수와 밖으로 내보내는 함수. 스트립된 바이너리에서도 대부분 남아 있어서 첫 단서가 된다. 예를 들어 <code>CreateFileW</code>를 임포트하면 파일이나 장치를 열 수 있다는 후보 단서다. 임포트는 실제 호출을 증명하지 않으므로, 호출 경로와 인수를 따로 확인한다.</li>
 <li><strong>상호 참조(Cross-reference, Xref)</strong>: "이 함수를 누가 부르는가", "이 문자열을 누가 읽는가"의 목록. 문자열 하나에서 출발해 그 문자열을 쓰는 함수로 거슬러 올라가는 것이 가장 흔한 탐색 방법이다.</li>
 <li><strong>호출 그래프(Call Graph)</strong>: 함수 사이의 호출 관계. 호출자(Caller)와 피호출자(Callee)로 나뉜다.</li>
