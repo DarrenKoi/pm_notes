@@ -62,7 +62,7 @@ COL_H = Inches(4.35)
 # 슬라이드 함수의 본문 좌표는 예전 배치(SRC_TOP~SRC_BOTTOM) 기준이다. build 가 저장 직전에 한 번에
 # BODY_TOP~BODY_BOTTOM 으로 옮기면서 같은 비율로 늘린다. 본문 영역을 바꾸려면 이 두 값만 고친다.
 SRC_TOP, SRC_BOTTOM = COL_Y, Inches(6.7)
-BODY_TOP, BODY_BOTTOM = Inches(1.55), Inches(7.2)  # 요약문 아래 여백 0.4 inch, 슬라이드 아래 여백 0.3 inch
+BODY_TOP, BODY_BOTTOM = Inches(1.55), Inches(6.95)  # 슬라이드 아래 0.55 inch 는 마스터 footer 자리라 비워 둔다 (7.2 는 footer 를 침범했음)
 STRETCH = (BODY_BOTTOM - BODY_TOP) / (SRC_BOTTOM - SRC_TOP)
 
 prs = BLANK = None  # new_deck() 가 deck 마다 다시 만든다
