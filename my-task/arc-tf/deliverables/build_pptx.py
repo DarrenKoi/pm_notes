@@ -237,8 +237,8 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
 def s_cover(title="Auto Recipe Creation TF 구성 기획안",
             sub="R&D MI 현업 엔지니어들과 만드는 레시피 셋업 자동화 공통 플랫폼"):  # 표지
     s = prs.slides.add_slide(BLANK)
-    text(s, Inches(1.0), Inches(2.8), W - Inches(2.0), Inches(0.8), title, size=40, bold=True, align=PP_ALIGN.CENTER)  # 가로 가운데, 세로는 중앙보다 조금 위
-    text(s, Inches(1.0), Inches(3.7), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB, align=PP_ALIGN.CENTER)
+    text(s, Inches(1.0), Inches(2.95), W - Inches(2.0), Inches(0.8), title, size=40, bold=True, align=PP_ALIGN.CENTER)  # 가로 가운데, 세로는 중앙보다 조금 위
+    text(s, Inches(1.0), Inches(3.85), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB, align=PP_ALIGN.CENTER)
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
