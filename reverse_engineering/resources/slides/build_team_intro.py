@@ -1,11 +1,11 @@
 """RE, REA 팀 입문 deck 생성기.
 
-실행: python reverse_engineering/slides/build_team_intro.py [추가 슬라이드.json]
+실행: python reverse_engineering/resources/slides/build_team_intro.py [추가 슬라이드.json]
 SLIDES 하나에서 re-rea-team-intro.pptx, .bento.html, .md 를 함께 만든다.
 세 파일을 직접 고치지 말고 SLIDES 를 고친 뒤 다시 실행한다.
 내용의 근거는 이 폴더(reverse_engineering/)의 .md 문서다.
 
-회사에서 얻은 REA 결과는 SLIDES 에 넣지 않는다(공개 저장소다). slides/extra_사내용.json 에
+회사에서 얻은 REA 결과는 SLIDES 에 넣지 않는다(공개 저장소다). resources/slides/extra_사내용.json 에
 적으면 사이사이에 끼워 넣은 re-rea-team-intro_사내용.pptx, .bento.html, .md 를 새 파일로 만든다.
 그때는 공개 deck 파일(_사내용 이 없는 이름)을 읽기만 하고 다시 쓰지 않는다.
 형식과 규칙은 team-intro-editing-guide.md 에 있다.
@@ -28,6 +28,7 @@ from pptx.util import Inches, Pt
 from team_intro_bento import build_bento
 
 HERE = Path(__file__).parent
+OUT = HERE.parent.parent  # reverse_engineering/: the decks live at the folder top
 NAME = "re-rea-team-intro"
 
 # 회사 정보는 저장소에 넣지 않는다. 회사 PC에서 이 세 값을 바꾼 뒤 다시 생성한다.
@@ -981,7 +982,7 @@ note_kind: "발표 원고"
 | `{NAME}.pptx` | 발표용 슬라이드. 슬라이드마다 발표자 노트가 있다 |
 | `{NAME}.bento.html` | 같은 내용의 HTML deck(Bento 형식). 브라우저로 열어 Slideshow로 발표한다 |
 | `{NAME}.md` | 이 문서. 슬라이드 내용과 발표자 노트를 글로 옮긴 원고 |
-| `build_team_intro.py` | 세 파일을 만드는 스크립트. 내용은 이 스크립트의 `SLIDES`에 있다 |
+| `resources/slides/build_team_intro.py` | 세 파일을 만드는 스크립트. 내용은 이 스크립트의 `SLIDES`에 있다 |
 
 구성은 4부이고 발표 시간은 질문을 포함해 60분이다. 1부 리버스 엔지니어링이란(3~12장), 2부 작업 절차(13~15장), 3부 Ghidra와 REA(16~19장), 4부 회사 PC에서 써 보기(20~27장), 마무리(28~29장). 30~35장은 발표 시간 밖의 부록(기계어와 실행 파일, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이)이고, 36~40장은 용어 사전(glossary.md와 같은 내용)이다. 질문이 나오면 펼치거나 따로 읽게 나눠 준다. 슬라이드의 도식은 이 원고에서 목록과 표로 옮겨 적었다.
 
@@ -990,7 +991,7 @@ note_kind: "발표 원고"
 pptx, HTML deck, 이 문서는 직접 고치지 않는다. `build_team_intro.py`의 `SLIDES`를 고친 뒤 저장소 루트에서 다시 만든다.
 
 ```bash
-python reverse_engineering/slides/build_team_intro.py
+python reverse_engineering/resources/slides/build_team_intro.py
 ```
 
 footer의 로고, 슬로건, 부서 이름은 자리 표시다. 회사 PC에서 스크립트 위쪽의 `LOGO`, `SLOGAN`, `DEPT` 값을 바꾼 뒤 다시 만든다. 슬라이드의 사실은 이 폴더의 문서에 근거가 있어야 한다. 문서를 고치면 해당 슬라이드도 함께 고친다.
@@ -1006,13 +1007,13 @@ MD_TAIL = """## 참고 자료 (References)
 
 ## 관련 문서
 
-- [리버스 엔지니어링 기초 개념](../re-fundamentals.md)
-- [리버스 엔지니어링 용어 사전](../glossary.md)
-- [리버스 엔지니어링 작업 절차](../re-process.md)
-- [회사 Windows + pi 환경 설정](../rea-windows-pi-setup.md)
-- [REA + Ghidra로 분석하는 방법](../rea-usage-guide.md)
-- [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](../installed-program-analysis.md)
-- [분석 기록 양식](../templates/investigation-log.md)
+- [리버스 엔지니어링 기초 개념](./resources/re-fundamentals.md)
+- [리버스 엔지니어링 용어 사전](./resources/glossary.md)
+- [리버스 엔지니어링 작업 절차](./resources/re-process.md)
+- [회사 Windows + pi 환경 설정](./resources/rea-windows-pi-setup.md)
+- [REA + Ghidra로 분석하는 방법](./resources/rea-usage-guide.md)
+- [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./resources/installed-program-analysis.md)
+- [분석 기록 양식](./resources/templates/investigation-log.md)
 """
 
 
@@ -1062,14 +1063,14 @@ if __name__ == "__main__":
         assert not re.search("[—·]", str(s)), s["title"]
     extra = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "extra_사내용.json"
     if not extra.is_file():
-        build_pptx(HERE / f"{NAME}.pptx", SLIDES)
-        build_md(HERE / f"{NAME}.md", SLIDES)
-        build_bento(HERE / f"{NAME}.bento.html", SLIDES)
+        build_pptx(OUT / f"{NAME}.pptx", SLIDES)
+        build_md(OUT / f"{NAME}.md", SLIDES)
+        build_bento(OUT / f"{NAME}.bento.html", SLIDES)
         print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md, {NAME}.bento.html")
     else:  # company results: only new _사내용 files (kept out of git); the public decks are read, never written
         extras = load_extras(extra)
         slides = with_extras(extras)
-        build_pptx(HERE / f"{NAME}_사내용.pptx", slides)
-        build_md(HERE / f"{NAME}_사내용.md", slides)
-        build_bento(HERE / f"{NAME}_사내용.bento.html", slides, shell=HERE / f"{NAME}.bento.html")
+        build_pptx(OUT / f"{NAME}_사내용.pptx", slides)
+        build_md(OUT / f"{NAME}_사내용.md", slides)
+        build_bento(OUT / f"{NAME}_사내용.bento.html", slides, shell=OUT / f"{NAME}.bento.html")
         print(f"{len(slides)} slides -> {NAME}_사내용.pptx, .md, .bento.html  (git 제외, 올리지 않는다)")

@@ -11,7 +11,7 @@ note_kind: "에이전트 지침"
 
 # 도구별 폴더의 구성을 조사해 보고하는 작업 지시
 
-> 이 파일은 도구별 폴더를 맡은 에이전트(pi)에게 주는 조사 지시다. 사람은 "`reverse_engineering/slides/company-folder-survey-prompt.md`를 읽고 그대로 실행해"라고만 말하면 된다. 에이전트는 아무것도 고치지 않고, 폴더의 **구성만** 적은 짧은 보고서 하나를 만든다.
+> 이 파일은 도구별 폴더를 맡은 에이전트(pi)에게 주는 조사 지시다. 사람은 "`reverse_engineering/resources/slides/company-folder-survey-prompt.md`를 읽고 그대로 실행해"라고만 말하면 된다. 에이전트는 아무것도 고치지 않고, 폴더의 **구성만** 적은 짧은 보고서 하나를 만든다.
 
 ## 왜 필요한가? (Why)
 
@@ -23,7 +23,7 @@ note_kind: "에이전트 지침"
 
 ### 조사 대상
 
-`reverse_engineering/` 바로 아래 폴더 중 `slides`, `templates`를 뺀 모든 폴더. 사람이 폴더를 따로 말했으면 그 폴더만 본다.
+`reverse_engineering/` 바로 아래 폴더 중 `resources`를 뺀 모든 폴더. 사람이 폴더를 따로 말했으면 그 폴더만 본다.
 
 ### 보고서에 적어도 되는 것과 안 되는 것
 
@@ -39,19 +39,19 @@ note_kind: "에이전트 지침"
 
 ### 결과물
 
-`slides/survey-report_사내용.md` 하나. 이름에 `_사내용`이 있어 git에서 제외된다. 60줄 이내로 쓴다. 다른 파일은 만들거나 고치지 않는다.
+`resources/slides/survey-report_사내용.md` 하나. 이름에 `_사내용`이 있어 git에서 제외된다. 60줄 이내로 쓴다. 다른 파일은 만들거나 고치지 않는다.
 
 ## 어떻게 사용하는가? (How)
 
 ### 1. 읽는다
 
 1. 대상 폴더의 모든 `.md`를 읽는다. 하위 폴더도 본다.
-2. `templates/investigation-log.md`를 읽는다. 분석 기록 양식이다(절 7개).
-3. `slides/extra_template.json`을 읽는다. 슬라이드 여섯 칸이다.
+2. `resources/templates/investigation-log.md`를 읽는다. 분석 기록 양식이다(절 7개).
+3. `resources/slides/extra_template.json`을 읽는다. 슬라이드 여섯 칸이다.
 
 ### 2. 환경을 확인한다
 
-`slides` 폴더에서 아래를 실행하고 결과를 적어 둔다. 실패해도 고치거나 설치하지 않는다.
+`resources/slides` 폴더에서 아래를 실행하고 결과를 적어 둔다. 실패해도 고치거나 설치하지 않는다.
 
 ```powershell
 python --version
@@ -95,9 +95,9 @@ git status --short
 
 ## C. 환경
 - python: ⟨버전, 또는 명령 없음⟩ / pptx, lxml: ⟨ok, 또는 오류 이름⟩
-- slides 폴더의 마지막 커밋 날짜: ⟨날짜⟩
+- resources/slides 폴더의 마지막 커밋 날짜: ⟨날짜⟩
 - git status에 대상 폴더가 Untracked로 보이는가: ⟨예, 아니요⟩
-- slides 폴더에 extra_template.json, company-results-prompt.md가 있는가: ⟨예, 아니요⟩
+- resources/slides 폴더에 extra_template.json, company-results-prompt.md가 있는가: ⟨예, 아니요⟩
 
 ## D. 사람 확인 필요
 - ⟨적어도 되는지 애매해서 뺀 항목이 있으면 "애매한 항목 있음(몇 건)". 없으면 없음⟩
@@ -114,7 +114,7 @@ git status --short
 
 ### 5. 끝낸다
 
-보고서의 위치를 알리고 끝낸다. 커밋과 push를 하지 않는다. 대상 폴더의 `.md`와 `slides`의 다른 파일을 고치지 않는다.
+보고서의 위치를 알리고 끝낸다. 커밋과 push를 하지 않는다. 대상 폴더의 `.md`와 `resources/slides`의 다른 파일을 고치지 않는다.
 
 사람은 보고서를 직접 읽어 위 검사 항목을 한 번 더 확인한 뒤에 회사 밖으로 가져간다.
 

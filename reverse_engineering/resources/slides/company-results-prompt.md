@@ -11,7 +11,7 @@ note_kind: "에이전트 지침"
 
 # 사내 분석 결과를 입문 deck에 넣는 작업 지시
 
-> 이 파일은 에이전트(pi)에게 주는 작업 지시다. 사람은 에이전트에게 "`reverse_engineering/slides/company-results-prompt.md`를 읽고 그대로 실행해"라고만 말하면 된다. 에이전트는 이 파일을 처음부터 끝까지 읽고 순서대로 실행한다.
+> 이 파일은 에이전트(pi)에게 주는 작업 지시다. 사람은 에이전트에게 "`reverse_engineering/resources/slides/company-results-prompt.md`를 읽고 그대로 실행해"라고만 말하면 된다. 에이전트는 이 파일을 처음부터 끝까지 읽고 순서대로 실행한다.
 
 ## 왜 필요한가? (Why)
 
@@ -29,7 +29,7 @@ note_kind: "에이전트 지침"
 
 | 입력 | 기본값 |
 |---|---|
-| 대상 폴더 | `reverse_engineering/` 바로 아래 폴더 중 `slides`, `templates`를 뺀 모든 폴더 |
+| 대상 폴더 | `reverse_engineering/` 바로 아래 폴더 중 `resources`를 뺀 모든 폴더 |
 | 도구 별칭 | 폴더 이름 순서대로 `도구 A`, `도구 B`, `도구 C`. 폴더 이름과 장비 이름은 별칭으로 쓰지 않는다 |
 | 본편에 넣을 장수 | 5 |
 
@@ -39,13 +39,13 @@ note_kind: "에이전트 지침"
 
 | 파일 | 역할 | 네가 할 일 |
 |---|---|---|
-| `slides/team-intro-editing-guide.md` | 항목의 뜻, 글 분량의 한도, 내용 규칙 | 읽는다 |
-| `slides/extra_template.json` | 양식. 도구 하나에 슬라이드 여섯 칸. 채울 곳은 `⟨ ⟩`로 표시 | 읽는다. 고치지 않는다 |
+| `resources/slides/team-intro-editing-guide.md` | 항목의 뜻, 글 분량의 한도, 내용 규칙 | 읽는다 |
+| `resources/slides/extra_template.json` | 양식. 도구 하나에 슬라이드 여섯 칸. 채울 곳은 `⟨ ⟩`로 표시 | 읽는다. 고치지 않는다 |
 | 대상 폴더의 `.md` | 분석 결과. 내용의 유일한 근거 | 읽는다. 고치지 않는다 |
-| `slides/extra_사내용.json` | 양식을 채운 결과 | **만든다. 네가 쓰는 유일한 파일이다** |
-| `slides/build_team_intro.py` | deck 생성 스크립트 | 실행한다. 고치지 않는다 |
-| `slides/*_사내용.*` | 스크립트가 새로 만드는 결과물 세 개 | 직접 고치지 않는다 |
-| `slides/re-rea-team-intro.*` | 공개 deck. 스크립트가 읽기만 한다 | 고치지 않는다. 덮어쓰지 않는다 |
+| `resources/slides/extra_사내용.json` | 양식을 채운 결과 | **만든다. 네가 쓰는 유일한 파일이다** |
+| `resources/slides/build_team_intro.py` | deck 생성 스크립트 | 실행한다. 고치지 않는다 |
+| `re-rea-team-intro_사내용.*` | 스크립트가 새로 만드는 결과물 세 개 | 직접 고치지 않는다 |
+| `re-rea-team-intro.*` | 공개 deck. 스크립트가 읽기만 한다 | 고치지 않는다. 덮어쓰지 않는다 |
 
 ### 양식의 여섯 칸
 
@@ -65,6 +65,8 @@ note_kind: "에이전트 지침"
 ### 결과물은 새 파일로 나온다
 
 `extra_사내용.json`이 있으면 스크립트는 이름에 `_사내용`이 붙은 새 파일 세 개만 만든다. 이미 있는 공개 deck 파일은 읽기만 하고 다시 쓰지 않는다. 실행 뒤 `git status`에 공개 deck 파일이 "modified"로 보이면 잘못된 것이므로 멈추고 보고한다. 결과를 공개 deck 파일 이름으로 복사하거나 저장하지 않는다.
+
+팀에 공유하는 최종본은 `re-rea-team-intro_사내용.bento.html` 하나다. pptx와 md는 같은 스크립트가 함께 만드는 부산물이고 따로 손보지 않는다.
 
 ### 팀원이 가져다 쓸 자료
 
@@ -92,13 +94,13 @@ note_kind: "에이전트 지침"
 
 ### 1. 읽는다
 
-1. `slides/team-intro-editing-guide.md` 전체를 읽는다.
-2. `slides/extra_template.json`을 읽는다.
+1. `resources/slides/team-intro-editing-guide.md` 전체를 읽는다.
+2. `resources/slides/extra_template.json`을 읽는다.
 3. 대상 폴더의 모든 `.md`를 읽는다. 읽은 파일의 목록을 적어 둔다.
 
 ### 2. 채운다
 
-4. 대상 폴더마다 양식의 여섯 칸을 복사해 `slides/extra_사내용.json`의 배열 하나에 폴더 순서대로 이어 붙인다. 파일은 UTF-8(BOM 없음)으로 저장한다. 이미 있는 파일이면 새로 쓴다.
+4. 대상 폴더마다 양식의 여섯 칸을 복사해 `resources/slides/extra_사내용.json`의 배열 하나에 폴더 순서대로 이어 붙인다. 파일은 UTF-8(BOM 없음)으로 저장한다. 이미 있는 파일이면 새로 쓴다.
 5. `⟨ ⟩`로 표시된 곳을 `.md`의 내용으로 바꾼다. `⟨ ⟩` 기호는 하나도 남기지 않는다. `kind`, `widths`, `tint`, 색 값은 바꾸지 않는다. `after`는 7단계에서만 바꾼다.
 6. `notes`의 "근거:" 줄에 그 슬라이드의 내용이 나온 파일 이름과 절 제목을 적는다.
 7. 본편에 넣을 슬라이드를 정한다. `after`가 29 이하인 슬라이드의 수가 "본편에 넣을 장수"를 넘지 않게 하고, 넘는 것은 `after`를 40으로 바꾼다. 본편에는 비전공자가 따라오기 쉬운 것(단서를 따라간 기록, REA가 돌려준 결과, 질문별 답)을 먼저 남긴다.
@@ -118,10 +120,10 @@ note_kind: "에이전트 지침"
 
 ### 4. 만든다
 
-8. `slides` 폴더에서 실행한다.
+8. `resources/slides` 폴더에서 실행한다.
 
     ```powershell
-    cd reverse_engineering\slides
+    cd reverse_engineering\resources\slides
     python build_team_intro.py
     ```
 
@@ -177,7 +179,7 @@ note_kind: "에이전트 지침"
 
 ### 대상 폴더의 .md에서 찾을 곳
 
-분석 기록이 `templates/investigation-log.md` 양식을 따랐다면 아래 절에서 찾는다. 양식을 따르지 않았으면 같은 뜻의 내용을 찾는다.
+분석 기록이 `resources/templates/investigation-log.md` 양식을 따랐다면 아래 절에서 찾는다. 양식을 따르지 않았으면 같은 뜻의 내용을 찾는다.
 
 | 양식의 칸 | 분석 기록의 절 |
 |---|---|
@@ -198,7 +200,7 @@ note_kind: "에이전트 지침"
 - 문자열 안의 큰따옴표는 `\"`, 백슬래시는 `\\`, 줄바꿈은 `\n`으로 쓴다.
 - 굵은 글자는 `**글자**`로 쓴다. HTML 태그는 쓰지 않는다.
 - 표의 모든 행은 `head`와 칸 수가 같아야 한다.
-- 채운 모양의 예는 `slides/extra_example.json`에 있다.
+- 채운 모양의 예는 `resources/slides/extra_example.json`에 있다.
 
 ### 스크립트 오류의 뜻
 
@@ -212,7 +214,7 @@ note_kind: "에이전트 지침"
 
 ### 화면 캡처를 넣고 싶을 때
 
-대상 폴더에 그림 파일이 있고 `.md`가 그 그림을 설명하고 있을 때만 넣는다. 그림을 `slides/img_사내용/`에 복사하고 `kind`가 `image`인 슬라이드를 추가한다(형식은 편집 지침 2절). 그림에 장비 이름이나 경로가 보이면 넣지 않고 "확인 필요"에 적는다.
+대상 폴더에 그림 파일이 있고 `.md`가 그 그림을 설명하고 있을 때만 넣는다. 그림을 `resources/slides/img_사내용/`에 복사하고 `kind`가 `image`인 슬라이드를 추가한다(형식은 편집 지침 2절). 그림에 장비 이름이나 경로가 보이면 넣지 않고 "확인 필요"에 적는다.
 
 ## 참고 자료 (References)
 

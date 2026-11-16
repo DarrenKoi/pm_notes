@@ -29,12 +29,12 @@ note_kind: "에이전트 지침"
 |---|---|---|
 | `build_team_intro.py` | 생성 스크립트. 공개 내용은 `SLIDES` 목록에 있다 | 올린다 |
 | `team_intro_bento.py` | HTML deck을 그리는 부분. 위 스크립트가 부른다 | 올린다 |
-| `re-rea-team-intro.pptx`, `.md` | 공개 deck과 발표 원고. 스크립트가 만든다 | 올린다 |
-| `re-rea-team-intro.bento.html` | 같은 내용의 HTML deck([Bento](https://bento.page) 형식). 브라우저로 열어 **Slideshow**로 발표한다 | 올린다 |
+| `re-rea-team-intro.pptx`, `.md` | 공개 deck과 발표 원고. 스크립트가 `reverse_engineering/` 바로 아래에 만든다 | 올린다 |
+| `re-rea-team-intro.bento.html` | 같은 내용의 HTML deck([Bento](https://bento.page) 형식). `reverse_engineering/` 바로 아래에 있다. 브라우저로 열어 **Slideshow**로 발표한다 | 올린다 |
 | `extra_example.json` | 추가 슬라이드의 형식 예시 | 올린다 |
 | `extra_template.json` | 도구 하나에 슬라이드 여섯 칸을 채우는 양식. 쓰는 법은 [사내 결과 채우기 프롬프트](./company-results-prompt.md) | 올린다 |
 | `extra_사내용.json` | 회사에서 얻은 결과로 만든 추가 슬라이드 | **제외** |
-| `re-rea-team-intro_사내용.pptx`, `.bento.html`, `.md` | 추가 슬라이드가 들어간 발표용 결과물 | **제외** |
+| `re-rea-team-intro_사내용.pptx`, `.bento.html`, `.md` | 추가 슬라이드가 들어간 발표용 결과물. 공개 deck 옆(`reverse_engineering/`)에 생긴다 | **제외** |
 | `img_사내용/` | 사내 화면 캡처를 두는 폴더(필요할 때 만든다) | **제외** |
 
 `reverse_engineering/.gitignore`가 이름에 `_사내용`이 들어간 파일과 폴더를 모두 제외한다. 사내 내용을 담는 파일은 반드시 이 글자를 이름에 넣는다.
@@ -71,7 +71,7 @@ HTML deck은 브라우저로 열면 편집기가 뜬다. 편집기에서 **Save*
 ### 1. 예시를 복사해서 시작한다
 
 ```powershell
-cd reverse_engineering\slides
+cd reverse_engineering\resources\slides
 Copy-Item extra_example.json extra_사내용.json
 ```
 
@@ -111,11 +111,11 @@ kind별 항목은 아래와 같다. 완전한 예는 `extra_example.json`에 있
 python build_team_intro.py
 ```
 
-`extra_사내용.json`이 있으면 `_사내용` 파일 세 개만 새로 생기고, 공개 파일은 다시 쓰지 않는다. 없으면 공개 파일 세 개를 만든다. 양식의 `⟨ ⟩` 칸이 남아 있으면 생성이 멈춘다. 발표에는 `re-rea-team-intro_사내용.pptx`나 `re-rea-team-intro_사내용.bento.html` 중 하나를 쓴다. HTML deck은 저장소에 있는 `re-rea-team-intro.bento.html`의 앱 부분을 그대로 쓰므로 인터넷 연결 없이 만들어진다. `image` 그림은 HTML 파일 안에 들어간다. `python-pptx` 패키지가 필요하다. 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
+`extra_사내용.json`이 있으면 `_사내용` 파일 세 개만 새로 생기고, 공개 파일은 다시 쓰지 않는다. 없으면 공개 파일 세 개를 만든다. 양식의 `⟨ ⟩` 칸이 남아 있으면 생성이 멈춘다. 발표하고 팀에 공유하는 최종본은 `re-rea-team-intro_사내용.bento.html`이다. pptx와 md는 함께 만들어지는 부산물이다. HTML deck은 저장소에 있는 `re-rea-team-intro.bento.html`의 앱 부분을 그대로 쓰므로 인터넷 연결 없이 만들어진다. `image` 그림은 HTML 파일 안에 들어간다. `python-pptx` 패키지가 필요하다. 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
 
 ### 4. 확인한다
 
-- PowerPoint로(HTML deck은 브라우저의 Slideshow로) 열어 추가한 슬라이드마다 글이 상자 밖으로 나가거나 잘리지 않는지 본다. 넘치면 글을 줄이거나 슬라이드를 둘로 나눈다. 글자 크기를 줄여서 해결하지 않는다.
+- HTML deck을 브라우저의 Slideshow로 열어 추가한 슬라이드마다 글이 상자 밖으로 나가거나 잘리지 않는지 본다. 넘치면 글을 줄이거나 슬라이드를 둘로 나눈다. 글자 크기를 줄여서 해결하지 않는다.
 - `git status`에 `_사내용` 파일이 보이지 않는지 확인한다. 보이면 커밋하지 않고 `.gitignore`부터 확인한다.
 
 ### 5. 내용 규칙을 지킨다
@@ -147,7 +147,7 @@ python build_team_intro.py
 
 ## 관련 문서
 
-- [입문 deck 발표 원고](./re-rea-team-intro.md)
+- [입문 deck 발표 원고](../../re-rea-team-intro.md)
 - [사내 결과 채우기 프롬프트](./company-results-prompt.md)
 - [REA + Ghidra로 분석하는 방법](../rea-usage-guide.md)
 - [회사 Windows + pi 환경 설정](../rea-windows-pi-setup.md)

@@ -24,7 +24,7 @@ note_kind: "발표 원고"
 | `re-rea-team-intro.pptx` | 발표용 슬라이드. 슬라이드마다 발표자 노트가 있다 |
 | `re-rea-team-intro.bento.html` | 같은 내용의 HTML deck(Bento 형식). 브라우저로 열어 Slideshow로 발표한다 |
 | `re-rea-team-intro.md` | 이 문서. 슬라이드 내용과 발표자 노트를 글로 옮긴 원고 |
-| `build_team_intro.py` | 세 파일을 만드는 스크립트. 내용은 이 스크립트의 `SLIDES`에 있다 |
+| `resources/slides/build_team_intro.py` | 세 파일을 만드는 스크립트. 내용은 이 스크립트의 `SLIDES`에 있다 |
 
 구성은 4부이고 발표 시간은 질문을 포함해 60분이다. 1부 리버스 엔지니어링이란(3~12장), 2부 작업 절차(13~15장), 3부 Ghidra와 REA(16~19장), 4부 회사 PC에서 써 보기(20~27장), 마무리(28~29장). 30~35장은 발표 시간 밖의 부록(기계어와 실행 파일, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이)이고, 36~40장은 용어 사전(glossary.md와 같은 내용)이다. 질문이 나오면 펼치거나 따로 읽게 나눠 준다. 슬라이드의 도식은 이 원고에서 목록과 표로 옮겨 적었다.
 
@@ -33,7 +33,7 @@ note_kind: "발표 원고"
 pptx, HTML deck, 이 문서는 직접 고치지 않는다. `build_team_intro.py`의 `SLIDES`를 고친 뒤 저장소 루트에서 다시 만든다.
 
 ```bash
-python reverse_engineering/slides/build_team_intro.py
+python reverse_engineering/resources/slides/build_team_intro.py
 ```
 
 footer의 로고, 슬로건, 부서 이름은 자리 표시다. 회사 PC에서 스크립트 위쪽의 `LOGO`, `SLOGAN`, `DEPT` 값을 바꾼 뒤 다시 만든다. 슬라이드의 사실은 이 폴더의 문서에 근거가 있어야 한다. 문서를 고치면 해당 슬라이드도 함께 고친다.
@@ -899,10 +899,10 @@ ret
 
 ## 관련 문서
 
-- [리버스 엔지니어링 기초 개념](../re-fundamentals.md)
-- [리버스 엔지니어링 용어 사전](../glossary.md)
-- [리버스 엔지니어링 작업 절차](../re-process.md)
-- [회사 Windows + pi 환경 설정](../rea-windows-pi-setup.md)
-- [REA + Ghidra로 분석하는 방법](../rea-usage-guide.md)
-- [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](../installed-program-analysis.md)
-- [분석 기록 양식](../templates/investigation-log.md)
+- [리버스 엔지니어링 기초 개념](./resources/re-fundamentals.md)
+- [리버스 엔지니어링 용어 사전](./resources/glossary.md)
+- [리버스 엔지니어링 작업 절차](./resources/re-process.md)
+- [회사 Windows + pi 환경 설정](./resources/rea-windows-pi-setup.md)
+- [REA + Ghidra로 분석하는 방법](./resources/rea-usage-guide.md)
+- [설치형 Windows 프로그램을 Ghidra로 분석하는 방법](./resources/installed-program-analysis.md)
+- [분석 기록 양식](./resources/templates/investigation-log.md)
