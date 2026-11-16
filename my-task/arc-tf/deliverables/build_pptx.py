@@ -135,7 +135,9 @@ def box(slide, x, y, w, h, fill=MIST, line=None, shape=MSO_SHAPE.RECTANGLE, radi
 
 
 def header(s, title):
-    text(s, M, Inches(0.3), W - 2 * M, Inches(0.62), title, size=26, bold=True, anchor=MSO_ANCHOR.MIDDLE, name="Title")
+    # 제목: 회사 마스터 슬라이드에 맞춰 위로 0.4 inch, 왼쪽으로 0.2 inch 옮긴 자리 (2026-11-16).
+    # 0.5 inch 를 다 올리면 26pt 글자 윗부분이 슬라이드 밖으로 나가서 0.4 inch 까지만 올렸다
+    text(s, M - Inches(0.2), Inches(0.02), W - 2 * M, Inches(0.46), title, size=26, bold=True, anchor=MSO_ANCHOR.MIDDLE, name="Title")
     # 제목 아래 2색 구분선은 그리지 않는다 (회사 마스터 슬라이드에 있음, 2026-11-16)
 
 
