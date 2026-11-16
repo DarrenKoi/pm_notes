@@ -13,14 +13,10 @@ deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라�
 
 회사 스타일:
   Header  제목(좌측) + 2색 구분선(회색 + 빨강/주황 그라데이션)
-  Body    중앙 상단 핵심 메시지(파란색 강조) → 2 컬럼 박스(좌: 문제, 기존 / 우: 해결 방향, 개선)
-  Footer  좌측 로고 | 중앙 슬로건 | 우측 부서 이름
+  Body    2 컬럼 박스(좌: 문제, 기존 / 우: 해결 방향, 개선). 핵심 메시지와 footer 는 넣지 않는다
+          아래 좌표는 예전 배치 기준이고, build 가 본문을 0.5 inch 위로 올리면서 그만큼 세로로 늘린다
   강조    **볼드**, __밑줄__ 표기를 본문 문자열에 직접 쓴다
-
-로고, 슬로건, 부서 이름은 회사 정보라 git 밖의 brand_사내용.json 에서 읽는다 (없으면 자리 표시):
-  {"slogan": "...", "dept": "...", "logo": "logo_사내용.png"}
 """
-import json
 from lxml import etree
 from pptx.oxml.ns import qn
 import re
@@ -34,10 +30,6 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
 HERE = Path(__file__).resolve().parent
-BRAND_FILE = HERE / "brand_사내용.json"
-BRAND = {"slogan": "⟨슬로건⟩", "dept": "⟨부서명⟩", "logo": None}
-if BRAND_FILE.exists():
-    BRAND.update(json.loads(BRAND_FILE.read_text(encoding="utf-8")))
 
 FONT = "맑은 고딕"
 # 회사에서 자주 쓰는 색 (2026-11-12 사용자 제공, 색 이름만 받았고 hex 값은 근사치):
@@ -62,10 +54,11 @@ LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
 M = Inches(0.5)
-MSG_Y, MSG_H = Inches(1.18), Inches(0.68)
 COL_Y = Inches(2.08)
 COL_H = Inches(4.35)
-FOOT_Y = Inches(6.88)
+SHIFT_UP = Inches(0.5)  # 본문 위쪽 끝을 이만큼 올린다 (build 에서 한 번에 적용)
+BODY_BOTTOM = Inches(6.7)  # 본문 아래쪽 끝. 올린 만큼 본문을 세로로 늘려 이 선은 그대로 둔다
+STRETCH = (BODY_BOTTOM - COL_Y + SHIFT_UP) / (BODY_BOTTOM - COL_Y)
 
 prs = BLANK = None  # new_deck() 가 deck 마다 다시 만든다
 
@@ -156,34 +149,11 @@ def header(s, title):
     gradient_bar(s, M, Inches(0.98), Inches(3.4), Inches(0.07))
 
 
-def footer(s):
-    n = len(prs.slides)
-    box(s, M, FOOT_Y - Inches(0.08), W - 2 * M, Emu(9525), fill=LINE)
-    if BRAND["logo"] and (HERE / BRAND["logo"]).exists():
-        s.shapes.add_picture(str(HERE / BRAND["logo"]), M, FOOT_Y, height=Inches(0.36))
-    else:
-        text(s, M, FOOT_Y, Inches(2), Inches(0.36), "⟨로고⟩", size=11, bold=True, color=SUB, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, M + Inches(3), FOOT_Y, W - 2 * M - Inches(6), Inches(0.36), BRAND["slogan"], size=11, color=SUB,
-         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, W - M - Inches(3), FOOT_Y, Inches(3), Inches(0.36),
-         [[(BRAND["dept"], {"color": SUB}), (f"   {n}", {"color": GRAY})]], size=11,
-         align=PP_ALIGN.RIGHT, anchor=MSO_ANCHOR.MIDDLE)
-
-
-def message(s, msg, y=MSG_Y, h=MSG_H):
-    """중앙 상단 핵심 메시지 (파란색 강조)."""
-    box(s, M, y, W - 2 * M, h, fill=BLUE_PALE)
-    text(s, M + Inches(0.3), y, W - 2 * M - Inches(0.6), h, msg, size=20, bold=True, color=BLUE,
-         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-
-
 def slide(title, msg):
     s = prs.slides.add_slide(BLANK)
     s.background.fill.solid()
     s.background.fill.fore_color.rgb = WHITE
-    header(s, title)
-    if msg:
-        message(s, msg)
+    header(s, title)  # msg(핵심 메시지)는 2026-11-16 부터 그리지 않는다. 문자열은 장표 의도 메모로 남김
     return s
 
 
@@ -268,7 +238,6 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
     gradient_bar(s, Inches(1.0), Inches(3.6), Inches(4.2), Inches(0.07))
     text(s, Inches(1.0), Inches(3.95), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB)
     text(s, Inches(1.0), Inches(4.55), W - Inches(2.0), Inches(0.4), "2026-12", size=16, color=BLUE, bold=True)
-    footer(s)
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
@@ -283,7 +252,6 @@ def s_effects():  # 효과
     text(s, M, Inches(4.75), W - 2 * M, Inches(0.8),
          [[("확정 시점  ", {"bold": True, "color": BLUE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / 장비군별 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
          size=13, color=SUB, spacing=1.0)
-    footer(s)
 
 def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없이, 업무 전략 장표와 겹침)
     s = slide("2026 ARC 추진 현황",
@@ -305,7 +273,6 @@ def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없�
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14 if lessons else 16)
     if not lessons:
-        footer(s)
         return
     ly = COL_Y + ch + Inches(0.12)
     box(s, M, ly, W - 2 * M, Inches(1.7), fill=MIST)
@@ -315,7 +282,6 @@ def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없�
         runs_of("2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__"),
         runs_of("3. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬지 __구체화 필요__")],
         size=15, gap=0.3)
-    footer(s)
 
 
 def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공통 과제
@@ -346,7 +312,6 @@ def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공�
                "**녹화 DB 추출**: 엔지니어 작업 녹화를 Agent가 쓰는 지식으로",
                "**기술 부채 해소**: Vibe Coding으로 __원리 확인 없이 진행한 사항__ 정리",
                "장비군마다 따로 하면 __같은 작업 반복__"], BLUE, size=13)
-    footer(s)
 
 def s_lessons():  # 시사점
     s = slide("업무 전략",
@@ -364,7 +329,6 @@ def s_lessons():  # 시사점
                 "장비군마다 따로 하면 __같은 작업 반복__"],
             h=Inches(3.7), size=14, arrow=False)
     note_line(s, Inches(6.0), "결론", "ARC 필수 요소(조작, 소형 모델 운영, 녹화 추출)는 **공통 플랫폼으로 해결**, 개발 노하우는 **주간 미팅에서 공유**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
-    footer(s)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     s = slide("별첨: LLM 모델만으로 안 되는 이유",
@@ -378,7 +342,6 @@ def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     table(s, rows, M, COL_Y, [Inches(2.4), Inches(5.5), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.55),
           bold_col0=True)
     note_line(s, Inches(5.65), "모델 교체", "최신 VLM은 __공통 평가 세트__로 재서 판단 부분만 교체. 오른쪽 칸은 모델이 좋아져도 그대로 필요", size=13)
-    footer(s)
 
 def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     s = slide("업무 전략 2: 엔지니어 PC 설치",
@@ -415,7 +378,6 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     node(s, x + sw + ag, dy, bw, dh, "엔지니어 PC", "Agent 설치\n보면서 실행, 즉시 중단", fill=BLUE, fc=WHITE)
     arrow(s, x + sw + ag + bw + pad, my, x + cw - sw - pad, my, "조작", color=BLUE, label_w=ag)
     node(s, x + cw - sw, dy, sw, dh, "장비")
-    footer(s)
 
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성",
@@ -459,7 +421,6 @@ def s_team():  # TF 구성 (조직도)
             text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
     note_line(s, Inches(6.2), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(XXX 담당님) 보고**, **분기 부문장님 보고**", size=13)
-    footer(s)
 
 def s_kanban():  # 일정 칸반
     s = slide("2027 일정",
@@ -501,7 +462,6 @@ def s_kanban():  # 일정 칸반
           [("12월 목표  ", {"bold": True, "color": BLUE})] + runs_of("부분 작업 리스트대로 Agent가 수행에 성공한 Recipe 셋업 **⟨X⟩건**, 2차 장비군 합류"),
           [("2028 진입  ", {"bold": True, "color": BLUE})] + runs_of("12월 목표 달성과 화면 입력 안전 기준 충족")],
          size=12, color=SUB, spacing=1.0, gap=0.3)
-    footer(s)
 
 def s_safety():  # 안전과 리스크
     s = slide("안전과 리스크",
@@ -517,7 +477,6 @@ def s_safety():  # 안전과 리스크
                 "필요한 접속 경로를 __사전 확인__, 불가하면 가능한 경로 안에서 범위 조정 **⟨확인⟩**",
                 "공통 엔진과 장비별 절차를 분리, __1차 3개 장비군으로 먼저 다지고__ 베타 뒤 확장"],
             h=Inches(3.65), size=14)
-    footer(s)
 
 def s_decision():  # 결정 요청
     s = slide("결정 요청",
@@ -531,7 +490,6 @@ def s_decision():  # 결정 요청
                 "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
                 "2027-01 전: **RCS 녹화 스토리지 접근** 여부 확인, 영상 적재를 위한 **별도 스토리지 DB** 확보"],
             h=Inches(3.4), size=16, arrow=False)
-    footer(s)
 
 # ---------- 공통 플랫폼 구조 (07 기술 설계 요약) ----------
 def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
@@ -583,7 +541,6 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"], BLUE, size=13)
     note_line(s, Inches(6.1), "플랫폼의 역할", "2028 보조 (엔지니어 앞에서 반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)이 될 수 있도록 __점진적 발전__", size=13)
-    footer(s)
 
 
 def s_offline():  # Offline 파이프라인 (team)
@@ -604,7 +561,6 @@ def s_offline():  # Offline 파이프라인 (team)
                 "__분기 조건 승인__: 영상 하나나 빈도만으로 확정하지 않음",
                 "미관찰 구간(키 입력, 뷰어 밖 팝업)은 추정으로 메우지 않음"],
             y=Inches(3.45), h=Inches(3.0), size=13)
-    footer(s)
 
 
 def s_online():  # Online 실행 루프와 3단 분리 (team)
@@ -621,7 +577,6 @@ def s_online():  # Online 실행 루프와 3단 분리 (team)
           bold_col0=True)
     note_line(s, Inches(5.65), "중단", "모름, 불일치, 시간 초과 → 멈추고 엔지니어 검토. 통신이 끊기면 재시도보다 __실제 결과 조회__ 먼저", size=13)
     note_line(s, Inches(6.1), "입력", "승인 절차서는 신뢰 저장소에서만 읽음. 화면 글자, 검색 문서는 **데이터로만** 취급", size=13)
-    footer(s)
 
 
 def s_gates():  # 안전 관문 (team)
@@ -642,7 +597,6 @@ def s_gates():  # 안전 관문 (team)
                 "같은 요청 재실행 시 사본, 저장 중복 없음 (요청 ID 연결)",
                 "감사 기록: 요청, 규칙 버전, 전후 증거, 차이, 승인자"],
             y=Inches(4.75), h=Inches(1.9), size=13)
-    footer(s)
 
 
 def s_eval():  # 평가 지표 (team)
@@ -659,7 +613,6 @@ def s_eval():  # 평가 지표 (team)
           bold_col0=True, shade=lambda r: r[2].startswith("2027"))
     note_line(s, Inches(5.65), "누수 방지", "같은 작업, 파생 영상은 한쪽에만. 시점 t 평가에는 __t 이전 관찰만__, 정답 경로는 평가자만", size=13)
     note_line(s, Inches(6.1), "검증 순서", "녹화본 평가 → **입력 없는 Shadow** → 감독하 실장비 (격리 GUI 환경 대체)", size=13)
-    footer(s)
 
 
 def s_stack():  # 구현 형태와 기술 스택 (team)
@@ -677,7 +630,6 @@ def s_stack():  # 구현 형태와 기술 스택 (team)
     note_line(s, Inches(5.4), "제어권 인계", "알림 → 엔지니어가 넘겨줌 → 대상 창 확인 → 짧은 입력 → 결과 확인 → 반환. __엔지니어 조작 시 즉시 중단__", size=13)
     note_line(s, Inches(5.85), "보류", "C#/.NET은 Python 캡처가 PC 자원 한도를 못 지킬 때의 대안. Electron, Tauri는 쓰지 않음", size=13)
     note_line(s, Inches(6.3), "실측", "입력 중단 신뢰성(선발대 장비군), PC 자원, 회사 보안 프로그램 아래 설치와 롤백", size=13)
-    footer(s)
 
 
 # ---------- 최고 임원용 (08 한 장 요약) ----------
@@ -695,7 +647,6 @@ def s_exec_onepage():
                 "위험 조작, 저장은 **엔지니어 승인**",
                 "**공통 플랫폼** 하나 위에 장비별 절차만 추가, 선발대 뒤 확장"],
             size=16, before=True)
-    footer(s)
 
 
 def s_exec_roadmap():
@@ -713,7 +664,6 @@ def s_exec_roadmap():
     table(s, rows, M, Inches(3.85), [Inches(3.0), Emu(W - 2 * M - Inches(3.0))], size=15, row_h=Inches(0.45),
           bold_col0=True)
     note_line(s, Inches(6.3), "측정", "Recipe별 셋업 단계 중 Agent가 진행한 비율(%). 기준선은 합류 첫 달에 실측, 측정 전 목표 숫자 없음", size=13)
-    footer(s)
 
 
 BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
@@ -738,6 +688,19 @@ def build(target):
                 v = el.get(k)
                 if v and "." in v:
                     el.set(k, str(round(float(v))))
+        cover = sl is prs.slides[0]
+        for sh in sl.shapes:
+            if sh.top <= Inches(1.1):  # header(제목, 구분선)는 그대로
+                continue
+            if cover:  # 표지는 올리기만
+                sh.top = sh.top - SHIFT_UP
+                continue
+            # 본문: 위쪽 끝만 SHIFT_UP 만큼 올리고 아래쪽 끝(BODY_BOTTOM)은 고정, 그 사이를 같은 비율로 늘린다
+            sh.top = round(BODY_BOTTOM - (BODY_BOTTOM - sh.top) * STRETCH)
+            sh.height = round(sh.height * STRETCH)
+            if sh.has_table:  # 표 높이는 행 높이가 정한다
+                for r in sh.table.rows:
+                    r.height = round(r.height * STRETCH)
     prs.save(HERE / out_name)
     print(f"wrote {out_name}, {len(prs.slides)} slides")
 
