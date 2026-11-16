@@ -56,7 +56,7 @@ LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
 M = Inches(0.5)
-MSG_Y, MSG_H = Inches(0.7), Inches(0.45)  # 핵심 메시지: 제목(~0.48) 아래, 본문(BODY_TOP~) 위
+MSG_Y, MSG_H = Inches(0.75), Inches(0.45)  # 핵심 메시지: 제목(~0.61) 아래, 본문(BODY_TOP~) 위
 COL_Y = Inches(2.08)
 COL_H = Inches(4.35)
 # 슬라이드 함수의 본문 좌표는 예전 배치(SRC_TOP~SRC_BOTTOM) 기준이다. build 가 저장 직전에 한 번에
@@ -138,9 +138,10 @@ def box(slide, x, y, w, h, fill=MIST, line=None, shape=MSO_SHAPE.RECTANGLE, radi
 
 
 def header(s, title):
-    # 제목: 회사 마스터 슬라이드에 맞춰 위로 0.4 inch, 왼쪽으로 0.2 inch 옮긴 자리 (2026-11-16).
+    # 제목: 회사 마스터 슬라이드에 맞춰 위로 0.27 inch, 왼쪽으로 0.2 inch 옮긴 자리 (2026-11-16).
+    # 처음에는 0.4 inch 올렸으나 너무 위라서 조금 내렸다.
     # 0.5 inch 를 다 올리면 26pt 글자 윗부분이 슬라이드 밖으로 나가서 0.4 inch 까지만 올렸다
-    text(s, M - Inches(0.2), Inches(0.02), W - 2 * M, Inches(0.46), title, size=26, bold=True, anchor=MSO_ANCHOR.MIDDLE, name="Title")
+    text(s, M - Inches(0.2), Inches(0.15), W - 2 * M, Inches(0.46), title, size=26, bold=True, anchor=MSO_ANCHOR.MIDDLE, name="Title")
     # 제목 아래 2색 구분선은 그리지 않는다 (회사 마스터 슬라이드에 있음, 2026-11-16)
 
 
