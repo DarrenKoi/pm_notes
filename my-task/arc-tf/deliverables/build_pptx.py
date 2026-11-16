@@ -46,7 +46,7 @@ GRAY = RGBColor(0xBF, 0xBF, 0xBF)    # 구분선, 화살표
 LINE = RGBColor(0xD0, 0xD0, 0xD0)    # 박스 테두리
 SILVER = RGBColor(0xD9, 0xD9, 0xD9)  # 밝은 회색 (표, 박스 머리줄)
 MIST = RGBColor(0xF2, 0xF2, 0xF2)    # 연회색 (표 줄무늬, 텍스트 박스 바탕)
-BLUE = RGBColor(0x1F, 0x5A, 0xA6)
+BLUE = RGBColor(0x0B, 0x3C, 0x8F)     # 짙은 파랑 (2026-11-16 더 진하게, 이전 1F5AA6)
 BLUE_PALE = RGBColor(0xE8, 0xF0, 0xFA)
 RED = RGBColor(0xD7, 0x26, 0x3D)
 ORANGE = RGBColor(0xF3, 0x8B, 0x1F)
@@ -140,8 +140,7 @@ def header(s, title):
 
 
 def message(s, msg):
-    """제목 바로 아래 핵심 메시지 한 줄. 검정 글자, **표시한 중요 문구** 만 파랑. 위치가 고정이라 build 의 본문 이동에서 빠진다."""
-    box(s, M, MSG_Y, W - 2 * M, MSG_H, fill=MIST)
+    """제목 바로 아래 핵심 메시지 한 줄 (바탕 없음). 검정 글자, **표시한 중요 문구** 만 파랑. 위치가 고정이라 build 의 본문 이동에서 빠진다."""
     runs = [(part, {"color": BLUE} if opt else {}) for part, opt in runs_of(msg)]  # **중요 문구** 는 파랑
     text(s, M + Inches(0.3), MSG_Y, W - 2 * M - Inches(0.6), MSG_H, [runs], size=20, bold=True, color=INK,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
