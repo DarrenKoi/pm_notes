@@ -367,7 +367,7 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     pad = Inches(0.08)
     # 처음 계획: 엔지니어 → 별도 운영 PC → 장비
     x = M
-    node(s, x, dy, sw, dh, "엔지니어", "자기 PC")
+    node(s, x, dy, sw, dh, "엔지니어", "본인 PC")
     arrow(s, x + sw + pad, my, x + sw + ag - pad, my, "확인 지연", label_w=ag)
     node(s, x + sw + ag, dy, bw, dh, "별도 운영 PC", "Agent 실행\n아무도 보지 않는 화면", fill=GRAY)
     arrow(s, x + sw + ag + bw + pad, my, x + cw - sw - pad, my, "조작", label_w=ag)
