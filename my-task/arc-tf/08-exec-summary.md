@@ -5,13 +5,19 @@ category_middle: "ARC TF (Auto Recipe Creation)"
 category_minor: "최고 임원 요약"
 note_kind: "요약 보고"
 classified_on: "2026-11-08"
-last_updated: 2026-11-09
+last_updated: 2026-11-16
 status: 초안, 2026-12 최종 승인 보고용
 ---
 
 # Auto Recipe Creation TF: 한 장 요약
 
 > Align Fail 자동 대응 PoC의 공통 자산과 시사점을 바탕으로 공통 플랫폼을 만들어, 숙련 엔지니어의 레시피 셋업 노하우를 회사 자산으로 남기고 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않는 구조를 만들고자 합니다.
+
+## 2026 ARC 추진 현황
+
+- **CD**: Align Fail 자동 대응 Agent 개발 진행(Recipe Tuning 포함), 현재 Offline 테스트 중. 소형 VLM 기반 장비 컨트롤(Computer-use) 기능 구현
+- **Thickness**: 의뢰부터 Recipe 생성까지 ARC Pipeline 진행. DL 기반 Align Fail 대응 Offline 테스트 중. MI 장비군 중 가장 높은 자동화 구현
+- **Inspection**: DRB(Design Recipe Builder)를 Tuning하는 방식으로 ARC 진행 중(NAND Tech 1개 대상). DRB Tuning에 Computer-use 사용. Recipe Setup AI 활용을 위한 DB 구축 완료(RAG, 마이다스)
 
 ## 출발점: PoC의 성과와 시사점
 
