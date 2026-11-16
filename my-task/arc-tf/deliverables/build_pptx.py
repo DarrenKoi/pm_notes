@@ -14,7 +14,7 @@ deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라�
 회사 스타일:
   Header  제목(좌측)만. 구분선은 회사 마스터 슬라이드 것을 쓴다
   Body    제목 아래 핵심 메시지 한 줄 → 2 컬럼 박스(좌: 문제, 기존 / 우: 해결 방향, 개선). footer 는 넣지 않는다
-          아래 좌표는 예전 배치 기준이고, build 가 본문을 0.5 inch 위로 올리면서 그만큼 세로로 늘린다
+          아래 좌표는 예전 배치 기준이고, build 가 본문을 BODY_TOP~BODY_BOTTOM 영역으로 옮기며 세로로 늘린다
   강조    **볼드**, __밑줄__ 표기를 본문 문자열에 직접 쓴다
 """
 from lxml import etree
@@ -56,12 +56,15 @@ LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
 M = Inches(0.5)
-MSG_Y, MSG_H = Inches(0.95), Inches(0.45)  # 핵심 메시지: 제목(0.3~0.92)과 올라간 본문(1.58~) 사이
+MSG_Y, MSG_H = Inches(0.7), Inches(0.45)  # 핵심 메시지: 제목(~0.48) 아래, 본문(BODY_TOP~) 위
 COL_Y = Inches(2.08)
 COL_H = Inches(4.35)
-SHIFT_UP = Inches(0.5)  # 본문 위쪽 끝을 이만큼 올린다 (build 에서 한 번에 적용)
-BODY_BOTTOM = Inches(6.7)  # 본문 아래쪽 끝. 올린 만큼 본문을 세로로 늘려 이 선은 그대로 둔다
-STRETCH = (BODY_BOTTOM - COL_Y + SHIFT_UP) / (BODY_BOTTOM - COL_Y)
+# 슬라이드 함수의 본문 좌표는 예전 배치(SRC_TOP~SRC_BOTTOM) 기준이다. build 가 저장 직전에 한 번에
+# BODY_TOP~BODY_BOTTOM 으로 옮기면서 같은 비율로 늘린다. 본문 영역을 바꾸려면 이 두 값만 고친다.
+SRC_TOP, SRC_BOTTOM = COL_Y, Inches(6.7)
+BODY_TOP, BODY_BOTTOM = Inches(1.55), Inches(7.2)  # 요약문 아래 여백 0.4 inch, 슬라이드 아래 여백 0.3 inch
+STRETCH = (BODY_BOTTOM - BODY_TOP) / (SRC_BOTTOM - SRC_TOP)
+COVER_UP = Inches(0.5)  # 표지는 늘리지 않고 이만큼 올리기만
 
 prs = BLANK = None  # new_deck() 가 deck 마다 다시 만든다
 
@@ -700,10 +703,10 @@ def build(target):
             if sh.top <= Inches(1.1):  # 제목과 핵심 메시지는 그대로
                 continue
             if cover:  # 표지는 올리기만
-                sh.top = sh.top - SHIFT_UP
+                sh.top = sh.top - COVER_UP
                 continue
-            # 본문: 위쪽 끝만 SHIFT_UP 만큼 올리고 아래쪽 끝(BODY_BOTTOM)은 고정, 그 사이를 같은 비율로 늘린다
-            sh.top = round(BODY_BOTTOM - (BODY_BOTTOM - sh.top) * STRETCH)
+            # 본문: SRC_TOP~SRC_BOTTOM 을 BODY_TOP~BODY_BOTTOM 으로 옮기며 같은 비율로 늘린다
+            sh.top = round(BODY_TOP + (sh.top - SRC_TOP) * STRETCH)
             sh.height = round(sh.height * STRETCH)
             if sh.has_table:  # 표 높이는 행 높이가 정한다
                 for r in sh.table.rows:
