@@ -27,9 +27,9 @@ note_kind: "용어 사전"
 
 | 용어 | 쉬운 뜻 | 예, 비유 |
 |---|---|---|
-| PE (Portable Executable) | Windows 실행 파일(`.exe`, `.dll`)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식이다 | 서류 양식 이름 |
-| ELF | Linux 실행 파일의 형식. 회사 Windows PC에서는 REA로 Ghidra 분석을 할 수 없고, Ghidra 화면에서 직접 열어야 한다 | Linux용 서류 양식 |
-| Mach-O | macOS 실행 파일의 형식. ELF와 같은 제약이 있다 | macOS용 서류 양식 |
+| PE (Portable Executable) | Windows 실행 파일(`.exe`, `.dll`)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식이다. Portable(옮겨 갈 수 있는)은 Windows NT가 여러 CPU에서 돌던 시절, CPU가 달라도 같은 형식을 쓴다는 뜻이다. 파일 맨 앞이 `MZ`(4d 5a)로 시작한다 | 서류 양식 이름 |
+| ELF (Executable and Linkable Format) | Linux 실행 파일의 형식. 실행 파일(Executable)과 링크 전의 조각(`.o`), 공유 라이브러리(`.so`)를 같은 형식으로 담아서 Linkable이 붙었다. 파일 맨 앞이 `7f 45 4c 46`(`.ELF`)이다. 회사 Windows PC에서는 REA로 Ghidra 분석을 할 수 없고, Ghidra 화면에서 직접 열어야 한다 | Linux용 서류 양식 |
+| Mach-O (Mach Object) | macOS, iOS 실행 파일의 형식. macOS 커널의 뿌리인 Mach 커널에서 이름을 따왔다. ELF와 같은 제약이 있다 | macOS용 서류 양식 |
 | DLL (Dynamic Link Library) | 여러 프로그램이 나눠 쓰는 기능 묶음 파일. `.exe`가 실행 중에 불러 쓴다 | 여러 장비가 같이 쓰는 공용 부품 |
 | ASAR | Electron 앱이 웹 코드(JavaScript, HTML)를 파일 하나로 묶은 것(`app.asar`). 압축은 아니라서 풀면 웹 앱 코드가 그대로 나온다 | 서류를 끈으로 묶은 꾸러미 |
 | HAR (HTTP Archive) | 브라우저가 주고받은 요청과 응답을 저장한 기록 파일. 개발자 도구의 Network 탭에서 저장한다. 쿠키와 토큰이 들어 있을 수 있으므로 분석이 끝나면 지운다 | 통화 녹음 파일 |

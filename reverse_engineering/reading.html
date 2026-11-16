@@ -708,17 +708,17 @@ e:   c3               ret                      eax 값을 반환
 <tbody>
 <tr>
 <td>PE (Portable Executable)</td>
-<td>Windows 실행 파일(<code>.exe</code>, <code>.dll</code>)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식이다</td>
+<td>Windows 실행 파일(<code>.exe</code>, <code>.dll</code>)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식이다. Portable(옮겨 갈 수 있는)은 Windows NT가 여러 CPU에서 돌던 시절, CPU가 달라도 같은 형식을 쓴다는 뜻이다. 파일 맨 앞이 <code>MZ</code>(4d 5a)로 시작한다</td>
 <td>서류 양식 이름</td>
 </tr>
 <tr>
-<td>ELF</td>
-<td>Linux 실행 파일의 형식. 회사 Windows PC에서는 REA로 Ghidra 분석을 할 수 없고, Ghidra 화면에서 직접 열어야 한다</td>
+<td>ELF (Executable and Linkable Format)</td>
+<td>Linux 실행 파일의 형식. 실행 파일(Executable)과 링크 전의 조각(<code>.o</code>), 공유 라이브러리(<code>.so</code>)를 같은 형식으로 담아서 Linkable이 붙었다. 파일 맨 앞이 <code>7f 45 4c 46</code>(<code>.ELF</code>)이다. 회사 Windows PC에서는 REA로 Ghidra 분석을 할 수 없고, Ghidra 화면에서 직접 열어야 한다</td>
 <td>Linux용 서류 양식</td>
 </tr>
 <tr>
-<td>Mach-O</td>
-<td>macOS 실행 파일의 형식. ELF와 같은 제약이 있다</td>
+<td>Mach-O (Mach Object)</td>
+<td>macOS, iOS 실행 파일의 형식. macOS 커널의 뿌리인 Mach 커널에서 이름을 따왔다. ELF와 같은 제약이 있다</td>
 <td>macOS용 서류 양식</td>
 </tr>
 <tr>
@@ -4336,7 +4336,7 @@ RETURN_VALUE
 </thead>
 <tbody>
 <tr>
-<td>PE</td>
+<td>PE (Portable Executable)</td>
 <td>Windows 실행 파일(.exe, .dll)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식</td>
 <td>서류 양식 이름</td>
 </tr>

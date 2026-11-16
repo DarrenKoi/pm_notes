@@ -545,7 +545,7 @@ SLIDES = [
     dict(kind="table", part=GLOSS, title="부록 9: 용어 사전 (파일 형식)",
          msg="확장자와 형식 이름은 \"어떤 종류의 파일인가\"를 알려 줍니다",
          head=["용어", "쉬운 뜻", "비유"], widths=[3.0, 6.7, 2.6],
-         rows=[["PE", "Windows 실행 파일(.exe, .dll)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식", "서류 양식 이름"],
+         rows=[["PE (Portable Executable)", "Windows 실행 파일(.exe, .dll)의 형식. 회사 PC의 REA가 Ghidra로 여는 형식", "서류 양식 이름"],
                ["ELF, Mach-O", "Linux(ELF)와 macOS(Mach-O) 실행 파일의 형식. 회사 PC의 REA로는 Ghidra 분석이 안 된다", "다른 나라 서류 양식"],
                ["DLL", "여러 프로그램이 나눠 쓰는 기능 묶음 파일. exe가 실행 중에 불러 쓴다", "공용 부품"],
                ["ASAR", "Electron 앱이 웹 코드를 파일 하나로 묶은 것(app.asar). 풀면 웹 코드가 그대로 나온다", "끈으로 묶은 서류 꾸러미"],
