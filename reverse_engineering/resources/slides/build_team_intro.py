@@ -1,18 +1,11 @@
 """RE, REA 팀 입문 deck 생성기.
 
-실행: python reverse_engineering/resources/slides/build_team_intro.py [추가 슬라이드.json]
+실행: python reverse_engineering/resources/slides/build_team_intro.py
 SLIDES 하나에서 re-rea-team-intro.pptx, .bento.html, .md 를 함께 만든다.
 세 파일을 직접 고치지 말고 SLIDES 를 고친 뒤 다시 실행한다.
 내용의 근거는 이 폴더(reverse_engineering/)의 .md 문서다.
-
-회사에서 얻은 REA 결과는 SLIDES 에 넣지 않는다(공개 저장소다). resources/slides/extra_사내용.json 에
-적으면 사이사이에 끼워 넣은 re-rea-team-intro_사내용.pptx, .bento.html, .md 를 새 파일로 만든다.
-그때는 공개 deck 파일(_사내용 이 없는 이름)을 읽기만 하고 다시 쓰지 않는다.
-형식과 규칙은 team-intro-editing-guide.md 에 있다.
 """
-import json
 import math
-import sys
 import re
 from pathlib import Path
 
@@ -71,16 +64,14 @@ SLIDES = [
          sub="팀 공유 세미나  |  2026-11",
          notes="오늘은 리버스 엔지니어링이 무엇인지, 그리고 회사 PC에서 Ghidra와 REA로 어떻게 해 볼 수 있는지 소개합니다. "
                "프로그래밍 전공이 아니어도 이해할 수 있게 준비했습니다."),
-    dict(kind="draw_agenda", part="시작하며", title="오늘 다룰 내용",
+    dict(kind="cards", part="시작하며", title="오늘 다룰 내용",
          msg="전공과 상관없이 따라올 수 있도록, 새 용어는 나올 때마다 풀어서 설명합니다",
          items=[("1부  RE란 무엇인가", "무엇이고 왜 필요한가\n꼭 알아야 할 용어\n정적 분석과 동적 분석"),
                 ("2부  작업 절차", "허가 확인부터 보고까지 7단계\n시작 전의 안전 수칙\n좋은 질문을 만드는 법"),
                 ("3부  Ghidra와 REA", "실행 파일을 읽는 도구 Ghidra\n그 도구를 AI에게 맡기는 REA\nAI 쪽 용어 정리"),
                 ("4부  회사 PC에서 쓰기", "Windows에서 되는 것과 안 되는 것\n설치와 연결\n질문하는 법과 결과 읽는 법")],
-         time=[("시작", 3), ("1부 개념과 용어", 17), ("2부 절차", 6), ("3부 도구", 8), ("4부 써 보기", 16), ("정리와 질문", 10)],
-         md="시간 배분(모두 60분): 시작 3분, 1부 17분, 2부 6분, 3부 8분, 4부 16분, 정리와 질문 10분.",
          notes="네 부분으로 진행합니다. 끝나고 나면 세 가지를 얻어 가시면 됩니다. 리버스 엔지니어링이 어떤 일인지 설명할 수 있고, "
-               "분석을 시작하기 전에 무엇을 확인해야 하는지 알고, REA에게 좋은 질문을 쓸 수 있게 됩니다. 한 장에 2분 안쪽으로 진행합니다."),
+               "분석을 시작하기 전에 무엇을 확인해야 하는지 알고, REA에게 좋은 질문을 쓸 수 있게 됩니다."),
 
     # 1부
     dict(kind="draw_reverse", part=P1, title="리버스 엔지니어링이란 무엇인가",
@@ -699,19 +690,6 @@ def code(sl, y, h, s):
     box(sl, X + 7.6, y, W - 7.6, h, "\n".join(s["side"]), 14, pad=0.05, bullets=True)
 
 
-def draw_agenda(sl, y, h, s):
-    cards(sl, y, 2.5, s)
-    box(sl, X, y + 2.75, W, 0.4, "시간 배분 (모두 60분)", 14, pad=0, anchor=MSO_ANCHOR.MIDDLE, bold=True)
-    x = X
-    for i, (label, mins) in enumerate(s["time"]):
-        w = W * mins / 60
-        big = mins >= 16
-        box(sl, x, y + 3.2, w - 0.05, 0.85, f"{label}\n{mins}분", 12, BLUE if big else (LBLUE if i % 2 else GRAY),
-            MSO_ANCHOR.MIDDLE, pad=0.02, align=PP_ALIGN.CENTER, bold=True, color=WHITE if big else BLACK)
-        x += w
-    box(sl, X, y + 4.1, W, 0.4, "한 장에 2분 안쪽으로 진행한다. 용어 표와 명령어 장은 훑고 지나간다.", 12, pad=0, color=DGRAY)
-
-
 def draw_reverse(sl, y, h, s):
     box(sl, X, y, W, 0.75, "보통의 개발 (Forward): 설계에서 제품으로", 16, GRAY, MSO_ANCHOR.MIDDLE,
         shape=MSO_SHAPE.RIGHT_ARROW, align=PP_ALIGN.CENTER, bold=True)
@@ -896,34 +874,6 @@ def draw_uses(sl, y, h, s):
         align=PP_ALIGN.CENTER, color=WHITE)
 
 
-def image(sl, y, h, s):
-    """A screenshot fitted into the body area, centered. Path is relative to this folder."""
-    pic = sl.shapes.add_picture(str(HERE / s["image"]), Inches(X), Inches(y), height=Inches(h))
-    if pic.width > Inches(W):
-        pic.height = int(pic.height * Inches(W) / pic.width)
-        pic.width = Inches(W)
-    pic.left = Inches(X) + (Inches(W) - pic.width) // 2
-
-
-def load_extras(path):
-    """Extra slides from a JSON file, checked."""
-    extras = json.loads(path.read_text(encoding="utf-8"))
-    for e in extras:
-        assert 1 <= e["after"] <= len(SLIDES) and e["kind"] in EXTRA_KINDS, (e.get("title"), e["kind"], e["after"])
-        assert "⟨" not in json.dumps(e, ensure_ascii=False), f"채우지 않은 ⟨칸⟩이 남아 있다: {e.get('title')}"
-        e.setdefault("part", "REA 실행 결과")
-        e.setdefault("notes", "")
-    return extras
-
-
-def with_extras(extras):
-    """Base slides with the extras placed after the base slide numbers they name."""
-    return [x for n, s in enumerate(SLIDES, 1) for x in [s] + [e for e in extras if e["after"] == n]]
-
-
-EXTRA_KINDS = ("cards", "two", "table", "code", "image", "draw_result", "draw_chain")
-
-
 def build_pptx(path, slides):
     prs = Presentation()
     prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
@@ -1031,8 +981,6 @@ def build_md(path, slides):
             out.append(s["sub"] + "\n")
         if "md" in s:
             out.append(s["md"] + "\n")
-        if "image" in s:
-            out.append(f"![{s['title']}]({s['image']})\n")
         for head, items in s.get("groups", []):
             out += [f"**{head}**\n", *[f"- {it}" for it in items], ""]
         for key, mark in (("items", "-"), ("nodes", "1.")):  # cards are bullets, flows are numbered
@@ -1061,16 +1009,7 @@ def build_md(path, slides):
 if __name__ == "__main__":
     for s in SLIDES:  # 저장소 문장 부호 규칙: em dash와 가운데 점을 쓰지 않는다
         assert not re.search("[—·]", str(s)), s["title"]
-    extra = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "extra_사내용.json"
-    if not extra.is_file():
-        build_pptx(OUT / f"{NAME}.pptx", SLIDES)
-        build_md(OUT / f"{NAME}.md", SLIDES)
-        build_bento(OUT / f"{NAME}.bento.html", SLIDES)
-        print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md, {NAME}.bento.html")
-    else:  # company results: only new _사내용 files (kept out of git); the public decks are read, never written
-        extras = load_extras(extra)
-        slides = with_extras(extras)
-        build_pptx(OUT / f"{NAME}_사내용.pptx", slides)
-        build_md(OUT / f"{NAME}_사내용.md", slides)
-        build_bento(OUT / f"{NAME}_사내용.bento.html", slides, shell=OUT / f"{NAME}.bento.html")
-        print(f"{len(slides)} slides -> {NAME}_사내용.pptx, .md, .bento.html  (git 제외, 올리지 않는다)")
+    build_pptx(OUT / f"{NAME}.pptx", SLIDES)
+    build_md(OUT / f"{NAME}.md", SLIDES)
+    build_bento(OUT / f"{NAME}.bento.html", SLIDES)
+    print(f"{len(SLIDES)} slides -> {NAME}.pptx, {NAME}.md, {NAME}.bento.html")

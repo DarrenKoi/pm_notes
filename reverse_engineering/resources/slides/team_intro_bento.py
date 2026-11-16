@@ -4,25 +4,20 @@ build_team_intro.py 가 부른다. 같은 SLIDES 를 받아 re-rea-team-intro.be
 파일의 나머지(Bento 앱 런타임)는 건드리지 않는다. 형식: https://bento.page/agents.md
 kind 이름 = 이 파일의 함수 이름. 좌표는 1280x720 px, 좌우 여백 96.
 """
-import base64
 import html
 import json
 import math
-import mimetypes
 import re
-from pathlib import Path
 
-HERE = Path(__file__).parent
 BLOCK = re.compile(r'(<script type="application/bento\+json" id="bento-doc">)(.*?)(</script>)', re.S)
 
 BG, FG, MUTE, ACC, ONACC = "#FFFFFF", "#1B2430", "#5F6B7A", "#D9480F", "#FFFFFF"
 S1, S2, LINE = "#F5F6F8", "#E6E9EE", "rgba(27,36,48,0.16)"
 KR = "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif"
 MONO = "Consolas, 'SF Mono', Menlo, monospace"
-# SLIDES, extra json 에 16진수로 적힌 pptx 색을 이 deck 의 색으로 바꾼다
+# SLIDES 에 16진수로 적힌 pptx 색을 이 deck 의 색으로 바꾼다
 TINT = {"E8F0FA": "#DCE9FB", "FFF2CC": "#FFEBB5", "FCE4E4": "#FBD9D9", "D9D9D9": "#DDE1E6", "1F5AA6": "#B9D2F5"}
 X, W = 96, 1088
-MARCH = {"loop": {"type": "dash-march", "distance": 18, "duration": 1.4}}
 
 
 def rich(s, mono=False):
@@ -37,7 +32,7 @@ class Slide:
     """Element list of one slide. Ids are deterministic: <slide id>-<n>, or a shared id for morph."""
 
     def __init__(self, sid):
-        self.sid, self.els, self.runs = sid, [], []
+        self.sid, self.els = sid, []
 
     def add(self, el, id=None, order=None, fx=None, **extra):
         el = {"id": id or f"{self.sid}-{len(self.els) + 1}", **el, "rotation": el.get("rotation", 0), "opacity": 1, **extra}
@@ -57,17 +52,12 @@ class Slide:
         return self.add(dict(type="shape", shape="rect", x=x, y=y, w=w, h=h, fill=fill, stroke=stroke,
                              strokeWidth=sw, radius=radius), **kw)
 
-    def line(self, x1, y1, x2, y2, color=MUTE, run=None, **kw):
-        """Dashed marching arrow from (x1, y1) to (x2, y2). A Bento line is horizontal in its box, so rotate it.
-        run: start delay in seconds of a dot that travels along the line again and again (shows what flows where)."""
+    def line(self, x1, y1, x2, y2, color=MUTE, **kw):
+        """Arrow from (x1, y1) to (x2, y2). A Bento line is horizontal in its box, so rotate it."""
         ln = math.hypot(x2 - x1, y2 - y1)
-        if run is not None:
-            self.runs.append(dict(type="shape", shape="ellipse", x=x1 - 6, y=y1 - 6, w=12, h=12, fill=color, stroke="none",
-                                  strokeWidth=0, radius=0, fx={"loop": {"type": "motion-path", "duration": round(max(1.2, ln / 220), 1),
-                                  "path": f"M0,0 L{round(x2 - x1)},{round(y2 - y1)}", "delay": run, "ease": "none"}}))
         return self.add(dict(type="shape", shape="line", x=(x1 + x2 - ln) / 2, y=(y1 + y2) / 2 - 2, w=ln, h=4, fill=color,
-                             stroke=color, strokeWidth=2, radius=0, strokeStyle="dashed", lineEnd="arrow",
-                             rotation=round(math.degrees(math.atan2(y2 - y1, x2 - x1)), 1)), fx=MARCH, **kw)
+                             stroke=color, strokeWidth=2, radius=0, lineEnd="arrow",
+                             rotation=round(math.degrees(math.atan2(y2 - y1, x2 - x1)), 1)), **kw)
 
     def card(self, x, y, w, h, head, body="", sample=None, size=17, hh=48, hot=False, order=None, sample_size=13, hs=19):
         self.rect(x, y, w, h, S1, LINE, 1, 12, order=order)
@@ -136,36 +126,15 @@ def code(b, y, h, s):
     b.bullets(768, y + 6, 416, h - 6, s["side"], 16, order=1)
 
 
-def image(b, y, h, s):
-    """A screenshot fitted into the body area. Path is relative to this folder; the file is embedded."""
-    b.add(dict(type="image", x=X, y=y, w=W, h=h, src="asset:" + s["image"], fit="contain", radius=8), order=0)
-
-
-def draw_agenda(b, y, h, s):
-    w = (W - 72) / 4
-    for i, (head, body) in enumerate(s["items"]):
-        b.card(X + i * (w + 24), y, w, 214, head, body, order=i, hs=18)
-    b.text(X, y + 238, 300, 44, "시간 배분", 17, weight=700, valign="middle")
-    b.text(X + 780, y + 232, 250, 50, "60", 44, ACC, 900, "right", "middle", mono=True, lh=1, fx={"countUp": True})
-    b.text(X + 1040, y + 238, 48, 44, "분", 17, MUTE, 700, valign="middle")
-    x = X
-    for i, (label, mins) in enumerate(s["time"]):
-        sw, big = W * mins / 60, mins >= 16
-        b.rect(x, y + 290, sw - 4, 66, ACC if big else (S2 if i % 2 else S1), "none" if big else LINE, 0 if big else 1, 8, order=4)
-        b.text(x, y + 290, sw - 4, 66, f"{label}\n{mins}분", 14, ONACC if big else FG, 700, "center", "middle", order=4)
-        x += sw
-    b.text(X, y + 372, W, 26, "한 장에 2분 안쪽으로 진행한다. 용어 표와 명령어 장은 훑고 지나간다.", 15, MUTE)
-
-
 def draw_reverse(b, y, h, s):
     b.text(X, y, 470, 36, "보통의 개발 (Forward): 설계에서 제품으로", 18, MUTE, 700, valign="middle")
-    b.line(X + 480, y + 18, X + W, y + 18, run=0)
+    b.line(X + 480, y + 18, X + W, y + 18)
     w, gap = 320, (W - 960) / 2
     for i, (head, body) in enumerate(s["nodes"]):
         b.card(X + i * (w + gap), y + 50, w, h - 100, head, body, order=i)
         if i < 2:
             b.text(X + i * (w + gap) + w, y + h / 2 - 20, gap, 40, "↔", 26, MUTE, align="center", valign="middle")
-    b.line(X + 600, y + h - 18, X, y + h - 18, ACC, run=1.5)
+    b.line(X + 600, y + h - 18, X, y + h - 18, ACC)
     b.text(X + 610, y + h - 36, W - 610, 36, "리버스 엔지니어링 (Reverse): 제품에서 설계로", 18, ACC, 700, "right", "middle")
 
 
@@ -175,7 +144,7 @@ def draw_why(b, y, h, s):
     for i, (head, body) in enumerate(s["items"]):
         cx = X + i * (w + 24) + w / 2
         b.card(X + i * (w + 24), y, w, h - 130, head, body, size=16, order=i)
-        b.line(cx, y + h - 124, 640 + (i - 1.5) * 120, qy - 6, run=i * 0.4, order=4)
+        b.line(cx, y + h - 124, 640 + (i - 1.5) * 120, qy - 6, order=4)
     b.rect(240, qy, 800, 64, ACC, radius=12, order=5)
     b.text(240, qy, 800, 64, s["question"], 24, ONACC, 800, "center", "middle", order=5)
 
@@ -192,7 +161,7 @@ def draw_chain(b, y, h, s):
         b.card(x, y, w, ch, head, body, sample[0] if sample else None, 15 if small else 17, order=i,
                sample_size=13 if small else 14, hs=15 if small else 19)
         if i < n - 1:
-            b.line(x + w + 4, y + ch / 2, x + w + gap - 4, y + ch / 2, ACC, run=i * 1.2, order=i)
+            b.line(x + w + 4, y + ch / 2, x + w + gap - 4, y + ch / 2, ACC, order=i)
             if labels:
                 b.text(x + w, y + ch / 2 - 30, gap, 22, labels[i], 13, MUTE, 700, "center", order=i)
     back, shape = s.get("back"), s.get("back_shape")
@@ -207,7 +176,7 @@ def draw_chain(b, y, h, s):
         b.text(X, by + 14, W / 2, 30, left, 17, ACC, 700)
         b.text(X + W / 2, by + 14, W / 2, 30, right, 17, MUTE, 700, "right")
     else:
-        b.line(X + W, by + 8, X, by + 8, ACC, run=2)
+        b.line(X + W, by + 8, X, by + 8, ACC)
         b.text(X, by + 16, W, 30, back, 17, ACC, 700, "center")
 
 
@@ -219,8 +188,8 @@ def draw_loop(b, y, h, s):
         b.bullets(x + 20, y + 68, w - 40, h - 78, items, 17, order=i)
     mx = X + w
     b.text(mx, y + h / 2 - 74, gap, 24, "가설을 세운다", 15, ACC, 700, "center")
-    b.line(mx + 10, y + h / 2 - 40, mx + gap - 10, y + h / 2 - 40, ACC, run=0)
-    b.line(mx + gap - 10, y + h / 2 + 40, mx + 10, y + h / 2 + 40, run=1.2)
+    b.line(mx + 10, y + h / 2 - 40, mx + gap - 10, y + h / 2 - 40, ACC)
+    b.line(mx + gap - 10, y + h / 2 + 40, mx + 10, y + h / 2 + 40)
     b.text(mx, y + h / 2 + 52, gap, 44, "결과가 다르면\n다시 읽는다", 15, MUTE, 700, "center")
 
 
@@ -230,7 +199,7 @@ def draw_evidence(b, y, h, s):
         x = X + i * (w + 40)
         b.card(x, y, w, ch, head, body, size=16, hot=i == 2, order=i, hs=17)
         if i < 3:
-            b.line(x + w + 4, y + ch / 2, x + w + 36, y + ch / 2, ACC, run=i * 1.2, order=i)
+            b.line(x + w + 4, y + ch / 2, x + w + 36, y + ch / 2, ACC, order=i)
     b.rect(X, y + h - 64, W, 64, "transparent", MUTE, 1.5, 10, strokeStyle="dashed", order=4)
     b.text(X + 16, y + h - 64, W - 32, 64, s["unknown"], 17, valign="middle", order=4)
 
@@ -251,7 +220,7 @@ def draw_zones(b, y, h, s):
 def draw_steps(b, y, h, s):
     n = len(s["nodes"])
     w = (W - 16 * (n - 1)) / n
-    b.line(X, y + 140, X + W, y + 140, run=0, id="flow")
+    b.line(X, y + 140, X + W, y + 140, id="flow")
     for label, a, z in (("준비", 0, 3), ("분석", 3, 6), ("정리", 6, 7)):
         gx, gw = X + a * (w + 16), (z - a) * (w + 16) - 16
         b.text(gx, y, gw, 24, label, 15, MUTE, 700, "center")
@@ -265,7 +234,7 @@ def draw_steps(b, y, h, s):
     x5, x6 = X + 4 * (w + 16) + w / 2, X + 5 * (w + 16) + w / 2
     b.add(dict(type="shape", shape="path", x=x5, y=y + 248, w=x6 - x5, h=40, fill="transparent", stroke=ACC, strokeWidth=2,
                radius=0, d=f"M {x6 - x5} 0 C {x6 - x5} 40, 0 40, 0 0", pathBox=[0, 0, x6 - x5, 40], strokeStyle="dashed"),
-          id="loop", fx=MARCH)
+          id="loop")
     b.text(x5 - 200, y + 292, x6 - x5 + 400, 26, "6단계 결과가 가설과 다르면 5단계로 돌아간다", 16, ACC, 700, "center")
 
 
@@ -276,16 +245,16 @@ def draw_arch(b, y, h, s):
     b.rect(X, my - 50, 150, 100, S1, LINE, 1, 50, order=0)
     b.text(X, my - 50, 150, 100, "**사람**\n질문을 고르고\n결과를 따진다", 16, align="center", valign="middle", order=0)
     b.text(246, my - 30, 80, 22, "질문", 15, MUTE, 700, "center")
-    b.line(250, my, 322, my, run=0)
+    b.line(250, my, 322, my)
     b.rect(326, my - 50, 200, 100, S2, LINE, 1, 12, order=1)
     b.text(326, my - 50, 200, 100, "**AI 에이전트 (pi)**\n어떤 도구를 쓸지\n정한다", 16, align="center", valign="middle", order=1)
     b.rect(326, y, 200, 52, "transparent", ACC, 1.5, 12, order=1)
     b.text(326, y, 200, 52, "**사내 LLM** (AI 모델)", 16, align="center", valign="middle", order=1)
-    b.line(426, my - 54, 426, y + 56, ACC, run=4.8)
+    b.line(426, my - 54, 426, y + 56, ACC)
     b.text(X, y + 64, 316, 24, "도구 결과가 모델로 전달된다", 15, ACC, 700, "right")
     b.text(530, my - 66, 134, 40, "MCP로\n도구 호출", 14, ACC, 700, "center", "bottom", lh=1.3)
-    b.line(532, my - 18, 664, my - 18, ACC, run=1.2)
-    b.line(664, my + 18, 532, my + 18, run=3.6)
+    b.line(532, my - 18, 664, my - 18, ACC)
+    b.line(664, my + 18, 532, my + 18)
     b.text(530, my + 26, 134, 40, "근거와 한계가\n붙은 결과", 14, MUTE, 700, "center", lh=1.3)
     b.rect(668, my - 85, 200, 170, ACC, radius=12, order=2)
     b.text(668, my - 85, 200, 170, "**REA**\n\n스킬: 작업 지침서\nMCP 서버:\n분석 도구 묶음", 17, ONACC, align="center", valign="middle", order=2)
@@ -295,7 +264,7 @@ def draw_arch(b, y, h, s):
         ey = y + 36 + i * (eh + 10)
         b.rect(968, ey, 200, eh, S2 if i else TINT["FFF2CC"], LINE, 1, 10, order=3)
         b.text(968, ey, 200, eh, t, 15, align="center", valign="middle", lh=1.3, order=3)
-        b.line(872, my, 964, ey + eh / 2, run=2.4 if i == 0 else None, order=3)
+        b.line(872, my, 964, ey + eh / 2, order=3)
 
 
 def draw_prompt(b, y, h, s):
@@ -321,7 +290,7 @@ def draw_tree(b, y, h, s):
     w, ly = (W - 72) / 4, y + 150
     for i, (head, tag, tool) in enumerate(s["nodes"]):
         x = X + i * (w + 24)
-        b.line(640 + (i - 1.5) * 60, y + 110, x + w / 2, ly - 4, ACC if i == 0 else MUTE, run=0 if i == 0 else None, order=2)
+        b.line(640 + (i - 1.5) * 60, y + 110, x + w / 2, ly - 4, ACC if i == 0 else MUTE, order=2)
         b.rect(x, ly, w, y + h - ly, S1, ACC if i == 0 else LINE, 1.5 if i == 0 else 1, 12, order=2 + i)
         b.text(x + 14, ly + 10, w - 28, 48, head, 16, weight=700, lh=1.35, order=2 + i)
         b.text(x + 14, ly + 64, w - 28, 26, tag, 16, ACC if i == 0 else MUTE, order=2 + i)
@@ -339,7 +308,7 @@ def draw_native(b, y, h, s):
     sx = X + 4 * (w + 20)
     b.rect(sx, y + 14, 2 * w + 20, 8, ACC, radius=4)
     b.text(sx - 200, y, 190, 36, "닫기 전에 저장", 15, ACC, 700, "right", "middle")
-    b.line(X, y + 76, X + W, y + 76, run=0)
+    b.line(X, y + 76, X + W, y + 76)
     for i, (head, body) in enumerate(s["nodes"]):
         b.card(X + i * (w + 20), y + 52, w, h - 52, f"{i + 1}  {head}", body, size=15, hot=i == 4, order=i, hs=15)
 
@@ -374,8 +343,8 @@ def draw_uses(b, y, h, s):
         yy, hh = by + k * (bh / 2 + 6), bh / 2 - 6
         b.rect(490, yy, 300, hh, S2, LINE, 1, 12, order=5)
         b.text(490, yy, 300, hh, t, 18, weight=700, align="center", valign="middle", order=5)
-        b.line(400, by + bh / 2, 486, yy + hh / 2, run=0, order=5)
-        b.line(794, yy + hh / 2, 880, by + bh / 2, ACC, run=1.2, order=5)
+        b.line(400, by + bh / 2, 486, yy + hh / 2, order=5)
+        b.line(794, yy + hh / 2, 880, by + bh / 2, ACC, order=5)
     b.rect(884, by, 300, bh, ACC, radius=12, order=6)
     b.text(884, by, 300, bh, "**출력 비교**\n시험한 입력에서 같으면 통과\n다르면 다시 분석한다", 18, ONACC, align="center", valign="middle", order=6)
 
@@ -386,9 +355,6 @@ def cover(b, s):
     hexdump = "8d 14 09 83 f9 65 b8 ff\nff ff ff 0f 4c c2 c3 cc\n48 89 5c 24 08 57 48 83\nec 20 48 8b d9 e8 3a 01\n" \
               "00 00 48 8b c8 ff 15 0e\n4c 8b c0 48 85 c0 74 2b\n41 b9 10 00 00 00 4c 8d\n05 9f 3e 01 00 48 8b d3"
     b.text(770, 150, 414, 420, hexdump, 25, MUTE, mono=True, lh=1.45, id="hex", opacity=0.22)
-    b.add(dict(type="shape", shape="ellipse", x=900, y=120, w=220, h=220, fill="transparent", stroke=ACC, strokeWidth=2, radius=0),
-          id="orbit", opacity=0.55, fx={"loop": {"type": "motion-path", "duration": 14, "delay": 0, "ease": "none",
-                                                 "path": "M0,0 C40,-30 90,-10 110,30 C130,70 70,110 20,80 C-20,60 -30,20 0,0"}})
     b.text(X, 150, 700, 26, "REVERSE ENGINEERING / REA", 16, ACC, 700, id="kicker", letterSpacing=2)
     b.text(X, 186, 700, 214, s["title"], 62, weight=900, valign="bottom", lh=1.12, id="title", role="title")
     b.rect(X, 416, 320, 10, ACC, radius=5, id="accent-bar")
@@ -396,13 +362,8 @@ def cover(b, s):
     b.text(X, 530, 760, 30, s["sub"], 18, MUTE, order=2)
 
 
-def asset(rel):
-    f = HERE / rel
-    return f"data:{mimetypes.guess_type(f.name)[0]};base64,{base64.b64encode(f.read_bytes()).decode()}"
-
-
 def build_doc(slides, title):
-    out, assets = [], {}
+    out = []
     for n, s in enumerate(slides, 1):
         b = Slide(f"s{n:02d}")
         if s["kind"] == "cover":
@@ -423,22 +384,16 @@ def build_doc(slides, title):
                 bottom -= 60
                 b.banner(bottom + 14, s["banner"])
             globals()[s["kind"]](b, y, bottom - y, s)
-            if "image" in s:
-                assets[s["image"]] = asset(s["image"])
-        for i, el in enumerate(b.runs):  # dots go on top of everything, without an entrance (it fights the path)
-            b.els.append({"id": f"{b.sid}-run{i}", **el, "rotation": 0, "opacity": 1})
         out.append(dict(id=b.sid, background=BG, transition="none" if n == 1 else "morph", notes=s["notes"], elements=b.els))
     doc = dict(format="bento/slides", version=1, title=title, size=dict(width=1280, height=720),
                theme=dict(background=BG, color=FG, accent=ACC, fontFamily=KR),
                meta=dict(subject="리버스 엔지니어링 입문과 REA 활용법", keywords="reverse engineering, REA, Ghidra"), slides=out)
-    if assets:
-        doc["assets"] = assets
     return doc
 
 
-def build_bento(path, slides, shell=None):
-    """Write the deck JSON into the Bento app file. The app runtime comes from `shell` (default: `path` itself)."""
-    src = shell or path
+def build_bento(path, slides):
+    """Write the deck JSON into the Bento app file (the app runtime already in `path`)."""
+    src = path
     if not src.is_file():
         raise SystemExit(f"{src.name} 이 없다. Bento 앱 파일을 먼저 받는다:\n"
                          f"  curl -fsSL https://bento.page/releases/slides/Bento_Slides.bento.html -o {src}")
