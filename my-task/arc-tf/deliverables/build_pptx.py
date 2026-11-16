@@ -6,7 +6,7 @@
 
   boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 공통 플랫폼 구조 1장
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 기술 설계(07) 상세 5장
-  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 6장 (2026 추진 현황과 Lesson Learned, 업무 전략, 핵심 개발 방향, TF 구성, 단계별 타겟)
+  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 단계별 타겟)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
 (자동 동기화 안 됨). 슬라이드 하나 = 함수 하나, 맨 아래 DECKS 가 deck 별 순서다. 필요: python-pptx. 한글 폰트: 맑은 고딕. 16:9, Windows PowerPoint 기준.
@@ -265,12 +265,11 @@ def s_status():  # 2026 추진 현황과 Lesson Learned
                 "**Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 __Offline 테스트 중__",
                 "**소형 VLM**(Vision Language Model) 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
             ("Thickness 추진 현황", [
-                "의뢰부터 Recipe 생성까지 **ARC Pipeline** 진행",
-                "DL 기반 Align Fail 대응 __Offline 테스트 중__",
-                "MI 장비군 중 __가장 높은 자동화__ 구현"]),
+                "**MI 장비군 중 자동화 완성도 가장 높음**: 의뢰부터 Recipe 생성까지 __ARC Pipeline__ 진행",
+                "DL 기반 Align Fail 대응 __Offline 테스트 중__"]),
             ("Inspection 추진 현황", [
                 "**DRB(Design Recipe Builder)**를 __Tuning하는 방식__으로 ARC 진행 중 (NAND Tech 1개 대상)",
-                "DRB Tuning에 **Computer-use** 사용",
+                "DRB Tuning에 **Rule 기반 Computer-use** 사용",
                 "Recipe Setup AI 활용 __DB 구축 완료__ (RAG, 마이다스)"])]
     for i, (head, items) in enumerate(cols):
         column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14)
@@ -284,8 +283,8 @@ def s_status():  # 2026 추진 현황과 Lesson Learned
         size=15, gap=0.3)
 
 
-def s_assets(merged=False):  # 업무 전략 1: Agent의 Recipe 작업 방식과 공통 과제. merged=True(exec)는 전략 2(엔지니어 PC 설치)를 아래 한 줄로 합침
-    s = slide("업무 전략" if merged else "업무 전략 1: Recipe 작업 방식",
+def s_assets():  # 업무 전략 1: Agent의 Recipe 작업 방식과 공통 과제
+    s = slide("업무 전략 1: Recipe 작업 방식",
               "**화면 조작**과 **외부 파일 편집**으로 Recipe 작업, 공통 과제는 **공통 플랫폼**으로 해결")
     y0, nh = COL_Y, Inches(0.68)
     ax, aw = M, Inches(2.5)
@@ -302,7 +301,7 @@ def s_assets(merged=False):  # 업무 전략 1: Agent의 Recipe 작업 방식과
     arrow(s, mx + mw + Inches(0.1), y2 + nh / 2, rx - Inches(0.1), y2 + nh / 2, "장비군별 도구", label_w=Inches(2.0))
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
-    cy, chh = Inches(3.9), Inches(2.3 if merged else 2.75)
+    cy, chh = Inches(3.9), Inches(2.75)
     column(s, M, cy, cw, chh, "Agent의 Recipe 작업 방식", [
                "**Computer Use**: VLM(화면 판단), PyAutoGUI(키보드, 마우스 입력), Win32(창 단위 조작)를 조합해 구현",
                "**외부 파일 편집**: 장비 화면을 거치지 않아 __조작 단계 축소__, 장비별 Recipe 파일 구조 해석 필요",
@@ -312,8 +311,6 @@ def s_assets(merged=False):  # 업무 전략 1: Agent의 Recipe 작업 방식과
                "**녹화 DB 추출**: 엔지니어 작업 녹화를 Agent 지식으로 변환",
                "**기술 부채 해소**: Vibe Coding 중 __원리 미확인 사항__ 정리",
                "장비군별 개별 진행 시 __같은 작업 반복__"], BLUE, size=13)
-    if merged:
-        note_line(s, Inches(6.33), "설치 방식", "별도 운영 PC 대신 **엔지니어 PC에 설치**, 엔지니어가 원할 때 실행하고 즉시 확인, 중단 (__Human on Command__)", size=13)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     s = slide("별첨: LLM 모델만으로 안 되는 이유",
@@ -504,7 +501,7 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
 
 
-def s_platform():  # 공통 플랫폼 구조 (boss, team)
+def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집, 엔지니어 PC 설치)을 합침
     s = slide("핵심 개발 방향",
               "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
     flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
@@ -528,12 +525,16 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
     column(s, M, cy, cw, chh, "공통 플랫폼 팀 역할", [
                "녹화 내용 추출, **RAG DB**, Workflow 생성",
                "**Computer Use** 실행 엔진 (VLM, PyAutoGUI, Win32)",
-               "준수 확인 (__생성형 AI + Rule, CV, ML/DL__), 즉시 중단"], BLUE, size=13)
+               "준수 확인 (__생성형 AI + Rule, CV, ML/DL__), 즉시 중단"]
+           + (["**최적화 소형 모델** 운영, PoC 코드 __기술 부채 해소__"] if merged else []), BLUE, size=13)
     column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어 역할", [
                "추출 내용 **라벨링**, Workflow 검토와 승인",
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
-               "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"], BLUE, size=13)
+               "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"]
+           + (["장비군별 도구로 **외부 Recipe 파일 편집** (공통 플랫폼 범위 밖)"] if merged else []), BLUE, size=13)
     note_line(s, Inches(6.1), "플랫폼의 역할", "2028 보조 (반복 입력 대행)  →  2029 자율 (Agent 셋업 진행)로 __점진적 발전__", size=13)
+    if merged:
+        note_line(s, Inches(6.42), "설치 방식", "별도 운영 PC 대신 **엔지니어 PC에 설치**, 엔지니어가 원할 때 실행하고 즉시 확인, 중단 (__Human on Command__)", size=13)
 
 
 def s_offline():  # Offline 파이프라인 (team)
@@ -646,8 +647,8 @@ def s_exec_roadmap():
 BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
         s_kanban, s_safety, s_decision]
 TEAM = BOSS[:6] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[6:] + [s_why_not_llm]
-EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_assets(merged=True),
-        s_platform, s_team, s_exec_roadmap]
+EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
+        s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
          "exec": ("arc-tf-exec-summary.pptx", EXEC)}
 

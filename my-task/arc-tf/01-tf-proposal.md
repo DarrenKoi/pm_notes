@@ -64,8 +64,8 @@ MI 장비군 가운데 CD, Thickness, Inspection이 각자 ARC를 추진하고 �
 | 장비군 | 추진 현황 |
 |---|---|
 | CD | **Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 Offline 테스트 중. 소형 VLM(Vision Language Model) 기반 장비 컨트롤(Computer-use) 기능 구현 |
-| Thickness | 의뢰부터 Recipe 생성까지 **ARC Pipeline** 진행. DL 기반 Align Fail 대응 Offline 테스트 중. MI 장비군 중 가장 높은 자동화 구현 |
-| Inspection | **DRB(Design Recipe Builder)**를 Tuning하는 방식으로 ARC 진행 중 (NAND Tech 1개 대상) |
+| Thickness | **MI 장비군 중 자동화 완성도 가장 높음**: 의뢰부터 Recipe 생성까지 ARC Pipeline 진행. DL 기반 Align Fail 대응 Offline 테스트 중 |
+| Inspection | **DRB(Design Recipe Builder)**를 Tuning하는 방식으로 ARC 진행 중 (NAND Tech 1개 대상). DRB Tuning에 Rule 기반 Computer-use 사용. Recipe Setup AI 활용 DB 구축 완료 (RAG, 마이다스) |
 
 ### Lesson Learned
 
