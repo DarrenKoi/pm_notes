@@ -35,7 +35,6 @@ note_kind: "에이전트 지침"
 | `extra_template.json` | 도구 하나에 슬라이드 여섯 칸을 채우는 양식. 쓰는 법은 [사내 결과 채우기 프롬프트](./company-results-prompt.md) | 올린다 |
 | `extra_사내용.json` | 회사에서 얻은 결과로 만든 추가 슬라이드 | **제외** |
 | `re-rea-team-intro_사내용.pptx`, `.bento.html`, `.md` | 추가 슬라이드가 들어간 발표용 결과물 | **제외** |
-| `re-rea-team-share_사내용.bento.html` | 같은 추가 슬라이드가 마지막 슬라이드 앞에 한 절로 들어간 팀 공유 deck | **제외** |
 | `img_사내용/` | 사내 화면 캡처를 두는 폴더(필요할 때 만든다) | **제외** |
 
 `reverse_engineering/.gitignore`가 이름에 `_사내용`이 들어간 파일과 폴더를 모두 제외한다. 사내 내용을 담는 파일은 반드시 이 글자를 이름에 넣는다.
@@ -84,14 +83,13 @@ Copy-Item extra_example.json extra_사내용.json
 
 | 항목 | 필수 | 내용 |
 |---|---|---|
-| `after` | 예 | 1~40. 보통 본편(1~29) 번호를 쓴다. 이 번호의 공개 슬라이드 뒤에 넣는다 |
+| `after` | 예 | 1~40. 보통 본편(1~29) 번호를 쓴다. 이 번호의 공개 슬라이드 뒤에 넣는다. 40이면 부록 뒤(맨 끝)에 파일에 적힌 순서대로 들어간다 |
 | `kind` | 예 | 아래 일곱 가지 중 하나 |
 | `title` | 예 | 제목. 한글 22자 이내 |
 | `msg` | 예 | 파란 상자의 핵심 메시지 한 문장. "입니다" 체, 한글 45자 이내 |
 | `notes` | 아니요 | 발표자 노트 |
 | `foot` | 아니요 | 하단 참고 문장. 넣으면 본문 높이가 줄어든다. 두 줄 이내 |
 | `part` | 아니요 | 오른쪽 위 표시. 기본값은 "REA 실행 결과" |
-| `deck` | 아니요 | 들어갈 deck. `"both"`(기본값), `"intro"`(입문 deck만), `"share"`(팀 공유 deck만) |
 
 kind별 항목은 아래와 같다. 완전한 예는 `extra_example.json`에 있다.
 
@@ -113,7 +111,7 @@ kind별 항목은 아래와 같다. 완전한 예는 `extra_example.json`에 있
 python build_team_intro.py
 ```
 
-`extra_사내용.json`이 있으면 `_사내용` 파일 세 개와 `re-rea-team-share_사내용.bento.html`만 새로 생기고, 공개 파일은 다시 쓰지 않는다. 없으면 공개 파일 세 개를 만든다. 양식의 `⟨ ⟩` 칸이 남아 있으면 생성이 멈춘다. 발표에는 `re-rea-team-intro_사내용.pptx`나 `re-rea-team-intro_사내용.bento.html` 중 하나를 쓴다. HTML deck은 저장소에 있는 `re-rea-team-intro.bento.html`의 앱 부분을 그대로 쓰므로 인터넷 연결 없이 만들어진다. `image` 그림은 HTML 파일 안에 들어간다. `python-pptx` 패키지가 필요하다. 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
+`extra_사내용.json`이 있으면 `_사내용` 파일 세 개만 새로 생기고, 공개 파일은 다시 쓰지 않는다. 없으면 공개 파일 세 개를 만든다. 양식의 `⟨ ⟩` 칸이 남아 있으면 생성이 멈춘다. 발표에는 `re-rea-team-intro_사내용.pptx`나 `re-rea-team-intro_사내용.bento.html` 중 하나를 쓴다. HTML deck은 저장소에 있는 `re-rea-team-intro.bento.html`의 앱 부분을 그대로 쓰므로 인터넷 연결 없이 만들어진다. `image` 그림은 HTML 파일 안에 들어간다. `python-pptx` 패키지가 필요하다. 회사 PC에 새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인한다.
 
 ### 4. 확인한다
 

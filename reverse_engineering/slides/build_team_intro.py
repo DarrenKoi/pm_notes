@@ -6,8 +6,7 @@ SLIDES 하나에서 re-rea-team-intro.pptx, .bento.html, .md 를 함께 만든�
 내용의 근거는 이 폴더(reverse_engineering/)의 .md 문서다.
 
 회사에서 얻은 REA 결과는 SLIDES 에 넣지 않는다(공개 저장소다). slides/extra_사내용.json 에
-적으면 사이사이에 끼워 넣은 re-rea-team-intro_사내용.pptx, .bento.html, .md 와
-끝에 결과 절을 붙인 re-rea-team-share_사내용.bento.html 을 새 파일로 만든다.
+적으면 사이사이에 끼워 넣은 re-rea-team-intro_사내용.pptx, .bento.html, .md 를 새 파일로 만든다.
 그때는 공개 deck 파일(_사내용 이 없는 이름)을 읽기만 하고 다시 쓰지 않는다.
 형식과 규칙은 team-intro-editing-guide.md 에 있다.
 """
@@ -26,7 +25,7 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 
-from team_intro_bento import build_bento, build_share
+from team_intro_bento import build_bento
 
 HERE = Path(__file__).parent
 NAME = "re-rea-team-intro"
@@ -310,7 +309,7 @@ SLIDES = [
                "**환경 변수**: 프로그램에게 알려 주는 설정값. 여기서는 Ghidra와 Java가 설치된 위치",
                "**--dry-run**: 바뀔 내용만 미리 보여 주고 아무것도 바꾸지 않는다",
                "등록한 뒤 pi에서 **/reload**를 실행한다",
-               "경로는 실제 설치 위치로 바꾼다. 자세한 내용은 rea-windows-pi-setup.md"],
+               "경로는 실제 설치 위치로 바꾼다"],
          notes="한 번만 하면 되는 작업이고, 오늘 외울 내용은 아닙니다. 이런 순서라는 것만 보시면 됩니다. 준비물 세 가지는 REA가 대신 설치해 주지 않으니 먼저 있어야 합니다. "
                "rea doctor는 건강 검진 같은 명령입니다. 문제가 있으면 어디가 문제인지 알려 줍니다. 막히면 설정 문서를 보거나 저에게 물어보시면 됩니다."),
     dict(kind="draw_prompt", part=P4, title="프롬프트에 넣을 네 가지",
@@ -396,17 +395,14 @@ SLIDES = [
          notes="오늘 내용에서 세 가지만 기억하신다면 왼쪽입니다. 실습은 웹 앱부터 권합니다. 브라우저만 있으면 되고, 진입점 찾기, 코드 따라가기, "
                "실행으로 확인하기라는 기본 흐름을 한 번 경험할 수 있습니다."),
     dict(kind="table", part="마무리", title="더 읽을 자료",
-         msg="문서는 저장소의 reverse_engineering 폴더에 있습니다. 질문 받겠습니다",
-         head=["문서", "언제 읽나"], widths=[4.6, 7.7],
-         rows=[["re-fundamentals.md", "처음 시작할 때. 오늘 1부의 자세한 설명"],
-               ["glossary.md", "모르는 말이 나올 때. 용어 사전 (부록 7~11과 같은 내용)"],
-               ["re-process.md", "새 분석을 시작할 때마다. 7단계 절차"],
-               ["rea-windows-pi-setup.md", "회사 PC에 REA를 처음 연결할 때"],
-               ["rea-usage-guide.md", "에이전트에 일을 시킬 때. 프롬프트 형식과 대상별 경로"],
-               ["installed-program-analysis.md", "설치형 Windows 프로그램을 분석할 때"],
-               ["templates/investigation-log.md", "분석 하나를 시작할 때 복사해서 쓰는 기록 양식"]],
-         foot="REA: github.com/morluto/rea    REA 가이드: rea.tools/guides    Ghidra: github.com/NationalSecurityAgency/ghidra",
-         notes="오늘 다룬 내용은 모두 이 문서들에 더 자세히 있습니다. 처음이라면 위에서부터 순서대로 읽으시면 됩니다. 질문 받겠습니다."),
+         msg="더 깊은 내용은 이 자료의 부록과 공식 자료에 있습니다. 질문 받겠습니다",
+         head=["자료", "어디에 있나", "언제 보나"], widths=[2.9, 4.7, 4.7],
+         rows=[["기초 상식", "이 자료의 부록 1~6", "기계어, 빌드 단계, 어셈블리, .NET이 낯설 때"],
+               ["용어 사전", "이 자료의 부록 7~11", "모르는 말이 나올 때"],
+               ["REA 저장소", "github.com/morluto/rea", "설치 방법과 버전별 변경 내용을 볼 때"],
+               ["REA 가이드", "rea.tools/guides", "분석 대상별 사용법을 찾을 때"],
+               ["Ghidra", "github.com/NationalSecurityAgency/ghidra", "Ghidra를 내려받거나 공식 문서를 볼 때"]],
+         notes="발표에서 다루지 못한 기초 상식과 용어는 뒤의 부록에 있습니다. 도구 자체는 공식 저장소와 가이드를 보시면 됩니다. 질문 받겠습니다."),
 
     # 부록: 발표 시간(60분) 밖. 질문이 나오면 펼치거나 나눠 준다. 근거는 re-fundamentals.md "기초 상식" 절
     dict(kind="code", part=APPX, title="부록 1: 기계어와 실행 파일",
@@ -516,7 +512,7 @@ SLIDES = [
                ["HAR", "브라우저가 주고받은 요청과 응답의 기록 파일. 로그인 정보가 들어 있을 수 있어 분석 후 지운다", "통화 녹음 파일"],
                ["JSON", "사람도 읽을 수 있는 데이터 글 형식. {\"이름\": \"값\"} 모양. REA 결과가 이 형식이다", "항목과 값을 적은 표"],
                ["해시 (SHA-256)", "파일 내용으로 계산한 짧은 값. 한 글자만 달라도 바뀐다", "파일의 지문"]],
-         notes="용어 사전입니다. 발표 중에 모르는 말이 나오면 이 장들을 펼칩니다. 같은 내용이 폴더의 glossary.md에 더 자세히 있습니다."),
+         notes="용어 사전입니다. 발표 중에 모르는 말이 나오면 이 장들을 펼칩니다."),
     dict(kind="table", part=GLOSS, title="부록 8: 용어 사전 (웹과 통신)",
          msg="웹 앱 분석은 \"브라우저와 서버가 무엇을 주고받는가\"를 보는 일입니다",
          head=["용어", "쉬운 뜻", "비유"], widths=[3.0, 6.7, 2.6],
@@ -552,7 +548,7 @@ SLIDES = [
                ["구조체, 오프셋", "구조체는 관련 값을 묶은 데이터. 오프셋은 그 시작에서 몇 칸 떨어졌는지", "서류 양식, 몇 번째 칸"],
                ["호출 규약", "함수에 입력을 넘기고 결과를 돌려받는 칸의 약속. Windows x64는 첫 입력이 rcx, 결과가 rax", "서류 넣고 받는 함"],
                ["디버그 정보 (PDB)", "함수, 변수 이름과 소스 줄 번호를 담은 파일. 있으면 분석이 훨씬 쉽다", "이름표 목록"]],
-         foot="7장의 param_1이 ecx로 들어오고 결과가 eax로 나가는 것이 호출 규약 때문이다. 인라인, 제어 흐름 그래프(CFG), 커버리지는 glossary.md에 있다.",
+         foot="7장의 param_1이 ecx로 들어오고 결과가 eax로 나가는 것이 호출 규약 때문이다.",
          notes="Ghidra나 REA 결과를 볼 때 자주 나오는 말입니다. 특히 0x로 시작하는 숫자는 16진수일 뿐이고 특별한 뜻이 있는 것은 아닙니다. "
                "7장 예시의 0x65가 101입니다."),
     dict(kind="table", part=GLOSS, title="부록 11: 용어 사전 (헷갈리는 짝)",
@@ -909,11 +905,10 @@ def image(sl, y, h, s):
 
 
 def load_extras(path):
-    """Extra slides from a JSON file, checked. `deck` says which deck a slide goes into: both (default), intro, share."""
+    """Extra slides from a JSON file, checked."""
     extras = json.loads(path.read_text(encoding="utf-8"))
     for e in extras:
-        assert 1 <= e["after"] <= len(SLIDES) and e["kind"] in EXTRA_KINDS and e.get("deck", "both") in DECKS, \
-            (e.get("title"), e["kind"], e["after"], e.get("deck"))
+        assert 1 <= e["after"] <= len(SLIDES) and e["kind"] in EXTRA_KINDS, (e.get("title"), e["kind"], e["after"])
         assert "⟨" not in json.dumps(e, ensure_ascii=False), f"채우지 않은 ⟨칸⟩이 남아 있다: {e.get('title')}"
         e.setdefault("part", "REA 실행 결과")
         e.setdefault("notes", "")
@@ -921,11 +916,10 @@ def load_extras(path):
 
 
 def with_extras(extras):
-    """Base slides with the intro-deck extras placed after the base slide numbers they name."""
-    return [x for n, s in enumerate(SLIDES, 1) for x in [s] + [e for e in extras if e["after"] == n and e.get("deck") != "share"]]
+    """Base slides with the extras placed after the base slide numbers they name."""
+    return [x for n, s in enumerate(SLIDES, 1) for x in [s] + [e for e in extras if e["after"] == n]]
 
 
-DECKS = ("both", "intro", "share")
 EXTRA_KINDS = ("cards", "two", "table", "code", "image", "draw_result", "draw_chain")
 
 
@@ -1079,6 +1073,3 @@ if __name__ == "__main__":
         build_md(HERE / f"{NAME}_사내용.md", slides)
         build_bento(HERE / f"{NAME}_사내용.bento.html", slides, shell=HERE / f"{NAME}.bento.html")
         print(f"{len(slides)} slides -> {NAME}_사내용.pptx, .md, .bento.html  (git 제외, 올리지 않는다)")
-        share = [e for e in extras if e.get("deck") != "intro"]  # team-share deck: all results as one section before its last slide
-        build_share(HERE / "re-rea-team-share_사내용.bento.html", share, HERE / "re-rea-team-share.bento.html")
-        print(f"+{len(share)} slides -> re-rea-team-share_사내용.bento.html  (git 제외, 올리지 않는다)")

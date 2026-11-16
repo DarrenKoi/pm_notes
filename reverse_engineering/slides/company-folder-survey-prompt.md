@@ -124,6 +124,6 @@ git status --short
 
 ## 관련 문서
 
-- [사내 결과를 deck 두 벌에 넣는 작업 지시](./company-results-prompt.md)
+- [사내 결과를 입문 deck에 넣는 작업 지시](./company-results-prompt.md)
 - [입문 deck 편집 지침](./team-intro-editing-guide.md)
 - [분석 기록 양식](../templates/investigation-log.md)
