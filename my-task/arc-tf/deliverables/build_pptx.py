@@ -64,7 +64,6 @@ COL_H = Inches(4.35)
 SRC_TOP, SRC_BOTTOM = COL_Y, Inches(6.7)
 BODY_TOP, BODY_BOTTOM = Inches(1.55), Inches(7.2)  # 요약문 아래 여백 0.4 inch, 슬라이드 아래 여백 0.3 inch
 STRETCH = (BODY_BOTTOM - BODY_TOP) / (SRC_BOTTOM - SRC_TOP)
-COVER_UP = Inches(0.5)  # 표지는 늘리지 않고 이만큼 올리기만
 
 prs = BLANK = None  # new_deck() 가 deck 마다 다시 만든다
 
@@ -238,9 +237,9 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
 def s_cover(title="Auto Recipe Creation TF 구성 기획안",
             sub="R&D MI 현업 엔지니어들과 만드는 레시피 셋업 자동화 공통 플랫폼"):  # 표지
     s = prs.slides.add_slide(BLANK)
-    text(s, Inches(1.0), Inches(2.45), W - Inches(2.0), Inches(1.0), title, size=40, bold=True)
-    text(s, Inches(1.0), Inches(3.95), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB)
-    text(s, Inches(1.0), Inches(4.55), W - Inches(2.0), Inches(0.4), "2026-12", size=16, color=BLUE, bold=True)
+    text(s, Inches(1.0), Inches(3.3), W - Inches(2.0), Inches(0.8), title, size=40, bold=True)  # 슬라이드 세로 중앙
+    text(s, Inches(1.0), Inches(4.2), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB)
+    text(s, Inches(1.0), Inches(4.8), W - Inches(2.0), Inches(0.4), "2026-12", size=16, color=BLUE, bold=True)
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
@@ -703,8 +702,7 @@ def build(target):
         for sh in sl.shapes:
             if sh.top <= Inches(1.1):  # 제목과 핵심 메시지는 그대로
                 continue
-            if cover:  # 표지는 올리기만
-                sh.top = sh.top - COVER_UP
+            if cover:  # 표지는 s_cover 의 좌표 그대로
                 continue
             # 본문: SRC_TOP~SRC_BOTTOM 을 BODY_TOP~BODY_BOTTOM 으로 옮기며 같은 비율로 늘린다
             sh.top = round(BODY_TOP + (sh.top - SRC_TOP) * STRETCH)
