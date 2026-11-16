@@ -253,8 +253,17 @@ def build(target):
     if cover_title:
         cover(doc, cover_title)
     else:  # exec 한 장 요약: 표지 없이, 한 쪽에 들어가게 촘촘히
-        doc.styles["Normal"].font.size = Pt(10)
-        doc.styles["Normal"].paragraph_format.line_spacing = 1.1
+        sec = doc.sections[0]
+        sec.top_margin = sec.bottom_margin = Cm(1.4)
+        sec.left_margin = sec.right_margin = Cm(1.8)
+        doc.styles["Normal"].font.size = Pt(9)
+        doc.styles["Normal"].paragraph_format.line_spacing = 1.0
+        doc.styles["Normal"].paragraph_format.space_after = Pt(1)
+        doc.styles["Heading 1"].font.size = Pt(15)
+        doc.styles["Heading 2"].font.size = Pt(11.5)
+        for name in ("Heading 1", "Heading 2"):
+            doc.styles[name].paragraph_format.space_before = Pt(7 if name == "Heading 2" else 0)
+            doc.styles[name].paragraph_format.space_after = Pt(3)
     for k, (name, appendix) in enumerate(sources):
         if k:
             doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
