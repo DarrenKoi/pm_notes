@@ -6,7 +6,7 @@
 
   boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 공통 플랫폼 구조 1장
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 기술 설계(07) 상세 5장
-  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 08 한 장 요약, 6장 (2026 추진 현황, PoC 시사점 포함)
+  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 6장 (2026 추진 현황과 Lesson Learned, 업무 전략, 핵심 개발 방향, TF 구성, 단계별 타겟)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
 (자동 동기화 안 됨). 슬라이드 하나 = 함수 하나, 맨 아래 DECKS 가 deck 별 순서다. 필요: python-pptx. 한글 폰트: 맑은 고딕. 16:9, Windows PowerPoint 기준.
@@ -238,7 +238,8 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
             sub="R&D MI 현업 엔지니어들과 만드는 레시피 셋업 자동화 공통 플랫폼"):  # 표지
     s = prs.slides.add_slide(BLANK)
     text(s, Inches(1.0), Inches(2.95), W - Inches(2.0), Inches(0.8), title, size=40, bold=True, align=PP_ALIGN.CENTER)  # 가로 가운데, 세로는 중앙보다 조금 위
-    text(s, Inches(1.0), Inches(3.85), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB, align=PP_ALIGN.CENTER)
+    if sub:
+        text(s, Inches(1.0), Inches(3.85), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB, align=PP_ALIGN.CENTER)
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
@@ -254,12 +255,12 @@ def s_effects():  # 효과
          [[("확정 시점  ", {"bold": True, "color": BLUE})] + runs_of("기준선 선발대 2027-02, 2차 2027-08 / 장비군별 판정 기준 2027-01 말 / 지식화 목표는 시범 실측 후 확정")],
          size=13, color=SUB, spacing=1.0)
 
-def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없이, 업무 전략 장표와 겹침)
+def s_status():  # 2026 추진 현황과 Lesson Learned
     s = slide("2026 ARC 추진 현황",
-              "장비군별 ARC 추진 현황과 **Lesson Learned**" if lessons else "**CD, Thickness, Inspection**이 각자 ARC 추진 중")
+              "장비군별 ARC 추진 현황과 **Lesson Learned**")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
-    ch = Inches(2.8) if lessons else COL_H
+    ch = Inches(2.8)
     cols = [("CD 추진 현황", [
                 "**Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 __Offline 테스트 중__",
                 "**소형 VLM**(Vision Language Model) 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
@@ -270,30 +271,28 @@ def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없�
             ("Inspection 추진 현황", [
                 "**DRB(Design Recipe Builder)**를 __Tuning하는 방식__으로 ARC 진행 중 (NAND Tech 1개 대상)",
                 "DRB Tuning에 **Computer-use** 사용",
-                "Recipe Setup AI 활용을 위한 __DB 구축 완료__ (RAG, 마이다스)"])]
+                "Recipe Setup AI 활용 __DB 구축 완료__ (RAG, 마이다스)"])]
     for i, (head, items) in enumerate(cols):
-        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14 if lessons else 16)
-    if not lessons:
-        return
+        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14)
     ly = COL_Y + ch + Inches(0.12)
     box(s, M, ly, W - 2 * M, Inches(1.7), fill=MIST)
     text(s, M + Inches(0.3), ly + Inches(0.1), W - 2 * M - Inches(0.6), Inches(1.4), [
         [("Lesson Learned", {"bold": True, "color": BLUE})],
         runs_of("1. **생성형 AI 모델만으로 ARC 구현 어려움** (정밀 좌표 클릭, 셋업 절차, 결과 판단, 화면 조작 등의 문제)"),
-        runs_of("2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 **생성형 AI 모델과 함께 쓰는 구조** __필수__"),
+        runs_of("2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 생성형 AI 모델과 **함께 쓰는 하이브리드 방식** __필수__"),
         runs_of("3. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬지 __구체화 필요__")],
         size=15, gap=0.3)
 
 
-def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공통 과제
-    s = slide("업무 전략 1: Recipe 작업 방식",
+def s_assets(merged=False):  # 업무 전략 1: Agent의 Recipe 작업 방식과 공통 과제. merged=True(exec)는 전략 2(엔지니어 PC 설치)를 아래 한 줄로 합침
+    s = slide("업무 전략" if merged else "업무 전략 1: Recipe 작업 방식",
               "**화면 조작**과 **외부 파일 편집**으로 Recipe 작업, 공통 과제는 **공통 플랫폼**으로 해결")
     y0, nh = COL_Y, Inches(0.68)
     ax, aw = M, Inches(2.5)
     mx, mw = Inches(5.4), Inches(2.9)
     rx, rw = Inches(10.5), W - M - Inches(10.5)
     y1, y2 = y0, y0 + Inches(0.92)
-    node(s, ax, y0, aw, Inches(1.6), "ARC Agent", "생성형 AI\n+ 최적화된 소형 모델", fill=INK, fc=WHITE, size=17)
+    node(s, ax, y0, aw, Inches(1.6), "ARC Agent", "생성형 AI\n+ 최적화 소형 모델", fill=INK, fc=WHITE, size=17)
     node(s, mx, y1, mw, nh, "장비 화면", "API 없음, 마우스와 키보드로 조작")
     node(s, mx, y2, mw, nh, "Recipe 파일", "장비 밖에서 직접 편집")
     arrow(s, ax + aw + Inches(0.1), y1 + nh / 2, mx - Inches(0.1), y1 + nh / 2, "① 화면 조작 (Computer Use)", color=INK)
@@ -303,33 +302,18 @@ def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공�
     arrow(s, mx + mw + Inches(0.1), y2 + nh / 2, rx - Inches(0.1), y2 + nh / 2, "장비군별 도구", label_w=Inches(2.0))
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
-    cy, chh = Inches(3.9), Inches(2.75)
-    column(s, M, cy, cw, chh, "Agent가 Recipe를 다루는 방식", [
+    cy, chh = Inches(3.9), Inches(2.3 if merged else 2.75)
+    column(s, M, cy, cw, chh, "Agent의 Recipe 작업 방식", [
                "**Computer Use**: VLM(화면 판단), PyAutoGUI(키보드, 마우스 입력), Win32(창 단위 조작)를 조합해 구현",
                "**외부 파일 편집**: 장비 화면을 거치지 않아 __조작 단계 축소__, 장비별 Recipe 파일 구조 해석 필요",
-               "**소형 모델**: 기반기술센터에서 __최적화된 소형 모델__을 운영해 자동화 작업에 함께 사용"], BLUE, size=13)
-    column(s, M + cw + gap, cy, cw, chh, "공통 플랫폼으로 해결할 공통 과제", [
-               "**Agent의 마우스, 키보드 조작**, 최적화된 소형 모델 운영",
-               "**녹화 DB 추출**: 엔지니어 작업 녹화를 Agent가 쓰는 지식으로",
-               "**기술 부채 해소**: Vibe Coding으로 __원리 확인 없이 진행한 사항__ 정리",
-               "장비군마다 따로 하면 __같은 작업 반복__"], BLUE, size=13)
-
-def s_lessons():  # 시사점
-    s = slide("업무 전략",
-              "**현업 노하우**를 AI가 쓰는 구조로 개발자가 구현, 공통 과제는 **공통 플랫폼**으로 해결")
-    two_col(s, "1. 두 역할의 유기적인 협업", [
-                "**개발자**: 화면 인식, 조작 엔진, 안전 규칙, 모델 서빙",
-                "**현업 엔지니어**: Recipe 셋업 절차, 성공 판정 기준, 실장비 검증, 결과 책임",
-                "현업 MI 엔지니어의 **업무 노하우와 Recipe 셋업 방식**을 AI가 활용할 수 있는 구조로 __개발자가 구현__",
-                "한쪽만으로는 자동화 대상 선정이나 구현 불가"],
-            "2. ARC 공통 과제는 공통 플랫폼과 TF로", [
-                "공통 플랫폼으로: **Agent의 마우스, 키보드 조작**",
-                "함께 필요한 업무: **최적화된 소형 모델 운영** (기반기술센터), **녹화 DB 추출**",
-                "**기술 부채 해소**: Vibe Coding으로 __원리 확인 없이 진행한 사항__ 대부분",
-                "TF로 공유: **주간 미팅**에서 개발 노하우 공유 (자동화 방법, 사내 DB 테이블 등)",
-                "장비군마다 따로 하면 __같은 작업 반복__"],
-            h=Inches(3.7), size=14, arrow=False)
-    note_line(s, Inches(6.0), "결론", "ARC 필수 요소(조작, 소형 모델 운영, 녹화 추출)는 **공통 플랫폼으로 해결**, 개발 노하우는 **주간 미팅에서 공유**, 장비 노하우와 판정은 __장비군 담당자의 역할__", size=13)
+               "**소형 모델**: 기반기술센터의 __최적화 소형 모델__을 자동화 작업에 사용"], BLUE, size=13)
+    column(s, M + cw + gap, cy, cw, chh, "공통 플랫폼 대상 공통 과제", [
+               "**Agent의 마우스, 키보드 조작**, 최적화 소형 모델 운영",
+               "**녹화 DB 추출**: 엔지니어 작업 녹화를 Agent 지식으로 변환",
+               "**기술 부채 해소**: Vibe Coding 중 __원리 미확인 사항__ 정리",
+               "장비군별 개별 진행 시 __같은 작업 반복__"], BLUE, size=13)
+    if merged:
+        note_line(s, Inches(6.33), "설치 방식", "별도 운영 PC 대신 **엔지니어 PC에 설치**, 엔지니어가 원할 때 실행하고 즉시 확인, 중단 (__Human on Command__)", size=13)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     s = slide("별첨: LLM 모델만으로 안 되는 이유",
@@ -398,7 +382,7 @@ def s_team():  # TF 구성 (조직도)
                   ("백엔드 (2명)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
                   ("프론트엔드 (2명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"]),
                   ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
-              ("장비군 담당: 장비군마다 1~2명", INK, [
+              ("R&D DMI 장비군 담당: 장비군마다 1~2명", INK, [
                   ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현")),
                   ("Thickness\n(1차)", goal("Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화")),
                   ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체 디바이스향 DRB 기반 ARC 확장")),
@@ -495,7 +479,7 @@ def s_decision():  # 결정 요청
                 "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 1~2명",
                 "**개발 인력 4명 지정**: 백엔드 2, 프론트엔드 2",
                 "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, __7월부터 본격 참여__"],
-            "함께 필요한 자원", [
+            "필요 자원", [
                 "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
                 "2027-01 전: **RCS 녹화 스토리지 접근** 여부 확인, 영상 적재를 위한 **별도 스토리지 DB** 확보"],
             h=Inches(3.4), size=16, arrow=False)
@@ -536,20 +520,20 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
     arrow(s, c4, ry, c2, ry, color=ORANGE, head=False)
     arrow(s, c2, ry, c2, fb + Inches(0.03), color=ORANGE)
     text(s, M, COL_Y + Inches(1.54), W - 2 * M, Inches(0.36),
-         [[("순환  ", {"bold": True})] + runs_of("④에서 엔지니어가 고친 내용은 __②RAG에 다시 저장__, 다음 Workflow에 반영")], size=14, color=BLUE,
+         [[("순환  ", {"bold": True})] + runs_of("④의 엔지니어 수정 내용은 __②RAG에 다시 저장__, 다음 Workflow에 반영")], size=14, color=BLUE,
          align=PP_ALIGN.CENTER)
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
     cy, chh = Inches(3.95), Inches(2.0)
-    column(s, M, cy, cw, chh, "공통 플랫폼 팀이 만드는 것", [
+    column(s, M, cy, cw, chh, "공통 플랫폼 팀 역할", [
                "녹화 내용 추출, **RAG DB**, Workflow 생성",
                "**Computer Use** 실행 엔진 (VLM, PyAutoGUI, Win32)",
                "준수 확인 (__생성형 AI + Rule, CV, ML/DL__), 즉시 중단"], BLUE, size=13)
-    column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어가 하는 것", [
+    column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어 역할", [
                "추출 내용 **라벨링**, Workflow 검토와 승인",
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"], BLUE, size=13)
-    note_line(s, Inches(6.1), "플랫폼의 역할", "2028 보조 (엔지니어 앞에서 반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)이 될 수 있도록 __점진적 발전__", size=13)
+    note_line(s, Inches(6.1), "플랫폼의 역할", "2028 보조 (반복 입력 대행)  →  2029 자율 (Agent 셋업 진행)로 __점진적 발전__", size=13)
 
 
 def s_offline():  # Offline 파이프라인 (team)
@@ -641,23 +625,7 @@ def s_stack():  # 구현 형태와 기술 스택 (team)
     note_line(s, Inches(6.3), "실측", "입력 중단 신뢰성(선발대 장비군), PC 자원, 회사 보안 프로그램 아래 설치와 롤백", size=13)
 
 
-# ---------- 최고 임원용 (08 한 장 요약) ----------
-def s_exec_onepage():
-    s = slide("한 장 요약",
-              "숙련자 노하우를 **회사 자산**으로, 장비가 늘어도 **셋업 인력은 비례해 늘리지 않음**")
-    two_col(s, "문제", [
-                "레시피 셋업은 숙련자의 **수작업 반복**, 레시피당 평균 30~60분",
-                "판단 기준이 사람에게만 있어 __담당자가 바뀌면 사라짐__",
-                "장비, 제품이 늘면 셋업 인력도 같은 비율로 증가",
-                "Align Fail 알람마다 엔지니어가 __하던 일을 멈추고 대응__"],
-            "해결 방향", [
-                "작업 녹화에서 절차, 판단 근거를 추출해 **지식 자산**으로 축적",
-                "AI가 승인된 절차를 __한 단계씩__ 수행, 불명확하면 멈춤",
-                "위험 조작, 저장은 **엔지니어 승인**",
-                "**공통 플랫폼** 하나 위에 장비별 절차만 추가, 선발대 뒤 확장"],
-            size=16, before=True)
-
-
+# ---------- 최고 임원용 ----------
 def s_exec_roadmap():
     s = slide("단계별 타겟",
               "2027 **1차 장비군 목표와 플랫폼 베타**부터, 2029 **AI 셋업 진행**까지")
@@ -665,8 +633,8 @@ def s_exec_roadmap():
              ("2028", "반복 입력 대행"), ("2029", "1차 장비군\nAI가 셋업 진행")],
          COL_Y, h=Inches(1.5), fills=[(SILVER, INK), (SILVER, INK), (SILVER, INK), (ORANGE, WHITE)],
          head_size=20, body_size=15)
-    rows = [("시기", "회사에 남는 것"),
-            ("2027 상반기", "다른 장비군이 쓸 공통 플랫폼"),
+    rows = [("시기", "회사 효과"),
+            ("2027 상반기", "전 장비군 공통 플랫폼"),
             ("2027 하반기", "장비군 확장 구조, 노하우의 조직 자산화"),
             ("2028", "Recipe별 셋업의 Agent 진행 비율 증가"),
             ("2029", "셋업 인력을 장비 수에 비례해 늘리지 않음")]
@@ -678,8 +646,8 @@ def s_exec_roadmap():
 BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
         s_kanban, s_safety, s_decision]
 TEAM = BOSS[:6] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[6:] + [s_why_not_llm]
-EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
-        lambda: s_status(lessons=False), s_lessons, s_exec_onepage, s_team, s_exec_roadmap]
+EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_assets(merged=True),
+        s_platform, s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
          "exec": ("arc-tf-exec-summary.pptx", EXEC)}
 
