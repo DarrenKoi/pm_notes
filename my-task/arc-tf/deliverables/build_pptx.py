@@ -12,7 +12,7 @@ deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라�
 (자동 동기화 안 됨). 슬라이드 하나 = 함수 하나, 맨 아래 DECKS 가 deck 별 순서다. 필요: python-pptx. 한글 폰트: 맑은 고딕. 16:9, Windows PowerPoint 기준.
 
 회사 스타일:
-  Header  제목(좌측)만. 구분선은 회사 마스터 슬라이드 것을 쓴다 (표지의 2색 구분선만 남아 있음)
+  Header  제목(좌측)만. 구분선은 회사 마스터 슬라이드 것을 쓴다
   Body    2 컬럼 박스(좌: 문제, 기존 / 우: 해결 방향, 개선). 핵심 메시지와 footer 는 넣지 않는다
           아래 좌표는 예전 배치 기준이고, build 가 본문을 0.5 inch 위로 올리면서 그만큼 세로로 늘린다
   강조    **볼드**, __밑줄__ 표기를 본문 문자열에 직접 쓴다
@@ -131,18 +131,6 @@ def box(slide, x, y, w, h, fill=MIST, line=None, shape=MSO_SHAPE.RECTANGLE, radi
     return s
 
 
-def gradient_bar(slide, x, y, w, h):
-    s = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, x, y, w, h)
-    s.fill.gradient()
-    s.fill.gradient_angle = 0
-    st = s.fill.gradient_stops
-    st[0].color.rgb, st[0].position = RED, 0
-    st[1].color.rgb, st[1].position = ORANGE, 1.0
-    s.line.fill.background()
-    s.shadow.inherit = False
-    return s
-
-
 def header(s, title):
     text(s, M, Inches(0.3), W - 2 * M, Inches(0.62), title, size=26, bold=True, anchor=MSO_ANCHOR.MIDDLE, name="Title")
     # 제목 아래 2색 구분선은 그리지 않는다 (회사 마스터 슬라이드에 있음, 2026-11-16)
@@ -233,8 +221,6 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
             sub="R&D MI 현업 엔지니어들과 만드는 레시피 셋업 자동화 공통 플랫폼"):  # 표지
     s = prs.slides.add_slide(BLANK)
     text(s, Inches(1.0), Inches(2.45), W - Inches(2.0), Inches(1.0), title, size=40, bold=True)
-    box(s, Inches(1.0), Inches(3.62), W - Inches(2.0), Inches(0.03), fill=GRAY)
-    gradient_bar(s, Inches(1.0), Inches(3.6), Inches(4.2), Inches(0.07))
     text(s, Inches(1.0), Inches(3.95), W - Inches(2.0), Inches(0.5), sub, size=18, color=SUB)
     text(s, Inches(1.0), Inches(4.55), W - Inches(2.0), Inches(0.4), "2026-12", size=16, color=BLUE, bold=True)
 
