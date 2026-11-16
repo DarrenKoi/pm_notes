@@ -50,6 +50,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 
 - docx는 `.md`를 그대로 변환한다. `.md`를 고치면 명령만 다시 실행한다.
 - pptx는 01, 07, 08의 **요약**이라 내용이 `build_pptx.py` 안에 있다(슬라이드 하나 = 함수 하나, 맨 아래 `DECKS`가 deck별 순서). `.md`에서 숫자, 범위, 일정, 요청 사항을 바꾸면 그 스크립트의 슬라이드 내용도 같이 고친다.
+- pptx의 배치와 색 규칙, 다른 저장소에서도 쓸 수 있는 시작 코드는 [회사 보고용 pptx 템플릿](./deliverables/pptx-template.md)에 정리했다.
 
 ## 일정
 
