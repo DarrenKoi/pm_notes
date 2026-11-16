@@ -13,7 +13,7 @@ deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라�
 
 회사 스타일:
   Header  제목(좌측)만. 구분선은 회사 마스터 슬라이드 것을 쓴다
-  Body    2 컬럼 박스(좌: 문제, 기존 / 우: 해결 방향, 개선). 핵심 메시지와 footer 는 넣지 않는다
+  Body    제목 아래 핵심 메시지 한 줄 → 2 컬럼 박스(좌: 문제, 기존 / 우: 해결 방향, 개선). footer 는 넣지 않는다
           아래 좌표는 예전 배치 기준이고, build 가 본문을 0.5 inch 위로 올리면서 그만큼 세로로 늘린다
   강조    **볼드**, __밑줄__ 표기를 본문 문자열에 직접 쓴다
 """
@@ -56,6 +56,7 @@ LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
 M = Inches(0.5)
+MSG_Y, MSG_H = Inches(0.95), Inches(0.45)  # 핵심 메시지: 제목(0.3~0.92)과 올라간 본문(1.58~) 사이
 COL_Y = Inches(2.08)
 COL_H = Inches(4.35)
 SHIFT_UP = Inches(0.5)  # 본문 위쪽 끝을 이만큼 올린다 (build 에서 한 번에 적용)
@@ -138,11 +139,21 @@ def header(s, title):
     # 제목 아래 2색 구분선은 그리지 않는다 (회사 마스터 슬라이드에 있음, 2026-11-16)
 
 
+def message(s, msg):
+    """제목 바로 아래 핵심 메시지 한 줄. 검정 글자, **표시한 중요 문구** 만 파랑. 위치가 고정이라 build 의 본문 이동에서 빠진다."""
+    box(s, M, MSG_Y, W - 2 * M, MSG_H, fill=MIST)
+    runs = [(part, {"color": BLUE} if opt else {}) for part, opt in runs_of(msg)]  # **중요 문구** 는 파랑
+    text(s, M + Inches(0.3), MSG_Y, W - 2 * M - Inches(0.6), MSG_H, [runs], size=20, bold=True, color=INK,
+         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+
+
 def slide(title, msg):
     s = prs.slides.add_slide(BLANK)
     s.background.fill.solid()
     s.background.fill.fore_color.rgb = WHITE
-    header(s, title)  # msg(핵심 메시지)는 2026-11-16 부터 그리지 않는다. 문자열은 장표 의도 메모로 남김
+    header(s, title)
+    if msg:
+        message(s, msg)
     return s
 
 
@@ -228,7 +239,7 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
-              "합류 첫 달에 기준선 측정, 측정 전에는 목표를 숫자로 정하지 않음")
+              "합류 첫 달에 **기준선 측정**, 측정 전에는 목표를 숫자로 정하지 않음")
     metrics = [("효과", "측정 지표", "현재", "목표", "타겟 시점"),
                ("지식 자산화", "부분 작업 리스트로 정리한 Recipe 셋업을 Agent가 그대로 수행해 성공한 건수", "0건", "⟨X⟩건", "2027 연말"),
                ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "⟨확인⟩", "⟨확인⟩%", "2028"),
@@ -242,7 +253,7 @@ def s_effects():  # 효과
 
 def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없이, 업무 전략 장표와 겹침)
     s = slide("2026 ARC 추진 현황",
-              "장비군별 ARC 추진 현황과 Lesson Learned" if lessons else "CD, Thickness, Inspection이 각자 ARC 추진 중")
+              "장비군별 ARC 추진 현황과 **Lesson Learned**" if lessons else "**CD, Thickness, Inspection**이 각자 ARC 추진 중")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
     ch = Inches(2.8) if lessons else COL_H
@@ -273,7 +284,7 @@ def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없�
 
 def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공통 과제
     s = slide("업무 전략 1: Recipe 작업 방식",
-              "화면 조작과 외부 파일 편집으로 Recipe 작업, 공통 과제는 공통 플랫폼으로 해결")
+              "**화면 조작**과 **외부 파일 편집**으로 Recipe 작업, 공통 과제는 **공통 플랫폼**으로 해결")
     y0, nh = COL_Y, Inches(0.68)
     ax, aw = M, Inches(2.5)
     mx, mw = Inches(5.4), Inches(2.9)
@@ -302,7 +313,7 @@ def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공�
 
 def s_lessons():  # 시사점
     s = slide("업무 전략",
-              "현업 노하우를 AI가 쓰는 구조로 개발자가 구현, 공통 과제는 공통 플랫폼으로 해결")
+              "**현업 노하우**를 AI가 쓰는 구조로 개발자가 구현, 공통 과제는 **공통 플랫폼**으로 해결")
     two_col(s, "1. 두 역할의 유기적인 협업", [
                 "**개발자**: 화면 인식, 조작 엔진, 안전 규칙, 모델 서빙",
                 "**현업 엔지니어**: Recipe 셋업 절차, 성공 판정 기준, 실장비 검증, 결과 책임",
@@ -319,7 +330,7 @@ def s_lessons():  # 시사점
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     s = slide("별첨: LLM 모델만으로 안 되는 이유",
-              "모델은 \"화면을 보고 다음 할 일을 판단\"하는 한 부분, 나머지는 플랫폼이 채워야 함")
+              "모델은 \"화면을 보고 다음 할 일을 판단\"하는 한 부분, 나머지는 **플랫폼**이 채워야 함")
     rows = [("항목", "모델만 쓸 때의 한계", "플랫폼이 채우는 것"),
             ("좌표 정밀도", "같은 화면도 물을 때마다 위치가 다름", "CV 정밀 좌표, OCR 결과 확인"),
             ("장비 지식(노하우)", "사내 계측 화면, 셋업 절차, 판정 기준을 모름", "녹화에서 뽑고 엔지니어가 승인한 절차"),
@@ -332,7 +343,7 @@ def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
 
 def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     s = slide("업무 전략 2: 엔지니어 PC 설치",
-              "별도 운영 PC 대신 엔지니어가 이미 쓰는 PC에 공통 플랫폼 설치")
+              "별도 운영 PC 대신 **엔지니어가 이미 쓰는 PC**에 공통 플랫폼 설치")
     two_col(s, "처음 계획: 별도 운영 PC", [
                 "장비군, 엔지니어가 늘 때마다 **PC 추가 확보 절차** (자산 신청, 자리 확보 등)",
                 "PC마다 __장비 접속 권한__ 별도 발급",
@@ -368,7 +379,7 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
 
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성",
-              "공통 플랫폼과 장비군 담당 엔지니어의 유기적 협업")
+              "**공통 플랫폼**과 **장비군 담당 엔지니어**의 유기적 협업")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     th = Inches(0.46)
@@ -419,7 +430,7 @@ def s_team():  # TF 구성 (조직도)
 
 def s_kanban():  # 일정 칸반
     s = slide("2027 일정",
-              "상반기 1차 장비군 목표와 플랫폼 베타, 하반기 영역 확장")
+              "상반기 **1차 장비군 목표**와 **플랫폼 베타**, 하반기 **영역 확장**")
     periods = ["2026-12", "2027 1분기", "2027 2분기", "2027 3분기", "2027 4분기"]
     lanes = [("1차 장비군\n목표", [["TF 승인", "녹화 DB 접근 확인"],
                              ["CD-SEM Align Fail 시험", "Thickness 대상 Recipe", "Inspection DRB 시험"],
@@ -460,7 +471,7 @@ def s_kanban():  # 일정 칸반
 
 def s_safety():  # 안전과 리스크
     s = slide("안전과 리스크",
-              "위험 조작은 엔지니어 승인, 자동 운영은 승인된 조작만")
+              "위험 조작은 **엔지니어 승인**, 자동 운영은 **승인된 조작만**")
     two_col(s, "리스크", [
                 "**오조작**: Agent가 생산 레시피를 잘못 변경",
                 "**시스템 변경**: 장비 S/W, 화면이 바뀌면 기존 절차가 맞지 않음",
@@ -475,7 +486,7 @@ def s_safety():  # 안전과 리스크
 
 def s_decision():  # 결정 요청
     s = slide("결정 요청",
-              "ARC TF 구성(조직도) 승인, 2027-01 운영 시작")
+              "**ARC TF 구성**(조직도) 승인, **2027-01** 운영 시작")
     two_col(s, "12월 결정 요청: TF 구성 승인", [
                 "**2027-01~12 ARC TF 운영 승인** (1차, 2차 명단 함께 지정)",
                 "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 1~2명",
@@ -508,7 +519,7 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
 
 def s_platform():  # 공통 플랫폼 구조 (boss, team)
     s = slide("핵심 개발 방향",
-              "Computer Use 기반 RAG Workflow 순환 플랫폼")
+              "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
     flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
              ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
              ("③ Workflow 생성, 실행", "RAG에서 셋업 Workflow 생성\nAgent가 Computer Use로 실행"),
@@ -540,7 +551,7 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
 
 def s_offline():  # Offline 파이프라인 (team)
     s = slide("Offline 지식화",
-              "녹화에서 승인된 절차까지 6단계, AI 추출물은 검토할 절차 초안")
+              "녹화에서 승인된 절차까지 **6단계**, AI 추출물은 **검토할 절차 초안**")
     flow(s, [("전처리", "1~2fps 탐색\n원본 프레임 보존"), ("변화 감지", "조작 영역만\n전후 화면, OCR"),
              ("의미 행동", "관찰 사실과\n추정 행동 분리"), ("의미 단계", "시작, 완료\n조건으로 묶음"),
              ("시연 정렬", "공통 경로와\n분기 후보"), ("분기 승인", "담당 엔지니어\n승인")],
@@ -560,7 +571,7 @@ def s_offline():  # Offline 파이프라인 (team)
 
 def s_online():  # Online 실행 루프와 3단 분리 (team)
     s = slide("Online 실행",
-              "LLM은 제안만, 서버가 규칙으로 다시 확인, 실행은 조작 단위 1개씩")
+              "LLM은 **제안만**, 서버가 **규칙으로 다시 확인**, 실행은 **조작 단위 1개씩**")
     flow(s, [("관찰", "화면, 장비 확인"), ("상태 인식", "현재 단계"), ("검색, 판단", "호환 시연 3건\nLLM 제안"),
              ("규칙 확인", "권한, 분기, 인자"), ("실행", "조작 단위 1개"), ("검증", "사후조건\n체크포인트")],
          COL_Y, fills=[(MIST, INK)] * 3 + [(INK, WHITE), (MIST, INK), (MIST, INK)])
@@ -576,7 +587,7 @@ def s_online():  # Online 실행 루프와 3단 분리 (team)
 
 def s_gates():  # 안전 관문 (team)
     s = slide("안전 관문",
-              "실행 전, 사본 저장, 운영 적용을 나눠 확인")
+              "**실행 전, 사본 저장, 운영 적용**을 나눠 확인")
     rows = [("관문", "시점", "확인할 것"),
             ("G1", "실행 전", "장비, 세션, 권한, 버전 확인 / 원본 백업 / 변경 대상과 범위 확정"),
             ("G2", "작업용 사본 수정, 저장", "허용 필드, 값, 단위 확인 / 범위 밖 변경 차단 / 저장 후 다시 읽어 차이 확인"),
@@ -596,7 +607,7 @@ def s_gates():  # 안전 관문 (team)
 
 def s_eval():  # 평가 지표 (team)
     s = slide("평가 방법",
-              "미사용 시연으로 판단을 먼저 평가, 수치 목표는 실측 후 합의")
+              "**미사용 시연**으로 판단을 먼저 평가, 수치 목표는 **실측 후 합의**")
     rows = [("지표", "정의", "쓰는 관문"),
             ("단계 추출 F1", "담당 엔지니어 정답 대비 단계 정밀도, 재현율", "2027-12"),
             ("상태, 분기 정확도", "맞힌 상태, 분기 / 평가한 상태, 분기 (따로 집계)", "2027-12, 2028 진입"),
@@ -612,7 +623,7 @@ def s_eval():  # 평가 지표 (team)
 
 def s_stack():  # 구현 형태와 기술 스택 (team)
     s = slide("구현 형태",
-              "엔지니어 PC 설치형 에이전트 + 서버 웹앱, 양쪽 Python")
+              "**엔지니어 PC 설치형 에이전트** + **서버 웹앱**, 양쪽 Python")
     rows = [("구성 요소", "위치", "언어, 프레임워크"),
             ("화면 캡처, 변화 감지", "엔지니어 PC", "Python + WGC 창 캡처"),
             ("입력 실행, 즉시 중단", "엔지니어 PC", "Python + SendInput, pywin32"),
@@ -630,7 +641,7 @@ def s_stack():  # 구현 형태와 기술 스택 (team)
 # ---------- 최고 임원용 (08 한 장 요약) ----------
 def s_exec_onepage():
     s = slide("한 장 요약",
-              "숙련자 노하우를 회사 자산으로, 장비가 늘어도 셋업 인력은 비례해 늘리지 않음")
+              "숙련자 노하우를 **회사 자산**으로, 장비가 늘어도 **셋업 인력은 비례해 늘리지 않음**")
     two_col(s, "문제", [
                 "레시피 셋업은 숙련자의 **수작업 반복**, 레시피당 평균 30~60분",
                 "판단 기준이 사람에게만 있어 __담당자가 바뀌면 사라짐__",
@@ -646,7 +657,7 @@ def s_exec_onepage():
 
 def s_exec_roadmap():
     s = slide("단계별 타겟",
-              "2027 1차 장비군 목표와 플랫폼 베타부터, 2029 AI 셋업 진행까지")
+              "2027 **1차 장비군 목표와 플랫폼 베타**부터, 2029 **AI 셋업 진행**까지")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028", "반복 입력 대행"), ("2029", "1차 장비군\nAI가 셋업 진행")],
          COL_Y, h=Inches(1.5), fills=[(SILVER, INK), (SILVER, INK), (SILVER, INK), (ORANGE, WHITE)],
@@ -685,7 +696,7 @@ def build(target):
                     el.set(k, str(round(float(v))))
         cover = sl is prs.slides[0]
         for sh in sl.shapes:
-            if sh.top <= Inches(1.1):  # header(제목, 구분선)는 그대로
+            if sh.top <= Inches(1.1):  # 제목과 핵심 메시지는 그대로
                 continue
             if cover:  # 표지는 올리기만
                 sh.top = sh.top - SHIFT_UP
