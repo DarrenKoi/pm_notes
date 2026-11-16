@@ -37,7 +37,7 @@ FONT = "맑은 고딕"
 #   짙은 회색, 진회색, 밝은 회색, 연회색
 # 이 deck 은 그중 몇 개만 쓴다: 표와 텍스트 박스는 연회색(MIST), 밝은 회색(SILVER) 바탕에 검정(INK),
 # 강조 상자는 검정(INK) 바탕 + 흰 글자, 나머지 상자는 밝은 회색 + 검정 글자 (2026-11-16 사용자 지시: 짙은 파랑 채움 대신).
-# 짙은 파랑(BLUE)은 글머리 기호와 메모 머리말 같은 작은 글자에만, 연한 파랑(BLUE_PALE)은 표 강조 행, 주황은 관문, 최종 목표, ⟨확인⟩ 자리에만.
+# 짙은 파랑(BLUE)은 요약문의 중요 문구와 메모 머리말 같은 작은 글자에만 (글머리 기호는 검정), 연한 파랑(BLUE_PALE)은 표 강조 행, 주황은 관문, 최종 목표, ⟨확인⟩ 자리에만.
 # 아직 안 쓰는 색: 연한 분홍 FCE4E4, 연노랑 FFF2CC, 크림 FFF9E6, 베이지 F2E6D8
 INK = RGBColor(0x26, 0x26, 0x26)     # 검정 (본문)
 SUB = RGBColor(0x59, 0x59, 0x59)     # 짙은 회색 (보조 글자)
@@ -157,13 +157,13 @@ def slide(title, msg):
 
 
 def column(s, x, y, w, h, head, items, accent, size=15, mark="▪ ", strong=False):
-    """머리줄은 밝은 회색 + 검정 글자. strong=True(전/후 구성의 '후')만 검정 + 흰 글자. accent 는 글머리 기호 색."""
+    """머리줄은 밝은 회색 + 검정 글자. strong=True(전/후 구성의 '후')만 검정 + 흰 글자. 글머리 기호는 검정 (accent 인자는 이제 쓰지 않음)."""
     box(s, x, y, w, Inches(0.5), fill=INK if strong else SILVER)
     text(s, x + Inches(0.25), y, w - Inches(0.5), Inches(0.5), head, size=17, bold=True,
          color=WHITE if strong else INK, anchor=MSO_ANCHOR.MIDDLE)
     box(s, x, y + Inches(0.5), w, h - Inches(0.5), fill=WHITE, line=LINE)
     text(s, x + Inches(0.3), y + Inches(0.75), w - Inches(0.6), h - Inches(0.95),
-         [[(mark, {"color": accent, "bold": True})] + runs_of(t) for t in items], size=size, gap=0.6)
+         [[(mark, {"color": INK, "bold": True})] + runs_of(t) for t in items], size=size, gap=0.6)
 
 
 def two_col(s, left_head, left, right_head, right, y=COL_Y, h=COL_H, size=17, arrow=True, before=False):
