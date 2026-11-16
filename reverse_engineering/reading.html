@@ -837,6 +837,11 @@ e:   c3               ret                      eax 값을 반환
 <td>Ghidra를 돌리는 전원</td>
 </tr>
 <tr>
+<td>Gradle</td>
+<td>Java 프로그램을 소스에서 만들어 내는 빌드 도구. JDK 위에서 돌며 JDK의 컴파일러를 순서대로 부른다. Ghidra를 소스에서 빌드할 때만 필요하고, REA와 배포본 Ghidra에는 필요 없다</td>
+<td>작업 지시서와 반장</td>
+</tr>
+<tr>
 <td>PowerShell</td>
 <td>Windows의 명령 입력 창</td>
 <td>글로 지시하는 조작판</td>
@@ -1238,6 +1243,34 @@ file /absolute/path/to/target.exe</code></p>
 <li>64비트 JDK. Ghidra 12.1.x는 JDK 21 이상, Ghidra 12.2는 JDK 25 이상을 요구한다</li>
 <li>REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 바로 아래 절의 방법으로 설치한다</li>
 </ul>
+<p><strong>Gradle은 설치하지 않아도 된다.</strong> Gradle은 Java 프로그램을 소스 코드에서 만들어 내는 빌드 도구다. JDK와 역할이 다르다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>JDK</th>
+<th>Gradle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>하는 일</td>
+<td>Java 프로그램을 실행하고(<code>java</code>), 소스를 컴파일한다(<code>javac</code>)</td>
+<td>컴파일할 파일과 순서, 필요한 라이브러리를 정리해서 JDK의 컴파일러를 대신 부른다</td>
+</tr>
+<tr>
+<td>비유</td>
+<td>공작 기계</td>
+<td>기계를 어떤 순서로 돌릴지 정한 작업 지시서와 반장</td>
+</tr>
+<tr>
+<td>Ghidra에서 필요한 때</td>
+<td>늘 필요하다. Ghidra가 Java로 만들어져 있다</td>
+<td>Ghidra를 소스에서 직접 빌드하거나, Ghidra 확장 기능(Extension)을 직접 만들 때만</td>
+</tr>
+</tbody>
+</table></div>
+<p>Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). 사내에서 Gradle을 함께 설치하라는 안내가 있었다면, Ghidra를 소스에서 빌드하는 경우를 기준으로 한 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.</p>
 <h3 id="resources-rea-windows-pi-setup--rea를-설치하는-두-가지-방법">REA를 설치하는 두 가지 방법</h3>
 <p>REA는 npm 패키지 <code>rea-agents</code>로 배포된다. 받는 방법이 둘이고, 어느 쪽으로 setup을 돌렸는지에 따라 에이전트 등록이 가리키는 위치가 달라진다.</p>
 <div class="tbl"><table>
@@ -3880,11 +3913,11 @@ rea doctor --client pi --json
 <li><strong>PowerShell</strong>: Windows의 명령 입력 창. 여기에 왼쪽 명령을 입력한다</li>
 <li><strong>JDK</strong>: Ghidra를 실행하는 데 필요한 Java 도구</li>
 <li><strong>환경 변수</strong>: 프로그램에게 알려 주는 설정값. 여기서는 Ghidra와 Java가 설치된 위치</li>
+<li><strong>Gradle</strong>: JDK 위에서 도는 Java 빌드 도구. Ghidra를 소스에서 만들 때만 쓰고, 배포본 Ghidra와 REA에는 필요 없다</li>
 <li><strong>--dry-run</strong>: 바뀔 내용만 미리 보여 주고 아무것도 바꾸지 않는다</li>
-<li>등록한 뒤 pi에서 <strong>/reload</strong>를 실행한다</li>
-<li>경로는 실제 설치 위치로 바꾼다</li>
+<li>경로는 실제 설치 위치로 바꾸고, 등록한 뒤 pi에서 <strong>/reload</strong>를 실행한다</li>
 </ul>
-<p><strong>발표자 노트</strong>: 한 번만 하면 되는 작업이고, 오늘 외울 내용은 아닙니다. 이런 순서라는 것만 보시면 됩니다. 준비물 세 가지는 REA가 대신 설치해 주지 않으니 먼저 있어야 합니다. rea doctor는 건강 검진 같은 명령입니다. 문제가 있으면 어디가 문제인지 알려 줍니다. 막히면 설정 문서를 보거나 저에게 물어보시면 됩니다.</p>
+<p><strong>발표자 노트</strong>: 한 번만 하면 되는 작업이고, 오늘 외울 내용은 아닙니다. 이런 순서라는 것만 보시면 됩니다. 준비물 세 가지는 REA가 대신 설치해 주지 않으니 먼저 있어야 합니다. Gradle을 같이 설치하라는 안내를 보셨을 수 있는데, Gradle은 Ghidra를 소스에서 직접 만들 때 쓰는 빌드 도구입니다. JDK가 공작 기계라면 Gradle은 작업 반장입니다. 배포본 Ghidra를 받아 쓰는 우리 경우에는 JDK만 있으면 됩니다. rea doctor는 건강 검진 같은 명령입니다. 문제가 있으면 어디가 문제인지 알려 줍니다. 막히면 설정 문서를 보거나 저에게 물어보시면 됩니다.</p>
 <h3 id="re-rea-team-intro--22-프롬프트에-넣을-네-가지">22. 프롬프트에 넣을 네 가지</h3>
 <blockquote>
 <p>프롬프트(AI에게 보내는 지시문)의 질이 결과의 질을 정합니다. 이 틀을 복사해서 씁니다</p>

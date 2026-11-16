@@ -60,6 +60,7 @@ HAR와 패킷 캡처의 차이: HAR는 브라우저 안의 요청만 담고, 패
 | Node.js | JavaScript를 브라우저 밖에서 실행하는 프로그램. REA가 이 위에서 돈다 | 엔진 |
 | npm, npx | Node.js에 딸린 설치 도구. npm은 흔히 Node Package Manager의 줄임말로 통한다(공식적으로는 약어가 아니라고 한다). `npm install --global`은 설치해 두고 쓰고, `npx`는 설치하지 않고 한 번 받아서 실행한다. 차이는 [회사 환경 설정 문서](./rea-windows-pi-setup.md)에 있다 | 앱 스토어 |
 | JDK (Java Development Kit) | Java 프로그램을 실행하고 만드는 도구 묶음. Ghidra가 Java로 만들어져서 필요하다 | Ghidra를 돌리는 전원 |
+| Gradle | Java 프로그램을 소스에서 만들어 내는 빌드 도구. JDK 위에서 돌며 JDK의 컴파일러를 순서대로 부른다. Ghidra를 소스에서 빌드할 때만 필요하고, REA와 배포본 Ghidra에는 필요 없다 | 작업 지시서와 반장 |
 | PowerShell | Windows의 명령 입력 창 | 글로 지시하는 조작판 |
 | 환경 변수 (Environment Variable) | 프로그램에게 알려 주는 설정값. 예: Ghidra가 설치된 위치(`GHIDRA_INSTALL_DIR`) | 공용 게시판에 붙인 메모 |
 | 헤드리스 (Headless) | 화면(창) 없이 프로그램을 돌리는 방식. REA가 Ghidra를 이렇게 돌린다 | 모니터 없이 돌리는 장비 |

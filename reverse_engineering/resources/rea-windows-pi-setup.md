@@ -1,7 +1,7 @@
 ---
 tags: [reverse-engineering, rea, ghidra, windows, pi, mcp]
 level: intermediate
-last_updated: 2026-11-12
+last_updated: 2026-11-16
 document_type: learning
 category_major: "리버스 엔지니어링"
 category_middle: "도구"
@@ -59,6 +59,16 @@ REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어
 - Ghidra 12.1 이상의 12.x(검증된 버전은 12.1.4)
 - 64비트 JDK. Ghidra 12.1.x는 JDK 21 이상, Ghidra 12.2는 JDK 25 이상을 요구한다
 - REA 자체. 회사 PC에는 설치되어 있다(2026-10-24 확인). 새 PC라면 바로 아래 절의 방법으로 설치한다
+
+**Gradle은 설치하지 않아도 된다.** Gradle은 Java 프로그램을 소스 코드에서 만들어 내는 빌드 도구다. JDK와 역할이 다르다.
+
+| | JDK | Gradle |
+|---|---|---|
+| 하는 일 | Java 프로그램을 실행하고(`java`), 소스를 컴파일한다(`javac`) | 컴파일할 파일과 순서, 필요한 라이브러리를 정리해서 JDK의 컴파일러를 대신 부른다 |
+| 비유 | 공작 기계 | 기계를 어떤 순서로 돌릴지 정한 작업 지시서와 반장 |
+| Ghidra에서 필요한 때 | 늘 필요하다. Ghidra가 Java로 만들어져 있다 | Ghidra를 소스에서 직접 빌드하거나, Ghidra 확장 기능(Extension)을 직접 만들 때만 |
+
+Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). 사내에서 Gradle을 함께 설치하라는 안내가 있었다면, Ghidra를 소스에서 빌드하는 경우를 기준으로 한 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.
 
 ### REA를 설치하는 두 가지 방법
 
