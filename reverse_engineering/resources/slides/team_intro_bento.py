@@ -88,9 +88,12 @@ class Slide:
 
 def cards(b, y, h, s):
     n, gap = len(s["items"]), 24
-    w = (W - gap * (n - 1)) / n
+    cols = s.get("cols", n)
+    rows = -(-n // cols)
+    w, ch = (W - gap * (cols - 1)) / cols, (h - gap * (rows - 1)) / rows
     for i, (head, body) in enumerate(s["items"]):
-        b.card(X + i * (w + gap), y, w, h, head, body, size=18 if n < 4 else 17, order=i)
+        r, c = divmod(i, cols)
+        b.card(X + c * (w + gap), y + r * (ch + gap), w, ch, head, body, size=18 if cols < 4 else 17, order=i)
 
 
 def two(b, y, h, s):
