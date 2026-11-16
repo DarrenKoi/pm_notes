@@ -727,8 +727,8 @@ e:   c3               ret                      eax 값을 반환
 <td>여러 장비가 같이 쓰는 공용 부품</td>
 </tr>
 <tr>
-<td>ASAR</td>
-<td>Electron 앱이 웹 코드(JavaScript, HTML)를 파일 하나로 묶은 것(<code>app.asar</code>). 압축은 아니라서 풀면 웹 앱 코드가 그대로 나온다</td>
+<td>ASAR (Atom Shell Archive)</td>
+<td>Electron 앱이 웹 코드(JavaScript, HTML)를 파일 하나로 묶은 것(<code>app.asar</code>). Electron의 옛 이름이 Atom Shell이라서 이 이름이 붙었다. 압축은 아니라서 풀면 웹 앱 코드가 그대로 나온다</td>
 <td>서류를 끈으로 묶은 꾸러미</td>
 </tr>
 <tr>
@@ -737,18 +737,18 @@ e:   c3               ret                      eax 값을 반환
 <td>통화 녹음 파일</td>
 </tr>
 <tr>
-<td>JSON</td>
+<td>JSON (JavaScript Object Notation)</td>
 <td>사람도 읽을 수 있는 데이터 글 형식. <code>{"이름": "값"}</code> 모양이다. REA의 결과와 많은 설정 파일이 이 형식이다</td>
 <td>항목과 값을 적은 표</td>
 </tr>
 <tr>
-<td>CSV</td>
+<td>CSV (Comma-Separated Values)</td>
 <td>쉼표로 열을 나눈 표 파일. 엑셀로 열린다</td>
 <td>쉼표로 칸을 나눈 표</td>
 </tr>
 <tr>
 <td>해시 (Hash)</td>
-<td>파일 내용으로 계산한 짧은 값. 한 글자만 달라도 값이 바뀐다. 흔히 SHA-256을 쓴다</td>
+<td>파일 내용으로 계산한 짧은 값. 한 글자만 달라도 값이 바뀐다. 흔히 SHA-256(Secure Hash Algorithm)을 쓴다</td>
 <td>파일의 지문</td>
 </tr>
 </tbody>
@@ -764,12 +764,12 @@ e:   c3               ret                      eax 값을 반환
 </thead>
 <tbody>
 <tr>
-<td>HTTP</td>
+<td>HTTP (HyperText Transfer Protocol)</td>
 <td>브라우저와 서버가 주고받는 약속(규약). 요청을 보내면 응답이 온다</td>
 <td>주문서와 영수증 양식</td>
 </tr>
 <tr>
-<td>API</td>
+<td>API (Application Programming Interface)</td>
 <td>프로그램끼리 데이터를 주고받는 창구</td>
 <td>식당의 주문 창구</td>
 </tr>
@@ -828,7 +828,7 @@ e:   c3               ret                      eax 값을 반환
 </tr>
 <tr>
 <td>npm, npx</td>
-<td>Node.js에 딸린 설치 도구. <code>npm install --global</code>은 설치해 두고 쓰고, <code>npx</code>는 설치하지 않고 한 번 받아서 실행한다. 차이는 <a href="#resources-rea-windows-pi-setup">회사 환경 설정 문서</a>에 있다</td>
+<td>Node.js에 딸린 설치 도구. npm은 흔히 Node Package Manager의 줄임말로 통한다(공식적으로는 약어가 아니라고 한다). <code>npm install --global</code>은 설치해 두고 쓰고, <code>npx</code>는 설치하지 않고 한 번 받아서 실행한다. 차이는 <a href="#resources-rea-windows-pi-setup">회사 환경 설정 문서</a>에 있다</td>
 <td>앱 스토어</td>
 </tr>
 <tr>
@@ -867,12 +867,12 @@ e:   c3               ret                      eax 값을 반환
 <td>모래 놀이터 울타리</td>
 </tr>
 <tr>
-<td>NTFS</td>
+<td>NTFS (New Technology File System)</td>
 <td>Windows 하드디스크의 기본 저장 방식(파일 시스템). Ghidra로 분석할 파일은 NTFS 로컬 디스크에 복사해 둔다</td>
 <td>서랍 정리 방식</td>
 </tr>
 <tr>
-<td>UNC 경로</td>
+<td>UNC (Universal Naming Convention) 경로</td>
 <td><code>\\서버\공유폴더</code> 모양으로 네트워크 공유 폴더를 가리키는 경로. Ghidra 분석 대상으로 쓸 수 없다</td>
 <td>다른 건물 서랍의 주소</td>
 </tr>
@@ -883,7 +883,7 @@ e:   c3               ret                      eax 값을 반환
 </tr>
 <tr>
 <td>MSI</td>
-<td>Windows 설치 프로그램 파일 형식. 안에 설치할 파일들이 들어 있다</td>
+<td>Windows 설치 프로그램 파일 형식. 이름은 Windows Installer의 옛 이름인 Microsoft Installer에서 왔다. 안에 설치할 파일들이 들어 있다</td>
 <td>조립 키트 상자</td>
 </tr>
 </tbody>
@@ -950,7 +950,7 @@ e:   c3               ret                      eax 값을 반환
 </tr>
 <tr>
 <td>디버그 정보 (PDB, DWARF)</td>
-<td>함수, 변수 이름과 소스 줄 번호를 담은 정보. Windows는 <code>.pdb</code> 파일로 따로 두고, Linux는 DWARF 형식을 쓴다. 있으면 분석이 훨씬 쉽다</td>
+<td>함수, 변수 이름과 소스 줄 번호를 담은 정보. Windows는 <code>.pdb</code>(Program Database) 파일로 따로 두고, Linux는 DWARF 형식을 쓴다. 있으면 분석이 훨씬 쉽다</td>
 <td>이름표 목록</td>
 </tr>
 <tr>
