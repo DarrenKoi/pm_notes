@@ -153,7 +153,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>8</td>
 <td><a href="#08-exec-summary">한 장 요약</a></td>
 <td>최고 임원</td>
-<td>문제, 해결 방향, 단계별 타겟, 요청 사항</td>
+<td>2026 추진 현황, 문제, 해결 방향, 단계별 타겟, 요청 사항</td>
 <td>초안, 2026-12 최종 승인용</td>
 </tr>
 <tr>
@@ -202,8 +202,8 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>최고 임원</td>
-<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx">arc-tf-exec-summary.docx</a>: 한 장 요약(08), 1쪽</td>
-<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx">arc-tf-exec-summary.pptx</a>: 5장 (TF 구성 조직도 포함, 결정 요청 장표 없음)</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx">arc-tf-exec-summary.docx</a>: 한 장 요약(08), 2쪽</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx">arc-tf-exec-summary.pptx</a>: 6장 (2026 추진 현황, TF 구성 조직도 포함, 결정 요청 장표 없음)</td>
 </tr>
 </tbody>
 </table></div>
@@ -3613,6 +3613,12 @@ TF 리드로서, LLM이 제안한 조작이 승인된 범위 밖이면 실행되
 <blockquote>
 <p>Align Fail 자동 대응 PoC의 공통 자산과 시사점을 바탕으로 공통 플랫폼을 만들어, 숙련 엔지니어의 레시피 셋업 노하우를 회사 자산으로 남기고 장비가 늘어도 셋업 인력을 같은 비율로 늘리지 않는 구조를 만들고자 합니다.</p>
 </blockquote>
+<h2 id="08-exec-summary--2026-arc-추진-현황">2026 ARC 추진 현황</h2>
+<ul>
+<li><strong>CD</strong>: Align Fail 자동 대응 Agent 개발 진행(Recipe Tuning 포함), 현재 Offline 테스트 중. 소형 VLM 기반 장비 컨트롤(Computer-use) 기능 구현</li>
+<li><strong>Thickness</strong>: 의뢰부터 Recipe 생성까지 ARC Pipeline 진행. DL 기반 Align Fail 대응 Offline 테스트 중. MI 장비군 중 가장 높은 자동화 구현</li>
+<li><strong>Inspection</strong>: DRB(Design Recipe Builder)를 Tuning하는 방식으로 ARC 진행 중(NAND Tech 1개 대상). DRB Tuning에 Computer-use 사용. Recipe Setup AI 활용을 위한 DB 구축 완료(RAG, 마이다스)</li>
+</ul>
 <h2 id="08-exec-summary--출발점-poc의-성과와-시사점">출발점: PoC의 성과와 시사점</h2>
 <ul>
 <li>PoC로 Agent가 Recipe를 다루는 장비군 공통 방식 확보: VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성</li>
