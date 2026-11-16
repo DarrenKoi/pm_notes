@@ -6,7 +6,7 @@
 
   boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 공통 플랫폼 구조 1장
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 기술 설계(07) 상세 5장
-  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 08 한 장 요약, 5장 (PoC 시사점 포함)
+  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 08 한 장 요약, 6장 (2026 추진 현황, PoC 시사점 포함)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
 (자동 동기화 안 됨). 슬라이드 하나 = 함수 하나, 맨 아래 DECKS 가 deck 별 순서다. 필요: python-pptx. 한글 폰트: 맑은 고딕. 16:9, Windows PowerPoint 기준.
@@ -285,12 +285,12 @@ def s_effects():  # 효과
          size=13, color=SUB, spacing=1.0)
     footer(s)
 
-def s_status():  # 2026 추진 현황
+def s_status(lessons=True):  # 2026 추진 현황 (exec 은 Lesson Learned 없이, 업무 전략 장표와 겹침)
     s = slide("2026 ARC 추진 현황",
-              "장비군별 ARC 추진 현황과 Lesson Learned")
+              "장비군별 ARC 추진 현황과 Lesson Learned" if lessons else "CD, Thickness, Inspection이 각자 ARC 추진 중")
     gap = Inches(0.3)
     cw = (W - 2 * M - 2 * gap) / 3
-    ch = Inches(2.8)
+    ch = Inches(2.8) if lessons else COL_H
     cols = [("CD 추진 현황", [
                 "**Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 __Offline 테스트 중__",
                 "**소형 VLM**(Vision Language Model) 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
@@ -303,7 +303,10 @@ def s_status():  # 2026 추진 현황
                 "DRB Tuning에 **Computer-use** 사용",
                 "Recipe Setup AI 활용을 위한 __DB 구축 완료__ (RAG, 마이다스)"])]
     for i, (head, items) in enumerate(cols):
-        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14)
+        column(s, M + i * (cw + gap), COL_Y, cw, ch, head, items, BLUE, size=14 if lessons else 16)
+    if not lessons:
+        footer(s)
+        return
     ly = COL_Y + ch + Inches(0.12)
     box(s, M, ly, W - 2 * M, Inches(1.7), fill=MIST)
     text(s, M + Inches(0.3), ly + Inches(0.1), W - 2 * M - Inches(0.6), Inches(1.4), [
@@ -717,7 +720,7 @@ BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
         s_kanban, s_safety, s_decision]
 TEAM = BOSS[:6] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[6:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", "레시피 셋업 노하우를 회사 자산으로 만드는 공통 플랫폼"),
-        s_lessons, s_exec_onepage, s_team, s_exec_roadmap]
+        lambda: s_status(lessons=False), s_lessons, s_exec_onepage, s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
          "exec": ("arc-tf-exec-summary.pptx", EXEC)}
 
