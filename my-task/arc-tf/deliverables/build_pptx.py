@@ -36,10 +36,12 @@ FONT = "맑은 고딕"
 #   빨강, 주황, 연한 분홍, 연한 파랑, 짙은 파랑, 베이지, 연노랑, 크림, 흰색, 검정,
 #   짙은 회색, 진회색, 밝은 회색, 연회색
 # 이 deck 은 그중 몇 개만 쓴다: 표와 텍스트 박스는 연회색(MIST), 밝은 회색(SILVER) 바탕에 검정(INK),
-# 강조는 짙은 파랑(BLUE)과 연한 파랑(BLUE_PALE), 주황은 관문, 최종 목표, ⟨확인⟩ 자리에만.
-# 아직 안 쓰는 색: 연한 분홍 FCE4E4, 연노랑 FFF2CC, 크림 FFF9E6, 베이지 F2E6D8, 진회색 404040
+# 강조 상자는 검정(INK) 바탕 + 흰 글자, 나머지 상자는 밝은 회색 + 검정 글자 (2026-11-16 사용자 지시: 짙은 파랑 채움 대신).
+# 짙은 파랑(BLUE)은 글머리 기호와 메모 머리말 같은 작은 글자에만, 연한 파랑(BLUE_PALE)은 표 강조 행, 주황은 관문, 최종 목표, ⟨확인⟩ 자리에만.
+# 아직 안 쓰는 색: 연한 분홍 FCE4E4, 연노랑 FFF2CC, 크림 FFF9E6, 베이지 F2E6D8
 INK = RGBColor(0x26, 0x26, 0x26)     # 검정 (본문)
 SUB = RGBColor(0x59, 0x59, 0x59)     # 짙은 회색 (보조 글자)
+DARK = RGBColor(0x40, 0x40, 0x40)    # 진회색 (조직도 연결선)
 GRAY = RGBColor(0xBF, 0xBF, 0xBF)    # 구분선, 화살표
 LINE = RGBColor(0xD0, 0xD0, 0xD0)    # 박스 테두리
 SILVER = RGBColor(0xD9, 0xD9, 0xD9)  # 밝은 회색 (표, 박스 머리줄)
@@ -145,8 +147,8 @@ def slide(title, msg):
 
 
 def column(s, x, y, w, h, head, items, accent, size=15, mark="▪ ", strong=False):
-    """머리줄은 밝은 회색 + 검정 글자. strong=True(전/후 구성의 '후')만 accent 색 + 흰 글자."""
-    box(s, x, y, w, Inches(0.5), fill=accent if strong else SILVER)
+    """머리줄은 밝은 회색 + 검정 글자. strong=True(전/후 구성의 '후')만 검정 + 흰 글자. accent 는 글머리 기호 색."""
+    box(s, x, y, w, Inches(0.5), fill=INK if strong else SILVER)
     text(s, x + Inches(0.25), y, w - Inches(0.5), Inches(0.5), head, size=17, bold=True,
          color=WHITE if strong else INK, anchor=MSO_ANCHOR.MIDDLE)
     box(s, x, y + Inches(0.5), w, h - Inches(0.5), fill=WHITE, line=LINE)
@@ -155,7 +157,7 @@ def column(s, x, y, w, h, head, items, accent, size=15, mark="▪ ", strong=Fals
 
 
 def two_col(s, left_head, left, right_head, right, y=COL_Y, h=COL_H, size=17, arrow=True, before=False):
-    """두 컬럼 모두 밝은 회색 머리줄. before=True면 우(변경, 해결)만 파랑 머리줄로 강조."""
+    """두 컬럼 모두 밝은 회색 머리줄. before=True면 우(변경, 해결)만 검정 머리줄로 강조."""
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
     column(s, M, y, cw, h, left_head, left, SUB if before else BLUE, size)
@@ -277,11 +279,11 @@ def s_assets():  # 업무 전략 1: Agent가 Recipe를 다루는 방식과 공�
     mx, mw = Inches(5.4), Inches(2.9)
     rx, rw = Inches(10.5), W - M - Inches(10.5)
     y1, y2 = y0, y0 + Inches(0.92)
-    node(s, ax, y0, aw, Inches(1.6), "ARC Agent", "생성형 AI\n+ 최적화된 소형 모델", fill=BLUE, fc=WHITE, size=17)
+    node(s, ax, y0, aw, Inches(1.6), "ARC Agent", "생성형 AI\n+ 최적화된 소형 모델", fill=INK, fc=WHITE, size=17)
     node(s, mx, y1, mw, nh, "장비 화면", "API 없음, 마우스와 키보드로 조작")
     node(s, mx, y2, mw, nh, "Recipe 파일", "장비 밖에서 직접 편집")
-    arrow(s, ax + aw + Inches(0.1), y1 + nh / 2, mx - Inches(0.1), y1 + nh / 2, "① 화면 조작 (Computer Use)", color=BLUE)
-    arrow(s, ax + aw + Inches(0.1), y2 + nh / 2, mx - Inches(0.1), y2 + nh / 2, "② 외부 파일 편집", color=BLUE)
+    arrow(s, ax + aw + Inches(0.1), y1 + nh / 2, mx - Inches(0.1), y1 + nh / 2, "① 화면 조작 (Computer Use)", color=INK)
+    arrow(s, ax + aw + Inches(0.1), y2 + nh / 2, mx - Inches(0.1), y2 + nh / 2, "② 외부 파일 편집", color=INK)
     node(s, rx, y0, rw, Inches(1.6), "Recipe 생성, 수정", "저장과 적용은\n엔지니어 승인", fill=ORANGE, fc=WHITE, size=16)
     arrow(s, mx + mw + Inches(0.1), y1 + nh / 2, rx - Inches(0.1), y1 + nh / 2, "공통 플랫폼의 기반", label_w=Inches(2.0))
     arrow(s, mx + mw + Inches(0.1), y2 + nh / 2, rx - Inches(0.1), y2 + nh / 2, "장비군별 도구", label_w=Inches(2.0))
@@ -359,9 +361,9 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     # 변경: 사내 서버 → 엔지니어 PC(Agent 설치) → 장비
     x = M + cw + gap
     node(s, x, dy, sw, dh, "사내 서버", "모델 판단")
-    arrow(s, x + sw + pad, my, x + sw + ag - pad, my, "판단", color=BLUE, label_w=ag)
-    node(s, x + sw + ag, dy, bw, dh, "엔지니어 PC", "Agent 설치\n보면서 실행, 즉시 중단", fill=BLUE, fc=WHITE)
-    arrow(s, x + sw + ag + bw + pad, my, x + cw - sw - pad, my, "조작", color=BLUE, label_w=ag)
+    arrow(s, x + sw + pad, my, x + sw + ag - pad, my, "판단", color=INK, label_w=ag)
+    node(s, x + sw + ag, dy, bw, dh, "엔지니어 PC", "Agent 설치\n보면서 실행, 즉시 중단", fill=INK, fc=WHITE)
+    arrow(s, x + sw + ag + bw + pad, my, x + cw - sw - pad, my, "조작", color=INK, label_w=ag)
     node(s, x + cw - sw, dy, sw, dh, "장비")
 
 def s_team():  # TF 구성 (조직도)
@@ -369,43 +371,51 @@ def s_team():  # TF 구성 (조직도)
               "공통 플랫폼과 장비군 담당 엔지니어의 유기적 협업")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
-    box(s, tx, COL_Y, top_w, Inches(0.72), fill=BLUE)
-    text(s, tx, COL_Y, top_w, Inches(0.72), "ARC TF (TF 리드 총괄)", size=17, bold=True, color=WHITE,
+    th = Inches(0.46)
+    champ_y = COL_Y + th + Inches(0.16)
+    box(s, tx, COL_Y, top_w, th, fill=SILVER)
+    text(s, tx, COL_Y, top_w, th, "기반기술센터 AI/DT TF 담당", size=16, bold=True, color=INK,
+         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+    box(s, tx, champ_y, top_w, th, fill=INK)
+    text(s, tx, champ_y, top_w, th, "ARC TF Champion: XXX TL", size=16, bold=True, color=WHITE,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
-    groups = [("공통 플랫폼 팀: 개발 약 5명 규모", BLUE, [
+    groups = [("공통 플랫폼 팀: 개발 약 5명 규모", INK, [
                   ("백엔드 (2명)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
                   ("프론트엔드 (2명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"]),
                   ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
-              ("장비군 담당: 장비군마다 1~2명", BLUE, [
+              ("장비군 담당: 장비군마다 1~2명", INK, [
                   ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현")),
                   ("Thickness\n(1차)", goal("Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화")),
                   ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체 디바이스향 DRB 기반 ARC 확장")),
                   ("다른 MI 장비군\n(2차)", [ "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
     gg = Inches(0.4)
     gw = (W - 2 * M - gg) / 2
-    bus_y, gy = COL_Y + Inches(0.92), COL_Y + Inches(1.12)
+    bus_y, gy = champ_y + th + Inches(0.14), champ_y + th + Inches(0.28)
     bw_g = Inches(0.12)
-    line = lambda x0, y0, x1, y1: setattr(s.shapes.add_connector(1, x0, y0, x1, y1).line.color, "rgb", GRAY)
-    line(W / 2, COL_Y + Inches(0.72), W / 2, bus_y)
+    def line(x0, y0, x1, y1):  # 연결선: 얇고 진한 회색
+        ln = s.shapes.add_connector(1, x0, y0, x1, y1).line
+        ln.color.rgb, ln.width = DARK, Pt(0.75)
+    line(W / 2, COL_Y + th, W / 2, champ_y)
+    line(W / 2, champ_y + th, W / 2, bus_y)
     line(M + gw / 2, bus_y, W - M - gw / 2, bus_y)
     for gi, (head, accent, members) in enumerate(groups):
         gx = M + gi * (gw + gg)
         line(gx + gw / 2, bus_y, gx + gw / 2, gy)
-        box(s, gx, gy, gw, Inches(0.42), fill=accent)
-        text(s, gx, gy, gw, Inches(0.42), head, size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
+        box(s, gx, gy, gw, Inches(0.42), fill=SILVER)
+        text(s, gx, gy, gw, Inches(0.42), head, size=14, bold=True, color=INK, align=PP_ALIGN.CENTER,
              anchor=MSO_ANCHOR.MIDDLE)
         bw = (gw - (len(members) - 1) * bw_g) / len(members)
         for k, (name, lines) in enumerate(members):
-            x, y = gx + k * (bw + bw_g), gy + Inches(0.52)
+            x, y = gx + k * (bw + bw_g), gy + Inches(0.5)
             dim = gi == 1 and k == 3  # 2차 준비 단계
-            box(s, x, y, bw, Inches(2.15), fill=MIST if dim else WHITE, line=LINE)
+            box(s, x, y, bw, Inches(2.1), fill=MIST if dim else WHITE, line=LINE)
             box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else accent)
             text(s, x + Inches(0.06), y + Inches(0.12), bw - Inches(0.12), Inches(0.5), name.split("\n"), size=12, bold=True, gap=0,
                  align=PP_ALIGN.CENTER)
             text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(6.2), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(XXX 담당님) 보고**, **분기 부문장님 보고**", size=13)
+    note_line(s, Inches(6.3), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(XXX 담당님) 보고**, **분기 부문장님 보고**", size=13)
 
 def s_kanban():  # 일정 칸반
     s = slide("2027 일정",
@@ -503,7 +513,7 @@ def s_platform():  # 공통 플랫폼 구조 (boss, team)
              ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
              ("③ Workflow 생성, 실행", "RAG에서 셋업 Workflow 생성\nAgent가 Computer Use로 실행"),
              ("④ 준수 확인, 수정", "Workflow를 지키는지 확인\n틀리면 엔지니어가 개입, 수정")],
-         COL_Y, h=Inches(1.3), fills=[(BLUE, WHITE)] * 4, head_size=16, body_size=12)
+         COL_Y, h=Inches(1.3), fills=[(SILVER, INK)] * 4, head_size=16, body_size=12)
     fgap = Inches(0.3)
     fw = (W - 2 * M - fgap * 3) / 4
     c2, c4 = M + (fw + fgap) + fw / 2, M + 3 * (fw + fgap) + fw / 2
@@ -534,7 +544,7 @@ def s_offline():  # Offline 파이프라인 (team)
     flow(s, [("전처리", "1~2fps 탐색\n원본 프레임 보존"), ("변화 감지", "조작 영역만\n전후 화면, OCR"),
              ("의미 행동", "관찰 사실과\n추정 행동 분리"), ("의미 단계", "시작, 완료\n조건으로 묶음"),
              ("시연 정렬", "공통 경로와\n분기 후보"), ("분기 승인", "담당 엔지니어\n승인")],
-         COL_Y, fills=[(MIST, INK)] * 5 + [(BLUE, WHITE)])
+         COL_Y, fills=[(MIST, INK)] * 5 + [(INK, WHITE)])
     two_col(s, "자동으로 하는 것", [
                 "변화 구간 검출, 전후 화면 묶음 (라이브 영역, 커서, 시계 제외)",
                 "VLM의 **관찰 사실 / 추정 행동 / 불확실 항목** 분리 기록",
@@ -553,7 +563,7 @@ def s_online():  # Online 실행 루프와 3단 분리 (team)
               "LLM은 제안만, 서버가 규칙으로 다시 확인, 실행은 조작 단위 1개씩")
     flow(s, [("관찰", "화면, 장비 확인"), ("상태 인식", "현재 단계"), ("검색, 판단", "호환 시연 3건\nLLM 제안"),
              ("규칙 확인", "권한, 분기, 인자"), ("실행", "조작 단위 1개"), ("검증", "사후조건\n체크포인트")],
-         COL_Y, fills=[(MIST, INK)] * 3 + [(BLUE, WHITE), (MIST, INK), (MIST, INK)])
+         COL_Y, fills=[(MIST, INK)] * 3 + [(INK, WHITE), (MIST, INK), (MIST, INK)])
     rows = [("역할", "하는 일", "하지 않는 일"),
             ("판단 (LLM)", "다음 분기, 조작 단위, 근거 제안", "직접 조작, 사전조건 충족 선언"),
             ("규칙 확인 (서버)", "권한, 허용 분기, 인자, 값과 단위, 절차 버전 재확인. 거부 시 실행 안 함", "판단"),
@@ -639,7 +649,7 @@ def s_exec_roadmap():
               "2027 1차 장비군 목표와 플랫폼 베타부터, 2029 AI 셋업 진행까지")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028", "반복 입력 대행"), ("2029", "1차 장비군\nAI가 셋업 진행")],
-         COL_Y, h=Inches(1.5), fills=[(BLUE, WHITE), (BLUE, WHITE), (MIST, INK), (ORANGE, WHITE)],
+         COL_Y, h=Inches(1.5), fills=[(SILVER, INK), (SILVER, INK), (SILVER, INK), (ORANGE, WHITE)],
          head_size=20, body_size=15)
     rows = [("시기", "회사에 남는 것"),
             ("2027 상반기", "다른 장비군이 쓸 공통 플랫폼"),
