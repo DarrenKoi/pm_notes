@@ -68,7 +68,7 @@ REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어
 | 비유 | 공작 기계 | 기계를 어떤 순서로 돌릴지 정한 작업 지시서와 반장 |
 | Ghidra에서 필요한 때 | 늘 필요하다. Ghidra가 Java로 만들어져 있다 | Ghidra를 소스에서 직접 빌드하거나, Ghidra 확장 기능(Extension)을 직접 만들 때만 |
 
-Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). 사내에서 Gradle을 함께 설치하라는 안내가 있었다면, Ghidra를 소스에서 빌드하는 경우를 기준으로 한 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.
+Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). Ghidra GitHub README는 설치 안내가 두 절로 나뉜다. **Install** 절(배포본을 받아 쓰기)은 JDK와 배포 zip만 요구하고, **Build** 절(소스에서 직접 만들기)이 JDK, Gradle, Python3, 컴파일러를 요구한다. Gradle을 함께 설치하라는 안내는 Build 절을 본 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.
 
 ### REA를 설치하는 두 가지 방법
 

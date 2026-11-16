@@ -1270,7 +1270,7 @@ file /absolute/path/to/target.exe</code></p>
 </tr>
 </tbody>
 </table></div>
-<p>Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). 사내에서 Gradle을 함께 설치하라는 안내가 있었다면, Ghidra를 소스에서 빌드하는 경우를 기준으로 한 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.</p>
+<p>Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). Ghidra GitHub README는 설치 안내가 두 절로 나뉜다. <strong>Install</strong> 절(배포본을 받아 쓰기)은 JDK와 배포 zip만 요구하고, <strong>Build</strong> 절(소스에서 직접 만들기)이 JDK, Gradle, Python3, 컴파일러를 요구한다. Gradle을 함께 설치하라는 안내는 Build 절을 본 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.</p>
 <h3 id="resources-rea-windows-pi-setup--rea를-설치하는-두-가지-방법">REA를 설치하는 두 가지 방법</h3>
 <p>REA는 npm 패키지 <code>rea-agents</code>로 배포된다. 받는 방법이 둘이고, 어느 쪽으로 setup을 돌렸는지에 따라 에이전트 등록이 가리키는 위치가 달라진다.</p>
 <div class="tbl"><table>
