@@ -3375,7 +3375,7 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 <ul>
 <li><strong>챕터 1  RE란 무엇인가</strong>: 무엇이고 왜 필요한가. 꼭 알아야 할 용어. 정적 분석과 동적 분석</li>
 <li><strong>챕터 2  작업 절차</strong>: 허가 확인부터 보고까지 7단계. 시작 전의 안전 수칙. 좋은 질문을 만드는 법</li>
-<li><strong>챕터 3  Ghidra와 REA</strong>: 실행 파일을 읽는 도구 Ghidra. 그 도구를 AI에게 맡기는 REA. AI 쪽 용어 정리</li>
+<li><strong>챕터 3  Ghidra와 REA</strong>: 실행 파일을 읽는 도구 Ghidra. 그 도구를 AI에게 맡기는 REA. REA 결과에 나오는 말</li>
 <li><strong>챕터 4  회사 PC에서 쓰기</strong>: Windows에서 되는 것과 안 되는 것. 설치와 연결. 질문하는 법과 결과 읽는 법</li>
 </ul>
 <p><strong>발표자 노트</strong>: 네 부분으로 진행합니다. 끝나고 나면 세 가지를 얻어 가시면 됩니다. 리버스 엔지니어링이 어떤 일인지 설명할 수 있고, 분석을 시작하기 전에 무엇을 확인해야 하는지 알고, REA에게 좋은 질문을 쓸 수 있게 됩니다.</p>
@@ -3737,9 +3737,9 @@ if (...) { ... }</code></p>
 <p>REA와 분석 엔진은 내 PC에서 실행된다.</p>
 <p>참고: REA(Reverse Engineer Anything): 공개 도구(github.com/morluto/rea). 분석은 내 PC에서 실행되고, 결과는 에이전트가 쓰는 AI 모델로 전달된다. 그래서 사내 LLM에 연결된 에이전트만 쓴다.</p>
 <p><strong>발표자 노트</strong>: REA는 AI 에이전트에 붙여 쓰는 분석 도구 묶음입니다. 우리가 글로 질문하면 에이전트가 REA의 도구를 부르고, REA가 Ghidra를 화면 없이 돌려서 결과를 돌려줍니다. 중요한 점은 REA가 결과마다 근거와 한계를 붙인다는 것입니다. AI가 근거 없이 지어내는 것을 막는 장치입니다. REA는 Ghidra 전용이 아니어서 웹 앱이나 .NET, Python 프로그램은 Ghidra 없이 분석합니다.</p>
-<h3 id="re-rea-team-intro--18-용어-3-ai와-rea-쪽-말">18. 용어 3: AI와 REA 쪽 말</h3>
+<h3 id="re-rea-team-intro--18-용어-3-rea-쪽-말">18. 용어 3: REA 쪽 말</h3>
 <blockquote>
-<p>REA 스킬은 '지침서', MCP는 '연결선', Ghidra는 '엔진'으로 기억하면 됩니다</p>
+<p>스킬은 '지침서', Ghidra는 '엔진', Evidence는 '측정 기록지'로 기억하면 됩니다</p>
 </blockquote>
 <div class="tbl"><table>
 <thead>
@@ -3751,18 +3751,8 @@ if (...) { ... }</code></p>
 </thead>
 <tbody>
 <tr>
-<td>AI 에이전트 (Agent)</td>
-<td>지시를 받으면 도구를 스스로 골라 여러 단계의 일을 하는 AI 프로그램. 회사에서는 pi</td>
-<td>일을 맡길 수 있는 조수</td>
-</tr>
-<tr>
-<td>MCP</td>
-<td>에이전트가 외부 도구를 쓰기 위한 연결 규격 (Model Context Protocol)</td>
-<td>장비와 PC를 잇는 표준 커넥터</td>
-</tr>
-<tr>
 <td>REA 스킬 (Skill)</td>
-<td>에이전트에게 주는 작업 지침서. 어떤 순서로 어떤 도구를 쓸지 적혀 있다</td>
+<td>에이전트에게 주는 REA 작업 지침서. 어떤 순서로 어떤 도구를 쓸지 적혀 있다</td>
 <td>작업 표준서</td>
 </tr>
 <tr>
@@ -3771,14 +3761,24 @@ if (...) { ... }</code></p>
 <td>계측 장비 본체</td>
 </tr>
 <tr>
-<td>세션 (Session)</td>
-<td>대상을 열고 닫을 때까지의 작업 한 묶음. 닫기 전에 근거를 파일로 저장한다</td>
-<td>장비 한 번 가동</td>
-</tr>
-<tr>
 <td>Evidence</td>
 <td>도구 결과 한 건의 기록. 번호(Evidence ID)로 가리킨다</td>
 <td>측정 기록지</td>
+</tr>
+<tr>
+<td>한계 (Limitations)</td>
+<td>Evidence에 붙는 "이번에 보지 못한 것". 간접 호출, 잘린 결과 등</td>
+<td>측정 조건과 오차 범위</td>
+</tr>
+<tr>
+<td>Evidence 번들</td>
+<td>Evidence를 묶어 저장한 파일(export_evidence_bundle). 분석을 닫기 전에 만든다</td>
+<td>기록지 철</td>
+</tr>
+<tr>
+<td>요약 응답</td>
+<td>REA가 기본으로 돌려주는 짧은 결과. 원본은 보관되고 필요한 쪽만 펼쳐 읽는다</td>
+<td>보고서 표지와 첨부</td>
 </tr>
 </tbody>
 </table></div>
