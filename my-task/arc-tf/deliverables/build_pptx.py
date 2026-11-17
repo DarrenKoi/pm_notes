@@ -6,7 +6,7 @@
 
   boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 공통 플랫폼 구조 1장
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 기술 설계(07) 상세 5장
-  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 단계별 타겟)
+  exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
 (자동 동기화 안 됨). 슬라이드 하나 = 함수 하나, 맨 아래 DECKS 가 deck 별 순서다. 필요: python-pptx. 한글 폰트: 맑은 고딕. 16:9, Windows PowerPoint 기준.
@@ -628,20 +628,21 @@ def s_stack():  # 구현 형태와 기술 스택 (team)
 
 # ---------- 최고 임원용 ----------
 def s_exec_roadmap():
-    s = slide("단계별 타겟",
+    s = slide("개발 로드맵",
               "2027 **1차 장비군 목표와 플랫폼 베타**부터, 2029 **AI 셋업 진행**까지")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028", "반복 입력 대행"), ("2029", "1차 장비군\nAI가 셋업 진행")],
          COL_Y, h=Inches(1.5), fills=[(SILVER, INK), (SILVER, INK), (SILVER, INK), (ORANGE, WHITE)],
          head_size=20, body_size=15)
-    rows = [("시기", "회사 효과"),
-            ("2027 상반기", "전 장비군 공통 플랫폼"),
-            ("2027 하반기", "장비군 확장 구조, 노하우의 조직 자산화"),
-            ("2028", "Recipe별 셋업의 Agent 진행 비율 증가"),
-            ("2029", "셋업 인력을 장비 수에 비례해 늘리지 않음")]
-    table(s, rows, M, Inches(3.85), [Inches(3.0), Emu(W - 2 * M - Inches(3.0))], size=15, row_h=Inches(0.45),
+    rows = [("시기", "목표"),
+            ("2027 상반기", "1차 3개 장비군 목표 달성, 공통 플랫폼 베타, 기준선 측정"),
+            ("2027 하반기", "2차 장비군 합류, Agent 수행 성공 Recipe 셋업 ⟨X⟩건"),
+            ("2028", "1차 장비군 Agent 개입 범위 기준선 대비 ⟨N⟩배, 셋업 시간 단축"),
+            ("2029", "1차 장비군 의뢰 Recipe ARC 적용 비율 90% 이상")]
+    table(s, rows, M, Inches(3.8), [Inches(3.0), Emu(W - 2 * M - Inches(3.0))], size=15, row_h=Inches(0.42),
           bold_col0=True)
-    note_line(s, Inches(6.3), "측정", "Recipe별 셋업 단계 중 Agent가 진행한 비율(%). 기준선은 합류 첫 달에 실측, 측정 전 목표 숫자 없음", size=13)
+    note_line(s, Inches(6.05), "수치 확정", "기준선 측정 후 **2027-07**에 2028~2029 목표 수치 확정 보고. 2차 장비군 목표는 합류 후 확정", size=13)
+    note_line(s, Inches(6.38), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
 BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,

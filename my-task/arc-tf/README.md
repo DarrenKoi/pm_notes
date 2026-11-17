@@ -28,7 +28,7 @@ last_updated: 2026-11-09
 | 5 | [PoC 자산과 남은 과제](./05-poc-assets.md) | 플랫폼 팀, 임원 | PoC에서 가져오는 공통 자산, 시사점, 새로 풀어야 하는 것 | 초안 |
 | 6 | [플랫폼 1차 PRD](./06-platform-prd.md) | 플랫폼 팀, 담당 엔지니어 | 무엇을 만드나: 사용자 스토리와 수용 기준, 성공, 가드레일 지표, 범위 밖, 열린 질문 | 초안, 일정 기획안과 맞춤 (2026-11-08) |
 | 7 | [공통 플랫폼 기술 설계](./07-platform-architecture.md) | 플랫폼 팀, 담당 엔지니어 | 어떻게 만드나: Offline 지식화와 Online 실행, 판단과 규칙 확인과 실행 분리, 안전 관문, 평가, 단계별 구현 순서. Codex 설계 검토 결과 | 초안, 제안 설계 |
-| 8 | [한 장 요약](./08-exec-summary.md) | 최고 임원 | 2026 추진 현황과 Lesson Learned, 핵심 개발 방향, TF 구성, 단계별 타겟, 요청 사항 | 초안, 2026-12 최종 승인용 |
+| 8 | [한 장 요약](./08-exec-summary.md) | 최고 임원 | 2026 추진 현황과 Lesson Learned, 핵심 개발 방향, TF 구성, 개발 로드맵, 요청 사항 | 초안, 2026-12 최종 승인용 |
 | - | [Codex 설계 원문](./codex/README.md) | 플랫폼 팀 | MP4 기반 Video-to-Workflow Agent 발표자료 22장의 본문과 이미지 (원문 보존, 수정하지 않음) | 보관 |
 | - | [결정 기록](./decision-log.md) | ARC TF Champion | 날짜별 결정과 이유 | 2026-10-29 |
 | - | [위험 목록](./risk-register.md) | ARC TF Champion | 위험, 대응, 담당 | 2026-10-29 |
@@ -41,7 +41,7 @@ last_updated: 2026-11-09
 |---|---|---|
 | 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 16장 (담당 임원 deck + 기술 설계 5장 + LLM 한계 1장) |
 | 담당 임원 | [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx): 기획안(01) + 별첨 A 문제 정의(00) | [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx): 10장 (추진 현황, 조직도, 업무 전략, 개발 방향, 효과, 일정, 위험, 결정 요청) |
-| 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 2쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성 조직도, 단계별 타겟. 결정 요청 장표 없음) |
+| 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 2쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성 조직도, 개발 로드맵. 결정 요청 장표 없음) |
 
 ```bash
 python my-task/arc-tf/deliverables/build_docx.py          # 3종 모두, 하나만: team | boss | exec
