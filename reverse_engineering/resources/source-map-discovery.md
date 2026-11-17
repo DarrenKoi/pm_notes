@@ -11,7 +11,7 @@ note_kind: "사용법"
 
 # 소스 맵 찾고 원본 꺼내는 방법
 
-> 번들 끝의 `sourceMappingURL` 주석, 응답 헤더 `SourceMap`, 관례상 경로 `번들.js.map` 순서로 찾는다. 찾은 맵에 `sourcesContent`가 있으면 원본 파일을 그대로 꺼낼 수 있다.
+> 번들 끝의 `sourceMappingURL` 주석, 응답 헤더 `SourceMap`, 관례상 경로 `번들.js.map` 순서로 찾는다. 헤더와 주석이 둘 다 있으면 헤더가 우선이다. 찾은 맵에 `sourcesContent`가 있으면 원본 파일을 그대로 꺼낼 수 있다.
 
 ## 왜 필요한가? (Why)
 
@@ -44,7 +44,7 @@ note_kind: "사용법"
 | `mappings` | 압축된 코드의 위치와 원본 위치의 대응표(Base64 VLQ 인코딩) | DevTools가 쓴다. 사람이 직접 읽을 일은 없다 |
 | `sections` | 여러 맵을 이어 붙인 색인 맵(Index Map)일 때만 있다 | 맵이 안에 여러 개 들어 있다 |
 
-`sourcesContent`가 비어 있으면 원본 내용은 없고 경로와 이름만 얻는다. 그래도 `sources` 목록 하나로 프로젝트 구조를 파악할 수 있다.
+`sourcesContent`가 비어 있으면 맵 안에 원본 내용은 없다. `mappings`로 위치 대응은 여전히 되고, `sources`의 주소에서 원본 파일을 따로 받을 수 있는 경우도 있다. 그래도 `sources` 목록 하나로 프로젝트 구조를 파악할 수 있다.
 
 ### 번들이 소스 맵을 가리키는 세 가지 방법
 
@@ -56,7 +56,7 @@ note_kind: "사용법"
 
    주소가 상대 경로면 번들의 URL을 기준으로 해석한다. `data:application/json;base64,...`로 시작하면 맵이 번들 안에 통째로 들어 있는 인라인 맵이다.
 
-2. **HTTP 응답 헤더**: 서버가 번들을 내려줄 때 `SourceMap: /maps/app.js.map` 헤더를 붙인다. 오래된 서버는 `X-SourceMap`을 쓴다. 주석이 없어도 헤더가 있을 수 있다.
+2. **HTTP 응답 헤더**: 서버가 번들을 내려줄 때 `SourceMap: /maps/app.js.map` 헤더를 붙인다. 오래된 서버는 `X-SourceMap`을 쓴다. 주석이 없어도 헤더가 있을 수 있다. 둘 다 있으면 헤더가 가리키는 맵을 쓴다(ECMA-426).
 
 3. **아무 표시 없음(숨긴 소스 맵)**: 빌드 도구의 `hidden` 옵션은 `.map` 파일은 만들고 주석만 뺀다. 에러 추적 서비스에 올리려고 만든 맵이 서버에 그대로 남아 있는 경우가 많다. 관례상 `번들 주소 + .map`에 있으므로 직접 요청해 본다.
 
@@ -115,7 +115,7 @@ curl -s -o app.js.map -w "%{http_code} %{content_type}\n" "$URL.map"
 head -c 100 app.js.map
 ```
 
-결과를 볼 때 한 가지를 조심한다. SPA(Single Page Application) 서버는 없는 경로에도 `200`과 함께 `index.html`을 돌려주는 경우가 많다. 상태 코드만 보고 "맵이 있다"고 판단하지 않는다. 내용이 `{"version":3`으로 시작해야 진짜 소스 맵이다.
+결과를 볼 때 한 가지를 조심한다. SPA(Single Page Application) 서버는 없는 경로에도 `200`과 함께 `index.html`을 돌려주는 경우가 많다. 상태 코드만 보고 "맵이 있다"고 판단하지 않는다. 본문을 JSON으로 읽어서 `version`이 3이고 `mappings`(색인 맵이면 `sections`)가 있어야 진짜 소스 맵이다. 키 순서와 공백은 정해져 있지 않으므로 앞부분 글자만 보고 판단하지 않는다.
 
 경로를 바꿔 볼 곳도 있다.
 
@@ -129,7 +129,7 @@ head -c 100 app.js.map
 Electron 앱이나 설치 폴더에 웹 리소스가 들어 있는 경우다. 네트워크 없이 파일 검색으로 끝난다.
 
 ```bash
-# Electron 앱은 app.asar 압축부터 푼다
+# Electron 앱은 app.asar부터 푼다(압축이 아니라 묶음 파일)
 npx @electron/asar extract "C:/re-work/tool/resources/app.asar" C:/re-work/tool/asar-out
 
 # .map 파일과 sourceMappingURL 주석을 찾는다
@@ -157,7 +157,7 @@ from urllib.parse import urlparse
 
 
 def safe_relpath(source: str) -> Path:
-    """webpack:///./src/App.vue -> src/App.vue. Never escapes out_dir."""
+    """webpack:///./src/App.vue -> src/App.vue. Drops ".." parts."""
     url = urlparse(source)
     raw = f"{url.netloc}/{url.path}" if url.scheme else source
     parts = [p for p in re.split(r"[\\/]+", raw) if p not in ("", ".", "..")]
@@ -182,6 +182,8 @@ def extract(smap: dict, out_dir: Path) -> tuple[int, int]:
         while target.exists():  # Vue splits one .vue file into several entries
             target = base.with_name(f"{base.stem}.{n}{base.suffix}")
             n += 1
+        if not target.resolve().is_relative_to(out_dir.resolve()):  # symlink or junction
+            continue
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(text, encoding="utf-8")
         written += 1
@@ -203,7 +205,7 @@ if __name__ == "__main__":
 python3 extract_sourcemap.py app.js.map C:/re-work/web-app/src-out
 ```
 
-스크립트가 막는 것이 두 가지 있다. 소스 맵은 남이 만든 파일이므로, `sources`에 `../../`가 들어 있어도 출력 폴더 밖에 파일을 쓰지 않도록 `..`을 버린다. 그리고 Vue는 `.vue` 파일 하나를 `App.vue?vue&type=script` 같은 항목 여러 개로 나누므로, 이름이 겹치면 `App.1.vue`처럼 번호를 붙인다.
+스크립트가 막는 것이 두 가지 있다. 소스 맵은 남이 만든 파일이므로, `sources`에 `../../`가 들어 있어도 출력 폴더 밖에 파일을 쓰지 않도록 `..`을 버리고, 쓰기 전에 실제 경로(`resolve()`)가 출력 폴더 안인지 다시 확인한다. 출력 폴더 안에 심볼릭 링크나 정션이 있으면 `..` 제거만으로는 막지 못하기 때문이다. 출력 폴더는 새로 만든 빈 폴더를 쓴다. 그리고 Vue는 `.vue` 파일 하나를 `App.vue?vue&type=script` 같은 항목 여러 개로 나누므로, 이름이 겹치면 `App.1.vue`처럼 번호를 붙인다.
 
 꺼낸 파일 중 `node_modules/` 아래는 외부 라이브러리다. 읽지 않는다. 동료가 짠 코드는 대개 `src/` 아래에 있다.
 
@@ -215,7 +217,7 @@ python3 extract_sourcemap.py app.js.map C:/re-work/web-app/src-out
 - `sourcesContent` 유무와 꺼낸 파일 수 (예: "212/240")
 - 번들 파일의 해시. 다음 배포에서 번들이 바뀌면 맵도 다시 받아야 한다
 
-소스 맵에서 꺼낸 원본은 배포 시점의 소스다. 저장소의 소스와 다를 수 있다는 점을 기록에 함께 적는다. 꺼낸 원본은 이 저장소에 올리지 않는다.
+소스 맵에서 꺼낸 원본은 빌드 도구가 맵에 넣어 둔 내용이다. 중간 변환 결과나 가상 모듈일 수 있다. 저장소의 소스와 다를 수 있다는 점을 기록에 함께 적는다. 꺼낸 원본은 이 저장소에 올리지 않는다.
 
 ### 소스 맵이 없을 때
 

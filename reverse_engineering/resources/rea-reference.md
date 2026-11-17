@@ -11,7 +11,7 @@ note_kind: "참조"
 
 # REA 명령, 도구 참조
 
-> REA CLI 명령, MCP 도구 이름, 환경 변수 목록. 2026-11-11에 npm 배포본 `rea-agents` 6.8.0(2026-10-25 배포)과 `morluto/rea` main 브랜치 문서로 확인했다. 버전에 따라 다를 수 있으므로 실제 목록은 `rea --help`와 `binary_session`으로 확인한다.
+> REA CLI 명령, MCP 도구 이름, 환경 변수 목록. 2026-11-11에 npm 배포본 `rea-agents` 6.8.0과 `morluto/rea` main 브랜치 문서로 처음 확인했고, 2026-11-18에 6.9.0(2026-11-12 배포) 기준으로 갱신했다. 버전에 따라 다를 수 있으므로 실제 목록은 `rea --help`와 `binary_session`으로 확인한다.
 
 ## 왜 필요한가? (Why)
 
@@ -23,7 +23,7 @@ note_kind: "참조"
 - 모든 경로는 절대 경로로 쓴다.
 - `--json`을 붙이면 Evidence 레코드를 JSON으로 출력한다.
 - 실행 중인 서버에서 쓸 수 있는 도구와 그 이유는 MCP `binary_session` 도구에 `{}`를 넘겨서 확인한다. `result.tool_availability`에 나온다.
-- **배포본과 main은 다르다.** upstream 문서는 main 브랜치 코드를 설명한다. main은 매일 바뀌지만 npm 배포는 6.8.0에서 멈춰 있다(2026-11-11 확인). 설치된 버전은 `rea --version --json`, 최신 배포 버전은 `npm view rea-agents dist-tags.latest`로 본다. 이 문서에서 "main 전용"이라고 적은 항목은 다음 배포부터 쓸 수 있다.
+- **배포본과 main은 다르다.** upstream 문서는 main 브랜치 코드를 설명하고, main은 매일 바뀐다. 2026-11-18 기준 최신 배포는 6.9.0(2026-11-12)이며, 이전에 "main 전용"으로 적었던 항목은 모두 6.9.0에 들어갔다. 이 문서에서 "6.9.0부터"라고 적은 항목은 6.8.0 이하에서는 쓸 수 없다. 설치된 버전은 `rea --version --json`, 최신 배포 버전은 `npm view rea-agents dist-tags.latest`로 본다.
 
 ## 어떻게 사용하는가? (How)
 
@@ -66,7 +66,7 @@ note_kind: "참조"
 | `rea inspect-native-exports PATH --json` | DLL 익스포트 목록. 엔진 불필요 |
 | `rea inspect-pe-imports PATH --json` | 임포트 테이블과 지연 로드(delay-load) 테이블의 DLL, 함수 이름, 임포트 해시. 엔진 불필요 |
 | `rea inspect-pe-load-config PATH --json` | TLS 콜백과 로드 설정(보안 쿠키, SafeSEH, CFG 테이블). 엔진 불필요 |
-| `rea inspect-binary-hardening PATH --json` | 컴파일, 링크 단계 보호 설정을 속성별로 `enabled`, `disabled`, `unknown`으로 보여준다. 엔진 불필요. main 전용 |
+| `rea inspect-binary-hardening PATH --json` | 컴파일, 링크 단계 보호 설정을 속성별로 `enabled`, `disabled`, `unknown`으로 보여준다. 엔진 불필요. 6.9.0부터 |
 
 자주 쓰는 MCP 도구: `open_binary`, `binary_overview`, `list_procedures`, `analyze_function`, `read_function_instructions`, `trace_native_values`, `match_native_functions`(두 빌드의 함수 대응), `inspect_pe_resources`, `inspect_native_exports`, `inspect_pe_imports`, `inspect_pe_load_config`, `close_binary`. `annotate_native_function`, `set_address_name`은 Linux, macOS에서만 된다. Windows에서 실제로 쓸 수 있는 도구는 `binary_session`의 `tool_availability`로 확인한다.
 
@@ -139,7 +139,7 @@ REA를 띄우는 환경(MCP 등록)에 넣어야 한다. 바꾼 뒤에는 MCP �
 | `REA_GHIDRA_LANGUAGE_ID`, `REA_GHIDRA_COMPILER_SPEC_ID` | 헤더 자동 감지 대신 쓸 언어와 컴파일러 지정 | - |
 | `REA_MCP_INPUT_SCHEMA_PROFILE` | `full`이면 MCP 입력 스키마를 자세히 노출한다 | 간략형 |
 
-main 전용 설정(6.8.0 배포본에는 없다. 2026-11-11 확인):
+6.9.0부터 쓸 수 있는 설정(6.8.0 배포본에는 없다):
 
 | 변수 | 뜻 |
 |---|---|
@@ -150,13 +150,14 @@ main 전용 설정(6.8.0 배포본에는 없다. 2026-11-11 확인):
 ### 지원 조건
 
 - Node.js 22.x(22.23.4 이상), 24.x(24.22.1 이상), 또는 26.12.1 이상과 npm.
-- Ghidra 12.1.x와 64비트 JDK 21 이상. 검증된 조합은 Ghidra 12.1.4 + JDK 21.
+- Ghidra 12.1 이상의 12.x와, 그 Ghidra가 정한 64비트 JDK(12.1.x는 JDK 21 이상, 12.2는 JDK 25 이상). 검증된 조합은 Ghidra 12.1.4 + JDK 21.
 - Ghidra는 Linux, macOS에서 읽기 전용 분석과 함수 이름, 주석 편집을 지원한다. Windows는 실험 단계이고 읽기 전용이다. Windows에서 열 수 있는 대상은 네이티브 x86, x86-64, ARMNT(Thumb-2), ARM64 PE다. ARM64EC와 ARM64X는 열 수 없다.
 - Node.js 23과 25는 지원하지 않는다. REA 설치 프로그램은 Node.js를 올려 주지 않으므로 업데이트 전에 직접 맞춘다.
 - 실행 파일의 바이트는 바꾸지 않는다. 세션 중 편집은 닫으면 사라진다.
 
 ## 참고 자료 (References)
 
+- REA 6.9.0 릴리스 노트: <https://github.com/morluto/rea/releases/tag/rea-agents-6.9.0>
 - REA 6.8.0 릴리스 노트: <https://github.com/morluto/rea/releases/tag/rea-agents-6.8.0>
 - REA PE 임포트: <https://github.com/morluto/rea/blob/main/docs/pe-imports.md>
 - REA PE TLS, 로드 설정: <https://github.com/morluto/rea/blob/main/docs/pe-load-config.md>

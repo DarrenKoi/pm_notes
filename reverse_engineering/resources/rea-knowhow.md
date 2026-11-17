@@ -21,7 +21,7 @@ note_kind: "사용법"
 
 ## 핵심 개념 (What)
 
-- 확인일은 2026-11-11이다. 최신 공개 릴리스는 [rea-agents 6.8.0][release]이며 공개일은 2026-10-25이다.
+- 확인일은 2026-11-11이다. 당시 최신 공개 릴리스는 [rea-agents 6.8.0][release](2026-10-25)였다. 2026-11-12에 [6.9.0][release-690]이 나왔고, 아래 조사 커밋의 변경은 모두 6.9.0에 들어 있다(2026-11-18 확인). 이 문서에서 "main 기준"이라고 적은 기능은 6.9.0 이상이면 쓸 수 있다.
 - 조사 기준은 main [`e8fc501e06504a4429d44c14ae2e4771ae6ef742`][pin](2026-11-11 06:51:05 UTC)이다. 이 커밋의 [package.json][package]도 `6.8.0`이지만, 공개 태그 뒤의 변경을 포함하므로 버전 문자열만으로 기능을 판별하지 않는다.
 - 최근 구분할 변경은 10월 29일 [.NET single-file 번들 분석][dotnet-change], 10월 31일 [조사 기록 수명 변경][lifecycle-change], 11월 10일 [분석 자원 예산의 복구 설정][budget-change]이다. 아래의 해당 설명은 main 기준이며 공개 6.8.0 패키지의 지원을 보장하지 않는다.
 - 독자는 회사 Windows PC의 pi 또는 Hermes와 사내 OpenAI 호환 LLM을 사용한다고 가정한다. Windows Ghidra는 실험 단계의 읽기 전용 지원이다. 이 문서는 [공식 지원 경계][windows] 안에서 정적 분석을 우선한다.
@@ -213,7 +213,7 @@ coverage 평가기는 Evidence ID와 번들의 무결성을 확인하지만, 추
 
 스냅샷(snapshot)은 대상 바이트, 작업, 인수, 프로바이더, 설정이 맞는 성공 결과를 재사용한다. 질문이나 설정을 바꾸면 이전 결과의 재사용을 기대하지 않는다. Windows에서는 재생 전에 원본 경로를 검사하면서 프로바이더가 시작될 수 있으므로, 스냅샷이 Ghidra 시작 비용을 항상 없앤다고 약속하지 않는다.
 
-10월 31일 이후 main의 `close_binary`는 엔진을 정리하고 같은 MCP 연결의 Evidence와 Unknown 이력을 유지한다. 기록 삭제는 `reset_investigation`이다. 공개 6.8.0과 이 동작을 혼동하지 말고, 새 에이전트 프로세스로 넘길 때는 서버 세대와 무관하게 번들을 저장한다.
+10월 31일 이후 main의 `close_binary`는 엔진을 정리하고 같은 MCP 연결의 Evidence와 Unknown 이력을 유지한다. 기록 삭제는 `reset_investigation`이다. 6.9.0부터는 배포본도 이렇게 동작한다. 6.8.0 이하와 혼동하지 말고, 새 에이전트 프로세스로 넘길 때는 서버 세대와 무관하게 번들을 저장한다.
 
 ```text
 대상: 지금 MCP 연결에 쌓인 C:\re-work\app\App.exe 조사 기록
@@ -272,6 +272,7 @@ coverage 평가기는 Evidence ID와 번들의 무결성을 확인하지만, 추
 - [함수 매칭][matching], [재구현 커버리지][coverage], [CLI 스냅샷][snapshots]
 
 [release]: https://github.com/morluto/rea/releases/tag/rea-agents-6.8.0
+[release-690]: https://github.com/morluto/rea/releases/tag/rea-agents-6.9.0
 [pin]: https://github.com/morluto/rea/commit/e8fc501e06504a4429d44c14ae2e4771ae6ef742
 [package]: https://github.com/morluto/rea/blob/e8fc501e06504a4429d44c14ae2e4771ae6ef742/package.json#L4
 [dotnet-change]: https://github.com/morluto/rea/pull/3787

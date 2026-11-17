@@ -93,7 +93,7 @@ Get-ChildItem -Recurse C:\re-work\recipe-tool\install -Include *.exe,*.dll |
 
 `%ProgramData%`와 `%AppData%`에 프로그램 폴더가 있으면 같이 복사한다. 운영 데이터가 들어 있을 수 있으므로 분석이 끝나면 지운다.
 
-Windows의 Ghidra 연동은 로컬 NTFS 디스크의 파일만 받는다. 공유 폴더에서 바로 분석하지 않는다. 자세한 내용은 [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md)에 있다.
+Windows의 Ghidra 연동은 로컬 NTFS나 ReFS 디스크의 파일만 받는다. 공유 폴더에서 바로 분석하지 않는다. 자세한 내용은 [회사 Windows + pi 환경 설정](./rea-windows-pi-setup.md)에 있다.
 
 ### 2. 런타임을 판별한다
 
@@ -198,7 +198,7 @@ C:\re-work\v1\RecipeTool.exe 와 C:\re-work\v2\RecipeTool.exe 를 비교해라.
 4) 질문과 관련된 함수만 골라 양쪽 analyze_function 결과를 비교해서 실제로 바뀌었는지 확인해라.
 ```
 
-`close_binary`는 세션 기록을 지운다. 첫 번째 대상을 닫기 전에 반드시 Evidence를 저장한다. 함수 매칭 결과는 후보일 뿐이다. 이름이 같다고 코드가 같다는 뜻은 아니고, 대응되지 않은 함수가 추가되거나 삭제되었다는 증거도 아니다. 변경 여부는 고른 함수의 본문을 양쪽에서 비교해서 확정한다.
+6.8.0까지는 `close_binary`가 세션 기록을 지웠다. 6.9.0부터는 같은 연결 안에서는 남지만 에이전트가 다시 시작되면 사라지므로, 첫 번째 대상을 닫기 전에 Evidence를 저장한다. 함수 매칭 결과는 후보일 뿐이다. 이름이 같다고 코드가 같다는 뜻은 아니고, 대응되지 않은 함수가 추가되거나 삭제되었다는 증거도 아니다. 변경 여부는 고른 함수의 본문을 양쪽에서 비교해서 확정한다.
 
 ### 9. 재구현한다면 비교 테스트까지 만든다
 

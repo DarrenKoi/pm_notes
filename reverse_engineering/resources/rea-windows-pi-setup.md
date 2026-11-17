@@ -23,7 +23,7 @@ REA 문서는 macOS와 Linux를 기준으로 쓰인 부분이 많다. Windows에
 
 | 기능 | Windows | 비고 |
 |---|---|---|
-| 네이티브 PE(`.exe`, `.dll`) Ghidra 분석 | 됨, 읽기 전용 | x86, x86-64, ARM64 PE. 26개 읽기 전용 작업 |
+| 네이티브 PE(`.exe`, `.dll`) Ghidra 분석 | 됨, 읽기 전용 | x86, x86-64, ARMNT, ARM64 PE와 DOS MZ, raw NMOS 6502. 27개 읽기 전용 작업(6.9.0) |
 | REA로 Ghidra 함수 이름, 주석 붙이기 | 안 됨 | `annotate_native_function`, `set_address_name`은 Linux, macOS만. Ghidra 화면에서 직접 붙이는 것은 되지만 REA가 그 프로젝트를 읽지 못한다 |
 | ELF, Mach-O를 Ghidra로 분석 | 안 됨 | REA의 Windows Ghidra 연동이 PE와 raw 6502 이미지만 받는다. Ghidra 화면에서 직접 열면 분석된다 |
 | .NET 어셈블리 | 됨 | Ghidra를 쓰지 않는 별도 분석기 |
@@ -35,16 +35,16 @@ REA 문서는 macOS와 Linux를 기준으로 쓰인 부분이 많다. Windows에
 
 사내 도구 분석에서 실제로 아쉬운 것은 함수 이름 붙이기 하나다. 나머지 Windows 미지원 기능은 사내 웹 앱과 Windows 도구 분석에 거의 쓰이지 않는다.
 
-### 분석 대상은 로컬 NTFS 디스크에 둔다
+### 분석 대상은 로컬 NTFS나 ReFS 디스크에 둔다
 
-Windows의 Ghidra 연동은 **고정 로컬 NTFS 볼륨**의 파일만 받는다. 공유 폴더(네트워크 드라이브), USB 드라이브에 있는 파일은 거부된다. 임시 폴더도 로컬 NTFS여야 한다. 분석 전에 대상을 로컬 분석 폴더(예: `C:\re-work\`)로 복사한다. [작업 절차 3단계](./re-process.md#3-대상을-식별한다)의 "원본을 분석용 폴더에 복사한다"를 지키면 자연히 해결된다.
+Windows의 Ghidra 연동은 **고정 로컬 NTFS 또는 ReFS 볼륨**의 파일만 받는다(ReFS는 6.9.0부터). 공유 폴더(네트워크 드라이브), USB 드라이브에 있는 파일은 거부된다. 임시 폴더도 같은 조건이어야 한다. 분석 전에 대상을 로컬 분석 폴더(예: `C:\re-work\`)로 복사한다. [작업 절차 3단계](./re-process.md#3-대상을-식별한다)의 "원본을 분석용 폴더에 복사한다"를 지키면 자연히 해결된다.
 
 ### pi가 REA를 찾는 방식
 
 - `rea setup --client pi`는 사용자 설정 파일 `~/.pi/agent/mcp.json`(Windows에서는 `%USERPROFILE%\.pi\agent\mcp.json`)의 `mcpServers.rea`에 등록한다.
 - 스킬은 `~/.agents/skills` 아래에 설치된다.
 - `PI_CODING_AGENT_DIR`이 설정되어 있으면 그 폴더를 따른다.
-- 프로젝트 폴더의 `.pi/mcp.json`에 같은 이름(`rea`)의 항목이 있으면 사용자 설정을 덮어쓴다. 사용자 등록은 정상인데 특정 프로젝트에서만 REA가 안 보이면 이 파일을 확인한다.
+- 프로젝트 폴더의 `.pi/mcp.json`에 같은 이름(`rea`)의 항목이 있으면 사용자 설정을 덮어쓴다. 사용자 등록은 정상인데 특정 프로젝트에서만 REA가 안 보이면 이 파일을 확인한다. 프로젝트 설정은 pi에서 그 프로젝트를 신뢰(trust)한 뒤에만 읽힌다.
 - `/mcp`를 등록하는 pi 확장(extension)을 쓰면 그 확장이 pi의 기본 MCP 기능을 대신하고 자기 설정 파일을 읽을 수 있다. 등록은 정상인데 어디서도 REA가 안 보이면 이런 확장이 있는지 본다.
 - pi는 `mcp.json`을 엄격한 JSON으로 읽는다. 주석, 끝 쉼표, BOM, 빈 파일은 모두 오류다. 메모장으로 저장하면 BOM이 붙을 수 있으므로 VS Code 같은 편집기로 "UTF-8(BOM 없음)"으로 저장한다.
 
@@ -112,7 +112,7 @@ rea doctor --provider ghidra --json
 rea providers --json
 ```
 
-`rea doctor`가 `runtime_unavailable`이나 native self-test 실패를 보고하면 Ghidra나 Java를 다시 설치해도 해결되지 않는다. 보고된 파일 시스템, 권한(DACL), 임시 폴더 문제를 먼저 확인한다. 대부분 임시 폴더가 로컬 NTFS가 아니거나 쓰기 권한이 없는 경우다.
+`rea doctor`가 `runtime_unavailable`이나 native self-test 실패를 보고하면 Ghidra나 Java를 다시 설치해도 해결되지 않는다. 보고된 파일 시스템, 권한(DACL), 임시 폴더 문제를 먼저 확인한다. 대부분 임시 폴더가 로컬 NTFS나 ReFS가 아니거나 쓰기 권한이 없는 경우다.
 
 ### 3. pi에 등록한다
 
@@ -198,7 +198,7 @@ pi와 다른 점은 아래와 같다.
 - 등록 뒤에는 Claude Code를 다시 시작한다. `claude mcp list`나 세션 안의 `/mcp`에 `rea`가 보이면 연결된 것이다.
 - Ghidra 환경 변수는 pi와 같은 방법으로 `rea` 항목의 `env`에 들어갔는지 확인한다. macOS, Linux에서는 Ghidra의 이름, 주석 붙이기도 쓸 수 있다.
 - Claude Code는 보통 도구 정의를 필요할 때만 불러오므로(tool search) REA의 도구 170여 개가 컨텍스트를 미리 차지하지 않는다. `ANTHROPIC_BASE_URL`로 다른 업체의 호환 엔드포인트를 쓰면 이 기능이 꺼지고 도구 정의 전체가 매 요청에 실린다. 그때는 `rea setup --client claude_code --tool-families <ids>`로 필요한 도구 묶음만 남긴다.
-- 플러그인으로 설치하는 방법도 upstream main 문서에 있다(`/plugin marketplace add morluto/rea`, `/plugin install rea@rea`). setup 등록과 함께 쓰면 `rea` 서버가 둘이 되므로 하나만 쓴다. 플러그인 설치는 `rea doctor`에 보이지 않는다. 6.8.0 태그에는 플러그인 매니페스트가 없어서 배포본에서 되는지는 확인하지 못했다.
+- 6.9.0부터는 Claude Code 플러그인으로도 설치할 수 있다(`/plugin marketplace add morluto/rea`, `/plugin install rea@rea`). setup 등록과 함께 쓰면 `rea` 서버가 둘이 되므로 하나만 쓴다. 플러그인 설치는 `rea doctor`에 보이지 않는다. 6.8.0 이하에는 플러그인 매니페스트가 없다. 6.9.0 태그에서 매니페스트는 확인했지만 회사 PC에서 설치해 보지는 않았다(2026-11-18).
 
 ### 5. 대상을 복사하고 분석한다
 
@@ -225,7 +225,7 @@ REA로는 함수 이름을 붙일 수 없으므로, pi에게 "따라간 함수�
 
 ### 7. 큰 바이너리의 시간 초과를 대비한다
 
-Ghidra의 첫 가져오기는 기본 330초까지 기다린다. 에이전트의 도구 호출 제한이 이보다 짧으면 REA보다 에이전트가 먼저 포기한다. 회사에서 pi로 REA를 쓸 때 지금까지 이 문제는 없었다(2026-10-24 기준). 아주 큰 대상에서 시간 초과가 반복되면 pi의 MCP 설정 문서에서 요청 제한 항목을 찾는다. 그동안에는 CLI로 먼저 분석하고 `--snapshot`으로 결과를 저장해 두는 방법이 있다.
+Ghidra의 첫 가져오기는 기본 330초까지 기다린다. 에이전트의 도구 호출 제한이 이보다 짧으면 REA보다 에이전트가 먼저 포기한다. 회사에서 pi로 REA를 쓸 때 지금까지 이 문제는 없었다(2026-10-24 기준). 아주 큰 대상에서 시간 초과가 반복되면 pi의 `mcp.json`에서 `rea` 항목의 `timeout`(초 단위, 기본 60초, 진행 알림이 오면 다시 센다)을 늘린다. 그동안에는 CLI로 먼저 분석하고 `--snapshot`으로 결과를 저장해 두는 방법이 있다.
 
 ```powershell
 rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C:\re-work\recipe-tool\snapshot.json --json

@@ -58,10 +58,10 @@ rea doctor --provider ghidra --json
 rea doctor --client pi --json
 ```
 
-`healthy`가 `false`면 `GHIDRA_INSTALL_DIR`과 `JAVA_HOME`부터 확인한다. 둘 다 REA를 띄우는 환경(pi의 `mcp.json`에 있는 `rea` 항목의 `env`)에 들어가 있어야 한다. PowerShell에서만 `$env:`로 설정하면 이미 떠 있는 MCP 서버에는 반영되지 않는다. REA는 Ghidra 12.1.x와 JDK 21 이상을 요구한다. 설정을 바꾼 뒤에는 pi에서 `/reload`를 실행한다.
+`healthy`가 `false`면 `GHIDRA_INSTALL_DIR`과 `JAVA_HOME`부터 확인한다. 둘 다 REA를 띄우는 환경(pi의 `mcp.json`에 있는 `rea` 항목의 `env`)에 들어가 있어야 한다. PowerShell에서만 `$env:`로 설정하면 이미 떠 있는 MCP 서버에는 반영되지 않는다. REA는 Ghidra 12.1 이상의 12.x와, 그 Ghidra가 정한 64비트 JDK를 요구한다(12.1.x는 JDK 21 이상, 12.2는 JDK 25 이상). 설정을 바꾼 뒤에는 pi에서 `/reload`를 실행한다.
 
 > [!note] Windows의 제약
-> Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 이름 붙이기(`annotate_native_function`, `set_address_name`)는 Linux와 macOS에서만 되므로, Windows에서는 이름을 분석 기록에 따로 적는다. 분석 대상은 로컬 NTFS 디스크에 두어야 한다.
+> Windows의 Ghidra 지원은 실험 단계(P0)이고 읽기 전용이다. 함수 이름 붙이기(`annotate_native_function`, `set_address_name`)는 Linux와 macOS에서만 되므로, Windows에서는 이름을 분석 기록에 따로 적는다. 분석 대상은 로컬 NTFS나 ReFS 디스크에 두어야 한다.
 
 ### 2단계: 에이전트에게 좋은 질문을 준다
 
@@ -109,7 +109,7 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 
 #### 사내 웹 앱 (Vue, Nuxt, React 프런트엔드)
 
-웹 앱은 Ghidra 없이 끝난다. 코드는 이미 브라우저에 있고, 대부분 소스 맵도 함께 배포된다. 소스 맵을 찾는 순서와 원본을 꺼내는 스크립트는 [소스 맵 찾고 원본 꺼내는 방법](./source-map-discovery.md)에 있다.
+웹 앱은 Ghidra 없이 끝난다. 코드는 이미 브라우저에 있고, 소스 맵이 함께 배포된 경우도 많다. 소스 맵을 찾는 순서와 원본을 꺼내는 스크립트는 [소스 맵 찾고 원본 꺼내는 방법](./source-map-discovery.md)에 있다.
 
 1. 분석 전용 프로필로 Chrome을 원격 디버깅 포트와 함께 띄운다. 디버깅 포트는 반드시 `127.0.0.1`에만 연다.
 
@@ -131,10 +131,10 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 	```
 
 4. 특정 동작의 요청을 보려면 관찰 창을 열고 사람이 버튼을 누른다. `observe_web_session`이 그동안의 탐색과 요청 메타데이터를 기록한다. REA는 연결하기 전에 일어난 네트워크 요청을 기록하지 않는다. 페이지가 처음 로드될 때의 요청이 필요하면 관찰을 시작한 뒤에 테스트 화면을 새로고침한다. 스크립트 목록은 연결 전에 로드된 것도 나온다.
-5. 요청 본문까지 필요하면 DevTools **Network** 탭에서 **Save all as HAR**로 저장하고 `inspect_web_network_capture`로 읽는다.
+5. 요청 본문까지 필요하면 DevTools **Network** 탭에서 **Export HAR (sanitized)**로 저장하고 `inspect_web_network_capture`로 읽는다.
 
-> [!warning] HAR 파일에는 쿠키와 토큰이 들어 있다
-> HAR 파일은 분석이 끝나면 지운다. 이 저장소나 공유 폴더에 올리지 않는다.
+> [!warning] HAR 파일에는 민감정보가 남을 수 있다
+> 기본 메뉴인 Export HAR (sanitized)는 Cookie, Set-Cookie, Authorization 헤더를 빼고 저장한다. URL, 쿼리, 요청 본문에 든 토큰은 그대로 남으므로 저장한 파일을 확인한다. HAR 파일은 분석이 끝나면 지운다. 이 저장소나 공유 폴더에 올리지 않는다.
 
 #### 네이티브 실행 파일 (Ghidra 사용)
 
@@ -161,7 +161,7 @@ REA 결과의 질은 질문의 질을 넘지 못한다. 프롬프트에 네 가�
 
 3. 경로를 따라가면서 함수에 이름을 붙이게 한다(Linux, macOS). 이름은 세션을 닫으면 사라지므로 분석 기록에도 적는다.
 4. 디컴파일 결과가 이상하면 어셈블리를 확인하게 한다. `read_function_instructions`는 디컴파일러를 거치지 않는다.
-5. 끝나기 전에 남길 Evidence를 `export_evidence_bundle`로 파일에 저장한다. 배포본 6.8.0의 `close_binary`는 세션의 Evidence와 미확인 항목 기록을 지운다. Evidence ID만 적어 두면 닫은 뒤에는 원문을 다시 볼 수 없다. main 브랜치에서는 `close_binary`가 기록을 유지하고 `reset_investigation`이 지우도록 바뀌었지만(2026-11-11 확인, 미배포), 새 에이전트 프로세스로 넘어가면 어느 쪽이든 기록이 없으므로 저장 습관은 그대로 둔다.
+5. 끝나기 전에 남길 Evidence를 `export_evidence_bundle`로 파일에 저장한다. 6.9.0부터 `close_binary`는 같은 MCP 연결의 Evidence와 미확인 항목 기록을 남기고, 기록을 지우는 것은 `reset_investigation`이다(6.8.0까지는 닫을 때 지웠다). 그래도 에이전트 프로세스가 바뀌면 기록이 없으므로 저장 습관은 그대로 둔다.
 6. 저장한 뒤 `close_binary`로 세션을 닫는다.
 
 큰 바이너리는 Ghidra 첫 가져오기(import)에 시간이 오래 걸린다. 시간 초과에는 주체가 둘 있으므로, 오류가 어느 쪽에서 났는지 먼저 구분한다.
@@ -222,13 +222,14 @@ REA 결과를 받으면 세 가지를 확인한다.
 | 큰 바이너리가 시간 초과된다 | Ghidra 시작이 330초를 넘었거나, 에이전트의 도구 호출 제한이 먼저 끝났다 | 주체를 구분한 뒤 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 또는 클라이언트 제한을 늘린다 |
 | `analyze_function` 결과에 의사 코드 본문이 없다 | 6.8.0부터 MCP 기본값이 요약이다 | `inspect_analysis_view`로 보관된 기록을 페이지 단위로 읽는다. 작은 함수는 `detail: "complete"` |
 | 함수 하나를 디컴파일하다가 세션이 통째로 닫힌다 | 디컴파일에 제한 시간이 없어서 에이전트의 호출 제한이 먼저 끝났다 | `REA_GHIDRA_DECOMPILE_TIMEOUT_SECONDS`를 MCP 등록 환경에 넣고 재시작 |
-| 세션을 닫았더니 Evidence가 없다 | `close_binary`가 세션 기록을 지운다 | 닫기 전에 `export_evidence_bundle`로 저장 |
+| 세션을 닫았더니 Evidence가 없다 | 6.8.0 이하의 `close_binary`, `reset_investigation`, 에이전트 재시작 중 하나로 기록이 지워졌다 | 닫기 전에 `export_evidence_bundle`로 저장 |
 | 결과가 잘려서 온다 | MCP 응답 크기 제한 | `inspect_analysis_view`로 페이지 단위로 받거나 `export_evidence_bundle`로 파일에 저장 |
 | 붙인 함수 이름이 사라졌다 | Ghidra 세션은 임시 DB를 쓴다 | 이름을 분석 기록에 적어 둔다 |
 
 ## 참고 자료 (References)
 
 - REA README: <https://github.com/morluto/rea>
+- REA 6.9.0 릴리스 노트: <https://github.com/morluto/rea/releases/tag/rea-agents-6.9.0>
 - REA 6.8.0 릴리스 노트: <https://github.com/morluto/rea/releases/tag/rea-agents-6.8.0>
 - REA MCP 계약(`analyze_function` 요약 기본값): <https://github.com/morluto/rea/blob/main/docs/reference/mcp-contracts.md>
 - REA 설치와 Ghidra 설정: <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md>
