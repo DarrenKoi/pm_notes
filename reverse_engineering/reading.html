@@ -914,6 +914,26 @@ e:   c3               ret                      eax 값을 반환
 <td>서랍 번호</td>
 </tr>
 <tr>
+<td>VA (Virtual Address)</td>
+<td>프로그램을 메모리에 올렸을 때의 주소. Ghidra가 보여주는 주소가 이것이다. 64비트 <code>.exe</code>는 보통 <code>0x140000000</code>에서 시작한다(이미지 베이스)</td>
+<td>건물 주소</td>
+</tr>
+<tr>
+<td>RVA (Relative Virtual Address)</td>
+<td>이미지 베이스에서 떨어진 거리. VA = 이미지 베이스 + RVA. 실행할 때마다 시작 주소가 바뀌어도 RVA는 같으므로 기록에는 <code>모듈 + RVA</code>로 적는다</td>
+<td>건물 안 몇 호</td>
+</tr>
+<tr>
+<td>파일 오프셋 (File Offset)</td>
+<td>파일 맨 앞에서 몇 바이트 떨어졌는지. 16진수 편집기에서 보는 위치다. 섹션 정렬 때문에 RVA와 값이 다를 수 있다</td>
+<td>설계도의 몇 쪽</td>
+</tr>
+<tr>
+<td>서수 (Ordinal)</td>
+<td>DLL 함수에 붙인 번호. 이름 없이 번호로만 임포트, 익스포트하는 경우가 있어서 함수 이름이 안 보일 수 있다</td>
+<td>이름 대신 사번</td>
+</tr>
+<tr>
 <td>레지스터 (Register)</td>
 <td>CPU 안의 아주 작은 저장 칸. 계산은 여기서 한다. <code>eax</code>, <code>ecx</code> 같은 이름이 붙어 있다</td>
 <td>작업대 위의 손 닿는 칸</td>
@@ -1057,8 +1077,12 @@ e:   c3               ret                      eax 값을 반환
 <li><strong>목적</strong>: 유지보수, 연동, 재구현, 버전 확인 중 무엇인가.</li>
 <li><strong>허가</strong>: 소유자나 관리자의 동의를 받았는가. 외부 상용 소프트웨어는 라이선스가 리버스 엔지니어링을 금지할 수 있으므로, 사내 제작 도구와 구분한다.</li>
 <li><strong>실행 환경</strong>: 실행해도 되는 환경이 있는가. 장비, 운영 DB, 공유 파일에 쓰는 도구는 운영 환경에서 실행하지 않는다.</li>
+<li><strong>결과물 범위</strong>: 분석 기록과 꺼낸 코드를 누가 볼 수 있고, 언제까지 보관하는가. 끝나면 지울 파일(HAR, 추출한 원본, Evidence 번들)도 함께 정한다.</li>
+<li><strong>도구 라이선스</strong>: 분석에 쓰는 도구를 회사에서 써도 되는가. Ghidra는 Apache-2.0, REA는 MIT 라이선스다. 패킷 캡처 드라이버 Npcap처럼 설치 수와 재배포에 별도 조건이 있는 도구는 따로 확인한다.</li>
 </ul>
-<blockquote class="callout callout-warning"><p class="callout-label">WARNING</p><p>운영 환경에서 실행하지 않는다
+<blockquote class="callout callout-note"><p class="callout-label">NOTE</p><p>외부 소프트웨어와 저작권법 제101조의4
+사내 제작 도구는 소유 부서의 동의로 충분하다. 외부에서 산 소프트웨어는 사정이 다르다. 저작권법 제101조의4(프로그램코드역분석)는 정당한 권한으로 프로그램을 쓰는 사람이, 호환에 필요한 정보를 달리 쉽게 얻을 수 없을 때, 호환에 필요한 부분에 한해서만 허락 없이 역분석할 수 있게 한다. 이렇게 얻은 정보를 호환 외의 목적에 쓰거나 비슷한 프로그램을 만드는 데 쓰면 이 예외에 들지 않는다. 계약서의 역분석 금지 조항과의 관계에는 해석이 갈리므로, 외부 소프트웨어는 분석 전에 법무 부서에 확인한다.</p>
+<p>[!warning] 운영 환경에서 실행하지 않는다
 장비 제어, DB 쓰기, 파일 삭제를 하는 도구는 동적 분석 중에 그 동작을 실제로 한다. 정적 분석으로 무엇을 건드리는지 먼저 확인하고, 테스트 환경이나 격리된 VM에서만 실행한다.</p>
 <p>VM 안에서 실행해도 네트워크가 열려 있으면 운영 DB와 장비에 접속할 수 있다. REA는 네트워크 격리나 샌드박스를 제공하지 않는다. 실행 전에 아래 세 가지를 확인한다.
 - 운영망 접근이 막혀 있다.
@@ -1099,11 +1123,17 @@ e:   c3               ret                      eax 값을 반환
 <p>해시를 기록한다. 나중에 "그 파일이 이 파일인가"를 확인하는 유일한 방법이다.</p>
 <p><code>bash
 shasum -a 256 /absolute/path/to/target.exe</code></p>
+<p>회사 Windows PC의 PowerShell에서는 이렇게 쓴다.</p>
+<p><code>powershell
+Get-FileHash C:\re-work\target.exe -Algorithm SHA256</code></p>
 </li>
 <li>
 <p>파일 형식을 확인한다. 확장자를 믿지 않는다.</p>
 <p><code>bash
 file /absolute/path/to/target.exe</code></p>
+<p>Windows에는 <code>file</code> 명령이 없다. 첫 2바이트가 <code>4D 5A</code>(<code>MZ</code>)면 PE 형식이다. 런타임까지 알고 싶으면 REA의 <code>inspect_artifact</code>나 Detect It Easy를 쓴다.</p>
+<p><code>powershell
+Format-Hex C:\re-work\target.exe -Count 16</code></p>
 </li>
 <li>
 <p>버전 정보, 빌드 날짜, 함께 배포된 파일(설정 파일, DLL, <code>.asar</code>, <code>.map</code>)을 목록으로 남긴다.</p>
@@ -1271,6 +1301,54 @@ file /absolute/path/to/target.exe</code></p>
 </tbody>
 </table></div>
 <p>Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). Ghidra GitHub README는 설치 안내가 두 절로 나뉜다. <strong>Install</strong> 절(배포본을 받아 쓰기)은 JDK와 배포 zip만 요구하고, <strong>Build</strong> 절(소스에서 직접 만들기)이 JDK, Gradle, Python3, 컴파일러를 요구한다. Gradle을 함께 설치하라는 안내는 Build 절을 본 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.</p>
+<p><strong>Ghidra 받기와 실행 파일.</strong> <a href="https://github.com/NationalSecurityAgency/ghidra/releases">Ghidra 릴리스 페이지</a>의 <strong>Assets</strong>에서 <code>ghidra_&lt;버전&gt;_PUBLIC_&lt;날짜&gt;.zip</code>을 받는다. 같은 곳에 있는 "Source code" 두 파일은 소스 빌드용이라 이 단계에 맞지 않는다. 기존 설치 폴더 위에 덮어 풀지 않고 새 폴더(예: <code>C:\tools\ghidra_12.1.4_PUBLIC</code>)에 푼다. 그 폴더가 <code>GHIDRA_INSTALL_DIR</code>이다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>파일</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ghidraRun.bat</code></td>
+<td>Ghidra 화면(GUI)을 연다. 사람이 직접 보거나 이름을 붙일 때</td>
+</tr>
+<tr>
+<td><code>support\analyzeHeadless.bat</code></td>
+<td>화면 없이(Headless) 분석한다. REA가 내부에서 이 방식으로 Ghidra를 부른다</td>
+</tr>
+</tbody>
+</table></div>
+<p>REA는 세션마다 임시 프로젝트를 만들고 기본으로 <code>-readOnly</code>, <code>-deleteProject</code>를 붙인다. 그래서 REA로 분석해도 사람이 GUI에서 만든 Ghidra 프로젝트는 바뀌지 않고, 세션이 끝나면 임시 프로젝트는 지워진다.</p>
+<p><strong>에이전트 설치.</strong> 이 문서는 에이전트가 이미 설치되어 있다고 가정한다. 새 PC라면 아래 공식 방법으로 설치한다(2026-11-18 확인). 회사 PC는 사내 설치 금지 목록부터 확인한다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>에이전트</th>
+<th>Windows 설치</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pi</td>
+<td><code>powershell -c "irm https://pi.dev/install.ps1 \| iex"</code> 또는 <code>npm install -g --ignore-scripts @earendil-works/pi-coding-agent</code></td>
+<td>Node.js 22.19 이상</td>
+</tr>
+<tr>
+<td>Hermes</td>
+<td><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code></td>
+<td>네이티브 설치는 <code>%LOCALAPPDATA%\hermes</code>, WSL2에 설치하면 <code>~/.hermes</code>. 둘의 설정은 따로다</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td><code>winget install Anthropic.ClaudeCode</code> 또는 <code>irm https://claude.ai/install.ps1 \| iex</code></td>
+<td>winget 설치는 자동 업데이트가 없다. <code>winget upgrade Anthropic.ClaudeCode</code>로 올린다</td>
+</tr>
+</tbody>
+</table></div>
+<p>설치한 뒤에는 이 문서 순서대로 진행한다. <code>rea setup --dry-run</code>으로 계획 확인, <code>--yes</code>로 등록, 에이전트 재시작, MCP 연결 확인(<code>binary_session</code> 호출), 허가받은 작은 대상으로 첫 분석이다. WSL2 안의 에이전트에 등록하려면 REA도 WSL2 안에서 설치하고 setup을 실행한다.</p>
 <h3 id="resources-rea-windows-pi-setup--rea를-설치하는-두-가지-방법">REA를 설치하는 두 가지 방법</h3>
 <p>REA는 npm 패키지 <code>rea-agents</code>로 배포된다. 받는 방법이 둘이고, 어느 쪽으로 setup을 돌렸는지에 따라 에이전트 등록이 가리키는 위치가 달라진다.</p>
 <div class="tbl"><table>
@@ -1427,6 +1505,10 @@ Get-FileHash C:\re-work\recipe-tool\RecipeTool.exe -Algorithm SHA256
 <li>REA 클라이언트 설정(Pi 절): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#pi">https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#pi</a></li>
 <li>REA 클라이언트 설정(Hermes 절): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes">https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes</a></li>
 <li>REA 클라이언트 설정(Claude Code 절): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code">https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code</a></li>
+<li>Ghidra 설치와 빌드(README의 Install, Build 절): <a href="https://github.com/NationalSecurityAgency/ghidra/blob/Ghidra_12.2_build/README.md">https://github.com/NationalSecurityAgency/ghidra/blob/Ghidra_12.2_build/README.md</a></li>
+<li>pi 설치: <a href="https://github.com/earendil-works/pi#getting-started">https://github.com/earendil-works/pi#getting-started</a></li>
+<li>Hermes 설치: <a href="https://github.com/NousResearch/hermes-agent#readme">https://github.com/NousResearch/hermes-agent#readme</a></li>
+<li>Claude Code Windows 설치: <a href="https://code.claude.com/docs/en/setup">https://code.claude.com/docs/en/setup</a></li>
 <li>REA 설치 문서(Claude Code 등록 위치와 프로필): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile">https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile</a></li>
 <li>REA 설치 방법(전역 설치와 패키지 러너): <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#package-runners-and-global-installation">https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#package-runners-and-global-installation</a></li>
 <li>REA 지원 에이전트 목록: <a href="https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents">https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents</a></li>
@@ -1865,7 +1947,7 @@ C:\re-work\tool\tool.exe 를 ghidra 프로바이더로 열고, binary_overview�
 <p>Developer resources에 실패(404, 403)로 나오면 맵을 가리키는 표시는 있는데 파일이 없거나 막힌 것이다. 아무것도 없으면 표시가 없는 것이므로 2단계로 간다.</p>
 <h3 id="resources-source-map-discovery--2단계-번들-주소를-모으고-표시를-직접-확인한다">2단계: 번들 주소를 모으고 표시를 직접 확인한다</h3>
 <p><strong>Network</strong> 탭에서 필터를 <strong>JS</strong>로 두고 새로고침해서 번들 주소를 모은다. <code>app.4f2a1c.js</code>, <code>chunk-vendors.js</code>, <code>index-BkX9.js</code>처럼 해시가 붙은 파일이 대상이다. 화면을 옮길 때 새로 로드되는 청크(Chunk)도 있으므로 분석할 화면을 한 번씩 다 연다.</p>
-<p>번들마다 끝부분과 응답 헤더를 본다. Windows PowerShell에서는 <code>curl</code> 대신 <code>curl.exe</code>로 쓴다(<code>curl</code>은 <code>Invoke-WebRequest</code>의 별칭이다).</p>
+<p>번들마다 끝부분과 응답 헤더를 본다. Windows PowerShell 5.1에서는 <code>curl</code> 대신 <code>curl.exe</code>로 쓴다(5.1에서 <code>curl</code>은 <code>Invoke-WebRequest</code>의 별칭이다). PowerShell 7에는 이 별칭이 없어서 <code>curl</code>이 그대로 <code>curl.exe</code>를 부른다. DevTools Network 탭의 요청을 오른쪽 클릭해 <strong>Copy as cURL (cmd)</strong>나 <strong>Copy as PowerShell</strong>로 복사하면 셸에 맞는 명령을 바로 얻는다.</p>
 <pre><code class="language-bash">URL=http://internal-app.example/assets/index-BkX9.js
 
 # 파일 끝의 주석
@@ -3219,6 +3301,10 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 <li>목적: 유지보수 / 연동 / 재구현 / 버전 확인</li>
 <li>허가받은 사람과 날짜:</li>
 <li>실행 허용 여부와 환경: 정적 분석만 / 테스트 환경에서 실행 가능</li>
+<li>출처: 사내 제작 / 외부 구매(라이선스의 역분석 조항, 법무 확인 날짜:)</li>
+<li>결과물 열람 범위와 보관 기한:</li>
+<li>끝나면 지울 파일(HAR, 추출한 원본, Evidence 번들):</li>
+<li>사용한 도구와 버전(REA, Ghidra, 기타):</li>
 </ul>
 <h2 id="resources-templates-investigation-log--2-질문">2. 질문</h2>
 <div class="tbl"><table>
@@ -3294,12 +3380,14 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 <li>설정 파일, 리소스:</li>
 </ul>
 <h2 id="resources-templates-investigation-log--5-정적-분석-경로">5. 정적 분석 경로</h2>
+<p>주소는 <code>모듈 + RVA</code>(예: <code>RecipeTool.exe+0x12340</code>)로 적는다. Ghidra 화면의 주소(VA)는 이미지 베이스에 따라 바뀔 수 있다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
-<th>주소 또는 모듈</th>
-<th>붙인 이름</th>
+<th>모듈 + RVA</th>
+<th>제안 이름</th>
 <th>하는 일(한 문장)</th>
+<th>이름의 근거</th>
 <th>Evidence ID</th>
 <th>등급</th>
 </tr>
@@ -3309,6 +3397,7 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 <td></td>
 <td></td>
 <td></td>
+<td>참조 문자열, 임포트, 호출 관계</td>
 <td></td>
 <td>관찰 / 추론</td>
 </tr>
@@ -4534,6 +4623,11 @@ RETURN_VALUE
 <td>주소</td>
 <td>프로그램 안의 위치 번호. FUN_140012340의 숫자가 함수의 주소다</td>
 <td>서랍 번호</td>
+</tr>
+<tr>
+<td>VA, RVA, 파일 오프셋</td>
+<td>VA는 메모리에 올린 주소(Ghidra 화면). RVA는 시작 주소에서 떨어진 거리. 파일 오프셋은 파일 안 위치</td>
+<td>건물 주소, 몇 호, 설계도 몇 쪽</td>
 </tr>
 <tr>
 <td>레지스터</td>

@@ -70,6 +70,25 @@ REA는 아래 프로그램을 설치하지 않는다. 미리 설치되어 있어
 
 Gradle도 JDK 위에서 돈다. 그래서 Gradle만 있고 JDK가 없으면 동작하지 않지만, JDK만 있고 Gradle이 없어도 Ghidra는 문제없이 돈다. 공식 배포 zip의 Ghidra에는 Windows용 디컴파일러까지 이미 만들어져 들어 있다. REA 저장소 문서도 일반 설치와 npm 패키지는 Gradle 빌드가 필요 없다고 적고 있다(2026-11-16 확인). Ghidra GitHub README는 설치 안내가 두 절로 나뉜다. **Install** 절(배포본을 받아 쓰기)은 JDK와 배포 zip만 요구하고, **Build** 절(소스에서 직접 만들기)이 JDK, Gradle, Python3, 컴파일러를 요구한다. Gradle을 함께 설치하라는 안내는 Build 절을 본 것으로 보인다. 설치 금지 목록에 걸리면 빼도 된다.
 
+**Ghidra 받기와 실행 파일.** [Ghidra 릴리스 페이지](https://github.com/NationalSecurityAgency/ghidra/releases)의 **Assets**에서 `ghidra_<버전>_PUBLIC_<날짜>.zip`을 받는다. 같은 곳에 있는 "Source code" 두 파일은 소스 빌드용이라 이 단계에 맞지 않는다. 기존 설치 폴더 위에 덮어 풀지 않고 새 폴더(예: `C:\tools\ghidra_12.1.4_PUBLIC`)에 푼다. 그 폴더가 `GHIDRA_INSTALL_DIR`이다.
+
+| 파일 | 하는 일 |
+|---|---|
+| `ghidraRun.bat` | Ghidra 화면(GUI)을 연다. 사람이 직접 보거나 이름을 붙일 때 |
+| `support\analyzeHeadless.bat` | 화면 없이(Headless) 분석한다. REA가 내부에서 이 방식으로 Ghidra를 부른다 |
+
+REA는 세션마다 임시 프로젝트를 만들고 기본으로 `-readOnly`, `-deleteProject`를 붙인다. 그래서 REA로 분석해도 사람이 GUI에서 만든 Ghidra 프로젝트는 바뀌지 않고, 세션이 끝나면 임시 프로젝트는 지워진다.
+
+**에이전트 설치.** 이 문서는 에이전트가 이미 설치되어 있다고 가정한다. 새 PC라면 아래 공식 방법으로 설치한다(2026-11-18 확인). 회사 PC는 사내 설치 금지 목록부터 확인한다.
+
+| 에이전트 | Windows 설치 | 비고 |
+|---|---|---|
+| pi | `powershell -c "irm https://pi.dev/install.ps1 \| iex"` 또는 `npm install -g --ignore-scripts @earendil-works/pi-coding-agent` | Node.js 22.19 이상 |
+| Hermes | `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` | 네이티브 설치는 `%LOCALAPPDATA%\hermes`, WSL2에 설치하면 `~/.hermes`. 둘의 설정은 따로다 |
+| Claude Code | `winget install Anthropic.ClaudeCode` 또는 `irm https://claude.ai/install.ps1 \| iex` | winget 설치는 자동 업데이트가 없다. `winget upgrade Anthropic.ClaudeCode`로 올린다 |
+
+설치한 뒤에는 이 문서 순서대로 진행한다. `rea setup --dry-run`으로 계획 확인, `--yes`로 등록, 에이전트 재시작, MCP 연결 확인(`binary_session` 호출), 허가받은 작은 대상으로 첫 분석이다. WSL2 안의 에이전트에 등록하려면 REA도 WSL2 안에서 설치하고 setup을 실행한다.
+
 ### REA를 설치하는 두 가지 방법
 
 REA는 npm 패키지 `rea-agents`로 배포된다. 받는 방법이 둘이고, 어느 쪽으로 setup을 돌렸는지에 따라 에이전트 등록이 가리키는 위치가 달라진다.
@@ -246,6 +265,10 @@ rea analyze C:\re-work\recipe-tool\RecipeTool.exe --provider ghidra --snapshot C
 - REA 클라이언트 설정(Pi 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#pi>
 - REA 클라이언트 설정(Hermes 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#hermes>
 - REA 클라이언트 설정(Claude Code 절): <https://github.com/morluto/rea/blob/main/docs/getting-started/client-configuration.md#claude-code>
+- Ghidra 설치와 빌드(README의 Install, Build 절): <https://github.com/NationalSecurityAgency/ghidra/blob/Ghidra_12.2_build/README.md>
+- pi 설치: <https://github.com/earendil-works/pi#getting-started>
+- Hermes 설치: <https://github.com/NousResearch/hermes-agent#readme>
+- Claude Code Windows 설치: <https://code.claude.com/docs/en/setup>
 - REA 설치 문서(Claude Code 등록 위치와 프로필): <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#limit-rea-to-one-project-or-agent-profile>
 - REA 설치 방법(전역 설치와 패키지 러너): <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#package-runners-and-global-installation>
 - REA 지원 에이전트 목록: <https://github.com/morluto/rea/blob/main/docs/getting-started/installation.md#supported-agents>

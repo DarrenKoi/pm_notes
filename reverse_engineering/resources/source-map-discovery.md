@@ -94,7 +94,7 @@ Developer resources에 실패(404, 403)로 나오면 맵을 가리키는 표시�
 
 **Network** 탭에서 필터를 **JS**로 두고 새로고침해서 번들 주소를 모은다. `app.4f2a1c.js`, `chunk-vendors.js`, `index-BkX9.js`처럼 해시가 붙은 파일이 대상이다. 화면을 옮길 때 새로 로드되는 청크(Chunk)도 있으므로 분석할 화면을 한 번씩 다 연다.
 
-번들마다 끝부분과 응답 헤더를 본다. Windows PowerShell에서는 `curl` 대신 `curl.exe`로 쓴다(`curl`은 `Invoke-WebRequest`의 별칭이다).
+번들마다 끝부분과 응답 헤더를 본다. Windows PowerShell 5.1에서는 `curl` 대신 `curl.exe`로 쓴다(5.1에서 `curl`은 `Invoke-WebRequest`의 별칭이다). PowerShell 7에는 이 별칭이 없어서 `curl`이 그대로 `curl.exe`를 부른다. DevTools Network 탭의 요청을 오른쪽 클릭해 **Copy as cURL (cmd)**나 **Copy as PowerShell**로 복사하면 셸에 맞는 명령을 바로 얻는다.
 
 ```bash
 URL=http://internal-app.example/assets/index-BkX9.js
