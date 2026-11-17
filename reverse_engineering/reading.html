@@ -170,7 +170,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/re-rea-intro.pptx">re-rea-intro.pptx</a>: 발표용 PowerPoint. 슬라이드마다 발표자 노트가 있다. GitHub 화면에서 <strong>Download raw file</strong>로 내려받는다.</li>
 <li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/re-rea-intro.bento.html">re-rea-intro.bento.html</a>: 같은 내용의 <a href="https://bento.page">Bento</a> HTML. 하얀 배경에 순서대로 나타나는 효과와 슬라이드 사이 morph만 넣고, 반복되는 움직임은 넣지 않았다. <strong>Download raw file</strong>로 내려받아 브라우저로 열고 오른쪽 아래 <strong>Slideshow</strong>로 발표한다. 글꼴은 PC의 시스템 글꼴을 쓴다.</li>
 <li><a href="#re-rea-intro">발표 원고</a>: 슬라이드 내용과 발표자 노트를 글로 옮긴 문서.</li>
-<li>세 파일은 <code>resources/slides/build_team_intro.py</code>가 함께 만든다. 내용을 고칠 때는 이 스크립트의 <code>SLIDES</code>를 고치고 다시 실행한다.</li>
+<li>세 파일은 <code>resources/slides/build_rea_intro.py</code>가 함께 만든다. 내용을 고칠 때는 이 스크립트의 <code>SLIDES</code>를 고치고 다시 실행한다.</li>
 </ul>
 <p>deck의 내용은 이 폴더 문서의 요약이다. 문서를 고치면 <code>SLIDES</code>에서 해당 슬라이드를 찾아 함께 고친다.</p>
 <h2 id="readme--휴대폰-태블릿에서-읽기">휴대폰, 태블릿에서 읽기</h2>
@@ -1029,7 +1029,7 @@ e:   c3               ret                      eax 값을 반환
 <ul>
 <li>문서를 읽다가 모르는 말이 나오면 브라우저의 찾기(Ctrl+F)로 이 문서에서 찾는다.</li>
 <li>입문 deck에도 같은 내용이 부록의 "용어 사전" 슬라이드로 들어 있다. 발표 중 질문이 나오면 그 장을 펼친다.</li>
-<li>새 문서에 어려운 말을 쓰면 이 사전에 한 줄을 추가한다. deck의 용어 사전 슬라이드는 <code>slides/build_team_intro.py</code>의 부록에서 함께 고친다.</li>
+<li>새 문서에 어려운 말을 쓰면 이 사전에 한 줄을 추가한다. deck의 용어 사전 슬라이드는 <code>slides/build_rea_intro.py</code>의 부록에서 함께 고친다.</li>
 </ul>
 <h2 id="resources-glossary--참고-자료-references">참고 자료 (References)</h2>
 <ul>
@@ -3472,15 +3472,15 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 <td>이 문서. 슬라이드 내용과 발표자 노트를 글로 옮긴 원고</td>
 </tr>
 <tr>
-<td><code>resources/slides/build_team_intro.py</code></td>
+<td><code>resources/slides/build_rea_intro.py</code></td>
 <td>세 파일을 만드는 스크립트. 내용은 이 스크립트의 <code>SLIDES</code>에 있다</td>
 </tr>
 </tbody>
 </table></div>
 <p>구성은 챕터 4개이고 발표 시간은 질문을 포함해 60분이다. 챕터 1 리버스 엔지니어링이란(3~12장), 챕터 2 작업 절차(13~15장), 챕터 3 Ghidra와 REA(16~19장), 챕터 4 회사 PC에서 써 보기(20~27장), 마무리(28~29장). 30~37장은 발표 시간 밖의 부록(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)이고, 38~42장은 용어 사전(glossary.md와 같은 내용)이다. 질문이 나오면 펼치거나 따로 읽게 나눠 준다. 슬라이드의 도식은 이 원고에서 목록과 표로 옮겨 적었다.</p>
 <h2 id="re-rea-intro--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
-<p>pptx, HTML deck, 이 문서는 직접 고치지 않는다. <code>build_team_intro.py</code>의 <code>SLIDES</code>를 고친 뒤 저장소 루트에서 다시 만든다.</p>
-<pre><code class="language-bash">python reverse_engineering/resources/slides/build_team_intro.py
+<p>pptx, HTML deck, 이 문서는 직접 고치지 않는다. <code>build_rea_intro.py</code>의 <code>SLIDES</code>를 고친 뒤 저장소 루트에서 다시 만든다.</p>
+<pre><code class="language-bash">python reverse_engineering/resources/slides/build_rea_intro.py
 </code></pre>
 <p>footer의 로고, 슬로건, 부서 이름은 자리 표시다. 회사 PC에서 스크립트 위쪽의 <code>LOGO</code>, <code>SLOGAN</code>, <code>DEPT</code> 값을 바꾼 뒤 다시 만든다. 슬라이드의 사실은 이 폴더의 문서에 근거가 있어야 한다. 문서를 고치면 해당 슬라이드도 함께 고친다.</p>
 <p>아래부터 슬라이드 원고다.</p>
