@@ -1,7 +1,7 @@
 """RE, REA 팀 입문 deck 생성기.
 
 실행: python reverse_engineering/resources/slides/build_team_intro.py
-SLIDES 하나에서 re-rea-team-intro.pptx, .bento.html, .md 를 함께 만든다.
+SLIDES 하나에서 re-rea-intro.pptx, .bento.html, .md 를 함께 만든다.
 세 파일을 직접 고치지 말고 SLIDES 를 고친 뒤 다시 실행한다.
 내용의 근거는 이 폴더(reverse_engineering/)의 .md 문서다.
 """
@@ -22,7 +22,7 @@ from team_intro_bento import build_bento
 
 HERE = Path(__file__).parent
 OUT = HERE.parent.parent  # reverse_engineering/: the decks live at the folder top
-NAME = "re-rea-team-intro"
+NAME = "re-rea-intro"
 
 # 회사 정보는 저장소에 넣지 않는다. 회사 PC에서 이 세 값을 바꾼 뒤 다시 생성한다.
 LOGO, SLOGAN, DEPT = "⟨로고⟩", "⟨슬로건⟩", "⟨부서⟩"

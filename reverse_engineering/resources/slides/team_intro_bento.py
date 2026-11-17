@@ -1,6 +1,6 @@
 """RE, REA 팀 입문 deck 의 Bento(HTML) 출력.
 
-build_team_intro.py 가 부른다. 같은 SLIDES 를 받아 re-rea-team-intro.bento.html 의 #bento-doc JSON 을 바꿔 쓴다.
+build_team_intro.py 가 부른다. 같은 SLIDES 를 받아 re-rea-intro.bento.html 의 #bento-doc JSON 을 바꿔 쓴다.
 파일의 나머지(Bento 앱 런타임)는 건드리지 않는다. 형식: https://bento.page/agents.md
 kind 이름 = 이 파일의 함수 이름. 좌표는 1280x720 px, 좌우 여백 96.
 """
