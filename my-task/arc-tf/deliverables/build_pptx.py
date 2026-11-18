@@ -511,10 +511,10 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
 def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집)을 합침
     s = slide("핵심 개발 방향",
               "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
-    flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
-             ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
-             ("③ Workflow 생성, 실행", "RAG로 Workflow 초안, 엔지니어 승인\n승인 버전만 Agent가 실행"),
-             ("④ 준수 확인, 수정", "Workflow를 지키는지 확인\n틀리면 엔지니어가 개입, 수정")],
+    flow(s, [("① 녹화 추출, 라벨링", "- 녹화 비디오에서 작업 내용 추출\n- 현업 엔지니어가 라벨링"),
+             ("② RAG 저장", "- Recipe 셋업 지식 DB\n- 절차, 노하우, 결정 지점 저장"),
+             ("③ Workflow 생성, 실행", "- RAG로 Workflow 초안 생성\n- 엔지니어 승인 버전만 Agent가 실행"),
+             ("④ 준수 확인, 수정", "- Workflow를 지키는지 확인\n- 틀리면 엔지니어가 개입, 수정")],
          COL_Y, h=Inches(1.3), fills=[(SILVER, INK)] * 4, head_size=16, body_size=12)
     fgap = Inches(0.3)
     fw = (W - 2 * M - fgap * 3) / 4
