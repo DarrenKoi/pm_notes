@@ -35,7 +35,7 @@ Computer Use 기반 RAG Workflow 순환 플랫폼입니다.
 |---|---|
 | ① 녹화 추출, 라벨링 | 녹화 비디오에서 작업 내용 추출, 현업 엔지니어가 라벨링 |
 | ② RAG 저장 | Recipe 셋업 지식 DB에 절차, 노하우, 결정 지점 저장 |
-| ③ Workflow 생성, 실행 | RAG에서 셋업 Workflow 생성, Agent가 Computer Use로 실행 |
+| ③ Workflow 생성, 실행 | RAG로 Workflow 초안 생성, 승인 버전만 Agent가 Computer Use로 실행 |
 | ④ 준수 확인, 수정 | Workflow 준수 확인, 틀리면 엔지니어가 개입, 수정. 수정 내용은 ②에 다시 저장해 다음 Workflow에 반영 |
 
 - **공통 플랫폼 팀 역할**: 녹화 내용 추출, RAG DB, Workflow 생성, Computer Use 실행 엔진 개발, 최적화 소형 모델 운영, 기술 부채 해소
