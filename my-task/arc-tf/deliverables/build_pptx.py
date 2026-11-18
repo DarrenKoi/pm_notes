@@ -243,10 +243,10 @@ def s_cover(title="Auto Recipe Creation TF 구성 기획안",
 
 def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
-              "합류 첫 달에 **기준선 측정**, **2027-07**에 2028~2029 목표 수치 확정")
+              "장비군별 **기준선 측정** 후 **2027-07**에 2028~2029 목표 수치 확정")
     metrics = [("효과", "측정 지표", "현재", "목표", "타겟 시점"),
                ("지식 자산화", "부분 작업 리스트로 정리한 Recipe 셋업을 Agent가 그대로 수행해 성공한 건수", "0건", "<X>건", "2027 연말"),
-               ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "<확인>", "1차 장비군 90% 이상", "2029"),
+               ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "<확인>", "1차 장비군 90% 이상 (지향점)", "2029"),
                ("Agent 개입 범위", "Recipe당 셋업 단계 중 ARC Agent가 진행한 비율", "0%", "기준선 대비 <N>배", "2028"),
                ("셋업 시간 단축", "Recipe 1건 셋업 경과 시간", "대상 구간 실측 예정", "<확인>% 단축", "2028")]
     table(s, metrics, M, COL_Y, [Inches(2.3), Inches(5.3), Inches(1.9), Inches(1.8), Emu(W - 2 * M - Inches(11.3))],
@@ -318,14 +318,14 @@ def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     s = slide("별첨: LLM 모델만으로 안 되는 이유",
               "모델은 \"화면을 보고 다음 할 일을 판단\"하는 한 부분, 나머지는 **플랫폼**이 채워야 함")
     rows = [("항목", "모델만 쓸 때의 한계", "플랫폼이 채우는 것"),
-            ("좌표 정밀도", "같은 화면도 물을 때마다 위치가 다름", "CV 정밀 좌표, OCR 결과 확인"),
+            ("좌표 정밀도", "같은 화면도 질의마다 위치가 달라짐", "CV 정밀 좌표, OCR 결과 확인"),
             ("장비 지식(노하우)", "사내 계측 화면, 셋업 절차, 판정 기준을 모름", "녹화에서 뽑고 엔지니어가 승인한 절차"),
-            ("성공/실패 여부", "조작 결과를 스스로 확인 못 함, 실패를 놓치면 오측정", "규칙 확인, 결과 검증, 불확실하면 멈춤"),
-            ("진행 상태", "수십 번의 조작 중 어디까지 했는지 놓침", "절차 상태, 체크포인트, 실행 로그"),
+            ("성공/실패 여부", "조작 결과 자체 확인 불가, 실패 누락 시 오측정", "규칙 확인, 결과 검증, 불확실하면 멈춤"),
+            ("진행 상태", "수십 번 조작 중 진행 위치 누락", "절차 상태, 체크포인트, 실행 로그"),
             ("화면 조작", "장비에 조작 API가 없음", "화면 캡처, 입력 실행기, 즉시 중단")]
     table(s, rows, M, COL_Y, [Inches(2.4), Inches(5.5), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.55),
           bold_col0=True)
-    note_line(s, Inches(5.65), "모델 교체", "최신 VLM은 __공통 평가 세트__로 재서 판단 부분만 교체. 오른쪽 칸은 모델이 좋아져도 그대로 필요", size=13)
+    note_line(s, Inches(5.65), "모델 교체", "최신 VLM은 __공통 평가 세트__로 측정 후 판단 부분만 교체, 모델 교체 후에도 규칙 확인과 결과 검증 유지", size=13)
 
 def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
     s = slide("업무 전략 2: 엔지니어 PC 설치",
@@ -374,7 +374,7 @@ def s_team():  # TF 구성 (조직도)
     text(s, tx, COL_Y, top_w, th, "기반기술센터 AI/DT TF 담당", size=16, bold=True, color=INK,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     box(s, tx, champ_y, top_w, th, fill=INK)
-    text(s, tx, champ_y, top_w, th, "ARC TF Champion: XXX TL", size=16, bold=True, color=WHITE,
+    text(s, tx, champ_y, top_w, th, "ARC TF Champion: <직급 확인>", size=16, bold=True, color=WHITE,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", INK, [
@@ -385,7 +385,7 @@ def s_team():  # TF 구성 (조직도)
                   ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 Agent 현장 배치")),
                   ("Thickness\n(1차)", goal("Film 10 layer 이하 의뢰건 90% 이상 자동화")),
                   ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체로 ARC 확장")),
-                  ("다른 MI 장비군\n(2차)", [ "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
+                  ("다른 MI 장비군\n(2차)", ["상반기 인터뷰, Workflow 조사", "6월 베타 확인 후 7월 본격 참여"])])]
     gg = Inches(0.4)
     gw = (W - 2 * M - gg) / 2
     bus_y, gy = champ_y + th + Inches(0.14), champ_y + th + Inches(0.28)
@@ -412,20 +412,20 @@ def s_team():  # TF 구성 (조직도)
                  align=PP_ALIGN.CENTER)
             text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(6.3), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장(XXX 담당님) 보고**, **분기 부문장님 보고**", size=13)
+    note_line(s, Inches(6.3), "운영", "**매주 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장 보고**, **분기 부문장님 보고**", size=13)
 
 def s_kanban():  # 일정 칸반
     s = slide("2027 일정",
               "상반기 **1차 장비군 목표**와 **플랫폼 베타**, 하반기 **영역 확장**")
     periods = ["2026-12", "2027 1분기", "2027 2분기", "2027 3분기", "2027 4분기"]
     lanes = [("1차 장비군\n목표", [["TF 승인", "녹화 DB 접근 확인"],
-                             ["CD-SEM Align Fail 시험", "Thickness 대상 Recipe", "Inspection DRB 시험"],
-                             ["장비군별 자동화 운영", "★ 목표 달성 확인"],
+                             ["CD-SEM Align Fail 평가", "THK Recipe 자동화\n선정 및 평가", "Inspection DRB 평가"],
+                             ["Pilot 운영", "★ 목표 달성 확인"],
                              ["자동 운영 유지", "요소 목록 반영", "2028~2029 수치 확정"], ["자동 운영 유지", "2차에 노하우 적용"]]),
-             ("공통\n플랫폼", [["최소 녹화기 준비"], ["플랫폼 설계", "모델 서빙, 평가 세트", "주간 미팅 시작"],
-                              ["녹화 추출, 라벨링", "RAG 구축, 베타 배포"], ["Workflow 생성, 실행", "준수 확인, 수정", "수정 내용 RAG 보완"],
+             ("공통\n플랫폼", [["엔지니어 Recipe 작업\n녹화 DB 구축"], ["플랫폼 설계", "모델 서빙, 평가 세트", "Weekly 미팅 운영"],
+                              ["녹화 추출, 라벨링", "RAG 구축, 베타 배포"], ["Workflow 초안, 승인", "입력 없는 제안 검증", "수정 내용 RAG 보완"],
                               ["2차 장비군 RAG 반영", "★ 목표 달성 확인"]]),
-             ("영역 확장\n(2차)", [["2차 명단 지정"], ["인터뷰, Workflow 조사"], ["요구사항 보완"], ["본격 참여, 주간 미팅 합류"], ["화면 영역 지도"]])]
+             ("영역 확장\n(2차)", [["2차 명단 지정"], ["인터뷰, Workflow 조사"], ["요구사항 보완"], ["Weekly 미팅 합류"], ["workflow 구현 및\n자동화 테스트"]])]
     lw = Inches(1.45)
     colw = (W - 2 * M - lw) / len(periods)
     hy = COL_Y - Inches(0.05)
@@ -433,8 +433,11 @@ def s_kanban():  # 일정 칸반
         x = M + lw + j * colw
         box(s, x + Inches(0.03), hy, colw - Inches(0.06), Inches(0.38), fill=SILVER)
         text(s, x, hy, colw, Inches(0.38), p, size=13, bold=True, color=INK, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-    card_h, card_g = Inches(0.33), Inches(0.05)
-    lane_hs = [Inches(1.3), Inches(1.3), Inches(0.5)]
+    card_h, card_g = Inches(0.29), Inches(0.04)
+    pitch = card_h + card_g
+    rows_of = lambda it: it.count("\n") + 1  # 두 줄 카드는 두 칸을 차지
+    # 레인 높이는 가장 긴 열의 줄 수에 맞춘다
+    lane_hs = [Inches(0.12) + max(sum(map(rows_of, items)) for items in cols_) * pitch for _, cols_ in lanes]
     y = hy + Inches(0.45)
     for li, ((name, cols_), lh) in enumerate(zip(lanes, lane_hs)):
         box(s, M, y, W - 2 * M, lh, fill=LANE[li])
@@ -442,12 +445,14 @@ def s_kanban():  # 일정 칸반
              anchor=MSO_ANCHOR.MIDDLE, spacing=1.0, gap=0)
         for j, items in enumerate(cols_):
             x = M + lw + j * colw + Inches(0.07)
-            for k, it in enumerate(items):
-                cy = y + Inches(0.08) + k * (card_h + card_g)
+            cy = y + Inches(0.08)
+            for it in items:
+                ch = rows_of(it) * pitch - card_g
                 gate = it.startswith("★")
-                box(s, x, cy, colw - Inches(0.14), card_h, fill=ORANGE if gate else WHITE, line=None if gate else LINE)
-                text(s, x + Inches(0.1), cy, colw - Inches(0.3), card_h, it, size=12, bold=gate,
-                     color=WHITE if gate else INK, anchor=MSO_ANCHOR.MIDDLE)
+                box(s, x, cy, colw - Inches(0.14), ch, fill=ORANGE if gate else WHITE, line=None if gate else LINE)
+                text(s, x + Inches(0.1), cy, colw - Inches(0.3), ch, it.split("\n"), size=12, bold=gate,
+                     color=WHITE if gate else INK, anchor=MSO_ANCHOR.MIDDLE, spacing=1.0, gap=0)
+                cy += ch + card_g
         y += lh + Inches(0.06)
     text(s, M, y + Inches(0.04), W - 2 * M, Inches(0.85),
          [[("6월 목표  ", {"bold": True, "color": BLUE})] + runs_of("장비군별 목표 달성, 공통 플랫폼 베타 배포 (1차 장비군 PC에서 무장애 운영)"),
@@ -465,6 +470,7 @@ def s_safety():  # 안전과 리스크
                 "**장비군마다 다른 화면과 절차**: 공통 부분을 찾기 어려울 수 있음"],
             "대응", [
                 "위험 조작, 저장 전 __엔지니어 승인__, 즉시 중단 수단, 자동 전환은 장비별 승인",
+                "1차 자동 운영은 __장비군별 승인 범위__ 안에서만, 삭제와 모드 변경은 계속 금지",
                 "화면, 절차가 바뀌면 이전 검증 결과를 쓰지 않고 __재검증__",
                 "필요한 접속 경로를 __사전 확인__, 불가하면 가능한 경로 안에서 범위 조정 **<확인>**",
                 "공통 엔진과 장비별 절차를 분리, __1차 3개 장비군으로 먼저 다지고__ 베타 뒤 확장"],
@@ -477,7 +483,7 @@ def s_decision():  # 결정 요청
                 "**2027-01~12 ARC TF 운영 승인** (1차, 2차 명단 함께 지정)",
                 "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 1~2명",
                 "**개발 인력 4명 지정**: 백엔드 2, 프론트엔드 2",
-                "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, __7월부터 본격 참여__"],
+                "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, __6월 베타 확인 후 7월 본격 참여__"],
             "필요 자원", [
                 "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
                 "2027-01 전: **RCS 녹화 스토리지 접근** 여부 확인, 영상 적재를 위한 **별도 스토리지 DB** 확보"],
@@ -503,12 +509,12 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
 
 
-def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집, 엔지니어 PC 설치)을 합침
+def s_platform(merged=False, install=True):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집, 엔지니어 PC 설치)을 합침
     s = slide("핵심 개발 방향",
               "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
     flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
              ("② RAG 저장", "Recipe 셋업 지식 DB\n(절차, 노하우, 결정 지점)"),
-             ("③ Workflow 생성, 실행", "RAG에서 셋업 Workflow 생성\nAgent가 Computer Use로 실행"),
+             ("③ Workflow 생성, 실행", "RAG로 Workflow 초안, 엔지니어 승인\n승인 버전만 Agent가 실행"),
              ("④ 준수 확인, 수정", "Workflow를 지키는지 확인\n틀리면 엔지니어가 개입, 수정")],
          COL_Y, h=Inches(1.3), fills=[(SILVER, INK)] * 4, head_size=16, body_size=12)
     fgap = Inches(0.3)
@@ -519,14 +525,14 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
     arrow(s, c4, ry, c2, ry, color=ORANGE, head=False)
     arrow(s, c2, ry, c2, fb + Inches(0.03), color=ORANGE)
     text(s, M, COL_Y + Inches(1.54), W - 2 * M, Inches(0.36),
-         [[("순환  ", {"bold": True})] + runs_of("④의 엔지니어 수정 내용은 __②RAG에 다시 저장__, 다음 Workflow에 반영")], size=14, color=BLUE,
+         [[("순환  ", {"bold": True})] + runs_of("④의 엔지니어 수정 내용은 __검토, 승인 후 새 버전으로 ②RAG에 저장__, 다음 Workflow에 반영")], size=14, color=BLUE,
          align=PP_ALIGN.CENTER)
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
     cy, chh = Inches(3.95), Inches(2.0)
     column(s, M, cy, cw, chh, "공통 플랫폼 팀 역할", [
                "녹화 내용 추출, **RAG DB**, Workflow 생성",
-               "**Computer Use** 실행 엔진 (VLM, PyAutoGUI, Win32)",
+               "**Computer Use** 실행 엔진 (PoC의 VLM, PyAutoGUI, Win32 조합을 공통화)",
                "준수 확인 (__생성형 AI + Rule, CV, ML/DL__), 즉시 중단"]
            + (["**최적화 소형 모델** 운영, PoC 코드 __기술 부채 해소__"] if merged else []), BLUE, size=13)
     column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어 역할", [
@@ -534,8 +540,8 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"]
            + (["장비군별 도구로 **외부 Recipe 파일 편집** (공통 플랫폼 범위 밖)"] if merged else []), BLUE, size=13)
-    note_line(s, Inches(6.1), "플랫폼의 역할", "2028 보조 (반복 입력 대행)  →  2029 자율 (Agent 셋업 진행)로 __점진적 발전__", size=13)
-    if merged:
+    note_line(s, Inches(6.1), "플랫폼의 역할", "2027 제안 (입력 없는 Shadow, 1차 승인 조작만 자동)  →  2028 보조 (반복 입력 대행)  →  2029 자율로 __점진적 발전__", size=13)
+    if merged and install:  # team deck은 업무 전략 2에서 다룸
         note_line(s, Inches(6.42), "설치 방식", "별도 운영 PC 대신 **엔지니어 PC에 설치**, 엔지니어가 원할 때 실행하고 즉시 확인, 중단 (__Human on Command__)", size=13)
 
 
@@ -562,17 +568,17 @@ def s_offline():  # Offline 파이프라인 (team)
 def s_online():  # Online 실행 루프와 3단 분리 (team)
     s = slide("Online 실행",
               "LLM은 **제안만**, 서버가 **규칙으로 다시 확인**, 실행은 **조작 단위 1개씩**")
-    flow(s, [("관찰", "화면, 장비 확인"), ("상태 인식", "현재 단계"), ("검색, 판단", "호환 시연 3건\nLLM 제안"),
+    flow(s, [("관찰", "화면, 장비 확인"), ("상태 인식", "현재 단계"), ("검색, 판단", "호환 시연 최대 3건\n없으면 검토 요청"),
              ("규칙 확인", "권한, 분기, 인자"), ("실행", "조작 단위 1개"), ("검증", "사후조건\n체크포인트")],
          COL_Y, fills=[(MIST, INK)] * 3 + [(INK, WHITE), (MIST, INK), (MIST, INK)])
     rows = [("역할", "하는 일", "하지 않는 일"),
             ("판단 (LLM)", "다음 분기, 조작 단위, 근거 제안", "직접 조작, 사전조건 충족 선언"),
-            ("규칙 확인 (서버)", "권한, 허용 분기, 인자, 값과 단위, 절차 버전 재확인. 거부 시 실행 안 함", "판단"),
-            ("실행 (조작 단위)", "지정된 조작 1개 실행 후 화면 재관찰", "임의 메뉴 탐색, 추가 수정")]
+            ("규칙 확인 (서버)", "권한, 허용 분기, 인자, 값과 단위, 절차 버전 재확인, 규칙 위반 시 실행 차단", "판단"),
+            ("실행 (PC)", "입력 직전 대상 창, 화면 최신 여부, 세션 잠김, 승인 유효기간 재검사 후 조작 1개 실행", "임의 메뉴 탐색, 추가 수정")]
     table(s, rows, M, Inches(3.45), [Inches(2.6), Inches(6.0), Emu(W - 2 * M - Inches(8.6))], size=13, row_h=Inches(0.5),
           bold_col0=True)
-    note_line(s, Inches(5.65), "중단", "모름, 불일치, 시간 초과 → 멈추고 엔지니어 검토. 통신이 끊기면 재시도보다 __실제 결과 조회__ 먼저", size=13)
-    note_line(s, Inches(6.1), "입력", "승인 절차서는 신뢰 저장소에서만 읽음. 화면 글자, 검색 문서는 **데이터로만** 취급", size=13)
+    note_line(s, Inches(5.65), "중단", "모름, 불일치, 시간 초과 → 멈추고 엔지니어 검토 / 통신 단절 시 재시도보다 __실제 결과 조회__ 먼저", size=13)
+    note_line(s, Inches(6.1), "입력", "승인 절차서는 신뢰 저장소에서 ID, 버전으로만 조회 / 화면 글자, 검색 문서는 **데이터로만** 취급", size=13)
 
 
 def s_gates():  # 안전 관문 (team)
@@ -580,8 +586,8 @@ def s_gates():  # 안전 관문 (team)
               "**실행 전, 사본 저장, 운영 적용**을 나눠 확인")
     rows = [("관문", "시점", "확인할 것"),
             ("G1", "실행 전", "장비, 세션, 권한, 버전 확인 / 원본 백업 / 변경 대상과 범위 확정"),
-            ("G2", "작업용 사본 수정, 저장", "허용 필드, 값, 단위 확인 / 범위 밖 변경 차단 / 저장 후 다시 읽어 차이 확인"),
-            ("G3", "운영 적용", "담당 엔지니어가 백업, 차이, 검증 증거를 보고 별도 승인")]
+            ("G2", "작업용 사본 수정, 저장", "허용 필드, 값, 단위 확인 / 범위 밖 변경 차단 / 저장 직전 담당 엔지니어 승인 / 저장 후 다시 읽어 차이 확인"),
+            ("G3", "운영 적용", "담당 엔지니어가 백업, 차이, 검증 증거를 보고 별도 작업으로 승인")]
     table(s, rows, M, COL_Y, [Inches(1.3), Inches(3.0), Emu(W - 2 * M - Inches(4.3))], size=15, row_h=Inches(0.6),
           bold_col0=True)
     two_col(s, "즉시 중단", [
@@ -597,13 +603,13 @@ def s_gates():  # 안전 관문 (team)
 
 def s_eval():  # 평가 지표 (team)
     s = slide("평가 방법",
-              "**미사용 시연**으로 판단을 먼저 평가, 수치 목표는 **실측 후 합의**")
+              "**미사용 시연**으로 판단을 먼저 평가, 관문 수치는 **시범 실측 후 2027-03 말 합의**")
     rows = [("지표", "정의", "쓰는 관문"),
-            ("단계 추출 F1", "담당 엔지니어 정답 대비 단계 정밀도, 재현율", "2027-12"),
+            ("단계 추출 F1", "담당 엔지니어 정답 대비 단계 정밀도와 재현율의 조화평균", "2027-12"),
             ("상태, 분기 정확도", "맞힌 상태, 분기 / 평가한 상태, 분기 (따로 집계)", "2027-12, 2028 진입"),
             ("미승인 행동 제안률", "미승인 행동 제안 / 전체 제안", "2028 진입"),
             ("안전 중단률, 자동 결정률", "모르는 상황 중 안전 중단 / 전체 중 자동 결정", "2028, 2029"),
-            ("검증된 작업 성공률", "사후조건과 정확한 차이 통과 / 시도 작업", "2028 보조"),
+            ("검증된 작업 성공률", "사후조건과 정확한 차이 통과 / 시도 작업 (감독하 실장비)", "2028 보조"),
             ("소요 시간, 사람 투입", "관찰부터 검증까지 p50, p95 / 검토 시간, 개입 횟수", "2028, 2029")]
     table(s, rows, M, COL_Y, [Inches(3.2), Inches(6.4), Emu(W - 2 * M - Inches(9.6))], size=13, row_h=Inches(0.48),
           bold_col0=True, shade=lambda r: r[2].startswith("2027"))
@@ -613,18 +619,18 @@ def s_eval():  # 평가 지표 (team)
 
 def s_stack():  # 구현 형태와 기술 스택 (team)
     s = slide("구현 형태",
-              "**엔지니어 PC 설치형 에이전트** + **서버 웹앱**, 양쪽 Python")
+              "**엔지니어 PC 설치형 에이전트** + **서버 웹앱**, 양쪽 Python (설계안, 실측 후 확정)")
     rows = [("구성 요소", "위치", "언어, 프레임워크"),
             ("화면 캡처, 변화 감지", "엔지니어 PC", "Python + WGC 창 캡처"),
-            ("입력 실행, 즉시 중단", "엔지니어 PC", "Python + SendInput, pywin32"),
+            ("입력 실행, 즉시 중단", "엔지니어 PC", "Python + ctypes SendInput, pywin32 창 관리"),
             ("상태, 제어권 인계 화면", "엔지니어 PC", "트레이 아이콘 + localhost 페이지"),
-            ("판단, 규칙 확인", "기존 서버", "Python + 기존 Flask"),
+            ("VLM 판단, 규칙 확인", "기존 서버", "Python + 기존 Flask"),
             ("승인 화면, 절차서 검토", "서버 + 브라우저", "Vue 3 + Flask API"),
             ("배포", "엔지니어 PC", "PyInstaller + 회사 서명 + 사내 배포")]
     table(s, rows, M, COL_Y, [Inches(3.6), Inches(2.6), Emu(W - 2 * M - Inches(6.2))], size=13,
           row_h=Inches(0.42), bold_col0=True, shade=lambda r: r[1] == "엔지니어 PC")
     note_line(s, Inches(5.4), "제어권 인계", "알림 → 엔지니어가 넘겨줌 → 대상 창 확인 → 짧은 입력 → 결과 확인 → 반환. __엔지니어 조작 시 즉시 중단__", size=13)
-    note_line(s, Inches(5.85), "보류", "C#/.NET은 Python 캡처가 PC 자원 한도를 못 지킬 때의 대안. Electron, Tauri는 쓰지 않음", size=13)
+    note_line(s, Inches(5.85), "보류", "C#/.NET은 Python 캡처의 PC 자원 한도 초과 시 대안, Electron 및 Tauri 미채택", size=13)
     note_line(s, Inches(6.3), "실측", "입력 중단 신뢰성(선발대 장비군), PC 자원, 회사 보안 프로그램 아래 설치와 롤백", size=13)
 
 
@@ -649,7 +655,7 @@ def s_exec_roadmap():
 
 BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_effects,
         s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
-TEAM = BOSS[:3] + [s_assets, s_where] + BOSS[3:4] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
+TEAM = BOSS[:3] + [s_assets, s_where, lambda: s_platform(merged=True, install=False), s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
         s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
