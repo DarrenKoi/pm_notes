@@ -81,7 +81,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>장비 레시피(Recipe) 셋업을 컴퓨터 사용(Computer-use) Agent로 자동화하려고, MI 현업 엔지니어와 공통 플랫폼 팀을 묶어 운영하는 TF의 작업공간. 본인이 리드한다.</p>
 </blockquote>
 <h2 id="readme--한-문단-요약">한 문단 요약</h2>
-<p>2026년 현재 CD(Align Fail 자동 대응 Agent), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(ARC용 DB 구축, DRB 기반 ARC 생성)이 각자 ARC를 추진 중이고, 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 공통 과제로 남았다. PoC(Align Fail 자동 대응)에서 Agent가 Recipe를 다루는 장비군 공통 방식 두 가지(VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성)를 확보했다. 동시에 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 두 역할의 유기적인 협업이 필요하고, 조작, 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 공통 플랫폼으로 풀고, ARC를 위한 효율적인 작업 방법(자동화 방법, 사내 DB 테이블 등)은 Weekly 미팅에서 공유해야 한다는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 1차 장비군 CD-SEM, Thickness, Inspection 위주로 장비군별 목표와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 배포 확인 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
+<p>2026년 현재 CD(Align Fail 자동 대응 Agent), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(ARC용 DB 구축, DRB 기반 ARC 생성)이 각자 ARC를 추진 중이고, 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조가 공통 과제로 남았다. PoC(Align Fail 자동 대응)에서 Agent가 Recipe를 다루는 장비군 공통 방식 두 가지(VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성)를 확보했다. 동시에 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 두 역할의 유기적인 협업이 필요하고, 조작, 모델 최적화와 운영, 녹화 DB 추출은 공통 플랫폼으로 풀고, ARC를 위한 효율적인 작업 방법(자동화 방법, 사내 DB 테이블 등)은 Weekly 미팅에서 공유해야 한다는 것도 배웠다. LLM 모델만으로는 정밀 좌표, 장비 절차, 반복 가능한 판정, 화면 조작을 해결하지 못하므로 그 바깥을 채우는 <strong>공통 플랫폼</strong>이 필요하다. 그래서 <strong>공통 플랫폼 팀</strong>이 엔진을 만들고 <strong>장비군 담당</strong>(MI 엔지니어)이 절차와 판정 기준을 맡는 TF를 꾸린다. 2027 상반기에는 1차 장비군 CD-SEM, Thickness, Inspection 위주로 장비군별 목표와 공통 플랫폼 베타까지 가고, 같은 기간 다른 MI 장비군은 장비 특징, 작업 절차, 필요한 기능을 파악한다. 6월 베타 배포 확인 뒤 하반기에 본격 참여한다. 엔지니어는 합류 시점마다 교육을 받으며 참여한다.</p>
 <h2 id="readme--문서">문서</h2>
 <div class="tbl"><table>
 <thead>
@@ -412,7 +412,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </blockquote>
 <h2 id="01-tf-proposal--요약">요약</h2>
 <p><strong>2026 현황</strong>: CD(Align Fail 자동 대응 Agent, Offline 테스트 중), Thickness(의뢰부터 Recipe 생성까지 ARC Pipeline), Inspection(의뢰서 DB화, Recipe RAG, NAND 1개 Tech에서 DRB 기반 ARC 생성)이 각자 추진 중. 공통 과제는 생성형 AI 모델에게 Recipe 작업 방식을 학습시키는 방법의 구체화와, Rule 기반 자동화, 이미지 처리(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 구조</p>
-<p><strong>출발점</strong>: PoC(Align Fail 자동 대응)로 Agent가 Recipe를 다루는 두 가지 공통 방식 확보 (VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성). 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 <strong>두 역할의 유기적인 협업</strong>이 필요하고, 조작, 모델 최적화와 운영, 녹화 DB 추출, 기술 부채 해소는 공통 플랫폼으로 풀 장비군 공통 과제. ARC를 위한 효율적인 작업 방법(자동화 방법, 사내 DB 테이블 등)은 Weekly 미팅에서 공유</p>
+<p><strong>출발점</strong>: PoC(Align Fail 자동 대응)로 Agent가 Recipe를 다루는 두 가지 공통 방식 확보 (VLM, PyAutoGUI, Win32를 조합한 Computer Use, 장비 밖에서 Recipe 파일을 편집하는 생성). 현업 MI 엔지니어의 노하우를 AI가 쓰는 구조로 개발자가 구현하는 <strong>두 역할의 유기적인 협업</strong>이 필요하고, 조작, 모델 최적화와 운영, 녹화 DB 추출은 공통 플랫폼으로 풀 장비군 공통 과제. ARC를 위한 효율적인 작업 방법(자동화 방법, 사내 DB 테이블 등)은 Weekly 미팅에서 공유</p>
 <p><strong>결론</strong>: MI 장비 전반으로 ARC를 넓히려면 장비마다 한 사람이 처음부터 다 만드는 방식으로는 안 되고 <strong>공통 플랫폼</strong>을 만들어 개발(플랫폼 팀)과 장비 지식(장비군 담당)을 나눠 맡아야 함</p>
 <p><strong>추진 방식</strong></p>
 <div class="tbl"><table>
@@ -449,7 +449,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li>ARC TF 구성 승인: 조직과 명단은 처음부터 전체로 승인, 초기 개발은 1차 장비군(CD-SEM, Thickness, Inspection) 위주로. 2027-01부터 운영</li>
 <li>1차(선발대) CD-SEM, Thickness, Inspection 담당 엔지니어 장비군마다 2명, 모두 6명 (참여 시간은 탄력적으로 운영)</li>
 <li>2차 장비군(다른 MI 장비군) 담당 엔지니어 지정: 장비군마다 2명. 상반기는 인터뷰, Recipe Workflow 조사로 준비(작업 녹화 포함), 6월 베타 배포 확인 뒤 본격 참여</li>
-<li>개발 인력 3명 지정: 백엔드 2, 프론트엔드 1 (ARC TF Champion 포함, 기반기술전략 AX 파트, 2027-01 합류). 1차 장비군 담당 6명과 함께 공통 플랫폼 팀 1차 9명</li>
+<li>개발 인력 3명 지정: 백엔드 2, 프론트엔드 1 (기반기술전략 AX 파트, 2027-01 합류). 1차 장비군 담당 6명과 함께 공통 플랫폼 팀 1차 9명</li>
 </ul>
 <p><strong>확인 필요 사항 (R&amp;D MI H/W 담당자)</strong></p>
 <ul>
@@ -615,11 +615,6 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>AI 모델 최적화와 운영 유지</td>
 <td>사내 VLM, OCR 서빙, 튜닝, 장애 대응, 버전 관리, 새 모델 벤치마크와 교체</td>
 <td>모델 서빙과 평가를 플랫폼 팀이 한 번 만듦. 녹화본 평가 세트를 공통으로 두고 모델 교체는 측정으로 결정</td>
-</tr>
-<tr>
-<td>기술 부채 해소</td>
-<td>Vibe Coding 중 핵심 기술 사항이 정리되지 않음</td>
-<td>플랫폼 팀이 PoC 코드의 핵심 기술 사항을 정리하고 재사용, 고쳐 쓰기, 버림으로 구분 (2027-06 요소 목록)</td>
 </tr>
 </tbody>
 </table></div>
@@ -838,7 +833,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </table></div>
 <ul>
 <li>2028~2029 목표 수치는 기준선 측정 후 <strong>2027-07</strong>에 확정해 보고. 2차 장비군 목표는 합류 후 확정</li>
-<li><strong>기대 효과</strong>: Computer Use 고도화를 통해 공정 장비까지 확장할 수 있는 구조로 진화 가능</li>
+<li><strong>기대 효과</strong>: Computer Use 고도화를 통해 공정 장비 또는 SmartFactory 운영까지 확장할 수 있는 구조로 진화 가능</li>
 </ul>
 <h3 id="01-tf-proposal--효과-지표">효과 지표</h3>
 <div class="tbl"><table>
@@ -961,7 +956,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tbody>
 <tr>
 <td>① 녹화 추출, 라벨링</td>
-<td>녹화 비디오에서 작업 내용을 추출하고, 현업 엔지니어가 라벨링</td>
+<td>녹화 DB에서 작업 내용을 추출하고, 현업 엔지니어가 라벨링</td>
 <td>추출은 플랫폼, 라벨링은 현업 엔지니어</td>
 </tr>
 <tr>
@@ -1050,7 +1045,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <li><strong>인프라(GPU, VLM 서빙)</strong>: 필요 시점에 합류. 장비 벤더는 필요할 때 자문</li>
 </ul>
 <p><strong>개발 인력 배분 (개발 3명: ARC TF Champion 포함, 1차 장비군 담당 엔지니어 개발 참여)</strong></p>
-<p>개발 3명(백엔드 2, 프론트엔드 1, 기반기술전략 AX 파트)은 TF 구성 승인에 포함된 인원이고, ARC TF Champion이 백엔드 2명 가운데 1명입니다. 부족한 개발 인력은 1차 장비군 담당 엔지니어가 채웁니다. 장비군 공통 과제(조작, 모델 운영, 녹화 DB 추출, 기술 부채 해소)를 나눠 맡을 개발 인력이 필요합니다.</p>
+<p>개발 3명(백엔드 2, 프론트엔드 1, 기반기술전략 AX 파트)은 TF 구성 승인에 포함된 인원이고, ARC TF Champion이 백엔드 2명 가운데 1명입니다. 부족한 개발 인력은 1차 장비군 담당 엔지니어가 채웁니다. 장비군 공통 과제(조작, 모델 운영, 녹화 DB 추출)를 나눠 맡을 개발 인력이 필요합니다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -1348,7 +1343,7 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </tr>
 <tr>
 <td>4</td>
-<td>공통 플랫폼 팀 개발 인력 3명 지정 (백엔드 2, 프론트엔드 1, ARC TF Champion 포함, 기반기술전략 AX 파트. 2027-01~12, 개인 과제와 겸직. 1차 장비군 담당 6명과 함께 1차 9명. 교육은 ARC TF Champion과 플랫폼 팀이 담당)</td>
+<td>공통 플랫폼 팀 개발 인력 3명 지정 (백엔드 2, 프론트엔드 1, 기반기술전략 AX 파트. 2027-01~12, 개인 과제와 겸직. 1차 장비군 담당 6명과 함께 1차 9명. 교육은 ARC TF Champion과 플랫폼 팀이 담당)</td>
 <td>2026-12</td>
 </tr>
 </tbody>
@@ -2219,10 +2214,6 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>녹화 DB 추출</td>
 <td>H/W 담당자와 접근 경로를 확정하고, 녹화분 수집을 플랫폼 기능으로 만든다. 작업 내용 추출과 라벨링은 장비군 담당이 맡는다</td>
-</tr>
-<tr>
-<td>기술 부채 해소</td>
-<td>Vibe Coding으로 원리 확인 없이 진행한 사항이 대부분이다. 플랫폼 팀이 원리를 확인하고 재사용, 고쳐 쓰기, 버림으로 정리한다</td>
 </tr>
 </tbody>
 </table></div>
@@ -3665,7 +3656,7 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 <tbody>
 <tr>
 <td>① 녹화 추출, 라벨링</td>
-<td>녹화 비디오에서 작업 내용 추출, 현업 엔지니어가 라벨링</td>
+<td>녹화 DB에서 작업 내용 추출, 현업 엔지니어가 라벨링</td>
 </tr>
 <tr>
 <td>② RAG 저장</td>
@@ -3760,7 +3751,7 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 </tbody>
 </table></div>
 <ul>
-<li>기대 효과: Computer Use 고도화를 통해 공정 장비까지 확장할 수 있는 구조로 진화 가능</li>
+<li>기대 효과: Computer Use 고도화를 통해 공정 장비 또는 SmartFactory 운영까지 확장할 수 있는 구조로 진화 가능</li>
 <li>측정: ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)</li>
 </ul>
 <h2 id="08-exec-summary--요청-사항">요청 사항</h2>

@@ -320,7 +320,7 @@ def s_assets():  # 업무 전략 1: Agent의 Recipe 작업 방식과 공통 과�
                "엔지니어의 **Recipe 작업 화면을 추출**해 Agent가 활용할 수 있는 __지식으로 변환__",
                "장비군별 개별 진행 시 __같은 사이클 반복__ → **공통 플랫폼 필요**",
                "지식을 Agent가 실행할 수 있도록 **Workflow로 만드는 작업**",
-               "**기술 부채 해소**: Vibe Coding 중 __핵심 기술 사항__ 정리",
+               "**기술 부채 해소**: Vibe Coding 중 핵심 기술 사항을 정리하는 __문서 작업__ 필요",
                "**Agent의 마우스, 키보드 조작**, 최적화 소형 모델 운영"], BLUE, size=13)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
@@ -497,7 +497,7 @@ def s_decision():  # 결정 필요 사항
     two_col(s, "12월 결정 필요 사항: TF 구성 승인", [
                 "**2027-01~12 ARC TF 운영 승인** (1차, 2차 명단 함께 지정)",
                 "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 2명 (6명)",
-                "**개발 인력 3명 지정**: 백엔드 2 (ARC TF Champion 포함), 프론트엔드 1. 기반기술전략 AX 파트",
+                "**개발 인력 3명 지정**: 백엔드 2, 프론트엔드 1. 기반기술전략 AX 파트",
                 "**2차 다른 MI 장비군 담당 지정**: 장비군마다 2명, __6월 베타 확인 후 7월 본격 참여__"],
             "필요 자원", [
                 "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
@@ -526,10 +526,10 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
 
 
-def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집)을 합침
+def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 외부 파일 편집)을 합침
     s = slide("핵심 개발 방향",
               "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
-    flow(s, [("① 녹화 추출, 라벨링", "- 녹화 비디오에서 작업 내용 추출\n- 현업 엔지니어가 라벨링"),
+    flow(s, [("① 녹화 추출, 라벨링", "- 녹화 DB에서 작업 내용 추출\n- 현업 엔지니어가 라벨링"),
              ("② RAG 저장", "- Recipe 셋업 지식 DB\n- 절차, 노하우, 결정 지점 저장"),
              ("③ Workflow 생성, 실행", "- RAG로 Workflow 초안 생성\n- 승인 버전만 Agent가 실행"),
              ("④ 준수 확인, 수정", "- Workflow를 지키는지 확인\n- 틀리면 엔지니어가 개입, 수정")],
@@ -664,7 +664,7 @@ def s_exec_roadmap():
             ("2029", "자율: Agent가 셋업 진행", "1차 장비군 ARC 적용 비율 90% 이상")]
     table(s, rows, M, Inches(3.72), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.45),
           bold_col0=True, border=True, col0_color=INK)
-    note_line(s, Inches(6.2), "기대 효과", "**Computer Use 고도화**를 통해 __공정 장비까지 확장__할 수 있는 구조로 진화 가능", size=13)
+    note_line(s, Inches(6.2), "기대 효과", "**Computer Use 고도화**를 통해 __공정 장비 또는 SmartFactory 운영까지 확장__할 수 있는 구조로 진화 가능", size=13)
     note_line(s, Inches(6.55), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
