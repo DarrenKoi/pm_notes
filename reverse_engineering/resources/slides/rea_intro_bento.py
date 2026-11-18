@@ -380,10 +380,7 @@ def build_doc(slides, title):
             b.text(X + 22, 152, W - 36, 52, s["msg"], 20, weight=700, valign="middle", lh=1.25, id="msg", role="subtitle")
             b.text(1024, 676, 160, 24, "{{page}} / {{pages}}", 14, MUTE, align="right", id="pg")
             y, bottom = 222, 652
-            if s.get("foot"):
-                bottom -= 76
-                b.text(X, bottom + 10, W, 66, s["foot"], 15, MUTE, valign="middle")
-            elif s.get("banner"):
+            if s.get("banner"):  # foot(하단 설명 문구)은 Bento 에 넣지 않는다. pptx 와 md 에만 남는다
                 bottom -= 60
                 b.banner(bottom + 14, s["banner"])
             globals()[s["kind"]](b, y, bottom - y, s)
