@@ -212,7 +212,8 @@ def note_line(s, y, label, body, size=14):
     text(s, M, y, W - 2 * M, Inches(0.4), [[(label + "  ", {"bold": True, "color": BLUE})] + runs_of(body)], size=size)
 
 
-def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, shade=None):
+def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, shade=None, border=False, col0_color=None):
+    """border=True 는 표 둘레에 검정 바깥선. col0_color 는 첫 칸 글자색, 이때 <확인> 자리만 주황(칸 전체 아님)."""
     t = s.shapes.add_table(len(rows), len(rows[0]), x, y, sum(widths, Inches(0)), row_h * len(rows)).table
     for j, wd in enumerate(widths):
         t.columns[j].width = wd
@@ -225,12 +226,20 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
             c.margin_left = c.margin_right = Inches(0.12)
             tf = c.text_frame
             tf.word_wrap = True
+            if border:
+                c.vertical_anchor = MSO_ANCHOR.MIDDLE
             tf.paragraphs[0].text = ""
-            r = tf.paragraphs[0].add_run()
-            r.text = val
-            r.font.name, r.font.size = FONT, Pt(size)
-            r.font.bold = i == 0 or (bold_col0 and j == 0) or hl
-            r.font.color.rgb = TBD if (i and "<" in val) else INK
+            for part in (re.split(r"(<[^>]+>)", val) if col0_color else [val]):
+                if not part:
+                    continue
+                r = tf.paragraphs[0].add_run()
+                r.text = part
+                r.font.name, r.font.size = FONT, Pt(size)
+                r.font.bold = i == 0 or (bold_col0 and j == 0) or hl or bool(col0_color and "<" in part)
+                r.font.color.rgb = TBD if (i and "<" in part) else (col0_color if (col0_color and i and j == 0) else INK)
+    if border:
+        o = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, x, y, sum(widths, Inches(0)), row_h * len(rows))
+        o.fill.background(); o.line.color.rgb = INK; o.line.width = Pt(1.25); o.shadow.inherit = False
     return t
 
 
@@ -633,20 +642,19 @@ def s_stack():  # 구현 형태와 기술 스택 (team)
 # ---------- 최고 임원용 ----------
 def s_exec_roadmap():
     s = slide("개발 로드맵",
-              "2027 **1차 장비군 목표와 플랫폼 베타**부터, 2029 **AI 셋업 진행**까지")
+              "2027 **지식 자산화**, 2028 **보조**, 2029 **자율**로 단계별 확대")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
-             ("2028", "반복 입력 대행"), ("2029", "1차 장비군\nAI가 셋업 진행")],
+             ("2028 보조", "반복 입력 대행"), ("2029 자율", "Agent가\n셋업 진행")],
          COL_Y, h=Inches(1.5), fills=[(SILVER, INK), (SILVER, INK), (SILVER, INK), (ORANGE, WHITE)],
          head_size=20, body_size=15)
-    rows = [("시기", "목표"),
-            ("2027 상반기", "1차 3개 장비군 목표 달성, 공통 플랫폼 베타, 기준선 측정"),
-            ("2027 하반기", "2차 장비군 합류, 단위 작업 Agent 수행 성공 비율 <X>%"),
-            ("2028", "1차 장비군 Agent 개입 범위 기준선 대비 <N>배, 셋업 시간 단축"),
-            ("2029", "1차 장비군 의뢰 Recipe ARC 적용 비율 90% 이상")]
-    table(s, rows, M, Inches(3.8), [Inches(3.0), Emu(W - 2 * M - Inches(3.0))], size=15, row_h=Inches(0.42),
-          bold_col0=True)
-    note_line(s, Inches(6.05), "수치 확정", "기준선 측정 후 **2027-07**에 2028~2029 목표 수치 확정 보고. 2차 장비군 목표는 합류 후 확정", size=13)
-    note_line(s, Inches(6.38), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
+    rows = [("시기", "주요 내용", "목표"),
+            ("2027 상반기", "1차 장비군 평가와 Pilot 운영, 엔지니어 Recipe 작업 녹화 DB 구축", "1차 장비군 목표 달성, 플랫폼 베타 배포"),
+            ("2027 하반기", "2차 장비군 Weekly 미팅 합류, workflow 구현 및 자동화 테스트", "단위 작업 Agent 수행 성공 비율 <X>%"),
+            ("2028", "보조: 엔지니어 앞에서 반복 입력 대행", "Agent 개입 범위 <N>배, 셋업 시간 <확인>% 단축"),
+            ("2029", "자율: Agent가 셋업 진행", "1차 장비군 ARC 적용 비율 90% 이상")]
+    table(s, rows, M, Inches(3.8), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.5),
+          bold_col0=True, border=True, col0_color=BLUE)
+    note_line(s, Inches(6.45), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
 BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_effects,
