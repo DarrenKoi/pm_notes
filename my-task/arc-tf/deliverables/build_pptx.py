@@ -508,7 +508,7 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
             a.fill.solid(); a.fill.fore_color.rgb = GRAY; a.line.fill.background(); a.shadow.inherit = False
 
 
-def s_platform(merged=False, install=True):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집, 엔지니어 PC 설치)을 합침
+def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 업무 전략 1, 2 의 내용(소형 모델, 기술 부채, 외부 파일 편집)을 합침
     s = slide("핵심 개발 방향",
               "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
     flow(s, [("① 녹화 추출, 라벨링", "녹화 비디오에서 작업 내용 추출\n현업 엔지니어가 라벨링"),
@@ -538,9 +538,7 @@ def s_platform(merged=False, install=True):  # 공통 플랫폼 구조. merged=T
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"]
            + (["장비군별 도구로 **외부 Recipe 파일 편집** (공통 플랫폼 범위 밖)"] if merged else []), BLUE, size=13)
-    note_line(s, Inches(6.1), "플랫폼의 역할", "2027 제안 (입력 없는 Shadow, 1차 승인 조작만 자동)  →  2028 보조 (반복 입력 대행)  →  2029 자율로 __점진적 발전__", size=13)
-    if merged and install:  # team deck은 업무 전략 2에서 다룸
-        note_line(s, Inches(6.42), "설치 방식", "별도 운영 PC 대신 **엔지니어 PC에 설치**, 엔지니어가 원할 때 실행하고 즉시 확인, 중단 (__Human on Command__)", size=13)
+    note_line(s, Inches(6.1), "플랫폼의 역할", "2027 관찰과 지식화 (작업 녹화, Workflow 구축)  →  2028 보조 (반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)", size=13)
 
 
 def s_offline():  # Offline 파이프라인 (team)
@@ -653,7 +651,7 @@ def s_exec_roadmap():
 
 BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_effects,
         s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
-TEAM = BOSS[:3] + [s_assets, s_where, lambda: s_platform(merged=True, install=False), s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
+TEAM = BOSS[:3] + [s_assets, s_where, lambda: s_platform(merged=True), s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
         s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
