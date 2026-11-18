@@ -374,7 +374,8 @@ def s_team():  # TF 구성 (조직도)
     text(s, tx, COL_Y, top_w, th, "기반기술센터 AI/DT TF 담당", size=16, bold=True, color=INK,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     box(s, tx, champ_y, top_w, th, fill=INK)
-    text(s, tx, champ_y, top_w, th, "ARC TF Champion: <직급 확인>", size=16, bold=True, color=WHITE,
+    # 검정 박스 위라 <> 자동 주황 대신 흰색으로 고정
+    text(s, tx, champ_y, top_w, th, [[("ARC TF Champion: <직급 확인>", {"color": WHITE})]], size=16, bold=True,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
     groups = [("공통 플랫폼 팀: 개발 약 5명 규모", INK, [
