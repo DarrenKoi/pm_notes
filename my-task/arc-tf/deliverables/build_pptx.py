@@ -51,7 +51,7 @@ BLUE_PALE = RGBColor(0xE8, 0xF0, 0xFA)
 RED = RGBColor(0xD7, 0x26, 0x3D)
 ORANGE = RGBColor(0xF3, 0x8B, 0x1F)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-TBD = ORANGE  # <확인> 표시 색
+TBD = RED  # <확인> 표시 색 (2026-11-18 주황에서 빨강으로)
 LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
