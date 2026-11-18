@@ -374,7 +374,7 @@ def s_where():  # 별도 PC 대신 엔지니어 PC 설치형
 
 def s_team():  # TF 구성 (조직도)
     s = slide("TF 구성",
-              "**공통 플랫폼**과 **장비군 담당 엔지니어**의 유기적 협업")
+              "**공통 플랫폼 팀** 안에서 **개발 인력**과 **장비군 담당 엔지니어**가 함께 개발")
     top_w = Inches(6.4)
     tx = (W - top_w) / 2
     th = Inches(0.46)
@@ -387,42 +387,48 @@ def s_team():  # TF 구성 (조직도)
     text(s, tx, champ_y, top_w, th, [[("ARC TF Champion: <직급 확인>", {"color": INK})]], size=16, bold=True,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
-    groups = [("공통 플랫폼 팀: 개발 약 5명 규모", INK, [
+    # 한 팀으로 그린다: 같은 사람은 한 번만 나온다. (머리말, 폭 비율, 구성원)
+    groups = [("개발 3명: Champion 포함, 기반기술전략 AX 파트", 0.36, [
                   ("백엔드 (2명)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
-                  ("프론트엔드 (2명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"]),
-                  ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
-              ("R&D DMI 장비군 담당: 장비군마다 1~2명", INK, [
-                  ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 Agent 현장 배치")),
-                  ("Thickness\n(1차)", goal("Film 10 layer 이하 의뢰건 90% 이상 자동화")),
-                  ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체로 ARC 확장")),
-                  ("다른 MI 장비군\n(2차)", ["상반기 인터뷰, Workflow 조사", "6월 베타 확인 후 7월 본격 참여"])])]
-    gg = Inches(0.4)
-    gw = (W - 2 * M - gg) / 2
-    bus_y, gy = champ_y + th + Inches(0.14), champ_y + th + Inches(0.28)
+                  ("프론트엔드 (1명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"])]),
+              ("R&D DMI 장비군 담당: 장비군마다 2명, 플랫폼 개발에 수시 합류", 0.64, [
+                  ("CD-SEM\n(1차, 2명)", goal("Align Fail 자동 대응 Agent 현장 배치")),
+                  ("Thickness\n(1차, 2명)", goal("Film 10 layer 이하 의뢰건 90% 이상 자동화")),
+                  ("Inspection\n(1차, 2명)", goal("Optical Inspection 장비군 전체로 ARC 확장")),
+                  ("다른 MI 장비군\n(2차, 각 2명)", ["상반기 인터뷰, Workflow 조사", "6월 베타 확인 후 7월 본격 참여"])])]
+    gg = Inches(0.3)
+    team_y, team_h = champ_y + th + Inches(0.14), Inches(0.42)
+    gy = team_y + team_h + Inches(0.08)
     bw_g = Inches(0.12)
     def line(x0, y0, x1, y1):  # 연결선: 얇고 진한 회색
         ln = s.shapes.add_connector(1, x0, y0, x1, y1).line
         ln.color.rgb, ln.width = DARK, Pt(0.75)
     line(W / 2, COL_Y + th, W / 2, champ_y)
-    line(W / 2, champ_y + th, W / 2, bus_y)
-    line(M + gw / 2, bus_y, W - M - gw / 2, bus_y)
-    for gi, (head, accent, members) in enumerate(groups):
-        gx = M + gi * (gw + gg)
-        line(gx + gw / 2, bus_y, gx + gw / 2, gy)
-        box(s, gx, gy, gw, Inches(0.42), fill=SILVER)
-        text(s, gx, gy, gw, Inches(0.42), head, size=14, bold=True, color=INK, align=PP_ALIGN.CENTER,
+    line(W / 2, champ_y + th, W / 2, team_y)
+    # 팀 머리줄 하나가 두 묶음을 덮는다
+    box(s, M, team_y, W - 2 * M, team_h, fill=SILVER)
+    text(s, M, team_y, W - 2 * M, team_h,
+         [[("공통 플랫폼 팀: ", {"color": INK}), ("1차 9명", {"color": BLUE}),
+           (" (개발 3명 + 장비군 담당 6명)", {"color": INK})]],
+         size=16, bold=True, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+    gx = M
+    for gi, (head, share, members) in enumerate(groups):
+        gw = (W - 2 * M - gg) * share
+        box(s, gx, gy, gw, Inches(0.36), fill=MIST, line=LINE)
+        text(s, gx, gy, gw, Inches(0.36), head, size=13, bold=True, color=INK, align=PP_ALIGN.CENTER,
              anchor=MSO_ANCHOR.MIDDLE)
         bw = (gw - (len(members) - 1) * bw_g) / len(members)
         for k, (name, lines) in enumerate(members):
-            x, y = gx + k * (bw + bw_g), gy + Inches(0.5)
+            x, y = gx + k * (bw + bw_g), gy + Inches(0.44)
             dim = gi == 1 and k == 3  # 2차 준비 단계
-            box(s, x, y, bw, Inches(2.1), fill=MIST if dim else WHITE, line=LINE)
-            box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else accent)
+            box(s, x, y, bw, Inches(1.85), fill=MIST if dim else WHITE, line=LINE)
+            box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else INK)
             text(s, x + Inches(0.06), y + Inches(0.12), bw - Inches(0.12), Inches(0.5), name.split("\n"), size=12, bold=True, gap=0,
                  align=PP_ALIGN.CENTER)
-            text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.4), lines, size=12, color=INK,
+            text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.15), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
-    note_line(s, Inches(6.3), "운영", "**Weekly 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장 보고**, **분기 부문장님 보고**", size=13)
+        gx += gw + gg
+    note_line(s, Inches(6.42), "운영", "**Weekly 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장 보고**, **분기 부문장님 보고**", size=13)
 
 def s_kanban():  # 일정 칸반
     s = slide("2027 일정",
@@ -489,9 +495,9 @@ def s_decision():  # 결정 필요 사항
               "**ARC TF 구성**(조직도) 승인, **2027-01** 운영 시작")
     two_col(s, "12월 결정 필요 사항: TF 구성 승인", [
                 "**2027-01~12 ARC TF 운영 승인** (1차, 2차 명단 함께 지정)",
-                "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 1~2명",
-                "**개발 인력 4명 지정**: 백엔드 2, 프론트엔드 2",
-                "**2차 다른 MI 장비군 담당 지정**: 장비군마다 1~2명, __6월 베타 확인 후 7월 본격 참여__"],
+                "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 2명 (6명), 플랫폼 개발에 수시 합류",
+                "**개발 인력 3명 지정**: 백엔드 2, 프론트엔드 1 (ARC TF Champion 포함, 기반기술전략 AX 파트)",
+                "**2차 다른 MI 장비군 담당 지정**: 장비군마다 2명, __6월 베타 확인 후 7월 본격 참여__"],
             "필요 자원", [
                 "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
                 "2027-01 전: **RCS 녹화 스토리지 접근** 여부 확인, 영상 적재를 위한 **별도 스토리지 DB** 확보"],

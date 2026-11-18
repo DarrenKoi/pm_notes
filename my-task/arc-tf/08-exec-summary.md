@@ -48,11 +48,11 @@ Computer Use 기반 RAG Workflow 순환 플랫폼입니다.
 
 | 구분 | 구성 | 2027 상반기 |
 |---|---|---|
-| 공통 플랫폼 팀 | 개발 약 5명 규모: 백엔드 2, 프론트엔드 2, 1차 MI팀 현업 엔지니어 | 플랫폼 설계, 베타 배포 |
-| R&D DMI 장비군 담당: CD-SEM (1차) | 1~2명 | Align Fail 자동 대응 Agent 현장 배치 |
-| R&D DMI 장비군 담당: Thickness (1차) | 1~2명 | Film 10 layer 이하 의뢰건 90% 이상 자동화 |
-| R&D DMI 장비군 담당: Inspection (1차) | 1~2명 | Optical Inspection 장비군 전체로 ARC 확장 |
-| R&D DMI 장비군 담당: 다른 MI 장비군 (2차) | 장비군마다 1~2명 | 인터뷰, Workflow 조사 후 7월 본격 참여 |
+| 공통 플랫폼 개발 | 3명: 백엔드 2, 프론트엔드 1 (ARC TF Champion 포함, 기반기술전략 AX 파트) | 플랫폼 설계, 베타 배포 |
+| R&D DMI 장비군 담당: CD-SEM (1차) | 2명, 플랫폼 개발에 수시 합류 | Align Fail 자동 대응 Agent 현장 배치 |
+| R&D DMI 장비군 담당: Thickness (1차) | 2명, 플랫폼 개발에 수시 합류 | Film 10 layer 이하 의뢰건 90% 이상 자동화 |
+| R&D DMI 장비군 담당: Inspection (1차) | 2명, 플랫폼 개발에 수시 합류 | Optical Inspection 장비군 전체로 ARC 확장 |
+| R&D DMI 장비군 담당: 다른 MI 장비군 (2차) | 장비군마다 2명 | 인터뷰, Workflow 조사 후 7월 본격 참여 |
 
 - 운영: 매주 미팅(개발 노하우 공유, 진행사항 체크), 월간 AI/DT TF장 보고, 분기 부문장 보고
 
