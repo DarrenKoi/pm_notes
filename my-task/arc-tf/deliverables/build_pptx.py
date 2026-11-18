@@ -5,7 +5,7 @@
     python my-task/arc-tf/deliverables/build_pptx.py boss     # team | boss | exec 중 하나
 
   boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 핵심 개발 방향 1장 (exec와 같은 합본)
-  team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 2(엔지니어 PC 설치), 공통 플랫폼 구조, 기술 설계(07) 상세 5장
+  team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 1, 2, 공통 플랫폼 구조, 기술 설계(07) 상세 5장
   exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
@@ -647,9 +647,9 @@ def s_exec_roadmap():
     note_line(s, Inches(6.38), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
-BOSS = [s_cover, s_status, s_team, s_assets, lambda: s_platform(merged=True), s_effects,
-        s_kanban, s_safety, s_decision]  # 업무 전략 2(s_where)는 team deck에만 둠
-TEAM = BOSS[:4] + [s_where, s_platform, s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[5:] + [s_why_not_llm]
+BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_effects,
+        s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
+TEAM = BOSS[:3] + [s_assets, s_where, s_platform, s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
         s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
