@@ -389,7 +389,7 @@ def s_team():  # TF 구성 (조직도)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
     # 한 팀으로 그린다: 같은 사람은 한 번만 나온다. (머리말, 폭 비율, 구성원)
     groups = [("개발 3명: 기반기술전략 AX 파트", 0.36, [
-                  ("백엔드 (2명)\n(Champion 포함)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
+                  ("백엔드\n(2명)", ["서버 개발/운영", "LLMOps", "녹화 DB 추출", "지식 자산화"]),
                   ("프론트엔드\n(1명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"])]),
               ("R&D DMI 장비군 담당: 장비군마다 2명", 0.64, [
                   ("CD-SEM\n(1차, 2명)", goal("Align Fail 자동 대응 Agent 현장 배치")),
@@ -485,9 +485,10 @@ def s_safety():  # 안전과 리스크
                 "**방화벽 문제**: RCS, Radmin은 원칙상 SecureVDI 안에서 사용하게 되어 있음"],
             "대응", [
                 "위험 조작, 저장 전 __엔지니어 승인__, 즉시 중단 수단, 자동 전환은 장비별 승인",
-                "1차 자동 운영은 __장비군별 승인 범위__ 안에서만, 삭제와 모드 변경은 계속 금지",
+                "1차 자동 운영은 __장비군별 승인 범위__ 안에서만",
                 "화면, 절차가 바뀌면 이전 검증 결과를 쓰지 않고 __재검증__",
-                "RCS, Radmin을 직접 사용할 수 있는지 __정책 확인__ (예: CD-SEM은 SecureVDI 없이 사용 중)"],
+                "RCS, Radmin을 SecureVDI를 통하지 않고 바로 사용할 수 있는지 __정책 확인__",
+                "CD-SEM은 SecureVDI를 통하지 않고 사용 중"],
             h=Inches(3.65), size=14)
 
 def s_decision():  # 결정 필요 사항
@@ -547,9 +548,10 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
     cw = (W - 2 * M - gap) / 2
     cy, chh = Inches(4.25), Inches(2.0)
     column(s, M, cy, cw, chh, "공통 플랫폼 팀 역할", [
-               "녹화 내용 추출, **RAG DB**, Workflow 생성",
+               "녹화 내용 추출 (**지식 자산화**), **RAG DB** 구축, Workflow 생성",
                "**Computer Use** 실행 엔진 개발"]
-           + (["**최적화 소형 모델** 운영, __기술 부채 해소__"] if merged else []), BLUE, size=13)
+           + (["**최적화 소형 모델** 발굴 및 운영"] if merged else [])
+           + ["UI/UX 개발"], BLUE, size=13)
     column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어 역할", [
                "추출 내용 **라벨링**, Workflow 검토와 승인",
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
@@ -660,12 +662,13 @@ def s_exec_roadmap():
             ("2027 하반기", "2차 장비군 Weekly 미팅 합류, workflow 구현 및 자동화 테스트", "단위 작업 Agent 수행 성공 비율 <X>%"),
             ("2028", "보조: 엔지니어 앞에서 반복 입력 대행", "Agent 개입 범위 <N>배, 셋업 시간 <확인>% 단축"),
             ("2029", "자율: Agent가 셋업 진행", "1차 장비군 ARC 적용 비율 90% 이상")]
-    table(s, rows, M, Inches(3.8), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.5),
+    table(s, rows, M, Inches(3.72), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.45),
           bold_col0=True, border=True, col0_color=INK)
-    note_line(s, Inches(6.45), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
+    note_line(s, Inches(6.2), "기대 효과", "**Computer Use 고도화**를 통해 __공정 장비까지 확장__할 수 있는 구조로 진화 가능", size=13)
+    note_line(s, Inches(6.55), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
-BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_effects,
+BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_exec_roadmap,
         s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
 TEAM = BOSS[:3] + [s_assets, s_where, lambda: s_platform(merged=True), s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
