@@ -524,7 +524,7 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
              ("② RAG 저장", "- Recipe 셋업 지식 DB\n- 절차, 노하우, 결정 지점 저장"),
              ("③ Workflow 생성, 실행", "- RAG로 Workflow 초안 생성\n- 엔지니어 승인 버전만 Agent가 실행"),
              ("④ 준수 확인, 수정", "- Workflow를 지키는지 확인\n- 틀리면 엔지니어가 개입, 수정")],
-         COL_Y, h=Inches(1.3), fills=[(SILVER, INK)] * 4, head_size=16, body_size=12)
+         COL_Y, h=Inches(1.3), fills=[(BLUE_PALE, BLUE)] * 4, head_size=16, body_size=12)
     fgap = Inches(0.3)
     fw = (W - 2 * M - fgap * 3) / 4
     c2, c4 = M + (fw + fgap) + fw / 2, M + 3 * (fw + fgap) + fw / 2
@@ -645,7 +645,7 @@ def s_exec_roadmap():
               "2027 **지식 자산화**, 2028 **보조**, 2029 **자율**로 단계별 확대")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028 보조", "반복 입력 대행"), ("2029 자율", "Agent가\n셋업 진행")],
-         COL_Y, h=Inches(1.5), fills=[(SILVER, INK), (SILVER, INK), (SILVER, INK), (ORANGE, WHITE)],
+         COL_Y, h=Inches(1.5), fills=[(BLUE_PALE, BLUE)] * 3 + [(BLUE, WHITE)],
          head_size=20, body_size=15)
     rows = [("시기", "주요 내용", "목표"),
             ("2027 상반기", "1차 장비군 평가와 Pilot 운영, 엔지니어 Recipe 작업 녹화 DB 구축", "1차 장비군 목표 달성, 플랫폼 베타 배포"),
