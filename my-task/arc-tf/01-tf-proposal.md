@@ -51,7 +51,7 @@ status: 초안, 2026-12 담당 보고용
 
 | 시점 | 타겟 | 판정 |
 |---|---|---|
-| 2027 상반기 | 1차 장비군별 목표: CD-SEM **Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현**, Thickness **Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화**, Inspection **전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)** (엔지니어 상주), **공통 플랫폼 설계 완성과 베타 테스트** | 2027-06 |
+| 2027 상반기 | 1차 장비군별 목표: CD-SEM **Align Fail 자동 대응 Agent 현장 배치**, Thickness **Film 10 layer 이하 의뢰건 90% 이상 자동화**, Inspection **Optical Inspection 장비군 전체로 ARC 확장** (엔지니어 상주), **공통 플랫폼 설계 완성과 베타 테스트** | 2027-06 |
 | 2027 연말 | 1차 장비군 셋업 절차, 노하우의 **지식 자산** 축적, 2차 장비군 여러 개가 공통 플랫폼 위에서 녹화 시작 | 2027-12 |
 
 - 셋업 시간 단축은 2028 보조 단계부터, Agent가 레시피 셋업을 진행하는 자율 단계는 2029 타겟임. 2029 목표는 1차 장비군 의뢰 Recipe ARC 적용 비율 90% 이상
@@ -64,7 +64,7 @@ MI 장비군 가운데 CD, Thickness, Inspection이 각자 ARC를 추진하고 �
 
 | 장비군 | 추진 현황 |
 |---|---|
-| CD | **Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 Offline 테스트 중. 소형 VLM(Vision Language Model) 기반 장비 컨트롤(Computer-use) 기능 구현 |
+| CD | **Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 연계), 현재 Offline 테스트 중. 소형 VLM(Vision Language Model) 기반 장비 컨트롤(Computer-use) 기능 구현 |
 | Thickness | **MI 장비군 중 자동화 완성도 가장 높음**: 의뢰부터 Recipe 생성까지 ARC Pipeline 진행. DL 기반 Align Fail 대응 Offline 테스트 중 |
 | Inspection | **DRB(Design Recipe Builder)**를 Tuning하는 방식으로 ARC 진행 중 (NAND Tech 1개 대상). DRB Tuning에 Rule 기반 Computer-use 사용. Recipe Setup AI 활용 DB 구축 완료 (RAG, 마이다스) |
 
@@ -72,7 +72,7 @@ MI 장비군 가운데 CD, Thickness, Inspection이 각자 ARC를 추진하고 �
 
 1. 생성형 AI 모델만으로 ARC 구현 어려움 (정밀 좌표 클릭, 셋업 절차, 결과 판단, 화면 조작 등의 문제)
 2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 하이브리드 방식 필수
-3. 생성형 AI 모델에게 Recipe 작업 방식을 어떻게 학습시킬지 구체화 필요
+3. 엔지니어의 노하우인 Recipe 작업 방식을 지식 자산화 (DB)해야 생성형 AI 모델이 활용 가능
 
 ## 1. ARC 업무 전략 (PoC에서 확인한 것)
 
@@ -187,7 +187,7 @@ Align Fail 대응의 세부 자산은 [PoC 자산과 남은 과제](./05-poc-ass
 
 | 단계 | 시기 | 대상 | 하는 일 | 넘어가는 조건 |
 |---|---|---|---|---|
-| 1차: 선발대 | 2027 상반기 | CD-SEM, Thickness, Inspection | 장비군별 목표 (CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)). 이 과정에서 공통 플랫폼 설계를 완성하고 베타 버전을 세 장비군 담당 엔지니어 PC에서 운영 | 2027-06 목표 달성 확인: 장비군별 목표와 플랫폼 베타를 따로 판정, 2차 합류는 베타 배포 확인으로 결정 |
+| 1차: 선발대 | 2027 상반기 | CD-SEM, Thickness, Inspection | 장비군별 목표 (CD-SEM Align Fail 자동 대응 Agent 현장 배치, Thickness Film 10 layer 이하 의뢰건 90% 이상 자동화, Inspection Optical Inspection 장비군 전체로 ARC 확장). 이 과정에서 공통 플랫폼 설계를 완성하고 베타 버전을 세 장비군 담당 엔지니어 PC에서 운영 | 2027-06 목표 달성 확인: 장비군별 목표와 플랫폼 베타를 따로 판정, 2차 합류는 베타 배포 확인으로 결정 |
 | 2차: 영역 확장 | 2027 하반기부터 | 다른 MI 장비군 | 2차 장비군 본격 합류. 교육, 작업 녹화, 화면 영역 지도, 절차 정의를 공통 플랫폼 위에서 진행. 1차 장비군은 절차화와 지식 자산으로 진행 | 2027-12 목표 달성 확인: 지식 자산, 2차 합류 |
 
 - **선발대가 CD-SEM, Thickness, Inspection인 이유**: CD-SEM의 Align Fail PoC(화면 인식, Align Key 탐색, 반자동 운영), Thickness의 기존 PyAutoGUI 자동화와 ARC Pipeline, Inspection의 의뢰서 DB와 Recipe RAG를 재사용할 수 있음. 처음부터 만들지 않고 플랫폼 설계에 집중할 수 있음
@@ -255,7 +255,7 @@ Align Fail 대응의 세부 자산은 [PoC 자산과 남은 과제](./05-poc-ass
 | 구분 | 내용 |
 |---|---|
 | 최종 목표 | 신규 레시피 셋업의 전 과정 자동화: 생성 → 측정 위치, Align Key 등록 → 파라미터 → 검증 측정 → 저장 |
-| 2027 상반기 선행 과제 | **장비군별 목표** (CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군)). 플랫폼 부품으로 만들어 공통 플랫폼 설계를 완성하고 베타로 운영 |
+| 2027 상반기 선행 과제 | **장비군별 목표** (CD-SEM Align Fail 자동 대응 Agent 현장 배치, Thickness Film 10 layer 이하 의뢰건 90% 이상 자동화, Inspection Optical Inspection 장비군 전체로 ARC 확장). 플랫폼 부품으로 만들어 공통 플랫폼 설계를 완성하고 베타로 운영 |
 | 레시피 셋업 자동화 대상 구간 | 시행착오가 가장 많은 **측정 위치, Align 셋업 구간**. 2027에는 관찰과 지식화, 2028부터 엔지니어 앞에서 Agent가 입력을 대행, 2029에 Agent가 진행 |
 | 1차: 선발대 | CD-SEM, Thickness, Inspection. 공통 플랫폼 설계와 베타 |
 | 2차: 영역 확장 | 다른 MI 장비군. 2027 하반기 본격 합류, 공통 플랫폼을 실제로 적용 |
@@ -295,9 +295,9 @@ Align Fail 대응의 세부 자산은 [PoC 자산과 남은 과제](./05-poc-ass
 | 구분 | 구성 | 맡는 일 | 합류 |
 |---|---|---|---|
 | ARC TF Champion + 공통 플랫폼 팀 | ARC TF Champion(ARC TF 총괄)과 공통 플랫폼 개발 약 5명 규모: 백엔드 2, 프론트엔드 2, 1차 MI팀 현업 엔지니어가 개발에 함께 투입 | 화면 인식, 조작 엔진, 안전 규칙, 승인 화면, LLMOps, 녹화 DB 추출, 교육 | 2027-01 |
-| CD-SEM 담당 (선발대) | MI 엔지니어 1~2명 | 장비별 레시피 절차, 성공 판정 기준, 현장 검증. 목표: Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현 | 2027-01 |
-| Thickness 담당 (선발대) | MI 엔지니어 1~2명 | 위와 같음. 기존 PyAutoGUI 자동화와 ARC Pipeline 공유. 목표: Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화 | 2027-01 |
-| Inspection 담당 (선발대) | MI 엔지니어 1~2명 | 위와 같음. 의뢰서 DB와 Recipe RAG 공유. 목표: 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군) | 2027-01 |
+| CD-SEM 담당 (선발대) | MI 엔지니어 1~2명 | 장비별 레시피 절차, 성공 판정 기준, 현장 검증. 목표: Align Fail 자동 대응 Agent 현장 배치 | 2027-01 |
+| Thickness 담당 (선발대) | MI 엔지니어 1~2명 | 위와 같음. 기존 PyAutoGUI 자동화와 ARC Pipeline 공유. 목표: Film 10 layer 이하 의뢰건 90% 이상 자동화 | 2027-01 |
+| Inspection 담당 (선발대) | MI 엔지니어 1~2명 | 위와 같음. 의뢰서 DB와 Recipe RAG 공유. 목표: Optical Inspection 장비군 전체로 ARC 확장 | 2027-01 |
 | 다른 MI 장비군 담당 (2차) | 장비군마다 MI 엔지니어 1~2명 | 위와 같음. 공통 플랫폼을 실제로 적용하는 첫 대상 | 2027-01 인터뷰, Recipe Workflow 조사, 2027-07 본격 참여 |
 
 - **ARC TF Champion 직급**: ⟨확인: 팀장급 또는 파트장급⟩, 협의 필요
@@ -344,7 +344,7 @@ Align Fail 대응의 세부 자산은 [PoC 자산과 남은 과제](./05-poc-ass
 
 ## 7. 일정
 
-2027년은 상반기 선발대, 하반기 영역 확장으로 진행합니다. 상반기에 **1차 장비군별 목표(CD-SEM Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현, Thickness Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화, Inspection 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군))를 달성하면서 공통 플랫폼 설계를 완성하고 베타로 운영**합니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고, 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.
+2027년은 상반기 선발대, 하반기 영역 확장으로 진행합니다. 상반기에 **1차 장비군별 목표(CD-SEM Align Fail 자동 대응 Agent 현장 배치, Thickness Film 10 layer 이하 의뢰건 90% 이상 자동화, Inspection Optical Inspection 장비군 전체로 ARC 확장)를 달성하면서 공통 플랫폼 설계를 완성하고 베타로 운영**합니다. Align Fail은 일회성 시제품이 아니라 플랫폼 부품(화면 캡처, 화면 영역 지도, 입력 실행기, 자체 중단, 실행 로그)으로 만들고, 그 과정에서 필요했던 요소를 장기 계획에 반영합니다.
 
 ### 한눈에 보기 (칸반)
 
@@ -358,9 +358,9 @@ Align Fail 대응의 세부 자산은 [PoC 자산과 남은 과제](./05-poc-ass
 
 | 장비군 | 목표 |
 |---|---|
-| CD-SEM | Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현 |
-| Thickness | Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화 |
-| Inspection | 전체 디바이스향 DRB 기반 ARC 확장(Optical Inspection 장비군) |
+| CD-SEM | Align Fail 자동 대응 Agent 현장 배치 |
+| Thickness | Film 10 layer 이하 의뢰건 90% 이상 자동화 |
+| Inspection | Optical Inspection 장비군 전체로 ARC 확장 |
 
 | 시기 | CD-SEM | Thickness | Inspection | 공통 플랫폼 |
 |---|---|---|---|---|

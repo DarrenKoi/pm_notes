@@ -17,7 +17,7 @@ status: 초안, 2026-12 최종 승인 보고용
 
 | 장비군 | 추진 현황 |
 |---|---|
-| CD | **Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 Offline 테스트 중. 소형 VLM 기반 장비 컨트롤(Computer-use) 기능 구현 |
+| CD | **Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 연계), 현재 Offline 테스트 중. 소형 VLM 기반 장비 컨트롤(Computer-use) 기능 구현 |
 | Thickness | **MI 장비군 중 자동화 완성도 가장 높음**: 의뢰부터 Recipe 생성까지 ARC Pipeline 진행. DL 기반 Align Fail 대응 Offline 테스트 중 |
 | Inspection | **DRB(Design Recipe Builder)** Tuning 방식으로 ARC 진행 중 (NAND Tech 1개 대상). DRB Tuning에 Rule 기반 Computer-use 사용. Recipe Setup AI 활용 DB 구축 완료 (RAG, 마이다스) |
 
@@ -25,7 +25,7 @@ status: 초안, 2026-12 최종 승인 보고용
 
 1. 생성형 AI 모델만으로 ARC 구현 어려움 (정밀 좌표 클릭, 셋업 절차, 결과 판단, 화면 조작 등의 문제)
 2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 생성형 AI 모델과 함께 쓰는 하이브리드 방식 필수
-3. 생성형 AI 모델의 Recipe 작업 방식 학습 방법 구체화 필요
+3. 엔지니어의 노하우인 Recipe 작업 방식을 지식 자산화 (DB)해야 생성형 AI 모델이 활용 가능
 
 ## 핵심 개발 방향
 
@@ -50,9 +50,9 @@ Computer Use 기반 RAG Workflow 순환 플랫폼입니다.
 | 구분 | 구성 | 2027 상반기 |
 |---|---|---|
 | 공통 플랫폼 팀 | 개발 약 5명 규모: 백엔드 2, 프론트엔드 2, 1차 MI팀 현업 엔지니어 | 플랫폼 설계, 베타 배포 |
-| R&D DMI 장비군 담당: CD-SEM (1차) | 1~2명 | Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현 |
-| R&D DMI 장비군 담당: Thickness (1차) | 1~2명 | Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화 |
-| R&D DMI 장비군 담당: Inspection (1차) | 1~2명 | Optical Inspection 장비군 전체 디바이스향 DRB 기반 ARC 확장 |
+| R&D DMI 장비군 담당: CD-SEM (1차) | 1~2명 | Align Fail 자동 대응 Agent 현장 배치 |
+| R&D DMI 장비군 담당: Thickness (1차) | 1~2명 | Film 10 layer 이하 의뢰건 90% 이상 자동화 |
+| R&D DMI 장비군 담당: Inspection (1차) | 1~2명 | Optical Inspection 장비군 전체로 ARC 확장 |
 | R&D DMI 장비군 담당: 다른 MI 장비군 (2차) | 장비군마다 1~2명 | 인터뷰, Workflow 조사 후 7월 본격 참여 |
 
 - 운영: 매주 미팅(개발 노하우 공유, 진행사항 체크), 월간 AI/DT TF장 보고, 분기 부문장 보고

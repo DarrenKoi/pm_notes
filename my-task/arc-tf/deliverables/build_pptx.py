@@ -235,7 +235,7 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
 
 
 def s_cover(title="Auto Recipe Creation TF 구성 기획안",
-            sub="R&D MI 현업 엔지니어들과 만드는 레시피 셋업 자동화 공통 플랫폼"):  # 표지
+            sub="레시피 셋업 자동화 공통 플랫폼"):  # 표지
     s = prs.slides.add_slide(BLANK)
     text(s, Inches(1.0), Inches(2.95), W - Inches(2.0), Inches(0.8), title, size=40, bold=True, align=PP_ALIGN.CENTER)  # 가로 가운데, 세로는 중앙보다 조금 위
     if sub:
@@ -262,7 +262,7 @@ def s_status():  # 2026 추진 현황과 Lesson Learned
     cw = (W - 2 * M - 2 * gap) / 3
     ch = Inches(2.8)
     cols = [("CD 추진 현황", [
-                "**Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 포함), 현재 __Offline 테스트 중__",
+                "**Align Fail 자동 대응 Agent** 개발 진행 (Recipe Tuning 연계), 현재 __Offline 테스트 중__",
                 "**소형 VLM**(Vision Language Model) 기반 장비 컨트롤 (Computer-use) 기능 구현"]),
             ("Thickness 추진 현황", [
                 "**MI 장비군 중 자동화 완성도 가장 높음**: 의뢰부터 Recipe 생성까지 __ARC Pipeline__ 진행",
@@ -279,7 +279,7 @@ def s_status():  # 2026 추진 현황과 Lesson Learned
         [("Lesson Learned", {"bold": True, "color": BLUE})],
         runs_of("1. **생성형 AI 모델만으로 ARC 구현 어려움** (정밀 좌표 클릭, 셋업 절차, 결과 판단, 화면 조작 등의 문제)"),
         runs_of("2. Rule 기반 자동화, 컴퓨터 비전(CV), ML/DL을 생성형 AI 모델과 **함께 쓰는 하이브리드 방식** __필수__"),
-        runs_of("3. 생성형 AI 모델에게 **Recipe 작업 방식을 어떻게 학습**시킬지 __구체화 필요__")],
+        runs_of("3. 엔지니어의 노하우인 **Recipe 작업 방식을 지식 자산화 (DB)**해야 __생성형 AI 모델이 활용 가능__")],
         size=15, gap=0.3)
 
 
@@ -380,9 +380,9 @@ def s_team():  # TF 구성 (조직도)
                   ("프론트엔드 (2명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"]),
                   ("현업 엔지니어", ["1차 MI팀 소속", "개발 함께 진행"])]),
               ("R&D DMI 장비군 담당: 장비군마다 1~2명", INK, [
-                  ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 및 Recipe Tuning(이미지 변경) 구현")),
-                  ("Thickness\n(1차)", goal("Film 10 Layer 이하 의뢰 Recipe 90% 이상 생성 자동화")),
-                  ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체 디바이스향 DRB 기반 ARC 확장")),
+                  ("CD-SEM\n(1차)", goal("Align Fail 자동 대응 Agent 현장 배치")),
+                  ("Thickness\n(1차)", goal("Film 10 layer 이하 의뢰건 90% 이상 자동화")),
+                  ("Inspection\n(1차)", goal("Optical Inspection 장비군 전체로 ARC 확장")),
                   ("다른 MI 장비군\n(2차)", [ "상반기 인터뷰, Workflow 조사", "7월 본격 참여"])])]
     gg = Inches(0.4)
     gw = (W - 2 * M - gg) / 2
