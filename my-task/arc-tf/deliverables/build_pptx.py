@@ -649,7 +649,7 @@ def s_exec_roadmap():
 
 BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_effects,
         s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
-TEAM = BOSS[:3] + [s_assets, s_where, s_platform, s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
+TEAM = BOSS[:3] + [s_assets, s_where] + BOSS[3:4] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
         s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
