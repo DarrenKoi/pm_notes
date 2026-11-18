@@ -267,7 +267,7 @@ def build(target):
     for k, (name, appendix) in enumerate(sources):
         if k:
             doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
-        render(doc, (ROOT / name).read_text(encoding="utf-8"), appendix)
+        render(doc, (ROOT / name).read_text(encoding="utf-8").replace("⟨", "<").replace("⟩", ">"), appendix)
     out = HERE / out_name
     doc.save(out)
     print(f"wrote {out.relative_to(ROOT.parent.parent)}")

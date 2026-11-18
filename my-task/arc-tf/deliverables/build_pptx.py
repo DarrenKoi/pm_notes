@@ -4,8 +4,8 @@
     python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두
     python my-task/arc-tf/deliverables/build_pptx.py boss     # team | boss | exec 중 하나
 
-  boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 공통 플랫폼 구조 1장
-  team  팀원용 (arc-tf-team-full.pptx): boss deck + 기술 설계(07) 상세 5장
+  boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 핵심 개발 방향 1장 (exec와 같은 합본)
+  team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 2(엔지니어 PC 설치), 공통 플랫폼 구조, 기술 설계(07) 상세 5장
   exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
@@ -37,7 +37,7 @@ FONT = "맑은 고딕"
 #   짙은 회색, 진회색, 밝은 회색, 연회색
 # 이 deck 은 그중 몇 개만 쓴다: 표와 텍스트 박스는 연회색(MIST), 밝은 회색(SILVER) 바탕에 검정(INK),
 # 강조 상자는 검정(INK) 바탕 + 흰 글자, 나머지 상자는 밝은 회색 + 검정 글자 (2026-11-16 사용자 지시: 짙은 파랑 채움 대신).
-# 짙은 파랑(BLUE)은 요약문의 중요 문구와 메모 머리말 같은 작은 글자에만 (글머리 기호는 검정), 연한 파랑(BLUE_PALE)은 표 강조 행, 주황은 관문, 최종 목표, ⟨확인⟩ 자리에만.
+# 짙은 파랑(BLUE)은 요약문의 중요 문구와 메모 머리말 같은 작은 글자에만 (글머리 기호는 검정), 연한 파랑(BLUE_PALE)은 표 강조 행, 주황은 관문, 최종 목표, <확인> 자리에만.
 # 아직 안 쓰는 색: 연한 분홍 FCE4E4, 연노랑 FFF2CC, 크림 FFF9E6, 베이지 F2E6D8
 INK = RGBColor(0x26, 0x26, 0x26)     # 검정 (본문)
 SUB = RGBColor(0x59, 0x59, 0x59)     # 짙은 회색 (보조 글자)
@@ -51,7 +51,7 @@ BLUE_PALE = RGBColor(0xE8, 0xF0, 0xFA)
 RED = RGBColor(0xD7, 0x26, 0x3D)
 ORANGE = RGBColor(0xF3, 0x8B, 0x1F)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-TBD = ORANGE  # ⟨확인⟩ 표시 색
+TBD = ORANGE  # <확인> 표시 색
 LANE = [MIST, WHITE, MIST]  # 칸반 레인: 무채색 교대
 
 W, H = Emu(12192000), Emu(6858000)  # exact 16:9 widescreen
@@ -119,7 +119,7 @@ def text(slide, x, y, w, h, paras, size=16, color=INK, bold=False, align=PP_ALIG
             f.size = Pt(opt.get("size", size))
             f.bold = opt.get("bold", bold)
             f.underline = opt.get("underline", False)
-            f.color.rgb = opt.get("color", TBD if "⟨" in t else color)
+            f.color.rgb = opt.get("color", TBD if "<" in t else color)
     return box
 
 
@@ -230,7 +230,7 @@ def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, s
             r.text = val
             r.font.name, r.font.size = FONT, Pt(size)
             r.font.bold = i == 0 or (bold_col0 and j == 0) or hl
-            r.font.color.rgb = TBD if (i and "⟨" in val) else INK
+            r.font.color.rgb = TBD if (i and "<" in val) else INK
     return t
 
 
@@ -245,10 +245,10 @@ def s_effects():  # 효과
     s = slide("기대 효과와 측정 지표",
               "합류 첫 달에 **기준선 측정**, **2027-07**에 2028~2029 목표 수치 확정")
     metrics = [("효과", "측정 지표", "현재", "목표", "타겟 시점"),
-               ("지식 자산화", "부분 작업 리스트로 정리한 Recipe 셋업을 Agent가 그대로 수행해 성공한 건수", "0건", "⟨X⟩건", "2027 연말"),
-               ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "⟨확인⟩", "1차 장비군 90% 이상", "2029"),
-               ("Agent 개입 범위", "Recipe당 셋업 단계 중 ARC Agent가 진행한 비율", "0%", "기준선 대비 ⟨N⟩배", "2028"),
-               ("셋업 시간 단축", "Recipe 1건 셋업 경과 시간", "대상 구간 실측 예정", "⟨확인⟩% 단축", "2028")]
+               ("지식 자산화", "부분 작업 리스트로 정리한 Recipe 셋업을 Agent가 그대로 수행해 성공한 건수", "0건", "<X>건", "2027 연말"),
+               ("ARC 적용 비율", "Recipe 의뢰 수 대비 ARC를 적용한 Recipe 비율", "<확인>", "1차 장비군 90% 이상", "2029"),
+               ("Agent 개입 범위", "Recipe당 셋업 단계 중 ARC Agent가 진행한 비율", "0%", "기준선 대비 <N>배", "2028"),
+               ("셋업 시간 단축", "Recipe 1건 셋업 경과 시간", "대상 구간 실측 예정", "<확인>% 단축", "2028")]
     table(s, metrics, M, COL_Y, [Inches(2.3), Inches(5.3), Inches(1.9), Inches(1.8), Emu(W - 2 * M - Inches(11.3))],
           size=14, row_h=Inches(0.46), bold_col0=True, shade=lambda r: r[4].startswith("2027"))
     text(s, M, Inches(4.75), W - 2 * M, Inches(0.8),
@@ -303,14 +303,16 @@ def s_assets():  # 업무 전략 1: Agent의 Recipe 작업 방식과 공통 과�
     cw = (W - 2 * M - gap) / 2
     cy, chh = Inches(3.9), Inches(2.75)
     column(s, M, cy, cw, chh, "Agent의 Recipe 작업 방식", [
+               "**RAG**: 엔지니어의 Recipe 작업 방식을 모방하도록 __Context를 받을 수 있는 DB 구축__",
                "**Computer Use**: VLM(화면 판단), PyAutoGUI(키보드, 마우스 입력), Win32(창 단위 조작)를 조합해 구현",
-               "**외부 파일 편집**: 장비 화면을 거치지 않아 __조작 단계 축소__, 장비별 Recipe 파일 구조 해석 필요",
-               "**소형 모델**: 기반기술센터의 __최적화 소형 모델__을 자동화 작업에 사용"], BLUE, size=13)
+               "**외부 파일 편집**: Recipe 생성, 수정 단계 간소화로 __ARC 최적화__",
+               "**소형 모델**: ARC 작업에 __최적화된 소형 모델__ 도입 (효율적 GPU 자원 배분과 빠른 속도)"], BLUE, size=13)
     column(s, M + cw + gap, cy, cw, chh, "공통 플랫폼 대상 공통 과제", [
-               "**Agent의 마우스, 키보드 조작**, 최적화 소형 모델 운영",
-               "**녹화 DB 추출**: 엔지니어 작업 녹화를 Agent 지식으로 변환",
-               "**기술 부채 해소**: Vibe Coding 중 __원리 미확인 사항__ 정리",
-               "장비군별 개별 진행 시 __같은 작업 반복__"], BLUE, size=13)
+               "엔지니어의 **Recipe 작업 화면을 추출**해 Agent가 활용할 수 있는 __지식으로 변환__",
+               "장비군별 개별 진행 시 __같은 사이클 반복__ → **공통 플랫폼 필요**",
+               "지식을 Agent가 실행할 수 있도록 **Workflow로 만드는 작업**",
+               "**기술 부채 해소**: Vibe Coding 중 __핵심 기술 사항__ 정리",
+               "**Agent의 마우스, 키보드 조작**, 최적화 소형 모델 운영"], BLUE, size=13)
 
 def s_why_not_llm():  # LLM 모델만으로는 안 되는 이유
     s = slide("별첨: LLM 모델만으로 안 되는 이유",
@@ -449,7 +451,7 @@ def s_kanban():  # 일정 칸반
         y += lh + Inches(0.06)
     text(s, M, y + Inches(0.04), W - 2 * M, Inches(0.85),
          [[("6월 목표  ", {"bold": True, "color": BLUE})] + runs_of("장비군별 목표 달성, 공통 플랫폼 베타 배포 (1차 장비군 PC에서 무장애 운영)"),
-          [("12월 목표  ", {"bold": True, "color": BLUE})] + runs_of("부분 작업 리스트대로 Agent가 수행에 성공한 Recipe 셋업 **⟨X⟩건**, 2차 장비군 합류"),
+          [("12월 목표  ", {"bold": True, "color": BLUE})] + runs_of("부분 작업 리스트대로 Agent가 수행에 성공한 Recipe 셋업 **<X>건**, 2차 장비군 합류"),
           [("2028 진입  ", {"bold": True, "color": BLUE})] + runs_of("12월 목표 달성과 화면 입력 안전 기준 충족")],
          size=12, color=SUB, spacing=1.0, gap=0.3)
 
@@ -464,7 +466,7 @@ def s_safety():  # 안전과 리스크
             "대응", [
                 "위험 조작, 저장 전 __엔지니어 승인__, 즉시 중단 수단, 자동 전환은 장비별 승인",
                 "화면, 절차가 바뀌면 이전 검증 결과를 쓰지 않고 __재검증__",
-                "필요한 접속 경로를 __사전 확인__, 불가하면 가능한 경로 안에서 범위 조정 **⟨확인⟩**",
+                "필요한 접속 경로를 __사전 확인__, 불가하면 가능한 경로 안에서 범위 조정 **<확인>**",
                 "공통 엔진과 장비별 절차를 분리, __1차 3개 장비군으로 먼저 다지고__ 베타 뒤 확장"],
             h=Inches(3.65), size=14)
 
@@ -636,8 +638,8 @@ def s_exec_roadmap():
          head_size=20, body_size=15)
     rows = [("시기", "목표"),
             ("2027 상반기", "1차 3개 장비군 목표 달성, 공통 플랫폼 베타, 기준선 측정"),
-            ("2027 하반기", "2차 장비군 합류, Agent 수행 성공 Recipe 셋업 ⟨X⟩건"),
-            ("2028", "1차 장비군 Agent 개입 범위 기준선 대비 ⟨N⟩배, 셋업 시간 단축"),
+            ("2027 하반기", "2차 장비군 합류, Agent 수행 성공 Recipe 셋업 <X>건"),
+            ("2028", "1차 장비군 Agent 개입 범위 기준선 대비 <N>배, 셋업 시간 단축"),
             ("2029", "1차 장비군 의뢰 Recipe ARC 적용 비율 90% 이상")]
     table(s, rows, M, Inches(3.8), [Inches(3.0), Emu(W - 2 * M - Inches(3.0))], size=15, row_h=Inches(0.42),
           bold_col0=True)
@@ -645,9 +647,9 @@ def s_exec_roadmap():
     note_line(s, Inches(6.38), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
-BOSS = [s_cover, s_status, s_team, s_assets, s_where, s_platform, s_effects,
-        s_kanban, s_safety, s_decision]
-TEAM = BOSS[:6] + [s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[6:] + [s_why_not_llm]
+BOSS = [s_cover, s_status, s_team, s_assets, lambda: s_platform(merged=True), s_effects,
+        s_kanban, s_safety, s_decision]  # 업무 전략 2(s_where)는 team deck에만 둠
+TEAM = BOSS[:4] + [s_where, s_platform, s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[5:] + [s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
         s_team, s_exec_roadmap]
 DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
