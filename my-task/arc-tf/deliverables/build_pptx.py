@@ -523,12 +523,12 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
     arrow(s, c4, fb, c4, ry, color=ORANGE, head=False)
     arrow(s, c4, ry, c2, ry, color=ORANGE, head=False)
     arrow(s, c2, ry, c2, fb + Inches(0.03), color=ORANGE)
-    text(s, M, COL_Y + Inches(1.54), W - 2 * M, Inches(0.36),
+    text(s, M, COL_Y + Inches(1.64), W - 2 * M, Inches(0.36),
          [[("순환  ", {"bold": True})] + runs_of("④의 엔지니어 수정 내용은 __검토, 승인 후 새 버전으로 ②RAG에 저장__, 다음 Workflow에 반영")], size=14, color=BLUE,
          align=PP_ALIGN.CENTER)
     gap = Inches(0.6)
     cw = (W - 2 * M - gap) / 2
-    cy, chh = Inches(3.95), Inches(2.0)
+    cy, chh = Inches(4.25), Inches(2.0)
     column(s, M, cy, cw, chh, "공통 플랫폼 팀 역할", [
                "녹화 내용 추출, **RAG DB**, Workflow 생성",
                "**Computer Use** 실행 엔진 개발"]
@@ -538,7 +538,7 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
                "실전 사용 후 **개발자에게 피드백** → 플랫폼에 반영"]
            + (["장비군별 도구로 **외부 Recipe 파일 편집** (공통 플랫폼 범위 밖)"] if merged else []), BLUE, size=13)
-    note_line(s, Inches(6.1), "플랫폼의 역할", "2027 관찰과 지식화 (작업 녹화, Workflow 구축)  →  2028 보조 (반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)", size=13)
+    note_line(s, Inches(6.5), "플랫폼의 역할", "2027 관찰과 지식화 (작업 녹화, Workflow 구축)  →  2028 보조 (반복 입력 대행)  →  2029 자율 (Agent가 셋업 진행)", size=13)
 
 
 def s_offline():  # Offline 파이프라인 (team)
