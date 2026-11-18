@@ -388,9 +388,9 @@ def s_team():  # TF 구성 (조직도)
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     goal = lambda t: [[("2027 상반기 목표", {"bold": True, "color": ORANGE})], t]
     # 한 팀으로 그린다: 같은 사람은 한 번만 나온다. (머리말, 폭 비율, 구성원)
-    groups = [("개발 3명: Champion 포함, 기반기술전략 AX 파트", 0.36, [
-                  ("백엔드 (2명)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
-                  ("프론트엔드 (1명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"])]),
+    groups = [("개발 3명: 기반기술전략 AX 파트", 0.36, [
+                  ("백엔드 (2명)\n(Champion 포함)", ["서버, 판단, 규칙 확인", "녹화 DB 추출", "LLMOps"]),
+                  ("프론트엔드\n(1명)", ["설치형 에이전트", "대화형 서비스 구현", "Workflow 모니터링", "승인 화면"])]),
               ("R&D DMI 장비군 담당: 장비군마다 2명, 플랫폼 개발에 수시 합류", 0.64, [
                   ("CD-SEM\n(1차, 2명)", goal("Align Fail 자동 대응 Agent 현장 배치")),
                   ("Thickness\n(1차, 2명)", goal("Film 10 layer 이하 의뢰건 90% 이상 자동화")),
@@ -425,7 +425,7 @@ def s_team():  # TF 구성 (조직도)
             box(s, x, y, bw, Inches(0.06), fill=GRAY if dim else INK)
             text(s, x + Inches(0.06), y + Inches(0.12), bw - Inches(0.12), Inches(0.5), name.split("\n"), size=12, bold=True, gap=0,
                  align=PP_ALIGN.CENTER)
-            text(s, x + Inches(0.06), y + Inches(0.6 if gi == 0 else 0.72), bw - Inches(0.12), Inches(1.15), lines, size=12, color=INK,
+            text(s, x + Inches(0.06), y + Inches(0.72), bw - Inches(0.12), Inches(1.1), lines, size=12, color=INK,
                  align=PP_ALIGN.CENTER, spacing=1.0, gap=0.25)
         gx += gw + gg
     note_line(s, Inches(6.42), "운영", "**Weekly 미팅** (개발 노하우 공유, 진행사항 체크), **월간 AI/DT TF장 보고**, **분기 부문장님 보고**", size=13)
@@ -496,7 +496,7 @@ def s_decision():  # 결정 필요 사항
     two_col(s, "12월 결정 필요 사항: TF 구성 승인", [
                 "**2027-01~12 ARC TF 운영 승인** (1차, 2차 명단 함께 지정)",
                 "**1차 CD-SEM, Thickness, Inspection 담당 지정**: 장비군마다 2명 (6명), 플랫폼 개발에 수시 합류",
-                "**개발 인력 3명 지정**: 백엔드 2, 프론트엔드 1 (ARC TF Champion 포함, 기반기술전략 AX 파트)",
+                "**개발 인력 3명 지정**: 백엔드 2 (ARC TF Champion 포함), 프론트엔드 1. 기반기술전략 AX 파트",
                 "**2차 다른 MI 장비군 담당 지정**: 장비군마다 2명, __6월 베타 확인 후 7월 본격 참여__"],
             "필요 자원", [
                 "2027-01 전: 공통 프로젝트를 위한 **HCP 환경 및 자원** (현 H200 2장, 2027 하반기 4장 이상 확보)",
