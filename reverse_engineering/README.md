@@ -43,7 +43,7 @@ note_kind: "목차"
 
 팀원에게 RE와 REA 사용법을 공유하는 발표 자료(`re-rea-intro.*`)가 이 폴더 바로 아래에 있다. 만드는 스크립트는 `resources/slides/`에 있다.
 
-**입문 deck (pptx와 HTML, 본편 27장, 60분, 부록 11장)**: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 부록은 발표 시간 밖의 기초 상식(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)와 용어 사전(자주 나오는 말만 골랐고, 전체는 glossary.md)이다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.
+**입문 deck (pptx와 HTML, 본편 26장, 60분, 부록 12장)**: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 부록은 발표 시간 밖의 기초 상식(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)와 용어 사전(자주 나오는 말만 골랐고, 전체는 glossary.md), 자주 만나는 문제다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.
 
 - [re-rea-intro.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/re-rea-intro.pptx): 발표용 PowerPoint. 슬라이드마다 발표자 노트가 있다. GitHub 화면에서 **Download raw file**로 내려받는다.
 - [re-rea-intro.bento.html](https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/re-rea-intro.bento.html): 같은 내용의 [Bento](https://bento.page) HTML. 하얀 배경에 순서대로 나타나는 효과와 슬라이드 사이 morph만 넣고, 반복되는 움직임은 넣지 않았다. **Download raw file**로 내려받아 브라우저로 열고 오른쪽 아래 **Slideshow**로 발표한다. 글꼴은 PC의 시스템 글꼴을 쓴다.

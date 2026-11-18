@@ -165,7 +165,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <p>회사 환경은 Windows PC + pi 에이전트(가끔 Hermes, 사내 LLM)다. 주 분석 대상은 설치형 프로그램이므로, 실무에서는 3번과 6번 문서를 가장 자주 본다.</p>
 <h2 id="readme--발표-자료">발표 자료</h2>
 <p>팀원에게 RE와 REA 사용법을 공유하는 발표 자료(<code>re-rea-intro.*</code>)가 이 폴더 바로 아래에 있다. 만드는 스크립트는 <code>resources/slides/</code>에 있다.</p>
-<p><strong>입문 deck (pptx와 HTML, 본편 27장, 60분, 부록 11장)</strong>: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 부록은 발표 시간 밖의 기초 상식(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)와 용어 사전(자주 나오는 말만 골랐고, 전체는 glossary.md)이다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.</p>
+<p><strong>입문 deck (pptx와 HTML, 본편 26장, 60분, 부록 12장)</strong>: 전기 공학, 컴퓨터 공학 전공이 아닌 팀원을 위한 자료다. 부록은 발표 시간 밖의 기초 상식(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)와 용어 사전(자주 나오는 말만 골랐고, 전체는 glossary.md), 자주 만나는 문제다. 새 용어를 나올 때마다 풀어서 설명하고, 도식과 표를 주로 쓴다.</p>
 <ul>
 <li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/re-rea-intro.pptx">re-rea-intro.pptx</a>: 발표용 PowerPoint. 슬라이드마다 발표자 노트가 있다. GitHub 화면에서 <strong>Download raw file</strong>로 내려받는다.</li>
 <li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/reverse_engineering/re-rea-intro.bento.html">re-rea-intro.bento.html</a>: 같은 내용의 <a href="https://bento.page">Bento</a> HTML. 하얀 배경에 순서대로 나타나는 효과와 슬라이드 사이 morph만 넣고, 반복되는 움직임은 넣지 않았다. <strong>Download raw file</strong>로 내려받아 브라우저로 열고 오른쪽 아래 <strong>Slideshow</strong>로 발표한다. 글꼴은 PC의 시스템 글꼴을 쓴다.</li>
@@ -3477,7 +3477,7 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 </tr>
 </tbody>
 </table></div>
-<p>구성은 챕터 4개이고 발표 시간은 질문을 포함해 60분이다. 챕터 1 리버스 엔지니어링이란(3~11장), 챕터 2 작업 절차(12~14장), 챕터 3 Ghidra와 REA(15~17장), 챕터 4 회사 PC에서 써 보기(18~25장), 마무리(26~27장). 28~35장은 발표 시간 밖의 부록(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)이고, 36~38장은 용어 사전(자주 나오는 말만 골랐고, 전체는 glossary.md)이다. 질문이 나오면 펼치거나 따로 읽게 나눠 준다. 슬라이드의 도식은 이 원고에서 목록과 표로 옮겨 적었다.</p>
+<p>구성은 챕터 4개이고 발표 시간은 질문을 포함해 60분이다. 챕터 1 리버스 엔지니어링이란(3~11장), 챕터 2 작업 절차(12~14장), 챕터 3 Ghidra와 REA(15~17장), 챕터 4 회사 PC에서 써 보기(18~24장), 마무리(25~26장). 27~34장은 발표 시간 밖의 부록(기계어와 실행 파일, 16진수 표기, 빌드 단계, 어셈블리, 컴파일 설정, .NET, 언어별 차이, Python 인터프리터)이고, 35~37장은 용어 사전(자주 나오는 말만 골랐고, 전체는 glossary.md), 38장은 자주 만나는 문제다. 질문이 나오면 펼치거나 따로 읽게 나눠 준다. 슬라이드의 도식은 이 원고에서 목록과 표로 옮겨 적었다.</p>
 <h2 id="re-rea-intro--어떻게-사용하는가-how">어떻게 사용하는가? (How)</h2>
 <p>pptx, HTML deck, 이 문서는 직접 고치지 않는다. <code>build_rea_intro.py</code>의 <code>SLIDES</code>를 고친 뒤 저장소 루트에서 다시 만든다.</p>
 <pre><code class="language-bash">python reverse_engineering/resources/slides/build_rea_intro.py
@@ -3498,7 +3498,7 @@ rea inspect-pe-load-config C:\re-work\app\App.exe --json
 <li><strong>챕터 1  RE란 무엇인가</strong>: 무엇이고 왜 필요한가. 프로그램이 만들어지는 흐름. 정적 분석과 동적 분석</li>
 <li><strong>챕터 2  작업 절차</strong>: 허가 확인부터 보고까지 7단계. 시작 전의 안전 수칙. 좋은 질문을 만드는 법</li>
 <li><strong>챕터 3  Ghidra와 REA</strong>: 실행 파일을 읽는 도구 Ghidra. 그 도구를 AI에게 맡기는 REA. 직접 할 때와 REA로 할 때</li>
-<li><strong>챕터 4  회사 PC에서 쓰기</strong>: Windows에서 되는 것과 안 되는 것. 설치와 연결. 질문하는 법과 결과 읽는 법</li>
+<li><strong>챕터 4  회사 PC에서 쓰기</strong>: Windows에서 되는 것과 안 되는 것. 질문하는 법과 결과 읽는 법. 설치와 연결</li>
 </ul>
 <p><strong>발표자 노트</strong>: 네 부분으로 진행합니다. 끝나고 나면 세 가지를 얻어 가시면 됩니다. 리버스 엔지니어링이 어떤 일인지 설명할 수 있고, 분석을 시작하기 전에 무엇을 확인해야 하는지 알고, REA에게 좋은 질문을 쓸 수 있게 됩니다.</p>
 <h3 id="re-rea-intro--3-리버스-엔지니어링이란-무엇인가">3. 리버스 엔지니어링이란 무엇인가</h3>
@@ -3553,7 +3553,7 @@ b8 ff ff ff ff
 </ol>
 <p>핵심: 리버스 엔지니어링은 이 화살표를 거꾸로 거슬러 올라간다</p>
 <p>참고: 이 그림은 C, C++처럼 기계어로 바로 만드는(네이티브) 프로그램의 예다. 웹, .NET, Python 프로그램은 남는 정보와 분석 방법이 다르다(11장, 부록 7).</p>
-<p><strong>발표자 노트</strong>: 프로그램이 만들어지는 흐름부터 보겠습니다. 개발자가 쓰는 글이 소스 코드이고, 그것을 컴퓨터가 알아듣는 숫자로 번역하는 과정이 컴파일입니다. 결과물이 우리가 더블클릭하는 exe 파일입니다. 우리 손에는 보통 오른쪽 끝의 실행 파일만 있습니다. 왼쪽의 세 줄짜리 코드는 뒤에서 계속 예시로 씁니다. 값이 100보다 크면 -1, 아니면 2배를 돌려주는 코드입니다.</p>
+<p><strong>발표자 노트</strong>: 프로그램이 만들어지는 흐름부터 보겠습니다. 여기서는 C, C++로 만든 Windows 실행 파일을 예로 듭니다. 개발자가 쓰는 글이 소스 코드이고, 그것을 컴퓨터가 알아듣는 숫자로 번역하는 과정이 컴파일입니다. 결과물이 우리가 더블클릭하는 exe 파일입니다. 우리 손에는 보통 오른쪽 끝의 실행 파일만 있습니다. 왼쪽의 세 줄짜리 코드는 뒤에서 계속 예시로 씁니다. 값이 100보다 크면 -1, 아니면 2배를 돌려주는 코드입니다.</p>
 <h3 id="re-rea-intro--6-컴파일은-정보를-버린다">6. 컴파일은 정보를 버린다</h3>
 <blockquote>
 <p>사라진 정보가 많을수록 분석이 어렵습니다. 그래서 남은 단서에서 출발합니다</p>
@@ -3646,7 +3646,7 @@ return iVar1;</code></p>
 </blockquote>
 <ol>
 <li>
-<p><strong>1  화면</strong>: 눈에 보이는 버튼이나 문구에서 시작한다</p>
+<p><strong>1  화면</strong>: 버튼을 누르면 나오는 문구 "Export completed"에서 시작한다</p>
 <p><code>text
 [ Export ]</code></p>
 </li>
@@ -3656,17 +3656,17 @@ return iVar1;</code></p>
 "Export completed"</code></p>
 </li>
 <li>
-<p><strong>3  상호 참조</strong>: 그 문자열을 쓰는 함수를 찾는다</p>
+<p><strong>3  상호 참조</strong>: 그 문구를 쓰는 코드 위치를 찾는다</p>
 <p><code>text
 누가 쓰는가?</code></p>
 </li>
 <li>
-<p><strong>4  함수 (진입점)</strong>: 이름이 없어 주소로 불린다. 여기서부터 읽는다</p>
+<p><strong>4  함수 (진입점)</strong>: 먼저 읽을 함수. 이름이 없어 주소로 불린다</p>
 <p><code>text
 FUN_140012340</code></p>
 </li>
 <li>
-<p><strong>5  의사 코드</strong>: 디컴파일해서 읽고, 여기서 부르는 함수를 따라간다</p>
+<p><strong>5  의사 코드</strong>: 읽기 쉬운 코드로 바꿔(디컴파일) 읽고, 부르는 함수를 따라간다</p>
 <p><code>text
 if (...) { ... }</code></p>
 </li>
@@ -3802,7 +3802,7 @@ if (...) { ... }</code></p>
 <ol>
 <li><strong>사람</strong>: 질문을 고르고 결과의 등급을 따진다.</li>
 <li><strong>AI 에이전트 (pi)</strong>: 질문을 받아 어떤 도구를 쓸지 정한다. 사내 LLM(AI 모델)과 연결되어 있고, 도구 결과가 모델로 전달된다.</li>
-<li><strong>REA</strong>: 스킬(작업 지침서)과 MCP 서버(분석 도구 묶음). 에이전트가 MCP로 도구를 부르면 근거와 한계가 붙은 결과를 돌려준다.</li>
+<li><strong>REA</strong>: 작업 지침서(스킬)와 분석 도구 묶음(MCP 서버)을 제공한다. 에이전트가 도구를 부르면 근거와 한계가 붙은 결과를 돌려준다.</li>
 <li><strong>분석 엔진</strong>: Ghidra(C, C++ 프로그램), JavaScript와 Electron 분석기, .NET과 Python 분석기, Chrome(웹 페이지 관찰).</li>
 </ol>
 <p>REA와 분석 엔진은 내 PC에서 실행된다.</p>
@@ -3823,7 +3823,7 @@ if (...) { ... }</code></p>
 <ul>
 <li>대상 경로와 질문을 글로 적는다</li>
 <li>에이전트가 필요한 함수만 찾아서 읽는다</li>
-<li>결론마다 근거 번호와 등급이 붙어서 온다</li>
+<li>결론마다 기록을 다시 찾는 근거 번호(Evidence ID)가 붙어서 온다</li>
 <li>사람은 결과를 검토하고 다음 질문을 정한다</li>
 </ul>
 <p>참고: 질문에 답할 소스가 온전히 있으면 소스부터 읽는다. REA는 배포된 결과물에서만 확인할 수 있는 사실이 필요할 때 쓴다. 예: 저장소의 코드와 배포된 .exe가 같은지 확인할 때.</p>
@@ -3880,40 +3880,37 @@ if (...) { ... }</code></p>
 </table></div>
 <p>참고: HAR: 브라우저의 통신 기록 파일. 로그인 상태를 유지하는 인증 정보가 들어 있을 수 있으므로 분석이 끝나면 지운다.</p>
 <p><strong>발표자 노트</strong>: REA 문서는 맥과 리눅스 기준으로 쓰인 부분이 많아서, Windows에서 안 되는 기능이 몇 가지 있습니다. 실제로 아쉬운 것은 함수에 이름을 붙이는 기능 하나입니다. 에이전트에게 따라간 함수의 주소와 제안 이름을 표로 정리하라고 하면 됩니다. 그리고 분석할 파일은 반드시 로컬 디스크에 복사해 둡니다.</p>
-<h3 id="re-rea-intro--19-설치와-연결-순서">19. 설치와 연결 순서</h3>
+<h3 id="re-rea-intro--19-대상별로-rea가-가는-길">19. 대상별로 REA가 가는 길</h3>
 <blockquote>
-<p>새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인합니다</p>
+<p>Ghidra가 필요한 것은 기계어로 바로 만든(네이티브) 프로그램입니다</p>
 </blockquote>
-<pre><code class="language-text"># 1. 준비물 확인 (REA가 대신 설치해 주지 않는다)
-#    Node.js 22.23.4 이상(22.x) 또는 24.22.1 이상(24.x)
-#    Ghidra 12.1 이상의 12.x
-#    JDK 21 이상 (Ghidra 12.2는 JDK 25 이상)
-
-# 2. REA 설치 (npm: Node.js에 딸린 설치 도구)
-npm install --global rea-agents
-
-# 3. Ghidra와 Java의 위치를 알려 준다
-$env:GHIDRA_INSTALL_DIR = &quot;C:\tools\ghidra_12.1.4_PUBLIC&quot;
-$env:JAVA_HOME = &quot;C:\Program Files\Java\jdk-21&quot;
-$env:REA_ANALYSIS_PROVIDER = &quot;ghidra&quot;
-
-# 4. 진단
-rea doctor --provider ghidra --json
-
-# 5. 에이전트(pi)에 등록하고 확인
-rea setup --client pi --dry-run --json
-rea setup --client pi --yes --json
-rea doctor --client pi --json
-</code></pre>
-<ul>
-<li><strong>PowerShell</strong>: Windows의 명령 입력 창. 여기에 왼쪽 명령을 입력한다</li>
-<li><strong>JDK</strong>: Ghidra를 실행하는 데 필요한 Java 도구</li>
-<li><strong>환경 변수</strong>: 프로그램에게 알려 주는 설정값. 여기서는 Ghidra와 Java가 설치된 위치</li>
-<li><strong>Gradle</strong>: JDK 위에서 도는 Java 빌드 도구. Ghidra를 소스에서 만들 때만 쓰고, 배포본 Ghidra와 REA에는 필요 없다</li>
-<li><strong>--dry-run</strong>: 바뀔 내용만 미리 보여 주고 아무것도 바꾸지 않는다</li>
-<li>경로는 실제 설치 위치로 바꾸고, 등록한 뒤 pi에서 <strong>/reload</strong>를 실행한다</li>
-</ul>
-<p><strong>발표자 노트</strong>: 한 번만 하면 되는 작업이고, 오늘 외울 내용은 아닙니다. 이런 순서라는 것만 보시면 됩니다. 준비물 세 가지는 REA가 대신 설치해 주지 않으니 먼저 있어야 합니다. Gradle을 같이 설치하라는 안내를 보셨을 수 있는데, Gradle은 Ghidra를 소스에서 직접 만들 때 쓰는 빌드 도구입니다. JDK가 공작 기계라면 Gradle은 작업 반장입니다. 배포본 Ghidra를 받아 쓰는 우리 경우에는 JDK만 있으면 됩니다. Ghidra GitHub README는 Install 절과 Build 절로 나뉩니다. Install 절은 배포본을 받아 쓰는 방법이라 JDK와 zip 파일만 요구하고, Build 절은 소스로 Ghidra를 직접 만드는 방법이라 Gradle, Python, 컴파일러까지 요구합니다. Gradle 안내는 Build 절에서 나온 것입니다. rea doctor는 건강 검진 같은 명령입니다. 문제가 있으면 어디가 문제인지 알려 줍니다. 막히면 설정 문서를 보거나 저에게 물어보시면 됩니다.</p>
+<ol>
+<li>
+<p><strong>네이티브 프로그램 (C, C++ 등)</strong>: <strong>Ghidra 필요</strong></p>
+<p><code>text
+open_binary
+→ analyze_function</code></p>
+</li>
+<li>
+<p><strong>일반 .NET 프로그램 (C#)</strong>: Ghidra 불필요</p>
+<p><code>text
+inspect_managed_artifact</code></p>
+</li>
+<li>
+<p><strong>Python을 exe로 묶은 것 (PyInstaller)</strong>: Ghidra 불필요</p>
+<p><code>text
+open_binary
+→ inspect_artifact</code></p>
+</li>
+<li>
+<p><strong>웹 기술로 만든 설치형 앱 (Electron)</strong>: Ghidra 불필요</p>
+<p><code>text
+analyze_javascript_
+application</code></p>
+</li>
+</ol>
+<p>참고: 도구 이름은 외울 필요가 없다. 에이전트가 고른다.  브라우저에 열린 웹 앱은 Chrome 관찰 도구(inspect_web_page)로 본다.  .NET이라도 기계어로 빌드한 것(NativeAOT)은 네이티브 경로로 간다.</p>
+<p><strong>발표자 노트</strong>: 에이전트는 대상의 형식을 보고 첫 도구를 고릅니다. 우리가 알아 둘 것은 하나입니다. 설치 폴더를 받았는데 무엇으로 만든 프로그램인지 모르면 폴더째 넘기면 REA가 판별해 줍니다. exe 하나가 아니라 폴더째 넘기는 이유는 DLL, 설정, 리소스가 함께 있어야 실제 동작을 설명할 수 있기 때문입니다. Ghidra까지 가는 것은 맨 왼쪽 길뿐입니다.</p>
 <h3 id="re-rea-intro--20-프롬프트에-넣을-네-가지">20. 프롬프트에 넣을 네 가지</h3>
 <blockquote>
 <p>프롬프트(AI에게 보내는 지시문)의 질이 결과의 질을 정합니다. 이 틀을 복사해서 씁니다</p>
@@ -3946,39 +3943,8 @@ rea doctor --client pi --json
           확인하지 못한 부분은 어디까지 찾아봤는지 적어라.</code></p>
 </li>
 </ol>
-<p><strong>발표자 노트</strong>: 에이전트에게 보내는 글에 이 네 가지를 넣습니다. 왼쪽이 실제 예시이고 오른쪽이 각 부분의 역할입니다. 특히 세 번째가 중요합니다. 정적 분석만 하라고 적지 않으면 에이전트가 프로그램을 실행하는 도구를 고를 수 있습니다. 나쁜 예는 '이 exe 분석해줘'입니다. 결과가 넓고 얕게 나옵니다. 질문이 여러 개면 나눠서 묻습니다.</p>
-<h3 id="re-rea-intro--21-대상별로-rea가-가는-길">21. 대상별로 REA가 가는 길</h3>
-<blockquote>
-<p>Ghidra가 필요한 것은 기계어로 바로 만든(네이티브) 프로그램입니다</p>
-</blockquote>
-<ol>
-<li>
-<p><strong>네이티브 프로그램 (C, C++ 등)</strong>: <strong>Ghidra 필요</strong></p>
-<p><code>text
-open_binary
-→ analyze_function</code></p>
-</li>
-<li>
-<p><strong>일반 .NET 프로그램 (C#)</strong>: Ghidra 불필요</p>
-<p><code>text
-inspect_managed_artifact</code></p>
-</li>
-<li>
-<p><strong>Python을 exe로 묶은 것 (PyInstaller)</strong>: Ghidra 불필요</p>
-<p><code>text
-open_binary
-→ inspect_artifact</code></p>
-</li>
-<li>
-<p><strong>웹 기술로 만든 설치형 앱 (Electron)</strong>: Ghidra 불필요</p>
-<p><code>text
-analyze_javascript_
-application</code></p>
-</li>
-</ol>
-<p>참고: 도구 이름은 외울 필요가 없다. 에이전트가 고른다.  브라우저에 열린 웹 앱은 Chrome 관찰 도구(inspect_web_page)로 본다.  .NET이라도 기계어로 빌드한 것(NativeAOT)은 네이티브 경로로 간다.</p>
-<p><strong>발표자 노트</strong>: 에이전트는 대상의 형식을 보고 첫 도구를 고릅니다. 우리가 알아 둘 것은 하나입니다. 설치 폴더를 받았는데 무엇으로 만든 프로그램인지 모르면 폴더째 넘기면 REA가 판별해 줍니다. exe 하나가 아니라 폴더째 넘기는 이유는 DLL, 설정, 리소스가 함께 있어야 실제 동작을 설명할 수 있기 때문입니다. Ghidra까지 가는 것은 맨 왼쪽 길뿐입니다.</p>
-<h3 id="re-rea-intro--22-네이티브-exe-분석-흐름">22. 네이티브 .exe 분석 흐름</h3>
+<p><strong>발표자 노트</strong>: 14장에서 Export 버튼을 누르면 어떤 파일이 생기는지 물었습니다. 이번에는 CSV의 열 구성을 묻는 프롬프트로 써 봅니다. 에이전트에게 보내는 글에 이 네 가지를 넣습니다. 왼쪽이 실제 예시이고 오른쪽이 각 부분의 역할입니다. 특히 세 번째가 중요합니다. 정적 분석만 하라고 적지 않으면 에이전트가 프로그램을 실행하는 도구를 고를 수 있습니다. 나쁜 예는 '이 exe 분석해줘'입니다. 결과가 넓고 얕게 나옵니다. 질문이 여러 개면 나눠서 묻습니다.</p>
+<h3 id="re-rea-intro--21-네이티브-exe-분석-흐름">21. 네이티브 .exe 분석 흐름</h3>
 <blockquote>
 <p>넓게 훑은 뒤 한 곳만 깊게 봅니다. 닫기 전에 근거를 저장합니다</p>
 </blockquote>
@@ -3991,8 +3957,8 @@ application</code></p>
 <li><strong>세션 닫기</strong>: close_binary. 6.9.0부터 같은 연결의 기록은 남고, 지우기는 reset_investigation</li>
 </ol>
 <p>참고: 큰 파일은 Ghidra가 처음 여는 데 몇 분이 걸린다. REA가 Ghidra 시작을 기다리는 기본 시간은 330초다.</p>
-<p><strong>발표자 노트</strong>: C나 C++ 프로그램을 분석할 때의 순서입니다. 왼쪽 깔때기처럼 처음에는 전체에서 후보를 좁히고, 함수 하나를 고른 뒤에야 깊게 읽습니다. 그리고 세션을 닫으면 근거 기록이 지워질 수 있으니 닫기 전에 꼭 파일로 저장하게 합니다.</p>
-<h3 id="re-rea-intro--23-결과를-읽는-법">23. 결과를 읽는 법</h3>
+<p><strong>발표자 노트</strong>: C나 C++ 프로그램을 분석할 때의 순서입니다. 방금 프롬프트에서 준 Export completed 문구를 찾아, 그 문구를 쓰는 함수부터 후보로 좁힙니다. 왼쪽 깔때기처럼 처음에는 전체에서 후보를 좁히고, 함수 하나를 고른 뒤에야 깊게 읽습니다. 그리고 세션을 닫으면 근거 기록이 지워질 수 있으니 닫기 전에 꼭 파일로 저장하게 합니다.</p>
+<h3 id="re-rea-intro--22-결과를-읽는-법">22. 결과를 읽는 법</h3>
 <blockquote>
 <p>에이전트의 설명을 그대로 믿지 않습니다. 세 가지를 확인합니다</p>
 </blockquote>
@@ -4008,7 +3974,7 @@ application</code></p>
 </ul>
 <p>참고: 남은 질문이 있으면 그 질문 하나만 좁혀서 다시 묻는다. 같은 분석을 그대로 다시 돌리지 않는다.</p>
 <p><strong>발표자 노트</strong>: AI가 쓴 설명은 그럴듯하게 읽힙니다. 그래서 결과를 받으면 먼저 무엇을 못 봤는지부터 확인합니다. REA는 한계와 커버리지를 결과에 같이 적어 주니 그 부분을 건너뛰지 않습니다. 왼쪽은 형식을 단순하게 보인 예시입니다.</p>
-<h3 id="re-rea-intro--24-이런-일에-쓰면-좋다">24. 이런 일에 쓰면 좋다</h3>
+<h3 id="re-rea-intro--23-이런-일에-쓰면-좋다">23. 이런 일에 쓰면 좋다</h3>
 <blockquote>
 <p>배포된 결과물에서만 확인할 수 있는 사실이 필요할 때 씁니다</p>
 </blockquote>
@@ -4020,48 +3986,41 @@ application</code></p>
 <li><strong>인수인계 없는 도구 파악</strong>: 이 도구가 어떤 파일과 설정을 읽고 쓰는가</li>
 </ul>
 <p><strong>발표자 노트</strong>: 우리 팀에서 쓸 만한 경우 네 가지입니다. 특히 계산 로직을 옮길 때는 아래 그림처럼 옮긴 코드와 원본 도구에 같은 입력을 넣어 비교하는 것까지 해야 합니다. 0, 음수, 빈 값 같은 경계값도 꼭 넣습니다.</p>
-<h3 id="re-rea-intro--25-자주-만나는-문제">25. 자주 만나는 문제</h3>
+<h3 id="re-rea-intro--24-설치와-연결-순서">24. 설치와 연결 순서</h3>
 <blockquote>
-<p>막히면 먼저 rea doctor로 진단하고, 그다음 rea update로 최신 버전을 받습니다</p>
+<p>새로 설치할 때는 사내 설치 금지 목록과 라이선스를 먼저 확인합니다</p>
 </blockquote>
-<div class="tbl"><table>
-<thead>
-<tr>
-<th>증상</th>
-<th>원인</th>
-<th>해결</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pi에 REA 도구가 안 보인다</td>
-<td>등록이 안 됐거나 다시 불러오지 않았다</td>
-<td>rea doctor --client pi 확인 후 /reload</td>
-</tr>
-<tr>
-<td>Ghidra를 못 찾는다</td>
-<td>Ghidra 위치 설정이 등록 정보에 없다</td>
-<td>등록 환경에 GHIDRA_INSTALL_DIR을 넣고 재시작</td>
-</tr>
-<tr>
-<td>큰 파일이 시간 초과된다</td>
-<td>Ghidra 시작이 330초를 넘었거나, 에이전트의 대기 시간이 먼저 끝났다</td>
-<td>어느 쪽인지 구분한 뒤 해당 제한 시간을 늘린다</td>
-</tr>
-<tr>
-<td>결과에 의사 코드가 없다</td>
-<td>기본 응답이 요약이다</td>
-<td>필요한 부분만 펼쳐 달라고 한다 (inspect_analysis_view)</td>
-</tr>
-<tr>
-<td>닫았더니 근거가 사라졌다</td>
-<td>현재 배포본은 세션을 닫을 때 기록을 지운다</td>
-<td>닫기 전에 export_evidence_bundle로 저장</td>
-</tr>
-</tbody>
-</table></div>
-<p><strong>발표자 노트</strong>: 처음 쓸 때 자주 만나는 문제 다섯 가지입니다. 대부분 연결 설정 문제이고 rea doctor가 원인을 알려 줍니다. REA는 업데이트가 잦아서, 이상하면 최신 버전으로 올려 보는 것도 방법입니다.</p>
-<h3 id="re-rea-intro--26-정리-세-가지-원칙과-첫-실습">26. 정리: 세 가지 원칙과 첫 실습</h3>
+<pre><code class="language-text"># 1. 준비물 확인 (REA가 대신 설치해 주지 않는다)
+#    Node.js 22.23.4 이상(22.x) 또는 24.22.1 이상(24.x)
+#    Ghidra 12.1 이상의 12.x
+#    JDK 21 이상 (Ghidra 12.2는 JDK 25 이상)
+
+# 2. REA 설치 (npm: Node.js에 딸린 설치 도구)
+npm install --global rea-agents
+
+# 3. Ghidra와 Java의 위치를 알려 준다
+$env:GHIDRA_INSTALL_DIR = &quot;C:\tools\ghidra_12.1.4_PUBLIC&quot;
+$env:JAVA_HOME = &quot;C:\Program Files\Java\jdk-21&quot;
+$env:REA_ANALYSIS_PROVIDER = &quot;ghidra&quot;
+
+# 4. 진단
+rea doctor --provider ghidra --json
+
+# 5. 에이전트(pi)에 등록하고 확인
+rea setup --client pi --dry-run --json
+rea setup --client pi --yes --json
+rea doctor --client pi --json
+</code></pre>
+<ul>
+<li><strong>PowerShell</strong>: Windows의 명령 입력 창. 여기에 왼쪽 명령을 입력한다</li>
+<li><strong>JDK</strong>: Ghidra를 실행하는 데 필요한 Java 도구</li>
+<li><strong>환경 변수</strong>: 프로그램에게 알려 주는 설정값. 여기서는 Ghidra와 Java가 설치된 위치</li>
+<li><strong>Gradle</strong>: JDK 위에서 도는 Java 빌드 도구. Ghidra를 소스에서 만들 때만 쓰고, 배포본 Ghidra와 REA에는 필요 없다</li>
+<li><strong>--dry-run</strong>: 바뀔 내용만 미리 보여 주고 아무것도 바꾸지 않는다</li>
+<li>경로는 실제 설치 위치로 바꾸고, 등록한 뒤 pi에서 <strong>/reload</strong>를 실행한다</li>
+</ul>
+<p><strong>발표자 노트</strong>: 마지막으로 설치입니다. 다음 장에서 안내할 첫 실습은 브라우저만 쓰므로 설치가 필요 없습니다. 이 설치는 그다음에 설치형 프로그램을 분석할 때의 준비입니다. 한 번만 하면 되는 작업이고, 오늘 외울 내용은 아닙니다. 이런 순서라는 것만 보시면 됩니다. 준비물 세 가지는 REA가 대신 설치해 주지 않으니 먼저 있어야 합니다. Gradle을 같이 설치하라는 안내를 보셨을 수 있는데, Gradle은 Ghidra를 소스에서 직접 만들 때 쓰는 빌드 도구입니다. JDK가 공작 기계라면 Gradle은 작업 반장입니다. 배포본 Ghidra를 받아 쓰는 우리 경우에는 JDK만 있으면 됩니다. Ghidra GitHub README는 Install 절과 Build 절로 나뉩니다. Install 절은 배포본을 받아 쓰는 방법이라 JDK와 zip 파일만 요구하고, Build 절은 소스로 Ghidra를 직접 만드는 방법이라 Gradle, Python, 컴파일러까지 요구합니다. Gradle 안내는 Build 절에서 나온 것입니다. rea doctor는 건강 검진 같은 명령입니다. 문제가 있으면 어디가 문제인지 알려 줍니다. 막히면 부록 12의 자주 만나는 문제와 설정 문서를 보거나 저에게 물어보시면 됩니다.</p>
+<h3 id="re-rea-intro--25-정리-세-가지-원칙과-첫-실습">25. 정리: 세 가지 원칙과 첫 실습</h3>
 <blockquote>
 <p>도구보다 원칙이 먼저입니다. 실습은 쉬운 대상부터 시작합니다</p>
 </blockquote>
@@ -4080,7 +4039,7 @@ application</code></p>
 </ul>
 <p>핵심: 허가받은 대상에, 좁은 질문을 던지고, 근거의 등급을 따진다</p>
 <p><strong>발표자 노트</strong>: 오늘 내용에서 세 가지만 기억하신다면 왼쪽입니다. 실습은 웹 앱부터 권합니다. 브라우저만 있으면 되고, 진입점 찾기, 코드 따라가기, 실행으로 확인하기라는 기본 흐름을 한 번 경험할 수 있습니다. 대상은 동료 엔지니어가 업무용으로 만들어 배포한 작은 웹 앱이 좋습니다. 코드가 작고 소스 맵이 남아 있는 경우가 많으며, 만든 사람에게 바로 묻고 답을 맞춰 볼 수 있습니다. 그룹웨어, 생산 시스템, 로그인 같은 전사 시스템은 크고, 보안 감시 대상이고, 동의를 받을 곳도 분명하지 않아서 첫 실습으로는 맞지 않습니다.</p>
-<h3 id="re-rea-intro--27-더-읽을-자료">27. 더 읽을 자료</h3>
+<h3 id="re-rea-intro--26-더-읽을-자료">26. 더 읽을 자료</h3>
 <blockquote>
 <p>더 깊은 내용은 이 자료의 부록과 공식 자료에 있습니다. 질문 받겠습니다</p>
 </blockquote>
@@ -4121,7 +4080,7 @@ application</code></p>
 </tbody>
 </table></div>
 <p><strong>발표자 노트</strong>: 발표에서 다루지 못한 기초 상식과 용어는 뒤의 부록에 있습니다. 도구 자체는 공식 저장소와 가이드를 보시면 됩니다. 질문 받겠습니다.</p>
-<h3 id="re-rea-intro--28-부록-1-기계어와-실행-파일">28. 부록 1: 기계어와 실행 파일</h3>
+<h3 id="re-rea-intro--27-부록-1-기계어와-실행-파일">27. 부록 1: 기계어와 실행 파일</h3>
 <blockquote>
 <p>기계어는 내용이고, 실행 파일은 기계어와 데이터를 함께 담은 그릇입니다</p>
 </blockquote>
@@ -4143,7 +4102,7 @@ application</code></p>
 </ul>
 <p>참고: 바이너리(Binary): 넓게는 글자가 아닌 모든 파일. RE에서는 보통 실행 파일(.exe, .dll)을 가리킨다.  PE: Windows 실행 파일의 형식 이름.</p>
 <p><strong>발표자 노트</strong>: 기계어와 바이너리는 자주 섞어 쓰지만 같은 말이 아닙니다. 기계어는 CPU가 실행하는 명령이고, 실행 파일은 그 기계어에 문자열, 빌려 쓰는 기능 목록, 아이콘 같은 정보를 함께 담은 그릇입니다. 그래서 기계어를 읽지 않고도 그릇의 다른 칸에서 많은 단서를 얻습니다.</p>
-<h3 id="re-rea-intro--29-부록-2-바이트는-왜-16진수로-보이나">29. 부록 2: 바이트는 왜 16진수로 보이나</h3>
+<h3 id="re-rea-intro--28-부록-2-바이트는-왜-16진수로-보이나">28. 부록 2: 바이트는 왜 16진수로 보이나</h3>
 <blockquote>
 <p>파일에는 바이트만 있습니다. 16진수는 그 바이트를 보여주는 방식입니다</p>
 </blockquote>
@@ -4169,7 +4128,7 @@ application</code></p>
 </ul>
 <p>참고: 0x: 16진수라는 표시. 0x65는 101, 0x1000은 4096이다.  리틀 엔디언(Little Endian): 작은 자리 바이트를 앞에 두는 저장 순서. x86 CPU가 쓴다.</p>
 <p><strong>발표자 노트</strong>: 헥스 편집기로 실행 파일을 열면 16진수가 가득 보이지만, 파일에 16진수가 들어 있는 것은 아닙니다. 파일은 바이트의 나열이고, 16진수는 한 바이트가 늘 두 자리로 맞아떨어져서 읽기 편한 표기일 뿐입니다. 그리고 바이트가 전부 숫자도 아닙니다. 같은 바이트가 명령어일 수도, 숫자나 글자일 수도 있고, 그걸 나눠 읽어 주는 것이 Ghidra 같은 도구입니다.</p>
-<h3 id="re-rea-intro--30-부록-3-c-소스가-exe가-되기까지">30. 부록 3: C 소스가 exe가 되기까지</h3>
+<h3 id="re-rea-intro--29-부록-3-c-소스가-exe가-되기까지">29. 부록 3: C 소스가 exe가 되기까지</h3>
 <blockquote>
 <p>C는 사람이 읽는 글이고, 네 단계를 거쳐 실행 파일(바이너리)이 됩니다</p>
 </blockquote>
@@ -4203,7 +4162,7 @@ app.exe</code></p>
 <p>핵심: 0~2단계는 글(텍스트), 3~4단계는 숫자(바이너리)다. 이름과 주석은 2단계에서 사라진다</p>
 <p>참고: 넓은 뜻의 "컴파일"은 1~4단계 전체(빌드)를, 좁은 뜻은 2단계만 가리킨다.  컴파일러: gcc, clang, MSVC 같은 번역 프로그램.  3단계 결과(.obj)는 링크 전의 기계어 조각이다.</p>
 <p><strong>발표자 노트</strong>: C 자체는 바이너리가 아니라 글입니다. 컴파일러가 이 글을 네 단계로 바꿔서 실행 파일을 만듭니다. 2단계에서 어셈블리가 되고, 3단계에서 비로소 숫자인 기계어가 됩니다. 변수 이름과 주석은 2단계에서 버려집니다. 리버스 엔지니어링은 이 길을 거꾸로 올라가는 일이고, 그래서 디스어셈블, 디컴파일이라는 말이 생겼습니다.</p>
-<h3 id="re-rea-intro--31-부록-4-어셈블리의-역할">31. 부록 4: 어셈블리의 역할</h3>
+<h3 id="re-rea-intro--30-부록-4-어셈블리의-역할">30. 부록 4: 어셈블리의 역할</h3>
 <blockquote>
 <p>어셈블리는 기계어를 사람이 읽게 적은 것입니다. 새 기능이 아니라 이름표입니다</p>
 </blockquote>
@@ -4214,7 +4173,7 @@ app.exe</code></p>
 </ul>
 <p>참고: Ghidra의 Listing 창이 어셈블리(사실), Decompiler 창이 의사 코드(추정)다(7장).  주의: ".NET 어셈블리"는 .NET의 배포 단위(.exe, .dll)를 부르는 이름이고 어셈블리 언어와 관계없다.</p>
 <p><strong>발표자 노트</strong>: 어셈블리는 기계어 숫자에 이름을 붙인 것입니다. 숫자와 1대1로 오가기 때문에 정확합니다. 디컴파일 결과가 이상할 때 어셈블리를 확인하라는 말이 이래서 나옵니다. 어셈블리를 직접 읽을 줄 몰라도 됩니다. .NET 어셈블리라는 말은 이름만 같고 다른 뜻이라는 점만 기억해 두시면 됩니다.</p>
-<h3 id="re-rea-intro--32-부록-5-컴파일-설정이-기계어를-바꾼다">32. 부록 5: 컴파일 설정이 기계어를 바꾼다</h3>
+<h3 id="re-rea-intro--31-부록-5-컴파일-설정이-기계어를-바꾼다">31. 부록 5: 컴파일 설정이 기계어를 바꾼다</h3>
 <blockquote>
 <p>같은 소스도 설정에 따라 기계어가 달라집니다. 동작은 같고 속도가 다릅니다</p>
 </blockquote>
@@ -4241,7 +4200,7 @@ ret
 </ul>
 <p>참고: Debug 빌드는 보통 최적화를 끄고, Release 빌드는 켠다. 최적화가 꺼진 쪽이 소스 모양에 가까워 읽기 쉽다.  L2, L3은 점프할 위치에 붙인 표시다.</p>
 <p><strong>발표자 노트</strong>: 같은 소스라도 컴파일러에게 어떻게 만들라고 하느냐에 따라 기계어가 달라집니다. 최적화를 끄면 소스를 한 줄씩 그대로 옮겨서 길고 느리지만 읽기는 쉽습니다. 최적화를 켜면 같은 함수가 다섯 줄로 줄고 분기도 사라집니다. 7장에서 본 기계어가 그 결과입니다. 결과값은 둘 다 같습니다.</p>
-<h3 id="re-rea-intro--33-부록-6-net-프로그램의-실행">33. 부록 6: .NET 프로그램의 실행</h3>
+<h3 id="re-rea-intro--32-부록-6-net-프로그램의-실행">32. 부록 6: .NET 프로그램의 실행</h3>
 <blockquote>
 <p>.NET은 기계어 대신 중간 언어(IL)를 담고, 실행할 때 기계어로 바꿉니다</p>
 </blockquote>
@@ -4265,7 +4224,7 @@ IL  →  기계어</code></p>
 <p>핵심: 이름과 타입이 파일에 남아서 원본에 가까운 C#으로 되돌릴 수 있다. Ghidra가 필요 없다</p>
 <p>참고: 판별 단서: mscoree.dll 임포트, 이름이 .deps.json이나 .dll.config로 끝나는 파일, System으로 시작하는 dll.  관리 코드(Managed Code): .NET 코드를 부르는 말.  예외: NativeAOT로 빌드하면 미리 기계어가 되므로 네이티브처럼 Ghidra로 본다.</p>
 <p><strong>발표자 노트</strong>: .NET은 Microsoft가 만든 실행 플랫폼입니다. Java와 비슷하게, 컴파일하면 기계어가 아니라 IL이라는 중간 언어가 나오고, 프로그램을 실행하는 순간 런타임이 기계어로 바꿉니다. 이때 쓰려고 클래스와 메서드 이름이 파일에 남기 때문에 분석이 쉽습니다. 11장에서 일반 .NET 프로그램을 쉬움으로 분류한 이유입니다.</p>
-<h3 id="re-rea-intro--34-부록-7-언어마다-무엇이-다른가">34. 부록 7: 언어마다 무엇이 다른가</h3>
+<h3 id="re-rea-intro--33-부록-7-언어마다-무엇이-다른가">33. 부록 7: 언어마다 무엇이 다른가</h3>
 <blockquote>
 <p>차이는 "언제, 누가 기계어로 바꾸는가"입니다. 그래서 남는 정보가 다릅니다</p>
 </blockquote>
@@ -4326,7 +4285,7 @@ IL  →  기계어</code></p>
 </table></div>
 <p>참고: 인터프리터: 미리 기계어로 바꾸지 않고 코드를 읽으면서 실행하는 프로그램.  JIT(Just-In-Time): 실행하는 순간 기계어로 바꾸는 방식.  바이트코드: 인터프리터나 런타임이 읽는 중간 형태(.NET의 IL, Python의 .pyc).</p>
 <p><strong>발표자 노트</strong>: C와 C++는 개발자 PC에서 미리 기계어로 바꿔서 기계어만 배포합니다. 그래서 가장 빠르지만 이름이 다 사라져 분석이 어렵습니다. JavaScript와 Python은 사용자 PC에서 실행할 때 바꾸거나 아예 바꾸지 않고 실행하므로, 코드가 글 그대로 배포됩니다. 분석이 쉬운 대신 C보다 느린 편입니다. 11장 난이도 표가 이 차이에서 나옵니다.</p>
-<h3 id="re-rea-intro--35-부록-8-python-인터프리터는-어떻게-실행하나">35. 부록 8: Python 인터프리터는 어떻게 실행하나</h3>
+<h3 id="re-rea-intro--34-부록-8-python-인터프리터는-어떻게-실행하나">34. 부록 8: Python 인터프리터는 어떻게 실행하나</h3>
 <blockquote>
 <p>Python 코드는 기계어가 되지 않습니다. 기계어로 된 인터프리터가 코드를 읽으며 실행합니다</p>
 </blockquote>
@@ -4351,7 +4310,7 @@ RETURN_VALUE
 </ul>
 <p>참고: 비유: C는 책 전체를 미리 번역해 두고(컴파일), Python은 통역사가 원문을 한 줄씩 읽으며 말한다(인터프리터).  바이트코드는 레지스터 대신 스택에 값을 쌓는다. 명령 이름은 Python 버전마다 다르다.  3.13부터 실험적 JIT가 있지만 기본으로 꺼져 있다.</p>
 <p><strong>발표자 노트</strong>: Python 코드는 기계어로 바뀌지 않습니다. 그런데 CPU는 기계어만 실행하니, 실제로 도는 기계어는 python.exe라는 인터프리터 자신입니다. 인터프리터는 소스를 바이트코드로 바꾼 뒤, 명령을 하나씩 꺼내 그 일을 맡은 C 함수를 실행하는 반복문입니다. 그래서 PyInstaller로 묶은 exe를 Ghidra로 열면 부트로더와 인터프리터만 보이고, 내 코드는 안에 든 .pyc를 꺼내서 봐야 합니다.</p>
-<h3 id="re-rea-intro--36-부록-9-용어-사전-분석할-때-쓰는-말">36. 부록 9: 용어 사전 (분석할 때 쓰는 말)</h3>
+<h3 id="re-rea-intro--35-부록-9-용어-사전-분석할-때-쓰는-말">35. 부록 9: 용어 사전 (분석할 때 쓰는 말)</h3>
 <blockquote>
 <p>용어는 많아 보여도, 모두 "단서를 찾고 따라가는" 동작에 붙인 이름입니다</p>
 </blockquote>
@@ -4402,7 +4361,7 @@ RETURN_VALUE
 </tbody>
 </table></div>
 <p><strong>발표자 노트</strong>: 여기부터 용어 사전입니다. 발표 중에 모르는 말이 나오면 이 장들을 펼칩니다. 일곱 개를 다 외울 필요는 없습니다. 8장의 그림에서 이 용어들이 실제로 어떤 순서로 쓰이는지 볼 수 있습니다. 임포트는 프로그램이 파일을 여는지, 네트워크를 쓰는지 짐작하게 해 주는 단서입니다. 다만 임포트에 있다고 해서 실제로 호출했다는 증명은 아닙니다.</p>
-<h3 id="re-rea-intro--37-부록-10-용어-사전-rea-쪽-말">37. 부록 10: 용어 사전 (REA 쪽 말)</h3>
+<h3 id="re-rea-intro--36-부록-10-용어-사전-rea-쪽-말">36. 부록 10: 용어 사전 (REA 쪽 말)</h3>
 <blockquote>
 <p>스킬은 '지침서', Ghidra는 '엔진', Evidence는 '측정 기록지'로 기억하면 됩니다</p>
 </blockquote>
@@ -4448,7 +4407,7 @@ RETURN_VALUE
 </tbody>
 </table></div>
 <p><strong>발표자 노트</strong>: REA를 설치하면 두 가지가 함께 들어옵니다. 하나는 실제 분석 도구 묶음인 MCP 서버이고, 다른 하나는 에이전트가 그 도구를 어떻게 쓸지 적어 둔 지침서인 스킬입니다. 스킬 이름은 reverse-engineer-anything입니다. 우리는 스킬을 직접 읽을 필요는 없고, 에이전트가 읽고 따릅니다.</p>
-<h3 id="re-rea-intro--38-부록-11-용어-사전-그-밖에-자주-나오는-말">38. 부록 11: 용어 사전 (그 밖에 자주 나오는 말)</h3>
+<h3 id="re-rea-intro--37-부록-11-용어-사전-그-밖에-자주-나오는-말">37. 부록 11: 용어 사전 (그 밖에 자주 나오는 말)</h3>
 <blockquote>
 <p>발표와 REA 결과에 자주 나오는 말만 골랐습니다. 전체 목록은 glossary.md에 있습니다</p>
 </blockquote>
@@ -4504,6 +4463,47 @@ RETURN_VALUE
 </tbody>
 </table></div>
 <p><strong>발표자 노트</strong>: 파일 형식, 웹, 설치 환경, 분석 결과에서 자주 만나는 말 여덟 개입니다. 0x로 시작하는 숫자는 16진수일 뿐이고 특별한 뜻이 있는 것은 아닙니다. 여기에 없는 말은 저장소의 용어 사전 문서(glossary.md)에서 찾습니다.</p>
+<h3 id="re-rea-intro--38-부록-12-자주-만나는-문제">38. 부록 12: 자주 만나는 문제</h3>
+<blockquote>
+<p>막히면 먼저 rea doctor로 진단하고, 그다음 rea update로 최신 버전을 받습니다</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인</th>
+<th>해결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pi에 REA 도구가 안 보인다</td>
+<td>등록이 안 됐거나 다시 불러오지 않았다</td>
+<td>rea doctor --client pi 확인 후 /reload</td>
+</tr>
+<tr>
+<td>Ghidra를 못 찾는다</td>
+<td>Ghidra 위치 설정이 등록 정보에 없다</td>
+<td>등록 환경에 GHIDRA_INSTALL_DIR을 넣고 재시작</td>
+</tr>
+<tr>
+<td>큰 파일이 시간 초과된다</td>
+<td>Ghidra 시작이 330초를 넘었거나, 에이전트의 대기 시간이 먼저 끝났다</td>
+<td>어느 쪽인지 구분한 뒤 해당 제한 시간을 늘린다</td>
+</tr>
+<tr>
+<td>결과에 의사 코드가 없다</td>
+<td>기본 응답이 요약이다</td>
+<td>필요한 부분만 펼쳐 달라고 한다 (inspect_analysis_view)</td>
+</tr>
+<tr>
+<td>닫았더니 근거가 사라졌다</td>
+<td>현재 배포본은 세션을 닫을 때 기록을 지운다</td>
+<td>닫기 전에 export_evidence_bundle로 저장</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>발표자 노트</strong>: 처음 쓸 때 자주 만나는 문제 다섯 가지입니다. 대부분 연결 설정 문제이고 rea doctor가 원인을 알려 줍니다. REA는 업데이트가 잦아서, 이상하면 최신 버전으로 올려 보는 것도 방법입니다.</p>
 <h2 id="re-rea-intro--참고-자료-references">참고 자료 (References)</h2>
 <ul>
 <li>REA 저장소: <a href="https://github.com/morluto/rea">https://github.com/morluto/rea</a></li>
