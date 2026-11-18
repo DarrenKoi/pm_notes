@@ -48,7 +48,7 @@ Computer Use 기반 RAG Workflow 순환 플랫폼입니다.
 
 | 구분 | 구성 | 2027 상반기 |
 |---|---|---|
-| 공통 플랫폼 개발 | 3명: 백엔드 2 (ARC TF Champion 포함), 프론트엔드 1. 기반기술전략 AX 파트 | 플랫폼 설계, 베타 배포 |
+| 공통 플랫폼 개발 | 3명: 백엔드 2, 프론트엔드 1. 기반기술전략 AX 파트 | 플랫폼 설계, 베타 배포 |
 | R&D DMI 장비군 담당: CD-SEM (1차) | 2명 | Align Fail 자동 대응 Agent 현장 배치 |
 | R&D DMI 장비군 담당: Thickness (1차) | 2명 | Film 10 layer 이하 의뢰건 90% 이상 자동화 |
 | R&D DMI 장비군 담당: Inspection (1차) | 2명 | Optical Inspection 장비군 전체로 ARC 확장 |
