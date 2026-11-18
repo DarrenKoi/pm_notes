@@ -506,11 +506,13 @@ def flow(s, items, y, h=Inches(1.1), fills=None, head_size=15, body_size=11):
     for i, (h_, b_) in enumerate(items):
         x = M + i * (fw + gap)
         fill, fc = (fills[i] if fills else (MIST, INK))
-        box(s, x, y, fw, h, fill=fill)
+        box(s, x, y, fw, h, fill=fill, line=LINE if fill == WHITE else None)
+        if fill == WHITE:  # 흰 박스는 밝은 회색 머리줄 (TF 구성 장과 같은 모양)
+            box(s, x, y, fw, Inches(0.55), fill=SILVER)
         text(s, x + Inches(0.08), y + Inches(0.1), fw - Inches(0.16), Inches(0.45), h_, size=head_size, bold=True,
              color=fc, align=PP_ALIGN.CENTER, spacing=1.0)
-        text(s, x + Inches(0.08), y + Inches(0.55), fw - Inches(0.16), h - Inches(0.6), b_.split("\n"), size=body_size,
-             color=fc if fc == WHITE else SUB, align=PP_ALIGN.CENTER, spacing=1.0, gap=0)
+        text(s, x + Inches(0.08), y + Inches(0.55 if fill != WHITE else 0.68), fw - Inches(0.16), h - Inches(0.6), b_.split("\n"), size=body_size,
+             color=fc, align=PP_ALIGN.CENTER, spacing=1.0, gap=0)
         if i < n - 1:
             a = s.shapes.add_shape(MSO_SHAPE.CHEVRON, x + fw + gap / 2 - Inches(0.08), y + h / 2 - Inches(0.15),
                                    Inches(0.16), Inches(0.3))
@@ -522,9 +524,9 @@ def s_platform(merged=False):  # 공통 플랫폼 구조. merged=True(exec)는 �
               "**Computer Use** 기반 **RAG Workflow 순환** 플랫폼")
     flow(s, [("① 녹화 추출, 라벨링", "- 녹화 비디오에서 작업 내용 추출\n- 현업 엔지니어가 라벨링"),
              ("② RAG 저장", "- Recipe 셋업 지식 DB\n- 절차, 노하우, 결정 지점 저장"),
-             ("③ Workflow 생성, 실행", "- RAG로 Workflow 초안 생성\n- 엔지니어 승인 버전만 Agent가 실행"),
+             ("③ Workflow 생성, 실행", "- RAG로 Workflow 초안 생성\n- 승인 버전만 Agent가 실행"),
              ("④ 준수 확인, 수정", "- Workflow를 지키는지 확인\n- 틀리면 엔지니어가 개입, 수정")],
-         COL_Y, h=Inches(1.3), fills=[(BLUE_PALE, BLUE)] * 4, head_size=16, body_size=12)
+         COL_Y, h=Inches(1.3), fills=[(WHITE, INK)] * 4, head_size=16, body_size=13)
     fgap = Inches(0.3)
     fw = (W - 2 * M - fgap * 3) / 4
     c2, c4 = M + (fw + fgap) + fw / 2, M + 3 * (fw + fgap) + fw / 2
@@ -645,7 +647,7 @@ def s_exec_roadmap():
               "2027 **지식 자산화**, 2028 **보조**, 2029 **자율**로 단계별 확대")
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028 보조", "반복 입력 대행"), ("2029 자율", "Agent가\n셋업 진행")],
-         COL_Y, h=Inches(1.5), fills=[(BLUE_PALE, BLUE)] * 3 + [(BLUE, WHITE)],
+         COL_Y, h=Inches(1.5), fills=[(WHITE, INK)] * 3 + [(INK, WHITE)],
          head_size=20, body_size=15)
     rows = [("시기", "주요 내용", "목표"),
             ("2027 상반기", "1차 장비군 평가와 Pilot 운영, 엔지니어 Recipe 작업 녹화 DB 구축", "1차 장비군 목표 달성, 플랫폼 베타 배포"),
@@ -653,7 +655,7 @@ def s_exec_roadmap():
             ("2028", "보조: 엔지니어 앞에서 반복 입력 대행", "Agent 개입 범위 <N>배, 셋업 시간 <확인>% 단축"),
             ("2029", "자율: Agent가 셋업 진행", "1차 장비군 ARC 적용 비율 90% 이상")]
     table(s, rows, M, Inches(3.8), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.5),
-          bold_col0=True, border=True, col0_color=BLUE)
+          bold_col0=True, border=True, col0_color=INK)
     note_line(s, Inches(6.45), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
