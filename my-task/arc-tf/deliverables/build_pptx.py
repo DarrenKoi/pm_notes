@@ -531,9 +531,8 @@ def s_platform(merged=False, install=True):  # 공통 플랫폼 구조. merged=T
     cy, chh = Inches(3.95), Inches(2.0)
     column(s, M, cy, cw, chh, "공통 플랫폼 팀 역할", [
                "녹화 내용 추출, **RAG DB**, Workflow 생성",
-               "**Computer Use** 실행 엔진 (PoC의 VLM, PyAutoGUI, Win32 조합을 공통화)",
-               "준수 확인 (__생성형 AI + Rule, CV, ML/DL__), 즉시 중단"]
-           + (["**최적화 소형 모델** 운영, PoC 코드 __기술 부채 해소__"] if merged else []), BLUE, size=13)
+               "**Computer Use** 실행 엔진 개발"]
+           + (["**최적화 소형 모델** 운영, __기술 부채 해소__"] if merged else []), BLUE, size=13)
     column(s, M + cw + gap, cy, cw, chh, "현업 엔지니어 역할", [
                "추출 내용 **라벨링**, Workflow 검토와 승인",
                "Agent 실행 중 __개입, 수정__ / 녹화본으로 미리 실험",
