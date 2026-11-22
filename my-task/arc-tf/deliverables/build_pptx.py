@@ -2,12 +2,13 @@
 """Auto Recipe Creation TF 독자별 deck (.pptx) 3종 생성.
 
     python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두
-    python my-task/arc-tf/deliverables/build_pptx.py boss     # team | boss | exec 중 하나
+    python my-task/arc-tf/deliverables/build_pptx.py boss     # team | boss | exec | map 중 하나
 
   boss  담당 임원 보고 (arc-tf-proposal-rev2.pptx, 이전 보고본 arc-tf-proposal.pptx 는 보존): 01 기획안 요약 (왜 해야 하는가부터) + 핵심 개발 방향 1장 (exec와 같은 합본)
         본 장표 10장(왜 해야 하는가, 왜 TF인가 추가) + 별첨 2장(연도별 대상 장비, 단계별 목표와 업무 전환 효과)
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 1, 2, 공통 플랫폼 구조, 기술 설계(07) 상세 5장
         + BP사 협업 검토, 현업 엔지니어의 참여 방법, 확장성 근거
+  map   팀장 피드백 대응표 (arc-tf-feedback-map.pptx): 표지 + 대응표 + 팀장에게 확인할 것. feedback-response-map.md 의 요약
   exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
@@ -791,6 +792,46 @@ def s_extend():  # 확장성 근거 (team, 01 4장)
             h=Inches(3.9), size=14, arrow=False)
 
 
+# ---------- 팀장 피드백 대응표 (feedback-response-map.md 요약, 팀장에게 rev2 와 함께 가져감) ----------
+def s_map():
+    s = slide("팀장 피드백 대응표",
+              "피드백 8건 가운데 **7건은 본 장표**에서, **1건은 구두와 팀원용 장표**로 답함")
+    rows = [("#", "팀장 피드백", "본 장표 (10장)", "별첨 (2장)", "팀원용 장표, 기획안"),
+            ("1", "BP사가 하면 안 되는가, 함께 할 수 없는가", "5장: BP사 위탁 행, RCS 업체 협업 검토", "없음", "\"BP사 협업 검토\" 장"),
+            ("2", "왜 TF인가, 다른 구성 방법은 없는가", "5장: 추진 방식 5가지 비교", "없음", "기획안 5장"),
+            ("3", "전문 지식이 없는 구성원도 참여할 수 있는가", "없음 (구두 설명)", "없음", "\"현업 엔지니어의 참여 방법\" 장"),
+            ("4", "무엇이 문제이고 성공하면 무엇을 얻는가", "2장: 문제와 얻는 것. 7장: 시기별 목표", "별첨 2", "기획안 1장, 4장"),
+            ("5", "과정별 업무 전환 효과, 정량 효과", "2장: 1명이 2~3명분 (추정), 효과 측정 방법", "별첨 2", "기획안 4장"),
+            ("6", "연도별로 어느 장비를 하는가", "4장: 1차 장비군 목표. 7장: 2차 장비군 한 줄", "별첨 1", "기획안 4장"),
+            ("7", "공정 장비로 확장할 수 있는 근거", "7장: 확장성 한 줄", "별첨 1 (공정 장비 행)", "\"확장성 근거\" 장"),
+            ("8", "안 할 수 없는 Sales Point", "2장 전체", "없음", "기획안 1장")]
+    table(s, rows, M, COL_Y, [Inches(0.5), Inches(3.6), Inches(3.7), Inches(1.8), Emu(W - 2 * M - Inches(9.6))], size=12,
+          row_h=Inches(0.44), border=True, shade=lambda r: r[2].startswith("없음"))
+    note_line(s, Inches(6.2), "rev2 순서", "1 표지, 2 왜 해야 하는가, 3 추진 현황, 4 TF 구성, 5 왜 TF인가, 6 개발 방향, 7 로드맵, 8 일정, 9 리스크, 10 결정 필요 사항", size=12)
+    note_line(s, Inches(6.5), "별첨", "1 연도별 대상 장비, 2 단계별 목표와 업무 전환 효과", size=12)
+
+
+def s_map_ask():
+    s = slide("팀장님께 확인할 것",
+              "**보고 형식**과 **임원 예상 질문**에 따라 본 장표와 별첨의 구분을 조정")
+    rows = [("#", "질문", "답에 따라 바뀌는 것"),
+            ("1", "임원 보고는 대면 발표인가, 장표 사전 회람인가", "회람이면 별첨도 그대로 읽힘. 별첨 2는 수치를 뺀 축소판으로 본 장표에 올림"),
+            ("2", "팀장님이 보고 자리에 동석하는가", "동석하면 구두 답변(피드백 3번)을 나눠 맡을 수 있음"),
+            ("3", "담당 임원이 8건 가운데 무엇을 물을 것 같은가", "물을 가능성이 높은 것은 별첨에서 본 장표로 올림"),
+            ("4", "8건 가운데 임원 장표에 꼭 들어가야 하는 것은 무엇인가", "대응표의 \"본 장표\" 칸을 고침")]
+    table(s, rows, M, COL_Y, [Inches(0.5), Inches(5.4), Emu(W - 2 * M - Inches(5.9))], size=13, row_h=Inches(0.46), border=True)
+    ly = Inches(4.6)
+    box(s, M, ly, W - 2 * M, Inches(1.95), fill=MIST)
+    text(s, M + Inches(0.3), ly + Inches(0.12), W - 2 * M - Inches(0.6), Inches(1.7), [
+        [("보고 전에 채울 것", {"bold": True, "color": BLUE})],
+        runs_of("1. **수치 범위 정리**: \"하루 2~3건\"과 \"레시피당 30~60분\"이 재는 범위를 맞춤. 정리되면 2장과 별첨 2에 수치 반영"),
+        runs_of("2. **2차 장비군명 확정**: 정해지면 별첨 1(연도별 대상 장비)을 본 장표로 올림"),
+        runs_of("3. **R&D DMI 합의 상태**: 장비군 담당 6명 참여에 대한 합의 여부를 5장 아래 줄에 적음"),
+        runs_of("4. **약식 확인**: 1차 장비군 엔지니어에게 하루 처리 건수를 물어 \"추정\"을 \"엔지니어 N명 확인 기준\"으로 바꿈")],
+        size=13, gap=0.3)
+
+
+MAP = [lambda: s_cover("팀장 피드백 대응표", "담당 임원용 장표 rev2 기준"), s_map, s_map_ask]
 # rev2 (2026-11-23 카운슬): 본 장표 10장 + 별첨 2장. 연도별 대상 장비, 단계별 목표와 업무 전환 효과는 별첨으로 내림
 BOSS = [s_cover, s_why, s_status, s_team, s_why_tf, lambda: s_platform(merged=True), lambda: s_exec_roadmap(second_line=True),
         s_kanban, s_safety, s_decision, lambda: s_equip(backup=True), lambda: s_effect(backup=True)]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
@@ -801,7 +842,7 @@ EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_pl
         s_team, s_exec_roadmap]
 # arc-tf-proposal.pptx 는 팀장 피드백 전 보고본(8장)으로 보존하고 다시 만들지 않는다. boss 는 rev2 로 저장한다 (2026-11-23)
 DECKS = {"boss": ("arc-tf-proposal-rev2.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
-         "exec": ("arc-tf-exec-summary.pptx", EXEC)}
+         "exec": ("arc-tf-exec-summary.pptx", EXEC), "map": ("arc-tf-feedback-map.pptx", MAP)}
 
 
 def build(target):
