@@ -169,7 +169,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td>-</td>
 <td><a href="#feedback-response-map">팀장 피드백 대응표</a></td>
 <td>팀장, ARC TF Champion</td>
-<td>피드백 8건이 rev2 장표의 어디에서 답해지는지, 팀장에게 확인할 것. pptx: <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-feedback-map.pptx">arc-tf-feedback-map.pptx</a> (3장, <code>build_pptx.py map</code>)</td>
+<td>피드백 8건이 rev2 장표의 어디에서 답해지는지, 팀장에게 확인할 것. pptx: <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-feedback-map.pptx">arc-tf-feedback-map.pptx</a> (12장: 대응표, 피드백별 답변 내용 9장, 팀장에게 확인할 것. <code>build_pptx.py map</code>)</td>
 <td>2026-11-23</td>
 </tr>
 <tr>
@@ -4224,6 +4224,79 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 </tr>
 </tbody>
 </table></div>
+<h2 id="feedback-response-map--pptx-구성-arc-tf-feedback-mappptx-12장">pptx 구성 (arc-tf-feedback-map.pptx, 12장)</h2>
+<p>대응표만 있는 장표가 아니라 피드백마다 답변 내용을 담습니다. 답변 장은 rev2와 팀원용 장표의 슬라이드를 "피드백 N. 질문" 제목으로 다시 쓴 것이고, <code>python my-task/arc-tf/deliverables/build_pptx.py map</code>으로 만듭니다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>장</th>
+<th>제목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>표지</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>팀장 피드백 대응표</td>
+<td>위 대응표</td>
+</tr>
+<tr>
+<td>3</td>
+<td>피드백 1. BP사</td>
+<td>BP사가 할 수 있는 일 3가지와 판단, RCS 업체 협업, 맡기기 어려운 이유</td>
+</tr>
+<tr>
+<td>4</td>
+<td>피드백 2. 왜 TF인가</td>
+<td>추진 방식 5가지 비교</td>
+</tr>
+<tr>
+<td>5</td>
+<td>피드백 2. 각자 추진의 한계와 TF가 필요한 이유</td>
+<td>한계 6가지, TF가 필요한 이유 3가지</td>
+</tr>
+<tr>
+<td>6</td>
+<td>피드백 3. 비전문 구성원의 참여</td>
+<td>현업 엔지니어가 하는 일 5가지, 12월 시범 검증</td>
+</tr>
+<tr>
+<td>7</td>
+<td>피드백 4. 문제와 과정별 목표</td>
+<td>시기별 푸는 문제, 산출물, 업무 전환 효과</td>
+</tr>
+<tr>
+<td>8</td>
+<td>피드백 5. 정량 효과</td>
+<td>건수와 시간 두 가지 환산, 순효과, 측정 방법. 임원 장표에는 넣지 않는 추정 수치 포함</td>
+</tr>
+<tr>
+<td>9</td>
+<td>피드백 6. 연도별 장비</td>
+<td>장비군별 연도 표</td>
+</tr>
+<tr>
+<td>10</td>
+<td>피드백 7. 확장 근거</td>
+<td>확장되는 것, 확장의 조건과 검증</td>
+</tr>
+<tr>
+<td>11</td>
+<td>피드백 8. Sales Point</td>
+<td>지금의 문제와 ARC TF로 얻는 것</td>
+</tr>
+<tr>
+<td>12</td>
+<td>팀장님께 확인할 것</td>
+<td>아래 질문 4개와 보고 전에 채울 것</td>
+</tr>
+</tbody>
+</table></div>
 <h2 id="feedback-response-map--팀장에게-확인할-것">팀장에게 확인할 것</h2>
 <div class="tbl"><table>
 <thead>
@@ -5085,6 +5158,12 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 <td>2026-11-23</td>
 <td>rev2 담당 임원용 장표를 본 장표 10장과 별첨 2장으로 나눈다. "왜 해야 하는가", "추진 방식 비교: 왜 TF인가"는 본 장표에 남기고, "연도별 대상 장비", "단계별 목표와 업무 전환 효과"는 별첨으로 내린다. 로드맵에 2차 장비군 한 줄을 넣고 확장성 문구를 "추가하는 구조로 설계, 2027-12 확인"으로 고친다. 2장의 수치는 "1명이 2~3명분 (추정)" 하나만 두고, 하루 4~9건과 4~5시간 확보는 장표에서 뺀다 (기획안에는 같은 절감분의 두 가지 환산으로 남김). 추진 방식 표에서 Weekly 공유 모임 행을 빼고 BP사 행 문구를 고친다. 팀장 피드백 대응표를 새로 만든다</td>
 <td>LLM 카운슬 판정 (2026-11-23): 팀장에게 말로만 돌릴 것은 없음. 판단 기준은 "이 장이 없으면 임원이 승인을 못 하는가". 추정에서 계산한 수치와 ⟨확인⟩ 칸은 본 장표에 두지 않음</td>
+<td>확정</td>
+</tr>
+<tr>
+<td>2026-11-23</td>
+<td>팀장 피드백 대응 장표(<code>arc-tf-feedback-map.pptx</code>)는 대응표만이 아니라 피드백마다 답변 내용을 담는다 (12장). 정량 효과의 건수, 시간 환산은 임원용 본 장표에는 넣지 않고 이 장표와 기획안에만 둔다</td>
+<td>사용자 결정: 대응표 형태만으로는 부족, 내용을 함께 보여 줌</td>
 <td>확정</td>
 </tr>
 </tbody>

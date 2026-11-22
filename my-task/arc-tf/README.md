@@ -30,7 +30,7 @@ last_updated: 2026-11-09
 | 7 | [공통 플랫폼 기술 설계](./07-platform-architecture.md) | 플랫폼 팀, 담당 엔지니어 | 어떻게 만드나: Offline 지식화와 Online 실행, 판단과 규칙 확인과 실행 분리, 안전 관문, 평가, 단계별 구현 순서. Codex 설계 검토 결과 | 초안, 제안 설계 |
 | 8 | [한 장 요약](./08-exec-summary.md) | 최고 임원 | 2026 추진 현황과 Lesson Learned, 핵심 개발 방향, TF 구성, 개발 로드맵, 요청 사항 | 초안, 2026-12 최종 승인용 |
 | - | [Codex 설계 원문](./codex/README.md) | 플랫폼 팀 | MP4 기반 Video-to-Workflow Agent 발표자료 22장의 본문과 이미지 (원문 보존, 수정하지 않음) | 보관 |
-| - | [팀장 피드백 대응표](./feedback-response-map.md) | 팀장, ARC TF Champion | 피드백 8건이 rev2 장표의 어디에서 답해지는지, 팀장에게 확인할 것. pptx: [arc-tf-feedback-map.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-feedback-map.pptx) (3장, `build_pptx.py map`) | 2026-11-23 |
+| - | [팀장 피드백 대응표](./feedback-response-map.md) | 팀장, ARC TF Champion | 피드백 8건이 rev2 장표의 어디에서 답해지는지, 팀장에게 확인할 것. pptx: [arc-tf-feedback-map.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-feedback-map.pptx) (12장: 대응표, 피드백별 답변 내용 9장, 팀장에게 확인할 것. `build_pptx.py map`) | 2026-11-23 |
 | - | [결정 기록](./decision-log.md) | ARC TF Champion | 날짜별 결정과 이유 | 2026-10-29 |
 | - | [위험 목록](./risk-register.md) | ARC TF Champion | 위험, 대응, 담당 | 2026-10-29 |
 
