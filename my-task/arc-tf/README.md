@@ -30,6 +30,7 @@ last_updated: 2026-11-09
 | 7 | [공통 플랫폼 기술 설계](./07-platform-architecture.md) | 플랫폼 팀, 담당 엔지니어 | 어떻게 만드나: Offline 지식화와 Online 실행, 판단과 규칙 확인과 실행 분리, 안전 관문, 평가, 단계별 구현 순서. Codex 설계 검토 결과 | 초안, 제안 설계 |
 | 8 | [한 장 요약](./08-exec-summary.md) | 최고 임원 | 2026 추진 현황과 Lesson Learned, 핵심 개발 방향, TF 구성, 개발 로드맵, 요청 사항 | 초안, 2026-12 최종 승인용 |
 | - | [Codex 설계 원문](./codex/README.md) | 플랫폼 팀 | MP4 기반 Video-to-Workflow Agent 발표자료 22장의 본문과 이미지 (원문 보존, 수정하지 않음) | 보관 |
+| - | [팀장 피드백 대응표](./feedback-response-map.md) | 팀장, ARC TF Champion | 피드백 8건이 rev2 장표의 어디에서 답해지는지, 팀장에게 확인할 것 | 2026-11-23 |
 | - | [결정 기록](./decision-log.md) | ARC TF Champion | 날짜별 결정과 이유 | 2026-10-29 |
 | - | [위험 목록](./risk-register.md) | ARC TF Champion | 위험, 대응, 담당 | 2026-10-29 |
 
@@ -40,7 +41,7 @@ last_updated: 2026-11-09
 | 독자 | docx | pptx |
 |---|---|---|
 | 팀원 (전체) | [arc-tf-team-full.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.docx): 00, 01, 06, 07, 02~05, 위험 목록, 결정 기록 | [arc-tf-team-full.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-team-full.pptx): 23장 (담당 임원 deck + BP사 협업 검토, 현업 엔지니어의 참여 방법, 업무 전략 2장, 기술 설계 5장, 확장성 근거, LLM 한계 1장) |
-| 담당 임원 | [arc-tf-proposal-rev2.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.docx): 팀장 피드백 반영본, 기획안(01) + 별첨 A 문제 정의(00). 이전 보고본 [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx)는 보존하고 다시 만들지 않음 | [arc-tf-proposal-rev2.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.pptx): 팀장 피드백 반영본, 12장 (왜 해야 하는가, 추진 현황, 조직도, 왜 TF인가, 개발 방향, 로드맵, 연도별 대상 장비, 단계별 목표와 업무 전환 효과, 일정, 위험, 결정 필요 사항). 이전 보고본 [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx)(8장)는 보존하고 다시 만들지 않음 |
+| 담당 임원 | [arc-tf-proposal-rev2.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.docx): 팀장 피드백 반영본, 기획안(01) + 별첨 A 문제 정의(00). 이전 보고본 [arc-tf-proposal.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx)는 보존하고 다시 만들지 않음 | [arc-tf-proposal-rev2.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.pptx): 팀장 피드백 반영본, 본 장표 10장(왜 해야 하는가, 추진 현황, 조직도, 왜 TF인가, 개발 방향, 로드맵, 일정, 위험, 결정 필요 사항) + 별첨 2장(연도별 대상 장비, 단계별 목표와 업무 전환 효과). 이전 보고본 [arc-tf-proposal.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx)(8장)는 보존하고 다시 만들지 않음 |
 | 최고 임원 | [arc-tf-exec-summary.docx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.docx): 한 장 요약(08), 2쪽 | [arc-tf-exec-summary.pptx](https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성 조직도, 개발 로드맵. 결정 필요 사항 장표 없음) |
 
 ```bash

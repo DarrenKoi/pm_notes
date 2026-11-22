@@ -5,7 +5,7 @@
     python my-task/arc-tf/deliverables/build_pptx.py boss     # team | boss | exec 중 하나
 
   boss  담당 임원 보고 (arc-tf-proposal-rev2.pptx, 이전 보고본 arc-tf-proposal.pptx 는 보존): 01 기획안 요약 (왜 해야 하는가부터) + 핵심 개발 방향 1장 (exec와 같은 합본)
-        + 팀장 피드백 반영 4장 (왜 해야 하는가, 왜 TF인가, 연도별 대상 장비, 단계별 목표와 업무 전환 효과)
+        본 장표 10장(왜 해야 하는가, 왜 TF인가 추가) + 별첨 2장(연도별 대상 장비, 단계별 목표와 업무 전환 효과)
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 1, 2, 공통 플랫폼 구조, 기술 설계(07) 상세 5장
         + BP사 협업 검토, 현업 엔지니어의 참여 방법, 확장성 근거
   exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
@@ -652,41 +652,44 @@ def s_stack():  # 구현 형태와 기술 스택 (team)
 
 
 # ---------- 최고 임원용 ----------
-def s_exec_roadmap():
+def s_exec_roadmap(second_line=False):  # second_line=True(rev2 본 장표): 연도별 대상 장비 장 대신 2차 장비군 한 줄
     s = slide("개발 로드맵",
               "2027 **지식 자산화**, 2028 **보조**, 2029 **자율**로 단계별 확대")
+    fh = Inches(1.2) if second_line else Inches(1.5)  # 한 줄을 더 넣는 만큼 흐름 상자를 줄임
     flow(s, [("2027 상반기", "1차 장비군 목표\n플랫폼 베타"), ("2027 하반기", "2차 장비군 합류\n지식 자산화"),
              ("2028 보조", "반복 입력 대행"), ("2029 자율", "Agent가\n셋업 진행")],
-         COL_Y, h=Inches(1.5), fills=[(WHITE, INK)] * 3 + [(INK, WHITE)],
+         COL_Y, h=fh, fills=[(WHITE, INK)] * 3 + [(INK, WHITE)],
          head_size=20, body_size=15)
     rows = [("시기", "주요 내용", "목표"),
             ("2027 상반기", "1차 장비군 평가와 Pilot 운영, 엔지니어 Recipe 작업 녹화 DB 구축", "1차 장비군 목표 달성, 플랫폼 베타 배포"),
             ("2027 하반기", "2차 장비군 Weekly 미팅 합류, workflow 구현 및 자동화 테스트", "단위 작업 Agent 수행 성공 비율 <X>%"),
             ("2028", "보조: 엔지니어 앞에서 반복 입력 대행", "Agent 개입 범위 <N>배, 셋업 시간 <확인>% 단축"),
             ("2029", "자율: Agent가 셋업 진행", "1차 장비군 ARC 적용 비율 90% 이상")]
-    table(s, rows, M, Inches(3.72), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.45),
+    table(s, rows, M, COL_Y + fh + Inches(0.14), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.45),
           bold_col0=True, border=True, col0_color=INK)
-    note_line(s, Inches(6.2), "확장성", "**화면만으로 조작**(API 불필요), 장비별 코드 없이 장비군 추가. __2차 장비군 합류(2027-12)로 검증__ 후 공정 장비 확장 검토", size=13)
+    if second_line:
+        note_line(s, Inches(5.95), "2차 장비군", "2026-12 지정, **2027-07 합류**. 순서 기준은 월 의뢰 건수, 건당 셋업 시간, 1차 장비군과 접속 경로가 비슷한 정도", size=13)
+    note_line(s, Inches(6.25 if second_line else 6.2), "확장성", "**화면만으로 조작**(API 불필요), 장비별 코드 없이 장비군을 추가하는 구조로 설계. __2차 장비군 합류 결과(2027-12 확인)로 검증__ 후 공정 장비 확장 검토", size=13)
     note_line(s, Inches(6.55), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
 # ---------- 팀장 피드백 반영 (2026-11-23): 01 기획안의 같은 이름 절을 요약 ----------
 def s_why():  # 왜 해야 하는가 (01 1장: 문제, 이 과제를 해야 하는 이유)
+    # 2026-11-23 카운슬: 수치는 "2~3명분 (추정)" 한 번만. "하루 2~3건"은 30~60분과 범위를 맞춘 뒤에 넣는다
     s = slide("왜 해야 하는가",
               "각자 추진 중인 ARC의 **중복을 없애고 노하우를 합쳐** **Recipe 업무 시간**을 줄여야 함")
     two_col(s, "지금의 문제", [
-                "**Recipe 셋업과 Tuning이 수작업**: 엔지니어 1명이 __하루(8시간) 2~3건__ 대응",
+                "**Recipe 셋업과 Tuning이 수작업**: 숙련 엔지니어가 원격 화면에서 __측정, 실패, 재조정을 반복__",
                 "**노하우가 개인에게 있음**: 담당자가 바뀌면 사라지고 사람마다 품질이 다름",
                 "**장비군별 각자 ARC 추진**: 화면 조작, 모델 운영, 녹화분 확보를 __장비군마다 반복__",
-                "MI 엔지니어에게 **Data 분석, 고도화된 장비 관리**가 요구되나 __쓸 시간이 없음__"],
+                "**의뢰가 늘면 셋업 인력도 같이 늘어야 함**: Data 분석, 고도화된 장비 관리에 __쓸 시간이 없음__"],
             "ARC TF로 얻는 것", [
-                "**중복 제거, 노하우 통합**: 공통 플랫폼 하나로 __공동 대응__",
-                "**Recipe 업무 단축**: 반자동 단계에서 __1명이 2~3명분__ 처리 (추정, 기준선 측정으로 검증)",
-                "**노하우를 회사 자산으로**: 숙련 엔지니어의 셋업 방식을 지식 DB로 축적",
-                "줄인 시간을 **Data 분석, 장비 관리 고도화**로 전환"],
-            h=Inches(3.7), size=14, before=True)
-    note_line(s, Inches(5.98), "지금 시작", "숙련 엔지니어의 Recipe 작업 데이터는 **지금부터 쌓아야** 함. AI 모델은 교체할 수 있지만 __작업 노하우 데이터는 대체 불가__", size=13)
-    note_line(s, Inches(6.36), "단계 판정", "2027-06 장비군별 목표 3건으로 성과 확인, 2027-06과 2027-12 목표 달성 확인에서 **보완, 축소, 중단** 판단", size=13)
+                "**중복 제거, 노하우 통합**: 공통 플랫폼 하나로 공동 대응, 셋업 방식을 __회사 지식 DB로 축적__",
+                "**Recipe 업무 단축**: 반자동 단계에서 __1명이 2~3명분__ 처리 (추정), 줄인 시간은 Data 분석과 장비 관리 고도화로 전환",
+                "**지금 시작해야 함**: 숙련 엔지니어의 작업 데이터는 지금부터 쌓아야 함. AI 모델은 교체할 수 있지만 __노하우 데이터는 대체 불가__",
+                "**단계 판정**: 2027-06, 2027-12 목표 달성 확인에서 __보완, 축소, 중단__ 판단"],
+            h=Inches(3.95), size=14, before=True)
+    note_line(s, Inches(6.25), "효과 측정", "플랫폼 실행 로그로 자동 집계해 **월간 보고**. 기준선 측정 2027-02, 목표 수치는 __2027-07 확정__", size=13)
 
 
 def s_why_tf():  # 추진 방식 비교 (01 5장: 추진 방식 비교, BP사 협업 검토)
@@ -695,14 +698,14 @@ def s_why_tf():  # 추진 방식 비교 (01 5장: 추진 방식 비교, BP사 �
     rows = [("추진 방식", "장점", "한계"),
             ("장비군별 각자 추진 (현재)", "승인 절차 불필요", "화면 조작, 모델 운영, 녹화분 확보를 장비군마다 반복 개발. 노하우 공유 안 됨. 개발 가능한 담당자가 있는 장비군만 진행"),
             ("AX 파트 과제 + 현업 협조 요청", "조직 변경 없음", "현업 시간이 공식 인정되지 않음. 본인 과제에 없어 참여 동력 없음"),
-            ("Weekly 공유 모임만 운영", "부담이 작음", "공통 플랫폼을 만들 책임자와 인력 없음"),
             ("정규 조직 신설", "전담 가능", "효과 검증 전에 조직 개편 필요"),
-            ("BP사 위탁", "내부 인력 부담 감소", "장비 API, Recipe 정보 API, DB 접근 권한 제공이 전제. 비용과 수고 대비 실익 낮음"),
+            ("BP사 위탁", "내부 인력 부담 감소", "BP사가 장비 API나 DB를 새로 열어 줘야 가능. 비용과 수고 대비 실익 낮음 (ARC는 화면 조작 방식이라 API 없이 진행)"),
             ("ARC TF (제안)", "추진 동력, 현업 수고 공식 인정, 두 조직 보고 라인", "겸직 운영. 2027-12에 2028 운영 형태 판단")]
     table(s, rows, M, COL_Y, [Inches(3.1), Inches(3.3), Emu(W - 2 * M - Inches(6.4))], size=13, row_h=Inches(0.52),
           bold_col0=True, shade=lambda r: r[0].startswith("ARC TF"), border=True)
-    note_line(s, Inches(5.95), "BP 협업", "장비 BP사는 참여 실익이 낮음. **RCS 업체**와는 __녹화 DB 접근 경로__ 협업 검토", size=13)
-    note_line(s, Inches(6.33), "TF 운영", "2027-01~12 운영, 현업 엔지니어의 TF 참여를 __본인 과제로 인정__", size=13)
+    note_line(s, Inches(5.45), "BP 협업", "**RCS 업체**와는 __녹화 DB 접근 경로__ 협업 검토", size=13)
+    note_line(s, Inches(5.83), "TF 운영", "2027-01~12 운영, 전원 겸직(참여 시간은 탄력적으로 운영), 현업 엔지니어의 TF 참여를 __본인 과제로 인정__", size=13)
+    note_line(s, Inches(6.21), "R&D DMI 합의", "<확인: 장비군 담당 6명 참여에 대한 R&D DMI 합의 상태>", size=13)
 
 
 def s_bp():  # BP사 협업 검토 상세 (team)
@@ -741,32 +744,32 @@ def s_engineer_role():  # 현업 엔지니어의 참여 방법 (team, 01 6장)
     note_line(s, Inches(6.05), "지원", "별도 교육 과정 없이 **Weekly 미팅**에서 개발 노하우 공유", size=13)
 
 
-def s_equip():  # 연도별 대상 장비 (01 4장)
-    s = slide("연도별 대상 장비",
+def s_equip(backup=False):  # 연도별 대상 장비 (01 4장). backup=True 는 rev2 의 별첨
+    s = slide(("별첨: " if backup else "") + "연도별 대상 장비",
               "1차 장비군은 **2029 ARC 적용 90% 이상**, 2차 장비군은 **2027 하반기 합류** 후 목표 확정")
     rows = [("장비군", "2027 상반기", "2027 하반기", "2028", "2029"),
             ("CD-SEM (1차)", "Align Fail 자동 대응 Agent 현장 배치", "셋업 절차 지식 자산화", "보조: 반복 입력 대행", "자율: ARC 적용 90% 이상"),
             ("Thickness (1차)", "Film 10 layer 이하 의뢰건 90% 이상 자동화", "셋업 절차 지식 자산화", "보조: 반복 입력 대행", "자율: ARC 적용 90% 이상"),
             ("Inspection (1차)", "Optical Inspection 장비군 전체로 ARC 확장", "셋업 절차 지식 자산화", "보조: 반복 입력 대행", "자율: ARC 적용 90% 이상"),
-            ("2차: <장비군명 확인>", "인터뷰, Workflow 조사, 작업 녹화", "Weekly 미팅 합류, Workflow 구현과 자동화 테스트", "<합류 후 확정>", "<합류 후 확정>"),
-            ("공정 장비 (확장 검토)", "없음", "2차 합류로 확장 구조 검증", "<타당성 검토 시점 확인>", "<확인>")]
+            ("2차: <장비군명 확인>", "인터뷰, Workflow 조사, 작업 녹화", "7월 Weekly 미팅 합류, Workflow 구현과 자동화 테스트", "<합류 후 확정>", "<합류 후 확정>"),
+            ("공정 장비 (확장 검토)", "없음", "2차 합류 결과로 확장 구조 검증 (12월 확인)", "<타당성 검토 시점 확인>", "<확인>")]
     table(s, rows, M, COL_Y, [Inches(2.4), Inches(3.1), Inches(2.9), Inches(1.95), Emu(W - 2 * M - Inches(10.35))], size=12,
           row_h=Inches(0.58), bold_col0=True, border=True, col0_color=INK)
     note_line(s, Inches(5.85), "2차 순서 기준", "월 의뢰 건수, 건당 셋업 시간, 1차 장비군과 접속 경로가 비슷한 정도", size=13)
     note_line(s, Inches(6.23), "2차 명단", "2026-12에 1차와 함께 지정, 목표는 합류 후 기준선 측정(2027-08)으로 확정", size=13)
 
 
-def s_effect():  # 단계별 목표와 업무 전환 효과 (01 4장)
-    s = slide("단계별 목표와 업무 전환 효과",
+def s_effect(backup=False):  # 단계별 목표와 업무 전환 효과 (01 4장). backup=True 는 rev2 의 별첨
+    s = slide(("별첨: " if backup else "") + "단계별 목표와 업무 전환 효과",
               "반자동(2028) 단계에서 **엔지니어 1명이 2~3명분** Recipe 처리, 줄인 시간은 **분석 업무로 전환**")
     rows = [("시기", "푸는 문제", "산출물", "업무 전환 효과"),
             ("2027 상반기", "단순, 반복 의뢰의 Recipe를 손으로 셋업", "1차 장비군 목표 3건, 플랫폼 베타, 기준선 측정", "Thickness Film 10 layer 이하 의뢰건 90% 이상 자동화"),
-            ("2027 하반기", "셋업 노하우가 개인에게만 있음", "절차서, Recipe 셋업 지식 DB", "투입 단계 (라벨링, 검토). 단위 작업 성공 비율 <X>%"),
-            ("2028 보조", "반복 입력 때문에 엔지니어가 화면 앞에 묶임", "Agent가 반복 입력 대행", "1명이 하루 2~3건에서 4~9건 처리, 1명당 하루 4~5시간 확보 (추정)"),
+            ("2027 하반기", "셋업 노하우가 개인에게만 있음", "절차서, Recipe 셋업 지식 DB", "시간 절감 없음, 투입 단계 (라벨링, 검토). 단위 작업 성공 비율 <X>%"),
+            ("2028 보조", "반복 입력 때문에 엔지니어가 화면 앞에 묶임", "Agent가 반복 입력 대행", "엔지니어 1명이 2~3명분 처리 (추정). 건수, 시간 환산은 <기준선 측정 후 확정>"),
             ("2029 자율", "의뢰가 늘면 셋업 인력도 같이 늘어야 함", "Agent가 셋업 진행", "1차 장비군 ARC 적용 90% 이상. 시간 효과 <2027-07 확정>")]
     table(s, rows, M, COL_Y, [Inches(1.6), Inches(3.3), Inches(3.3), Emu(W - 2 * M - Inches(8.2))], size=12,
           row_h=Inches(0.6), bold_col0=True, border=True, col0_color=INK)
-    note_line(s, Inches(5.25), "현재 기준", "엔지니어 1명이 **하루(8시간) Recipe 2~3건** 대응 (Recipe Creation, Tuning 기준)", size=13)
+    note_line(s, Inches(5.25), "현재 기준", "엔지니어 1명이 **하루(8시간) Recipe 2~3건** 대응 (경험치, Recipe Creation과 Tuning 기준)", size=13)
     note_line(s, Inches(5.63), "산식", "절감 시간 = 의뢰 건수 × 건당 대응 시간 × ARC 적용 비율 × Agent 개입 범위 (라벨링, 검토 투입 시간은 뺌)", size=13)
     note_line(s, Inches(6.01), "측정", "플랫폼 실행 로그로 자동 집계해 **월간 보고**. 수치는 기준선 측정(2027-02) 후 __2027-07 확정__", size=13)
     note_line(s, Inches(6.39), "전환 업무", "확보한 시간은 **Data 분석, 고도화된 장비 관리**, 더 많은 Recipe 의뢰 대응에 사용", size=13)
@@ -788,8 +791,9 @@ def s_extend():  # 확장성 근거 (team, 01 4장)
             h=Inches(3.9), size=14, arrow=False)
 
 
-BOSS = [s_cover, s_why, s_status, s_team, s_why_tf, lambda: s_platform(merged=True), s_exec_roadmap,
-        s_equip, s_effect, s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
+# rev2 (2026-11-23 카운슬): 본 장표 10장 + 별첨 2장. 연도별 대상 장비, 단계별 목표와 업무 전환 효과는 별첨으로 내림
+BOSS = [s_cover, s_why, s_status, s_team, s_why_tf, lambda: s_platform(merged=True), lambda: s_exec_roadmap(second_line=True),
+        s_kanban, s_safety, s_decision, lambda: s_equip(backup=True), lambda: s_effect(backup=True)]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
 TEAM = [s_cover, s_why, s_status, s_team, s_why_tf, s_bp, s_engineer_role, s_assets, s_where,
         lambda: s_platform(merged=True), s_offline, s_online, s_gates, s_eval, s_stack,
         s_exec_roadmap, s_equip, s_effect, s_extend, s_kanban, s_safety, s_decision, s_why_not_llm]

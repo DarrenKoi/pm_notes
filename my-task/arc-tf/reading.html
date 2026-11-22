@@ -72,9 +72,10 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li><a href="#07-platform-architecture"><span class="num">08</span>공통 플랫폼 기술 설계: 녹화에서 절차를 뽑고, 화면을 확인하며 한 단계씩 실행</a></li>
 <li><a href="#08-exec-summary"><span class="num">09</span>Auto Recipe Creation TF: 한 장 요약</a></li>
 <li><a href="#codex-readme"><span class="num">10</span>Video-to-Workflow 발표자료 아카이브</a></li>
-<li><a href="#decision-log"><span class="num">11</span>결정 기록</a></li>
-<li><a href="#risk-register"><span class="num">12</span>위험 목록</a></li>
-<li><a href="#deliverables-pptx-template"><span class="num">13</span>회사 보고용 pptx 템플릿</a></li>
+<li><a href="#feedback-response-map"><span class="num">11</span>팀장 피드백 대응표</a></li>
+<li><a href="#decision-log"><span class="num">12</span>결정 기록</a></li>
+<li><a href="#risk-register"><span class="num">13</span>위험 목록</a></li>
+<li><a href="#deliverables-pptx-template"><span class="num">14</span>회사 보고용 pptx 템플릿</a></li>
 </ol></nav>
 <section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>ARC TF: 레시피 자동 생성 태스크포스</h1>
 <blockquote>
@@ -166,6 +167,13 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 </tr>
 <tr>
 <td>-</td>
+<td><a href="#feedback-response-map">팀장 피드백 대응표</a></td>
+<td>팀장, ARC TF Champion</td>
+<td>피드백 8건이 rev2 장표의 어디에서 답해지는지, 팀장에게 확인할 것</td>
+<td>2026-11-23</td>
+</tr>
+<tr>
+<td>-</td>
 <td><a href="#decision-log">결정 기록</a></td>
 <td>ARC TF Champion</td>
 <td>날짜별 결정과 이유</td>
@@ -199,7 +207,7 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <tr>
 <td>담당 임원</td>
 <td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.docx">arc-tf-proposal-rev2.docx</a>: 팀장 피드백 반영본, 기획안(01) + 별첨 A 문제 정의(00). 이전 보고본 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.docx">arc-tf-proposal.docx</a>는 보존하고 다시 만들지 않음</td>
-<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.pptx">arc-tf-proposal-rev2.pptx</a>: 팀장 피드백 반영본, 12장 (왜 해야 하는가, 추진 현황, 조직도, 왜 TF인가, 개발 방향, 로드맵, 연도별 대상 장비, 단계별 목표와 업무 전환 효과, 일정, 위험, 결정 필요 사항). 이전 보고본 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx">arc-tf-proposal.pptx</a>(8장)는 보존하고 다시 만들지 않음</td>
+<td><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal-rev2.pptx">arc-tf-proposal-rev2.pptx</a>: 팀장 피드백 반영본, 본 장표 10장(왜 해야 하는가, 추진 현황, 조직도, 왜 TF인가, 개발 방향, 로드맵, 일정, 위험, 결정 필요 사항) + 별첨 2장(연도별 대상 장비, 단계별 목표와 업무 전환 효과). 이전 보고본 <a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/deliverables/arc-tf-proposal.pptx">arc-tf-proposal.pptx</a>(8장)는 보존하고 다시 만들지 않음</td>
 </tr>
 <tr>
 <td>최고 임원</td>
@@ -898,13 +906,13 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <td>2027 하반기</td>
 <td>셋업 노하우가 개인에게만 있음</td>
 <td>절차서, Recipe 셋업 지식 DB</td>
-<td>투입 단계 (라벨링, 검토에 엔지니어 시간 사용). 단위 작업 Agent 수행 성공 비율 ⟨X⟩%</td>
+<td>시간 절감 없음. 투입 단계 (라벨링, 검토에 엔지니어 시간 사용). 단위 작업 Agent 수행 성공 비율 ⟨X⟩%</td>
 </tr>
 <tr>
 <td>2028 보조</td>
 <td>반복 입력 때문에 엔지니어가 화면 앞에 묶임</td>
 <td>Agent가 엔지니어 앞에서 반복 입력 대행</td>
-<td>엔지니어 1명이 2~3명분 처리 (하루 2~3건에서 4~9건), 1명당 하루 4~5시간 확보 (추정)</td>
+<td>엔지니어 1명이 2~3명분 처리 (추정). 건수, 시간 환산은 아래 "업무 전환 효과 (정량)" 참고</td>
 </tr>
 <tr>
 <td>2029 자율</td>
@@ -950,14 +958,14 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>2차: ⟨확인: 장비군명⟩</td>
 <td>인터뷰, Recipe Workflow 조사, 작업 녹화</td>
-<td>Weekly 미팅 합류, 기준선 측정, Workflow 구현과 자동화 테스트</td>
+<td>7월 Weekly 미팅 합류, 기준선 측정(8월), Workflow 구현과 자동화 테스트</td>
 <td>⟨확인: 합류 후 확정⟩</td>
 <td>⟨확인: 합류 후 확정⟩</td>
 </tr>
 <tr>
 <td>공정 장비 (확장 검토)</td>
 <td>없음</td>
-<td>2차 장비군 합류로 확장 구조 검증 (12월)</td>
+<td>2차 장비군 합류 결과로 확장 구조 검증 (12월 목표 달성 확인)</td>
 <td>⟨확인: 확장 타당성 검토 시점⟩</td>
 <td>⟨확인⟩</td>
 </tr>
@@ -969,33 +977,28 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 </ul>
 <h3 id="01-tf-proposal--업무-전환-효과-정량">업무 전환 효과 (정량)</h3>
 <p>효과는 Align Fail 대응보다 <strong>Recipe Creation과 Tuning</strong>을 기준으로 봅니다.</p>
+<p>기준이 되는 판단은 하나입니다. 현재 엔지니어 1명이 하루(8시간) Recipe 2~3건을 대응하고, 반자동이 되면 1명이 2~3명분을 처리합니다 (추정). 이 절감분을 어디에 쓰느냐에 따라 아래 두 가지로 환산됩니다. 두 값은 같은 절감분을 다르게 쓴 것이라 더하지 않습니다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
-<th>항목</th>
+<th>절감분을 쓰는 곳</th>
 <th>현재</th>
 <th>반자동 (2028 보조 단계)</th>
-<th>근거</th>
+<th>계산</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>엔지니어 1명의 하루 Recipe 처리 건수</td>
-<td>2~3건 (8시간 근무)</td>
-<td>4~9건 (2~3배)</td>
-<td>반자동이 되면 1명이 2~3명분을 처리한다는 판단 (추정)</td>
+<td>처리 건수를 늘림</td>
+<td>1명 하루 2~3건</td>
+<td>1명 하루 4~9건</td>
+<td>2~3건의 2~3배</td>
 </tr>
 <tr>
-<td>같은 의뢰량을 처리하는 데 드는 시간</td>
-<td>하루 8시간</td>
-<td>하루 2.7~4시간</td>
+<td>같은 의뢰량을 처리하고 시간을 확보</td>
+<td>하루 8시간을 Recipe 대응에 사용</td>
+<td>하루 2.7~4시간 사용, 1명당 하루 4~5시간 확보 (월 80~107시간, 20일 기준)</td>
 <td>8시간의 1/3~1/2</td>
-</tr>
-<tr>
-<td>엔지니어 1명당 확보 시간</td>
-<td>없음</td>
-<td>하루 4~5시간, 월 80~107시간 (20일 기준)</td>
-<td>8시간에서 위 시간을 뺀 값</td>
 </tr>
 </tbody>
 </table></div>
@@ -1344,12 +1347,12 @@ python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두, 하나�
 <tr>
 <td>BP사 위탁</td>
 <td>내부 인력 부담 감소</td>
-<td>장비 API, Recipe 정보 API, DB 접근 권한 제공이 전제. 비용과 수고 대비 실익이 낮음 (아래 "BP사 협업 검토")</td>
+<td>BP사가 장비 API나 DB를 새로 열어 줘야 가능. 비용과 수고 대비 실익이 낮음. ARC는 화면 조작 방식이라 API 없이 진행 (아래 "BP사 협업 검토")</td>
 </tr>
 <tr>
 <td><strong>ARC TF (제안)</strong></td>
 <td>추진 동력, 현업 수고의 공식 인정, 두 조직을 잇는 보고 라인</td>
-<td>겸직 운영. 2027-12 목표 달성 확인 때 2028 운영 형태를 함께 판단</td>
+<td>전원 겸직 (참여 시간은 탄력적으로 운영). 2027-12 목표 달성 확인 때 2028 운영 형태를 함께 판단. ⟨확인: 장비군 담당 6명 참여에 대한 R&amp;D DMI 합의 상태⟩</td>
 </tr>
 </tbody>
 </table></div>
@@ -4107,7 +4110,7 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 </tbody>
 </table></div>
 <ul>
-<li>확장성: 화면만으로 조작(API 불필요)하고 장비별 코드 없이 장비군을 추가하는 구조. 2차 장비군 합류(2027-12)로 검증한 뒤 공정 장비, SmartFactory 운영 확장 검토</li>
+<li>확장성: 화면만으로 조작(API 불필요)하고 장비별 코드 없이 장비군을 추가하는 구조로 설계. 2차 장비군 합류 결과(2027-12 확인)로 검증한 뒤 공정 장비, SmartFactory 운영 확장 검토</li>
 <li>측정: ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)</li>
 </ul>
 <h2 id="08-exec-summary--요청-사항">요청 사항</h2>
@@ -4140,7 +4143,133 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 <li><a href="https://github.com/DarrenKoi/pm_notes/blob/main/my-task/arc-tf/codex/video-to-workflow-agent.md">전체 텍스트와 이미지</a></li>
 <li><a href="../video_to_workflow_recipe_agent.pptx">PowerPoint 발표자료</a></li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="decision-log"><p class="file"><span class="num">11</span>decision-log.md</p><h1>결정 기록</h1>
+<section class="doc" id="feedback-response-map"><p class="file"><span class="num">11</span>feedback-response-map.md</p><h1>팀장 피드백 대응표</h1>
+<blockquote>
+<p>팀장 피드백 8건이 담당 임원용 장표(rev2)의 어디에서 답해지는지 한 장으로 정리한 표입니다. rev2와 함께 팀장에게 가져갑니다.</p>
+</blockquote>
+<h2 id="feedback-response-map--왜-필요한가">왜 필요한가</h2>
+<ul>
+<li>피드백 8건을 모두 본 장표에 넣으면 12장이 되고 추정 수치와 ⟨확인⟩ 칸이 임원 앞에 드러남</li>
+<li>그래서 rev2는 본 장표 10장과 별첨 2장으로 나눔 (2026-11-23 카운슬 판정)</li>
+<li>팀장이 "반영됐는가"를 한눈에 확인하고, 본 장표로 올릴 것과 내릴 것을 정해 줄 수 있게 함</li>
+</ul>
+<h2 id="feedback-response-map--대응표">대응표</h2>
+<p>rev2 순서: 1 표지, 2 왜 해야 하는가, 3 2026 ARC 추진 현황, 4 TF 구성, 5 추진 방식 비교: 왜 TF인가, 6 핵심 개발 방향, 7 개발 로드맵, 8 2027 일정, 9 안전과 리스크, 10 결정 필요 사항, 별첨 1 연도별 대상 장비, 별첨 2 단계별 목표와 업무 전환 효과</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>피드백</th>
+<th>본 장표</th>
+<th>별첨</th>
+<th>팀원용 장표, 기획안</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BP사가 하면 안 되는가, 함께 할 수 없는가</td>
+<td>5장: BP사 위탁 행, RCS 업체 협업 검토</td>
+<td>없음</td>
+<td>팀원용 "BP사 협업 검토", 기획안 5장</td>
+</tr>
+<tr>
+<td>2</td>
+<td>왜 TF인가, 다른 구성 방법은 없는가</td>
+<td>5장: 추진 방식 5가지 비교</td>
+<td>없음</td>
+<td>기획안 5장 "추진 방식 비교: 왜 TF인가" (장비군별 각자 추진의 한계 6가지)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>전문 지식이 없는 구성원도 참여할 수 있는가</td>
+<td>없음 (구두 설명)</td>
+<td>없음</td>
+<td>팀원용 "현업 엔지니어의 참여 방법", 기획안 6장</td>
+</tr>
+<tr>
+<td>4</td>
+<td>무엇이 문제이고 성공하면 무엇을 얻는가, 과정별 목표</td>
+<td>2장: 지금의 문제와 얻는 것. 7장: 시기별 목표</td>
+<td>별첨 2: 시기별 푸는 문제, 산출물, 효과</td>
+<td>기획안 1장, 4장</td>
+</tr>
+<tr>
+<td>5</td>
+<td>과정별 업무 전환 효과, 정량 효과</td>
+<td>2장: 1명이 2~3명분 (추정), 효과 측정 방법과 확정 시점</td>
+<td>별첨 2: 현재 기준, 산식, 측정</td>
+<td>기획안 4장 "업무 전환 효과 (정량)"</td>
+</tr>
+<tr>
+<td>6</td>
+<td>연도별로 어느 장비를 하는가</td>
+<td>4장: 1차 장비군별 2027 상반기 목표. 7장: 2차 장비군 지정, 합류 시점, 순서 기준</td>
+<td>별첨 1: 장비군별 연도 표</td>
+<td>기획안 4장 "연도별 대상 장비"</td>
+</tr>
+<tr>
+<td>7</td>
+<td>공정 장비로 확장할 수 있는 근거</td>
+<td>7장: 확장성 한 줄 (화면만으로 조작, 장비별 코드 없이 추가하는 구조, 2027-12 검증)</td>
+<td>별첨 1: 공정 장비 행</td>
+<td>팀원용 "확장성 근거", 기획안 4장</td>
+</tr>
+<tr>
+<td>8</td>
+<td>안 할 수 없는 Sales Point</td>
+<td>2장 전체 (중복 제거, 업무 단축, 지금 시작해야 하는 이유, 단계 판정)</td>
+<td>없음</td>
+<td>기획안 1장 "이 과제를 해야 하는 이유"</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="feedback-response-map--팀장에게-확인할-것">팀장에게 확인할 것</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>질문</th>
+<th>답에 따라 바뀌는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>임원 보고는 대면 발표인가, 장표 사전 회람인가</td>
+<td>회람이면 별첨도 그대로 읽힘. 별첨 2는 수치를 뺀 축소판으로 본 장표에 올림</td>
+</tr>
+<tr>
+<td>2</td>
+<td>팀장이 보고 자리에 동석하는가</td>
+<td>동석하면 구두 답변(3번)을 나눠 맡을 수 있음</td>
+</tr>
+<tr>
+<td>3</td>
+<td>담당 임원이 8건 가운데 무엇을 물을 것 같은가</td>
+<td>물을 가능성이 높은 것은 별첨에서 본 장표로 올림</td>
+</tr>
+<tr>
+<td>4</td>
+<td>8건 가운데 임원 장표에 꼭 들어가야 하는 것은 무엇인가</td>
+<td>위 대응표의 "본 장표" 칸을 고침</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="feedback-response-map--보고-전에-채울-것">보고 전에 채울 것</h2>
+<ul>
+<li>⟨확인: "하루 2~3건"과 "레시피당 30~60분"의 범위 차이⟩. 정리되면 별첨 2의 건수, 시간 환산을 넣고 2장에 현재 기준 수치를 다시 넣음</li>
+<li>⟨확인: 2차 장비군명⟩. 정해지면 별첨 1을 본 장표로 올림</li>
+<li>⟨확인: 장비군 담당 6명 참여에 대한 R&amp;D DMI 합의 상태⟩. 5장 아래 줄에 적음</li>
+<li>1차 장비군 엔지니어에게 "하루 처리 건수"를 약식으로 확인하면 추정 표기를 "엔지니어 ⟨N⟩명 확인 기준"으로 바꿀 수 있음</li>
+</ul>
+<h2 id="feedback-response-map--관련-문서">관련 문서</h2>
+<ul>
+<li><a href="#01-tf-proposal">TF 구성 기획안</a></li>
+<li><a href="#decision-log">결정 기록</a></li>
+<li><a href="#readme">ARC TF 목차</a></li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="decision-log"><p class="file"><span class="num">12</span>decision-log.md</p><h1>결정 기록</h1>
 <blockquote>
 <p>날짜별로 정한 것과 그 이유. 뒤집을 때도 새 줄로 남기고 이전 줄을 지우지 않는다.</p>
 </blockquote>
@@ -4952,9 +5081,15 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 <td>사용자 결정: 피드백 전후 판을 구분</td>
 <td>확정</td>
 </tr>
+<tr>
+<td>2026-11-23</td>
+<td>rev2 담당 임원용 장표를 본 장표 10장과 별첨 2장으로 나눈다. "왜 해야 하는가", "추진 방식 비교: 왜 TF인가"는 본 장표에 남기고, "연도별 대상 장비", "단계별 목표와 업무 전환 효과"는 별첨으로 내린다. 로드맵에 2차 장비군 한 줄을 넣고 확장성 문구를 "추가하는 구조로 설계, 2027-12 확인"으로 고친다. 2장의 수치는 "1명이 2~3명분 (추정)" 하나만 두고, 하루 4~9건과 4~5시간 확보는 장표에서 뺀다 (기획안에는 같은 절감분의 두 가지 환산으로 남김). 추진 방식 표에서 Weekly 공유 모임 행을 빼고 BP사 행 문구를 고친다. 팀장 피드백 대응표를 새로 만든다</td>
+<td>LLM 카운슬 판정 (2026-11-23): 팀장에게 말로만 돌릴 것은 없음. 판단 기준은 "이 장이 없으면 임원이 승인을 못 하는가". 추정에서 계산한 수치와 ⟨확인⟩ 칸은 본 장표에 두지 않음</td>
+<td>확정</td>
+</tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="risk-register"><p class="file"><span class="num">12</span>risk-register.md</p><h1>위험 목록</h1>
+<section class="doc" id="risk-register"><p class="file"><span class="num">13</span>risk-register.md</p><h1>위험 목록</h1>
 <blockquote>
 <p>TF 운영과 구현의 위험, 대응, 담당. Weekly 미팅에서 바뀐 것만 확인한다.</p>
 </blockquote>
@@ -5171,7 +5306,7 @@ ARC TF Champion으로서, LLM이 제안한 조작이 승인된 범위 밖이면 
 </tr>
 </tbody>
 </table></div><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="deliverables-pptx-template"><p class="file"><span class="num">13</span>deliverables/pptx-template.md</p><h1>회사 보고용 pptx 템플릿</h1>
+<section class="doc" id="deliverables-pptx-template"><p class="file"><span class="num">14</span>deliverables/pptx-template.md</p><h1>회사 보고용 pptx 템플릿</h1>
 <blockquote>
 <p>회사 마스터 슬라이드에 옮겨 쓰기 좋은 배치와 색 규칙, 그리고 그대로 실행되는 python-pptx 시작 코드. 이 파일 하나만 다른 저장소에 복사하면 같은 형태의 deck 을 만들 수 있다.</p>
 </blockquote>
