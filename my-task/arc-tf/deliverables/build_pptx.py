@@ -8,8 +8,8 @@
         본 장표 10장(왜 해야 하는가, 왜 TF인가 추가) + 별첨 2장(연도별 대상 장비, 단계별 목표와 업무 전환 효과)
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 1, 2, 공통 플랫폼 구조, 기술 설계(07) 상세 5장
         + BP사 협업 검토, 현업 엔지니어의 참여 방법, 확장성 근거
-  map   팀장 피드백 대응 (arc-tf-feedback-map.pptx): 표지 + 대응표 + 피드백별 답변 내용 9장 + 팀장에게 확인할 것.
-        답변 장은 기존 슬라이드를 '피드백 N. 질문' 제목으로 다시 쓴 것 (answer())
+  map   피드백 검토 (arc-tf-feedback-map.pptx): 표지 + 피드백 내용 + 피드백별 답변, 검토, 논의 9장 + 추가 논의 사항.
+        답변 장은 기존 슬라이드를 '피드백 N. 질문' 제목으로 다시 쓴 것 (answer()). 장표 반영 위치는 적지 않는다
   exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
@@ -148,10 +148,13 @@ def header(s, title):
     # 제목 아래 2색 구분선은 그리지 않는다 (회사 마스터 슬라이드에 있음, 2026-11-16)
 
 
-def message(s, msg):
-    """제목 바로 아래 핵심 메시지 한 줄 (바탕 없음). 검정 글자, **표시한 중요 문구** 만 파랑. 위치가 고정이라 build 의 본문 이동에서 빠진다."""
+def message(s, msg, label=None):
+    """제목 바로 아래 핵심 메시지 한 줄 (바탕 없음). 검정 글자, **표시한 중요 문구** 만 파랑. 위치가 고정이라 build 의 본문 이동에서 빠진다.
+    label(피드백 장의 '답변')이 있으면 회색 머리말을 붙이고 한 줄에 들어가도록 글자를 18pt 로 줄인다."""
     runs = [(part, {"color": BLUE} if opt else {}) for part, opt in runs_of(msg)]  # **중요 문구** 는 파랑
-    text(s, M + Inches(0.3), MSG_Y, W - 2 * M - Inches(0.6), MSG_H, [runs], size=20, bold=True, color=INK,
+    if label:
+        runs = [(label + "  ", {"color": SUB})] + runs
+    text(s, M + Inches(0.3), MSG_Y, W - 2 * M - Inches(0.6), MSG_H, [runs], size=18 if label else 20, bold=True, color=INK,
          align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
 
 
@@ -160,13 +163,14 @@ TITLE = None  # answer() 가 넣어 두면 다음 slide() 한 번의 제목을 �
 
 def slide(title, msg):
     global TITLE
+    answered = TITLE is not None  # 피드백 답변 장: 핵심 메시지가 곧 답변
     title, TITLE = TITLE or title, None
     s = prs.slides.add_slide(BLANK)
     s.background.fill.solid()
     s.background.fill.fore_color.rgb = WHITE
     header(s, title)
     if msg:
-        message(s, msg)
+        message(s, msg, "답변" if answered else None)
     return s
 
 
@@ -218,7 +222,7 @@ def arrow(s, x0, y0, x1, y1, label=None, color=SUB, head=True, label_w=Inches(2.
 
 
 def note_line(s, y, label, body, size=14):
-    text(s, M, y, W - 2 * M, Inches(0.4), [[(label + "  ", {"bold": True, "color": BLUE})] + runs_of(body)], size=size)
+    text(s, M, y, W - 2 * M, Inches(0.3), [[(label + "  ", {"bold": True, "color": BLUE})] + runs_of(body)], size=size)
 
 
 def table(s, rows, x, y, widths, size=14, row_h=Inches(0.45), bold_col0=False, shade=None, border=False, col0_color=None):
@@ -798,43 +802,40 @@ def s_extend():  # 확장성 근거 (team, 01 4장)
             h=Inches(3.9), size=14, arrow=False)
 
 
-# ---------- 팀장 피드백 대응표 (feedback-response-map.md 요약, 팀장에게 rev2 와 함께 가져감) ----------
-def s_map():
-    s = slide("피드백 반영 현황",
-              "8건 가운데 **7건은 임원용 rev2 본 장표에 반영**, **1건은 구두 설명과 팀원용 장표**로 다룸 (내용은 다음 장부터)")
-    rows = [("#", "피드백", "본 장표 (10장)", "별첨 (2장)", "팀원용 장표, 기획안"),
-            ("1", "BP사가 하면 안 되는가, 함께 할 수 없는가", "5장: BP사 위탁 행, RCS 업체 협업 검토", "없음", "\"BP사 협업 검토\" 장"),
-            ("2", "왜 TF인가, 다른 구성 방법은 없는가", "5장: 추진 방식 5가지 비교", "없음", "기획안 5장"),
-            ("3", "전문 지식이 없는 구성원도 참여할 수 있는가", "없음 (구두 설명)", "없음", "\"현업 엔지니어의 참여 방법\" 장"),
-            ("4", "무엇이 문제이고 성공하면 무엇을 얻는가", "2장: 문제와 얻는 것. 7장: 시기별 목표", "별첨 2", "기획안 1장, 4장"),
-            ("5", "과정별 업무 전환 효과, 정량 효과", "2장: 1명이 2~3명분 (추정), 효과 측정 방법", "별첨 2", "기획안 4장"),
-            ("6", "연도별로 어느 장비를 하는가", "4장: 1차 장비군 목표. 7장: 2차 장비군 한 줄", "별첨 1", "기획안 4장"),
-            ("7", "공정 장비로 확장할 수 있는 근거", "7장: 확장성 한 줄", "별첨 1 (공정 장비 행)", "\"확장성 근거\" 장"),
-            ("8", "안 할 수 없는 Sales Point", "2장 전체", "없음", "기획안 1장")]
-    table(s, rows, M, COL_Y, [Inches(0.5), Inches(3.6), Inches(3.7), Inches(1.8), Emu(W - 2 * M - Inches(9.6))], size=12,
-          row_h=Inches(0.44), border=True, shade=lambda r: r[2].startswith("없음"))
-    note_line(s, Inches(6.2), "rev2 순서", "1 표지, 2 왜 해야 하는가, 3 추진 현황, 4 TF 구성, 5 왜 TF인가, 6 개발 방향, 7 로드맵, 8 일정, 9 리스크, 10 결정 필요 사항", size=12)
-    note_line(s, Inches(6.5), "별첨", "1 연도별 대상 장비, 2 단계별 목표와 업무 전환 효과", size=12)
+# ---------- 피드백 검토 deck (map): 피드백 내용 → 피드백별 답변, 검토, 논의 → 추가 논의 사항 ----------
+# 장표 어느 위치에 무엇을 넣었는지는 이 deck 에 적지 않는다 (2026-11-23 사용자 지시: 피드백을 마치고 최종 수정할 때 넣음).
+# 위치 대응표는 feedback-response-map.md 에만 둔다.
+def s_feedback():
+    s = slide("피드백 내용",
+              "피드백 **8건**을 질문별로 검토해 **답변**과 **더 논의할 사항**을 정리")
+    rows = [("#", "피드백", "답변 요지"),
+            ("1", "BP사가 하면 안 되는가, 함께 할 수 없는가", "장비 BP사 참여는 API, DB 개방이 전제라 실익이 낮음. RCS 업체와 녹화 DB 협업 검토"),
+            ("2", "왜 TF인가, 다른 구성 방법은 없는가", "추진 동력, 현업 수고의 공식 인정, 두 조직을 잇는 보고 라인을 위해 TF 필요 (다른 방식 4가지와 비교)"),
+            ("3", "전문 지식이 없는 구성원도 참여할 수 있는가", "개발, AI 지식 없이 평소 작업과 판단으로 참여. 초안은 AI가 쓰고 엔지니어는 확인과 수정"),
+            ("4", "무엇이 문제이고 성공하면 무엇을 얻는가, 과정별 목표", "과정마다 푸는 문제, 산출물, 성공 기준을 정하고 2027-06, 2027-12에 판정"),
+            ("5", "과정별 업무 전환 효과, 정량 효과", "반자동(2028) 단계에서 엔지니어 1명이 2~3명분 처리, 1명당 하루 4~5시간 확보 (추정)"),
+            ("6", "연도별로 어느 장비를 하는가", "1차 장비군은 2029 ARC 적용 90% 이상, 2차 장비군은 2027 하반기 합류 후 목표 확정"),
+            ("7", "공정 장비로 확장할 수 있는 근거", "확장되는 것은 조작 엔진과 지식화 순서. 2차 장비군 적용 결과(2027-12 확인)가 첫 검증"),
+            ("8", "안 할 수 없는 Sales Point", "중복을 없애고 노하우를 합쳐 Recipe 업무 시간을 줄임. 숙련 엔지니어의 작업 녹화는 지금부터 쌓아야 함")]
+    table(s, rows, M, COL_Y, [Inches(0.5), Inches(4.4), Emu(W - 2 * M - Inches(4.9))], size=13, row_h=Inches(0.48),
+          border=True)
+    note_line(s, Inches(6.5), "구성", "다음 장부터 피드백마다 **답변**(제목 아래 한 줄), **검토 내용**(본문), **논의**(맨 아래 줄) 순서", size=13)
 
 
-def s_map_ask():
-    s = slide("보고 전 확인이 필요한 사항",
-              "**보고 형식**과 **임원 예상 질문**에 따라 본 장표와 별첨의 구분을 조정")
-    rows = [("#", "확인 사항", "결과에 따라 바뀌는 것"),
-            ("1", "임원 보고 형식: 대면 발표인지, 장표 사전 회람인지", "회람이면 별첨도 그대로 읽힘. 별첨 2는 수치를 뺀 축소판으로 본 장표에 올림"),
-            ("2", "보고 자리 참석자", "구두 설명(피드백 3번)을 누가 맡을지 정함"),
-            ("3", "8건 가운데 임원 보고에서 질문이 예상되는 것", "질문이 예상되는 것은 별첨에서 본 장표로 올림"),
-            ("4", "8건 가운데 임원 장표에 꼭 들어가야 하는 것", "반영 현황의 \"본 장표\" 칸을 고침")]
-    table(s, rows, M, COL_Y, [Inches(0.5), Inches(5.4), Emu(W - 2 * M - Inches(5.9))], size=13, row_h=Inches(0.46), border=True)
-    ly = Inches(4.6)
-    box(s, M, ly, W - 2 * M, Inches(1.95), fill=MIST)
-    text(s, M + Inches(0.3), ly + Inches(0.12), W - 2 * M - Inches(0.6), Inches(1.7), [
-        [("보고 전에 채울 것", {"bold": True, "color": BLUE})],
-        runs_of("1. **수치 범위 정리**: \"하루 2~3건\"과 \"레시피당 30~60분\"이 재는 범위를 맞춤. 정리되면 2장과 별첨 2에 수치 반영"),
-        runs_of("2. **2차 장비군명 확정**: 정해지면 별첨 1(연도별 대상 장비)을 본 장표로 올림"),
-        runs_of("3. **R&D DMI 합의 상태**: 장비군 담당 6명 참여에 대한 합의 여부를 5장 아래 줄에 적음"),
-        runs_of("4. **약식 확인**: 1차 장비군 엔지니어에게 하루 처리 건수를 물어 \"추정\"을 \"엔지니어 N명 확인 기준\"으로 바꿈")],
-        size=13, gap=0.3)
+def s_discuss():
+    s = slide("추가 논의가 필요한 사항",
+              "답변을 확정하려면 **수치 근거**, **2차 장비군**, **R&D DMI 합의**의 확인이 필요")
+    rows = [("#", "논의 사항", "피드백", "정해지면"),
+            ("1", "\"하루 2~3건\"과 기존 경험치 \"레시피당 30~60분\"의 범위 차이", "5, 8", "건당 대응 범위를 맞춘 뒤 건수, 시간 환산을 다시 계산"),
+            ("2", "1차 장비군 엔지니어 약식 확인 (하루 처리 건수)", "5, 8", "\"추정\"을 \"엔지니어 <N>명 확인 기준\"으로 바꿈"),
+            ("3", "2차 장비군명 <확인>", "6, 7", "연도별 대상 장비의 2차 장비군 행과 합류 후 목표를 채움"),
+            ("4", "장비군 담당 6명 참여에 대한 R&D DMI 합의 상태 <확인>", "2", "TF 구성과 본인 과제 인정 방법을 확정"),
+            ("5", "2026-12 시범 검증 (라벨링 소요 시간, 수정률) <확인>", "3", "현업 엔지니어의 참여 부담을 측정값으로 답함"),
+            ("6", "과정별 성공 기준의 빈칸 수치", "4", "장비군별 판정 기준 2027-01 말, 2028~2029 목표 2027-07에 확정"),
+            ("7", "RCS 업체 협업 범위 (녹화 DB 접근 경로)", "1", "접근 경로 확인 결과로 협업 여부를 정함"),
+            ("8", "공정 장비 확장의 타당성 검토 시점 <확인>", "7", "2027-12 2차 장비군 검증 결과를 본 뒤 검토")]
+    table(s, rows, M, COL_Y, [Inches(0.5), Inches(5.6), Inches(0.9), Emu(W - 2 * M - Inches(7.0))], size=13, row_h=Inches(0.48),
+          border=True, col0_color=INK)
 
 
 def s_tf_limits():  # 피드백 2: 각자 추진의 한계와 TF가 필요한 이유 (01 5장)
@@ -855,7 +856,7 @@ def s_tf_limits():  # 피드백 2: 각자 추진의 한계와 TF가 필요한 �
             size=13, before=True)
 
 
-def s_quant():  # 피드백 5: 정량 효과 (01 4장 "업무 전환 효과 (정량)"). 추정에서 계산한 값이라 rev2 본 장표에는 넣지 않는다
+def s_quant():  # 피드백 5: 정량 효과 (01 4장 "업무 전환 효과 (정량)"). 추정에서 계산한 값
     s = slide("업무 전환 효과 (정량)",
               "반자동(2028) 단계에서 **엔지니어 1명이 2~3명분** 처리, **1명당 하루 4~5시간** 확보 (추정)")
     rows = [("절감분을 쓰는 곳", "현재", "반자동 (2028 보조 단계)", "계산"),
@@ -869,9 +870,7 @@ def s_quant():  # 피드백 5: 정량 효과 (01 4장 "업무 전환 효과 (정
             ("주의", "위 두 값은 같은 가정을 적용한 두 가지 경우라 __더하지 않음__. 라벨링, 검토 시간을 빼기 전의 계산값"),
             ("순효과", "기준선(2027-02)의 수작업 시간에서 Agent 실행 로그의 개입, 검토 시간을 빼서 산정. 2027은 투입 단계라 순효과는 2028부터"),
             ("전환 업무", "확보한 시간은 **Data 분석, 고도화된 장비 관리**, 더 많은 Recipe 의뢰 대응에 사용"),
-            ("측정", "플랫폼 실행 로그로 자동 집계해 월간 보고. 수치는 __2027-07 확정__"),
-            ("확인 필요", "기존 경험치 \"레시피당 30~60분\"과 재는 범위가 다름. 건당 대응 범위를 기준선 측정 양식에서 맞춤"),
-            ("임원 장표", "추정에서 계산한 수치라 rev2 본 장표에는 \"1명이 2~3명분 (추정)\"만 둠")]:
+            ("측정", "플랫폼 실행 로그로 자동 집계해 월간 보고. 수치는 __2027-07 확정__")]:
         note_line(s, y, label, body, size=13)
         y += Inches(0.37)
 
@@ -890,31 +889,59 @@ def s_goals():  # 피드백 4: 과정별 목표와 성공 기준 (01 4장 효과
              "ARC 적용 비율(ARC 적용 Recipe 수 / 의뢰 Recipe 수) 1차 장비군 90% 이상", "2029")]
     table(s, rows, M, COL_Y, [Inches(1.4), Inches(2.7), Inches(2.7), Inches(4.4), Emu(W - 2 * M - Inches(11.2))], size=12,
           row_h=Inches(0.68), bold_col0=True, border=True, col0_color=INK)
-    note_line(s, Inches(5.95), "수치 확정", "빈칸 수치는 장비군별 판정 기준 2027-01 말, 2028~2029 목표 2027-07에 확정 (기준선 측정 2027-02)", size=13)
-    note_line(s, Inches(6.33), "미달 시", "목표 달성 확인 시점마다 **보완, 축소, 중단** 가운데 하나를 정해 월간 보고에서 승인", size=13)
+    note_line(s, Inches(5.75), "미달 시", "목표 달성 확인 시점마다 **보완, 축소, 중단** 가운데 하나를 정해 월간 보고에서 승인", size=13)
 
 
-def answer(n, q, make):
-    """기존 슬라이드를 '피드백 N. 질문' 제목으로 다시 쓴다."""
+def discuss_line(s, body):
+    """피드백 답변 장 맨 아래의 '논의' 줄. 자리가 모자라면 본문을 세로로 줄여서 넣는다."""
+    shapes = [sh for sh in s.shapes if sh.top > Inches(1.1)]
+    bottom = max(sh.top + sh.height for sh in shapes)
+    f = min(1, (SRC_BOTTOM - Inches(0.5) - COL_Y) / (bottom - COL_Y))
+    if f < 1:
+        for sh in shapes:
+            sh.top, sh.height = round(COL_Y + (sh.top - COL_Y) * f), round(sh.height * f)
+            if sh.has_table:
+                for r in sh.table.rows:
+                    r.height = round(r.height * f)
+    y = SRC_BOTTOM - Inches(0.4)
+    box(s, M, y, W - 2 * M, Inches(0.4), fill=BLUE_PALE)
+    text(s, M + Inches(0.15), y, W - 2 * M - Inches(0.3), Inches(0.4),
+         [[("논의  ", {"bold": True, "color": BLUE})]
+          + [r for part in re.split(r"(<[^>]+>)", body) for r in runs_of(part)]],  # <확인> 자리만 빨강 (text() 는 '<' 가 든 조각 전체를 칠함)
+         size=13, anchor=MSO_ANCHOR.MIDDLE)
+
+
+def answer(n, q, make, discuss=None):
+    """기존 슬라이드를 피드백 답변 장으로 다시 쓴다: 제목은 '피드백 N. 질문', 핵심 메시지는 '답변', 본문은 검토 내용, 맨 아래는 '논의'."""
     def run():
         global TITLE
         TITLE = f"피드백 {n}. {q}"
         make()
+        if discuss:
+            discuss_line(prs.slides[len(prs.slides) - 1], discuss)
     return run
 
 
-# 대응표 deck: 표지, 대응표(어디서 답하는지), 피드백별 답변 내용, 팀장에게 확인할 것
-MAP = [lambda: s_cover("ARC TF 기획안 피드백 반영", "피드백 8건의 검토 내용과 rev2 장표 반영 위치"), s_map,
-       answer(1, "BP사가 하면 안 되는가, 함께 할 수 없는가", s_bp),
+# 피드백 검토 deck: 표지, 피드백 내용, 피드백별 답변과 검토와 논의, 추가 논의 사항
+MAP = [lambda: s_cover("ARC TF 기획안 피드백 검토", "피드백 8건의 검토 내용과 답변, 논의 사항"), s_feedback,
+       answer(1, "BP사가 하면 안 되는가, 함께 할 수 없는가", s_bp,
+              "RCS 업체와의 협업 범위는 **녹화 DB 접근 경로 확인**(R&D MI H/W 담당자) 결과로 정함"),
        answer(2, "왜 TF인가, 다른 구성 방법은 없는가", s_why_tf),
-       answer(2, "각자 추진의 한계와 TF가 필요한 이유", s_tf_limits),
-       answer(3, "전문 지식이 없는 구성원도 참여할 수 있는가", s_engineer_role),
-       answer(4, "무엇이 문제이고, 과정별 목표는 무엇인가", s_goals),
-       answer(5, "정량적 업무 전환 효과는 무엇인가", s_quant),
-       answer(6, "연도별로 어느 장비를 하는가", s_equip),
-       answer(7, "공정 장비로 확장할 수 있는 근거는 무엇인가", s_extend),
-       answer(8, "안 할 수 없는 Sales Point는 무엇인가", s_why),
-       s_map_ask]
+       answer(2, "각자 추진의 한계와 TF가 필요한 이유", s_tf_limits,
+              "장비군 담당 6명의 TF 참여를 **본인 과제로 인정**하는 방법, R&D DMI와 합의하는 절차 <확인>"),
+       answer(3, "전문 지식이 없는 구성원도 참여할 수 있는가", s_engineer_role,
+              "2026-12 시범 검증의 **대상 엔지니어와 녹화 건** <확인>. 결과(소요 시간, 수정률)로 참여 부담을 다시 판단"),
+       answer(4, "무엇이 문제이고, 과정별 목표는 무엇인가", s_goals,
+              "성공 기준의 **빈칸 수치**는 장비군별 판정 기준 2027-01 말, 2028~2029 목표 2027-07에 확정 (기준선 측정 2027-02)"),
+       answer(5, "정량적 업무 전환 효과는 무엇인가", s_quant,
+              "\"하루 2~3건\"과 기존 경험치 \"레시피당 30~60분\"은 **재는 범위가 다름** <확인>. 1차 장비군 엔지니어에게 하루 처리 건수를 약식 확인"),
+       answer(6, "연도별로 어느 장비를 하는가", s_equip,
+              "**2차 장비군명** 미정 <확인>. 순서 기준으로 후보를 정해 2026-12에 1차 장비군과 함께 지정"),
+       answer(7, "공정 장비로 확장할 수 있는 근거는 무엇인가", s_extend,
+              "공정 장비 확장의 **타당성 검토 시점** <확인>. 2027-12 2차 장비군 검증 결과를 본 뒤 정하는 안"),
+       answer(8, "안 할 수 없는 Sales Point는 무엇인가", s_why,
+              "수치 근거는 \"1명이 2~3명분 (추정)\" 하나임. **기준선 측정(2027-02) 전에 쓸 근거**를 더 확보할지 논의"),
+       s_discuss]
 # rev2 (2026-11-23 카운슬): 본 장표 10장 + 별첨 2장. 연도별 대상 장비, 단계별 목표와 업무 전환 효과는 별첨으로 내림
 BOSS = [s_cover, s_why, s_status, s_team, s_why_tf, lambda: s_platform(merged=True), lambda: s_exec_roadmap(second_line=True),
         s_kanban, s_safety, s_decision, lambda: s_equip(backup=True), lambda: s_effect(backup=True)]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
