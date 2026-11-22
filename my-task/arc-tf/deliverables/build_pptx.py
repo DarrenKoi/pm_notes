@@ -4,8 +4,10 @@
     python my-task/arc-tf/deliverables/build_pptx.py          # 3종 모두
     python my-task/arc-tf/deliverables/build_pptx.py boss     # team | boss | exec 중 하나
 
-  boss  담당 임원 보고 (arc-tf-proposal.pptx): 01 기획안 요약 (PoC 시사점부터) + 핵심 개발 방향 1장 (exec와 같은 합본)
+  boss  담당 임원 보고 (arc-tf-proposal-rev2.pptx, 이전 보고본 arc-tf-proposal.pptx 는 보존): 01 기획안 요약 (왜 해야 하는가부터) + 핵심 개발 방향 1장 (exec와 같은 합본)
+        + 팀장 피드백 반영 4장 (왜 해야 하는가, 왜 TF인가, 연도별 대상 장비, 단계별 목표와 업무 전환 효과)
   team  팀원용 (arc-tf-team-full.pptx): boss deck + 업무 전략 1, 2, 공통 플랫폼 구조, 기술 설계(07) 상세 5장
+        + BP사 협업 검토, 현업 엔지니어의 참여 방법, 확장성 근거
   exec  최고 임원 보고 (arc-tf-exec-summary.pptx): 5장 (2026 추진 현황과 Lesson Learned, 핵심 개발 방향(업무 전략 합본), TF 구성, 개발 로드맵)
 
 deck 은 01, 07, 08 .md 의 요약이다. 그 문서를 고치면 아래 슬라이드 내용도 같이 고친다
@@ -664,16 +666,137 @@ def s_exec_roadmap():
             ("2029", "자율: Agent가 셋업 진행", "1차 장비군 ARC 적용 비율 90% 이상")]
     table(s, rows, M, Inches(3.72), [Inches(1.9), Inches(6.0), Emu(W - 2 * M - Inches(7.9))], size=14, row_h=Inches(0.45),
           bold_col0=True, border=True, col0_color=INK)
-    note_line(s, Inches(6.2), "기대 효과", "**Computer Use 고도화**를 통해 __공정 장비 또는 SmartFactory 운영까지 확장__할 수 있는 구조로 진화 가능", size=13)
+    note_line(s, Inches(6.2), "확장성", "**화면만으로 조작**(API 불필요), 장비별 코드 없이 장비군 추가. __2차 장비군 합류(2027-12)로 검증__ 후 공정 장비 확장 검토", size=13)
     note_line(s, Inches(6.55), "측정", "ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)", size=13)
 
 
-BOSS = [s_cover, s_status, s_team, lambda: s_platform(merged=True), s_exec_roadmap,
-        s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
-TEAM = BOSS[:3] + [s_assets, s_where, lambda: s_platform(merged=True), s_offline, s_online, s_gates, s_eval, s_stack] + BOSS[4:] + [s_why_not_llm]
+# ---------- 팀장 피드백 반영 (2026-11-23): 01 기획안의 같은 이름 절을 요약 ----------
+def s_why():  # 왜 해야 하는가 (01 1장: 문제, 이 과제를 해야 하는 이유)
+    s = slide("왜 해야 하는가",
+              "각자 추진 중인 ARC의 **중복을 없애고 노하우를 합쳐** **Recipe 업무 시간**을 줄여야 함")
+    two_col(s, "지금의 문제", [
+                "**Recipe 셋업과 Tuning이 수작업**: 엔지니어 1명이 __하루(8시간) 2~3건__ 대응",
+                "**노하우가 개인에게 있음**: 담당자가 바뀌면 사라지고 사람마다 품질이 다름",
+                "**장비군별 각자 ARC 추진**: 화면 조작, 모델 운영, 녹화분 확보를 __장비군마다 반복__",
+                "MI 엔지니어에게 **Data 분석, 고도화된 장비 관리**가 요구되나 __쓸 시간이 없음__"],
+            "ARC TF로 얻는 것", [
+                "**중복 제거, 노하우 통합**: 공통 플랫폼 하나로 __공동 대응__",
+                "**Recipe 업무 단축**: 반자동 단계에서 __1명이 2~3명분__ 처리 (추정, 기준선 측정으로 검증)",
+                "**노하우를 회사 자산으로**: 숙련 엔지니어의 셋업 방식을 지식 DB로 축적",
+                "줄인 시간을 **Data 분석, 장비 관리 고도화**로 전환"],
+            h=Inches(3.7), size=14, before=True)
+    note_line(s, Inches(5.98), "지금 시작", "숙련 엔지니어의 Recipe 작업 데이터는 **지금부터 쌓아야** 함. AI 모델은 교체할 수 있지만 __작업 노하우 데이터는 대체 불가__", size=13)
+    note_line(s, Inches(6.36), "단계 판정", "2027-06 장비군별 목표 3건으로 성과 확인, 2027-06과 2027-12 목표 달성 확인에서 **보완, 축소, 중단** 판단", size=13)
+
+
+def s_why_tf():  # 추진 방식 비교 (01 5장: 추진 방식 비교, BP사 협업 검토)
+    s = slide("추진 방식 비교: 왜 TF인가",
+              "**추진 동력**, **현업 수고의 공식 인정**, **두 조직을 잇는 보고 라인**을 위해 TF 필요")
+    rows = [("추진 방식", "장점", "한계"),
+            ("장비군별 각자 추진 (현재)", "승인 절차 불필요", "화면 조작, 모델 운영, 녹화분 확보를 장비군마다 반복 개발. 노하우 공유 안 됨. 개발 가능한 담당자가 있는 장비군만 진행"),
+            ("AX 파트 과제 + 현업 협조 요청", "조직 변경 없음", "현업 시간이 공식 인정되지 않음. 본인 과제에 없어 참여 동력 없음"),
+            ("Weekly 공유 모임만 운영", "부담이 작음", "공통 플랫폼을 만들 책임자와 인력 없음"),
+            ("정규 조직 신설", "전담 가능", "효과 검증 전에 조직 개편 필요"),
+            ("BP사 위탁", "내부 인력 부담 감소", "장비 API, Recipe 정보 API, DB 접근 권한 제공이 전제. 비용과 수고 대비 실익 낮음"),
+            ("ARC TF (제안)", "추진 동력, 현업 수고 공식 인정, 두 조직 보고 라인", "겸직 운영. 2027-12에 2028 운영 형태 판단")]
+    table(s, rows, M, COL_Y, [Inches(3.1), Inches(3.3), Emu(W - 2 * M - Inches(6.4))], size=13, row_h=Inches(0.52),
+          bold_col0=True, shade=lambda r: r[0].startswith("ARC TF"), border=True)
+    note_line(s, Inches(5.95), "BP 협업", "장비 BP사는 참여 실익이 낮음. **RCS 업체**와는 __녹화 DB 접근 경로__ 협업 검토", size=13)
+    note_line(s, Inches(6.33), "TF 운영", "2027-01~12 운영, 현업 엔지니어의 TF 참여를 __본인 과제로 인정__", size=13)
+
+
+def s_bp():  # BP사 협업 검토 상세 (team)
+    s = slide("BP사 협업 검토",
+              "장비 BP사 참여는 **API, DB 개방**이 전제라 실익이 낮음, **RCS 업체**와 녹화 DB 협업 검토")
+    rows = [("방법", "BP사가 해야 하는 일", "판단"),
+            ("장비 API 제어", "장비를 외부에서 조작할 수 있는 API 개발과 제공", "비용과 수고 대비 실익 낮음. 화면 조작 방식으로 대체"),
+            ("Recipe 정보 API", "중요 Recipe 정보를 외부로 내보내는 API 제공", "비용과 수고 대비 실익 낮음"),
+            ("DB 접근 권한", "장비 DB를 외부에서 읽을 수 있는 권한 제공", "비용과 수고 대비 실익 낮음"),
+            ("RCS 업체 협업", "녹화 DB 접근 경로 제공", "검토 대상: 녹화 DB 접근 확인(R&D MI H/W 담당자)과 같은 건")]
+    table(s, rows, M, COL_Y, [Inches(2.4), Inches(4.9), Emu(W - 2 * M - Inches(7.3))], size=13, row_h=Inches(0.48),
+          bold_col0=True, shade=lambda r: r[0].startswith("RCS"), border=True)
+    ly = Inches(4.7)
+    box(s, M, ly, W - 2 * M, Inches(1.5), fill=MIST)
+    text(s, M + Inches(0.3), ly + Inches(0.12), W - 2 * M - Inches(0.6), Inches(1.6), [
+        [("개발을 BP사에 맡기기 어려운 이유", {"bold": True, "color": BLUE})],
+        runs_of("1. **요구사항을 미리 명세할 수 없음**: 무엇을 자동화할지는 현업 엔지니어와 반복하면서 정해짐"),
+        runs_of("2. 셋업 노하우와 PoC 자산은 __사내에 남겨야 하는 자산__"),
+        runs_of("3. 장비 화면과 녹화 영상에 외부 인력이 접근하려면 **보안 절차** 필요")],
+        size=14, gap=0.3)
+
+
+def s_engineer_role():  # 현업 엔지니어의 참여 방법 (team, 01 6장)
+    s = slide("현업 엔지니어의 참여 방법",
+              "개발, AI 지식 없이 **평소 작업과 판단**으로 참여, 초안은 AI가 쓰고 엔지니어는 **확인과 수정**")
+    rows = [("하는 일", "방법", "필요한 지식"),
+            ("작업 녹화", "평소대로 Recipe를 셋업 (녹화 DB나 녹화기가 기록)", "없음"),
+            ("라벨링", "AI가 나눈 작업 단계에 이름을 붙이고 틀린 곳을 고침", "장비, Recipe"),
+            ("결정 지점 답변", "\"왜 여기서 이렇게 했는지\" 묻는 질문에 답함", "장비, Recipe"),
+            ("Workflow 검토와 승인", "절차서를 읽고 맞는지 판정", "장비, Recipe"),
+            ("실행 중 개입과 수정", "Agent가 틀리면 멈추고 고침. 고친 내용은 지식 DB에 다시 저장", "장비, Recipe")]
+    table(s, rows, M, COL_Y, [Inches(3.0), Inches(6.9), Emu(W - 2 * M - Inches(9.9))], size=14, row_h=Inches(0.48),
+          bold_col0=True, border=True)
+    note_line(s, Inches(5.25), "비유", "후임에게 **인수인계서**를 쓰는 일과 같음. 코드 작성은 개발 인력이 맡음", size=13)
+    note_line(s, Inches(5.65), "검증", "2026-12 시범: 개발, AI에 익숙하지 않은 엔지니어가 녹화 1건을 라벨링, __소요 시간과 수정률 측정__ <확인>", size=13)
+    note_line(s, Inches(6.05), "지원", "별도 교육 과정 없이 **Weekly 미팅**에서 개발 노하우 공유", size=13)
+
+
+def s_equip():  # 연도별 대상 장비 (01 4장)
+    s = slide("연도별 대상 장비",
+              "1차 장비군은 **2029 ARC 적용 90% 이상**, 2차 장비군은 **2027 하반기 합류** 후 목표 확정")
+    rows = [("장비군", "2027 상반기", "2027 하반기", "2028", "2029"),
+            ("CD-SEM (1차)", "Align Fail 자동 대응 Agent 현장 배치", "셋업 절차 지식 자산화", "보조: 반복 입력 대행", "자율: ARC 적용 90% 이상"),
+            ("Thickness (1차)", "Film 10 layer 이하 의뢰건 90% 이상 자동화", "셋업 절차 지식 자산화", "보조: 반복 입력 대행", "자율: ARC 적용 90% 이상"),
+            ("Inspection (1차)", "Optical Inspection 장비군 전체로 ARC 확장", "셋업 절차 지식 자산화", "보조: 반복 입력 대행", "자율: ARC 적용 90% 이상"),
+            ("2차: <장비군명 확인>", "인터뷰, Workflow 조사, 작업 녹화", "Weekly 미팅 합류, Workflow 구현과 자동화 테스트", "<합류 후 확정>", "<합류 후 확정>"),
+            ("공정 장비 (확장 검토)", "없음", "2차 합류로 확장 구조 검증", "<타당성 검토 시점 확인>", "<확인>")]
+    table(s, rows, M, COL_Y, [Inches(2.4), Inches(3.1), Inches(2.9), Inches(1.95), Emu(W - 2 * M - Inches(10.35))], size=12,
+          row_h=Inches(0.58), bold_col0=True, border=True, col0_color=INK)
+    note_line(s, Inches(5.85), "2차 순서 기준", "월 의뢰 건수, 건당 셋업 시간, 1차 장비군과 접속 경로가 비슷한 정도", size=13)
+    note_line(s, Inches(6.23), "2차 명단", "2026-12에 1차와 함께 지정, 목표는 합류 후 기준선 측정(2027-08)으로 확정", size=13)
+
+
+def s_effect():  # 단계별 목표와 업무 전환 효과 (01 4장)
+    s = slide("단계별 목표와 업무 전환 효과",
+              "반자동(2028) 단계에서 **엔지니어 1명이 2~3명분** Recipe 처리, 줄인 시간은 **분석 업무로 전환**")
+    rows = [("시기", "푸는 문제", "산출물", "업무 전환 효과"),
+            ("2027 상반기", "단순, 반복 의뢰의 Recipe를 손으로 셋업", "1차 장비군 목표 3건, 플랫폼 베타, 기준선 측정", "Thickness Film 10 layer 이하 의뢰건 90% 이상 자동화"),
+            ("2027 하반기", "셋업 노하우가 개인에게만 있음", "절차서, Recipe 셋업 지식 DB", "투입 단계 (라벨링, 검토). 단위 작업 성공 비율 <X>%"),
+            ("2028 보조", "반복 입력 때문에 엔지니어가 화면 앞에 묶임", "Agent가 반복 입력 대행", "1명이 하루 2~3건에서 4~9건 처리, 1명당 하루 4~5시간 확보 (추정)"),
+            ("2029 자율", "의뢰가 늘면 셋업 인력도 같이 늘어야 함", "Agent가 셋업 진행", "1차 장비군 ARC 적용 90% 이상. 시간 효과 <2027-07 확정>")]
+    table(s, rows, M, COL_Y, [Inches(1.6), Inches(3.3), Inches(3.3), Emu(W - 2 * M - Inches(8.2))], size=12,
+          row_h=Inches(0.6), bold_col0=True, border=True, col0_color=INK)
+    note_line(s, Inches(5.25), "현재 기준", "엔지니어 1명이 **하루(8시간) Recipe 2~3건** 대응 (Recipe Creation, Tuning 기준)", size=13)
+    note_line(s, Inches(5.63), "산식", "절감 시간 = 의뢰 건수 × 건당 대응 시간 × ARC 적용 비율 × Agent 개입 범위 (라벨링, 검토 투입 시간은 뺌)", size=13)
+    note_line(s, Inches(6.01), "측정", "플랫폼 실행 로그로 자동 집계해 **월간 보고**. 수치는 기준선 측정(2027-02) 후 __2027-07 확정__", size=13)
+    note_line(s, Inches(6.39), "전환 업무", "확보한 시간은 **Data 분석, 고도화된 장비 관리**, 더 많은 Recipe 의뢰 대응에 사용", size=13)
+
+
+def s_extend():  # 확장성 근거 (team, 01 4장)
+    s = slide("확장성: 공정 장비로 이어질 수 있는 근거",
+              "확장되는 것은 **조작 엔진과 지식화 순서**, **2차 장비군 합류**(2027-12)가 첫 검증")
+    two_col(s, "확장되는 것", [
+                "**화면만으로 조작**: 장비 API가 필요 없어 __원격 화면이 있는 장비면 적용 가능__",
+                "**장비별 코드 없이 추가**: 화면 영역 지도와 절차 정의만으로 새 장비군 추가",
+                "**지식화 순서 공통**: 녹화, 라벨링, Workflow 생성, 수정이 장비와 무관",
+                "**안전 규칙 공통**: 엔지니어 승인, 즉시 중단, 허용 조작 범위"],
+            "확장의 조건과 검증", [
+                "**공정 판단은 옮겨지지 않음**: 공정 Recipe 지식은 그 장비 엔지니어가 새로 쌓아야 함",
+                "**안전 기준 상향 필요**: 계측 Recipe 오류는 측정 결과에, 공정 Recipe 오류는 __Wafer에 직접 영향__",
+                "**첫 검증 (2027-12)**: 2차 장비군이 장비별 코드 없이 공통 플랫폼에 합류하는지 확인",
+                "검증 뒤 공정 장비, SmartFactory 운영 확장 검토 (시점은 검증 결과로 정함)"],
+            h=Inches(3.9), size=14, arrow=False)
+
+
+BOSS = [s_cover, s_why, s_status, s_team, s_why_tf, lambda: s_platform(merged=True), s_exec_roadmap,
+        s_equip, s_effect, s_kanban, s_safety, s_decision]  # 업무 전략 1, 2(s_assets, s_where)는 team deck에만 둠
+TEAM = [s_cover, s_why, s_status, s_team, s_why_tf, s_bp, s_engineer_role, s_assets, s_where,
+        lambda: s_platform(merged=True), s_offline, s_online, s_gates, s_eval, s_stack,
+        s_exec_roadmap, s_equip, s_effect, s_extend, s_kanban, s_safety, s_decision, s_why_not_llm]
 EXEC = [lambda: s_cover("Auto Recipe Creation TF", None), s_status, lambda: s_platform(merged=True),
         s_team, s_exec_roadmap]
-DECKS = {"boss": ("arc-tf-proposal.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
+# arc-tf-proposal.pptx 는 팀장 피드백 전 보고본(8장)으로 보존하고 다시 만들지 않는다. boss 는 rev2 로 저장한다 (2026-11-23)
+DECKS = {"boss": ("arc-tf-proposal-rev2.pptx", BOSS), "team": ("arc-tf-team-full.pptx", TEAM),
          "exec": ("arc-tf-exec-summary.pptx", EXEC)}
 
 

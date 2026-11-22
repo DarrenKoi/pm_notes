@@ -6,7 +6,7 @@
     python my-task/arc-tf/deliverables/build_docx.py boss     # team | boss | exec 중 하나
 
   team  팀원용 전체본: 문제 정의, 기획안, PRD, 기술 설계, 운영 문서, 위험, 결정 기록
-  boss  담당 임원용 기획안: 기획안 본문 + 별첨 A 문제 정의
+  boss  담당 임원용 기획안 (arc-tf-proposal-rev2.docx, 이전 보고본 arc-tf-proposal.docx 는 보존): 기획안 본문 + 별첨 A 문제 정의
   exec  최고 임원용 한 장 요약
 필요: python-docx. 한글 폰트: 맑은 고딕 (회사 PC 기준, Mac 에서는 대체 폰트로 보인다).
 
@@ -33,7 +33,8 @@ TARGETS = {
         ("07-platform-architecture.md", None), ("02-roles-and-teams.md", None), ("03-operating-rhythm.md", None),
         ("04-onboarding.md", None), ("05-poc-assets.md", None), ("risk-register.md", None),
         ("decision-log.md", None)]),
-    "boss": ("arc-tf-proposal.docx", "Auto Recipe Creation TF 구성 기획안", [
+    # arc-tf-proposal.docx 는 팀장 피드백 전 보고본으로 보존하고 다시 만들지 않는다 (2026-11-23)
+    "boss": ("arc-tf-proposal-rev2.docx", "Auto Recipe Creation TF 구성 기획안", [
         ("01-tf-proposal.md", None), ("00-problem-statement.md", "별첨 A")]),
     "exec": ("arc-tf-exec-summary.docx", None, [("08-exec-summary.md", None)]),
 }

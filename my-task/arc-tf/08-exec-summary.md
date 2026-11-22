@@ -5,7 +5,7 @@ category_middle: "ARC TF (Auto Recipe Creation)"
 category_minor: "최고 임원 요약"
 note_kind: "요약 보고"
 classified_on: "2026-11-08"
-last_updated: 2026-11-17
+last_updated: 2026-11-23
 status: 초안, 2026-12 최종 승인 보고용
 ---
 
@@ -65,7 +65,7 @@ Computer Use 기반 RAG Workflow 순환 플랫폼입니다.
 | 2028 | 보조: 엔지니어 앞에서 반복 입력 대행 | Agent 개입 범위 기준선 대비 ⟨N⟩배, 셋업 시간 ⟨확인⟩% 단축 |
 | 2029 | 자율: Agent가 셋업 진행 (특이 사항과 위험 때만 엔지니어 개입) | 1차 장비군 의뢰 Recipe ARC 적용 비율 90% 이상 |
 
-- 기대 효과: Computer Use 고도화를 통해 공정 장비 또는 SmartFactory 운영까지 확장할 수 있는 구조로 진화 가능
+- 확장성: 화면만으로 조작(API 불필요)하고 장비별 코드 없이 장비군을 추가하는 구조. 2차 장비군 합류(2027-12)로 검증한 뒤 공정 장비, SmartFactory 운영 확장 검토
 - 측정: ARC 적용 비율 = ARC 적용 Recipe 수 / 의뢰 Recipe 수 (장비군별 대상 Recipe 기준, 재작업 기준 충족 건만 집계)
 
 ## 요청 사항
