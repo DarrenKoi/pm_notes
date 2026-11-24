@@ -5,7 +5,7 @@ category_middle: "AI/DT 교육 커리큘럼"
 category_minor: "전체 목차"
 note_kind: "목차"
 classified_on: "2026-10-07"
-last_updated: 2026-10-09
+last_updated: 2026-11-24
 ---
 
 # AI/DT 교육 커리큘럼 설계
@@ -37,6 +37,8 @@ last_updated: 2026-10-09
 | [Expert 분과 브레인스토밍](./expert-curriculum-brainstorm.md) | 결정 기록과 초안 가설 | 논의 종료 |
 | [Expert 양성 실행 제안](./expert-curriculum-proposal.md) | 방향성·7개 시나리오·Builder/Guide 교육·인증·운영안 | 검토용 제안 |
 | [AI Agent 고급 과정 교육 요청서](./advanced-course-vendor-request.md) | 팀 챔피언 양성 2주 고급 과정 업체 요청, RAG 심화·레드팀·평가 설계 추가 제안. 미팅용 [HTML](./advanced-course-vendor-request.html) | 초안 |
+| [2026년 SK하이닉스 AI 교육 과정 개요](./2026-vendor-training-overview.md) | 교육 업체의 2026년 8개 과정 실적과 사용 도구. 2027년 기반기술센터 맞춤 과정의 재료 | 참고 자료 |
+| [AX Transformation Roadmap](./ax-transformation-roadmap.md) | 업체와 공동 도출한 트랙별 로드맵, 과정별 일차 구성 | 참고 자료 |
 | [공개 커리큘럼 벤치마크 종합](./public-curriculum-benchmark-summary.md) | 세 조사자의 독립 조사 대조. 원본 세 문서로 연결 | 조사 완료 |
 
 ## 남은 산출물
