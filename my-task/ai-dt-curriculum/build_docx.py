@@ -13,7 +13,7 @@ from build_docx import Document, cover, render, setup  # noqa: E402
 SRC = "advanced-course-vendor-request.md"
 doc = Document()
 setup(doc)
-cover(doc, "AI Agent 고급 과정 교육 요청서")
+cover(doc, "기반기술센터 AI Agent 고급 과정 커리큘럼 요청서")
 render(doc, (HERE / SRC).read_text(encoding="utf-8").replace("⟨", "<").replace("⟩", ">"), None)
 out = HERE / SRC.replace(".md", ".docx")
 doc.save(out)
