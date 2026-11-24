@@ -20,3 +20,6 @@ _workspace/
 .obsidian/
 .pi/
 .claude/settings.local.json
+
+# Codex attachments (photos of vendor material, keep local)
+.codex-attachments/
