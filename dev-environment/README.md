@@ -31,6 +31,7 @@ classified_on: "2026-10-05"
 | [Codex CLI 실전 가이드](./codex/README.md) | Codex를 터미널에서 효율적으로 사용하는 기능/워크플로우 정리 |
 | [Pi 코딩 에이전트 실전 가이드](./pi/README.md) | Pi 설치 이후 사용법, 세션·안전 운영, PC 개발용 패키지 추천 |
 | [UI 특화 VLM 가이드](./vlm/README.md) | 폐쇄망에서 UI VLM 다운로드, 전송, 서빙 가이드 |
+| [context-mode 데이터 흐름](./context-mode/context-mode-data-flow.md) | plugin과 gateway CLI가 각각 어디로 데이터를 보내는지, gateway CLI 제거 절차 |
 
 ## 관련 문서
 
