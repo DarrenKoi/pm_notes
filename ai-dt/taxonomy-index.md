@@ -520,7 +520,7 @@ classified_on: "2026-10-05"
 
 | 문서 | 유형 |
 |---|---|
-| [AI/DT 학습 노트 - CLAUDE.md](./CLAUDE.md) | 운영 지침 · 원본 보존 |
+| [AI/DT 학습 노트 - AGENTS.md](./AGENTS.md) | 운영 지침 · 원본 보존 |
 
 ### 정리·검증 기록
 
