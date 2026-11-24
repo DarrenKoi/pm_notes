@@ -182,9 +182,8 @@ classified_on: "2026-10-05"
 
 | 문서 | 유형 |
 |---|---|
-| [Repository Guidelines](./AGENTS.md) | 운영 지침 · 원본 보존 |
-| [CLAUDE.md](./AIX_POC/CLAUDE.md) | 운영 지침 · 원본 보존 |
-| [CLAUDE.md](./CLAUDE.md) | 운영 지침 · 원본 보존 |
+| [AGENTS.md (my-task)](./AGENTS.md) | 운영 지침 · 원본 보존 |
+| [AGENTS.md](./AIX_POC/AGENTS.md) | 운영 지침 · 원본 보존 |
 
 ### 정리·검증 기록
 

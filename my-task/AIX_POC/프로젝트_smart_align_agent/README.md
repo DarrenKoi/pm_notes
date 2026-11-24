@@ -32,7 +32,7 @@ classified_on: "2026-10-05"
 | [`05-적용_CDSEM_PoC실험설계.md`](./05-적용_CDSEM_PoC실험설계.md) | 기술 백업 | **KSF#1 검증** — VLM 좌표 재정합 정확도 PoC 실험 *설계*(04 Phase 0). 실행 아님. |
 | [`07-적용_CDSEM_실행기획/`](./07-적용_CDSEM_실행기획/00-README.md) | 상세 | **실행기획 11단계 세트** — 전략일관성→…→KSF→개발일정→Review. Validation·Execution 포함, 내년 실행 가능 깊이. |
 | [`07-적용_CDSEM_실행기획_발표요약.md`](./07-적용_CDSEM_실행기획_발표요약.md) / `.pptx` | 발표·요약 | 11단계를 **단계당 1장**(14장)으로 압축한 발표 세트. |
-| `07-적용_CDSEM_실행기획_세트.pptx` | 발표·상세 | 11단계를 단계별 슬라이드(STEP 디바이더 + Why/What/How)로 변환한 79장 PPTX. 빌드 목록은 `07-적용_CDSEM_실행기획/`의 01~11 단계 문서 11개(00-README, `_장표.md` 제외). 명령은 `my-task/CLAUDE.md`. |
+| `07-적용_CDSEM_실행기획_세트.pptx` | 발표·상세 | 11단계를 단계별 슬라이드(STEP 디바이더 + Why/What/How)로 변환한 79장 PPTX. 빌드 목록은 `07-적용_CDSEM_실행기획/`의 01~11 단계 문서 11개(00-README, `_장표.md` 제외). 명령은 `my-task/AGENTS.md`. |
 
 ## 🧭 읽는 순서
 

@@ -1,35 +1,78 @@
-# Repository Guidelines
+# AGENTS.md (my-task)
 
-## Project Structure & Module Organization
-This repository is a documentation-first workspace with a small number of focused areas.
-- `.remember/`: working memory, daily notes, and short-term planning files.
-- `2026_report/`: retrospective and planning documents for 2026.
-- `AIX_POC/`: AI transformation proof-of-concept material, including `README.md`, `CLAUDE.md`, lectures, guides, tools, and project-specific folders such as `프로젝트_smart_align_agent/`.
+> `my-task/`는 pm_notes 저장소의 **프로젝트 기획 작업공간**이다 (진행 중인 기획, 보고 산출물). 이 파일이 이 폴더의 유일한 에이전트 지침이다 (루트 지침 파일은 없고, 공통 규칙은 아래 "저장소 공통 규칙"에 들어 있다). 세부 작업 규칙은 하위 워크스페이스의 `AGENTS.md`에 위임한다.
 
-Keep new documents close to the topic they explain. Use local `README.md` files when a folder needs orientation, and prefer relative links between related notes.
+## 무엇이 들어있나 (주요 워크스페이스)
 
-## Build, Test, and Development Commands
-There is no repository-wide build system at this level. Use lightweight checks before committing:
-- `git status --short`: review changed files.
-- `find . -maxdepth 2 -type f | sort`: inspect nearby document structure.
-- `rg "search term" AIX_POC 2026_report`: search notes before adding duplicate content.
+코드, 빌드, 테스트가 거의 없는 **문서 저장소**다. 산출물은 전부 한국어 마크다운이고, 일부를 docx, pptx로 변환한다. 아래 표에 없는 폴더는 `README.md` 목차를 본다.
 
-If a subfolder adds runnable code, document its exact setup and smoke-test commands in that subfolder's `README.md`.
+| 폴더 | 내용 | 깊은 가이드 |
+|------|------|------------|
+| `AIX_POC/` | SK Hynix "New AI Design Camp" 방법론 표준 + 우리 부문 AIX POC 프로젝트. **3축 구조**: `lectures/`(표준 강의 덱, captures), `_가이드/`(재사용 틀 01, 02 + 00-템플릿), `프로젝트_<이름>/`(과제별 폴더, 현재 `프로젝트_smart_align_agent`). 무게중심이 여기 있다. | **반드시 [`AIX_POC/AGENTS.md`](AIX_POC/AGENTS.md) 먼저 읽기** |
+| `2026_report/` | 상반기 리뷰 + 하반기 계획 등 분기 보고 문서 (Align Fail 자동화, SKEWNONO, OSS-Cube 추진 현황) | (단순 보고 문서, 별도 규칙 없음) |
+| `arc-tf/` | ARC TF 제안서, 장표. `deliverables/`에 docx, pptx 빌드 스크립트와 최종본 | `arc-tf/deliverables/pptx-template.md` |
+| `ai-dt-curriculum/` | AI/DT 교육 커리큘럼, 업체 교육 요청서 (.md 원본 + 미팅용 HTML, docx) | 폴더 `README.md` |
 
-## Coding Style & Naming Conventions
-Markdown should be concise, structured with clear headings, and written for future readers. Prefer descriptive filenames using existing local conventions: `kebab-case`, `snake_case`, or established Korean folder names already present in the repository.
+## 1순위 원칙: 임팩트가 보스에게 납득돼야 한다
 
-For Python or shell examples added under project/tool folders, use 4-space Python indentation, `snake_case` names, type hints for changed Python code, and short comments only where they clarify non-obvious behavior.
+이 폴더의 보고, 기획 산출물은 "무엇을 만들었나"보다 **"그게 회사에 어떤 임팩트, 영향, 효과를 줬나(줄 것인가)"** 가 보스에게 납득돼야 한다. 기능 설명만 있고 "왜 해야 하는가"가 빠진 항목은 미완성이다.
 
-## Testing Guidelines
-Automated tests are not standardized for the root workspace. For documentation changes, verify links and paths manually. For code added in a module, create a local `tests/` directory when logic is non-trivial and prefer `pytest` with `test_*.py` files.
+- 과제, 성과 항목은 기능(What)보다 **문제 → 안 하면 생기는 일 → 효과 → 측정 지표**를 먼저 쓴다.
+- 근거 수치가 없으면 지어내지 않고 `⟨확인: 무엇을⟩` 자리로 남긴다.
+- 보고서 문체: 목록과 표 칸은 개조식(~임/~함/명사, 마침표 없음), 서술 문단은 ~입니다/~습니다. ~다/~한다 평서체 금지
+- 최종본은 docx와 pptx: `.md`가 원본이고 `arc-tf/deliverables/build_docx.py`, `build_pptx.py`로 다시 만든다. pptx 내용은 스크립트에 직접 적혀 있어 `.md`를 고치면 손으로 맞춰야 한다
+- 다른 폴더의 docx는 변환기를 새로 쓰지 않고 arc-tf 것을 import하는 얇은 래퍼로 만든다 (예: `python ai-dt-curriculum/build_docx.py`, `⟨⟩`는 `<>`로 바꿔 넣음). `.docx`는 손으로 고치지 않는다
 
-Run the narrowest meaningful smoke test for the changed module, then record the command in the PR or commit notes.
+## 명령어 (마크다운 → PPTX)
 
-## Commit & Pull Request Guidelines
-Recent commits use short, scoped, action-first subjects, often like `docs(aix-poc): ...` or `docs(my-task): ...`. Keep one logical change per commit.
+`AIX_POC/tools/`의 두 변환기는 **`AIX_POC/`에서 실행한다** (상대 경로 입력 기준). `python-pptx` 필요, 한글 폰트는 맑은 고딕.
 
-PRs should include the purpose, affected paths, validation performed, and screenshots only when visual artifacts or rendered documents changed.
+```bash
+cd AIX_POC
 
-## Security & Configuration Tips
-Do not commit secrets, private endpoints, credentials, or local machine paths unless they are intentionally documented examples. Keep environment-specific values in local overrides or clearly marked templates.
+# 장표 전용: "## 장표 N — Title" 경계로 슬라이드 분할 (발표 슬라이드 md → pptx)
+python tools/md2pptx.py <in.md> <out.pptx>
+python tools/md2pptx.py 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획_발표요약.md 발표요약.pptx
+
+# 문서 전용: 헤더 구조(#/##/###)로 슬라이드 분할 (Why→What→How 산출물 묶음 → pptx)
+python tools/md2pptx_doc.py <out.pptx> <in1.md> <in2.md> ...
+# 세트 pptx의 빌드 목록 = 07-적용_CDSEM_실행기획/ 의 01~11 단계 문서 11개.
+# 00-README.md, *_장표.md, README.md, 실행기획_발표장표_통합.md 는 넣지 않는다.
+# *.md 로 넣으면 19개 파일이 들어가 장표 수가 크게 늘어난다. 도구 기본 경로는 _장표.md 까지 넣으므로 쓰지 않는다.
+D=프로젝트_smart_align_agent/07-적용_CDSEM_실행기획
+python tools/md2pptx_doc.py 프로젝트_smart_align_agent/07-적용_CDSEM_실행기획_세트.pptx \
+  $(ls $D/[01][0-9]-*.md | grep -v -e '_장표' -e '/00-')
+# 주의: 발표요약, 세트 pptx는 "기존 첨부로 보호"한다(프로젝트 README). 다시 만들면 2026-10-04 이후 추가된
+# 검토 절(세트 기준 +12장)과 md에 없는 손 수정이 반영되거나 사라진다. 재생성은 사용자 확인 후에만 한다.
+```
+
+두 변환기의 차이가 핵심이다: `md2pptx.py`는 **`## 장표 N`** 마커로, `md2pptx_doc.py`는 **문서 헤더 트리**로 슬라이드 경계를 잡는다. 일반 산출물 문서를 변환할 땐 후자를 쓴다.
+
+## 콘텐츠 아키텍처 (AIX_POC, 경계 유지가 핵심)
+
+세 계층이 분리되어 있고 이 경계를 지키는 것이 가장 중요하다 (상세는 `AIX_POC/AGENTS.md`):
+
+```
+lectures/captures/01~10  원문 전사 (불변, 캡처 1장 = 파일 1개, 가공 금지) + lectures 완본 덱 = 표준
+      ▼
+_가이드/01, 02           방법론 "틀" (재사용 가능 프레임워크). 01=기획, 02=기술
+_가이드/00-템플릿_*      틀을 도메인 중립 빈 양식으로 만든 컨설턴트 키트
+      ▼
+프로젝트_<이름>/03, 04…07  그 틀을 실제 ITC AIX 과제로 채운 "사례" (현재 프로젝트_smart_align_agent = CD-SEM)
+```
+
+- **테스트 실행은 범위 밖**: 실제 PoC를 돌려 결과를 내지 않는다. 설계, 계획까지만 쓰고 미확정 수치는 플레이스홀더(`<담당 임원>`, τ/s/r/N)로 둔다. 실측값을 지어내지 않는다.
+- **새 적용 문서**: 대응하는 틀 문서(기획→`_가이드/01`, 기술→`_가이드/02`)를 먼저 읽고 섹션 구조를 미러링한다. 새 구조를 발명하지 않는다.
+- **신규 과제**: `프로젝트_<이름>/` 폴더로 분리하고 그 안에 `README.md`(프로젝트 인덱스)를 둔다. 표준, 틀은 공유하고 과제별 내용은 폴더 안에만 둔다.
+
+## 저장소 공통 규칙
+
+- **폴더 독립성**: pm_notes의 최상위 폴더는 별개 저장소처럼 다룬다. 탐색, 근거, 링크, 수정, 커밋을 `my-task/` 안으로 한정한다. `my-task/` 안의 하위 폴더는 서로 이어진 것도 있고 아닌 것도 있다: 같은 과제를 다루면 서로 참조하고 링크해도 되고, 관련 여부가 불분명하면 다른 하위 폴더 내용을 끌어오기 전에 묻는다
+- **언어**: 한국어가 기본, 기술 용어는 영어 병기. em dash(—)와 가운데 점(·)을 쓰지 않는다 (나열은 쉼표나 "와/과", 부연은 괄호나 문장 분리, 제목 구분은 콜론)
+- **문서 구조**: 한 줄 요약 다음에 Why → What → How → References. 문서 상단 frontmatter(`tags`, `last_updated` 등)
+- **파일명**: 소문자와 하이픈. 이미 있는 한글 폴더명, `NN-적용_*` 같은 폴더별 관례는 그대로 따른다
+- **목차 갱신**: 문서를 추가하면 그 폴더 `README.md` 표에 넣는다
+- **회사 기밀 제외**: 구체 장비 수치, 내부 시스템 상세, 비밀값, 사내 endpoint는 넣지 않는다. 외부 자료는 출처를 적는다
+- **모바일 읽기용 HTML**: 폴더 문서를 새로 쓰거나 크게 고치면 저장소 루트에서 `python scripts/build_folder_html.py <폴더>`로 `reading.html`을 만들어 claude.ai Artifact로 게시하고 폴더 README의 "휴대폰, 태블릿에서 읽기" 절에 링크를 둔다. `my-task/`는 회사 업무 산출물이므로 **게시 전에 사용자에게 확인한다**. Artifact는 비공개로 두고 `reading.html`은 손으로 고치지 않는다
+- **커밋**: 한 커밋에 한 가지 변경, 제목은 `docs(<폴더>): 한 일` 형식 (예: `docs(arc-tf): ...`)
+- **Issue**: GitHub Issues `DarrenKoi/pm_notes` (`gh` CLI). 절차는 루트 `docs/agents/`

@@ -1,8 +1,6 @@
-# CLAUDE.md
+# AGENTS.md (AIX_POC)
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-> 상위 저장소 규칙은 `/Users/daeyoung/Codes/pm_notes/CLAUDE.md`(한국어, Why→What→How, 소문자-하이픈 파일명, frontmatter)을 따른다. 이 파일은 `AIX_POC/` 하위에만 적용되는 보충 가이드다.
+> 공통 규칙(한국어, Why→What→How, 소문자-하이픈 파일명, frontmatter, 기밀 제외)은 상위 [`../AGENTS.md`](../AGENTS.md)를 따른다. 이 파일은 `AIX_POC/` 하위에만 적용되는 보충 가이드다.
 
 ## 이 디렉터리가 무엇인가
 
@@ -82,6 +80,6 @@ Baseline 3원칙(가치·데이터·인간 중심)
 - **테스트 실행 금지**: 실제 PoC를 돌려 결과를 내지 않는다. 설계·계획까지만 쓰고, 미확정 수치는 플레이스홀더로 둔다.
 - **새 적용 문서 작성 시**: 대응하는 틀 문서(기획→`_가이드/01`, 기술→`_가이드/02`)를 먼저 읽고 섹션 구조를 그대로 미러링한다.
 - **출처 표기**: 적용 문서의 모든 사실은 `lectures/captures/NN`을 인라인으로 인용하거나(`(출처: [원문 NN](../lectures/captures/NN-*.md))`) 브레인스토밍 합의 결과임을 명시한다.
-- **회사 기밀 제외**: 구체 장비 수치·내부 시스템 상세는 넣지 않고 방법론 적용 골격만 남긴다 (상위 CLAUDE.md ⚠️ 주의사항).
-- **문서 완료 후**: 해당 `프로젝트_*/README.md`와 루트 `README.md`의 구성 표를 갱신한다.
+- **회사 기밀 제외**: 구체 장비 수치·내부 시스템 상세는 넣지 않고 방법론 적용 골격만 남긴다 (상위 AGENTS.md 공통 규칙).
+- **문서 완료 후**: 해당 `프로젝트_*/README.md`와 `AIX_POC/README.md`의 구성 표를 갱신한다.
 - **사내 LLM 제약** (기술 문서에 반영): 외부 LLM API 전면 차단. 사내 OpenAI-호환 엔드포인트만 사용 — Kimi-K2.5(텍스트), Qwen3-VL-8B/30B(비전), BGE-M3(임베딩). 99% 사내 문서가 DRM이라 스크린샷+VLM 추출이 기본 파이프라인.
