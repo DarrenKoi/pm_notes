@@ -5,7 +5,7 @@ review_status: partial
 document_type: agent_guidance
 ---
 
-# AI/DT 학습 노트 - AGENTS.md
+# AI/DT 학습 노트 - CLAUDE.md
 
 > 이 파일이 `ai-dt/`의 유일한 에이전트 지침이다. 루트 지침 파일은 없고, 공통 규칙은 아래 "저장소 공통 규칙"에 들어 있다.
 

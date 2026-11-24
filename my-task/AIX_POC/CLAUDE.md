@@ -1,6 +1,6 @@
-# AGENTS.md (AIX_POC)
+# CLAUDE.md (AIX_POC)
 
-> 공통 규칙(한국어, Why→What→How, 소문자-하이픈 파일명, frontmatter, 기밀 제외)은 상위 [`../AGENTS.md`](../AGENTS.md)를 따른다. 이 파일은 `AIX_POC/` 하위에만 적용되는 보충 가이드다.
+> 공통 규칙(한국어, Why→What→How, 소문자-하이픈 파일명, frontmatter, 기밀 제외)은 상위 [`../CLAUDE.md`](../CLAUDE.md)를 따른다. 이 파일은 `AIX_POC/` 하위에만 적용되는 보충 가이드다.
 
 ## 이 디렉터리가 무엇인가
 
