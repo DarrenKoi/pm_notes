@@ -13,6 +13,7 @@ last_updated: 2026-11-25
 | 파일 | 내용 | 상태 |
 |------|------|------|
 | [01-team-proposal.md](./01-team-proposal.md) | AX Team 승격 기획안 (원본, 요약형). 2절이 "팀이 되면 추진할 수 있는 업무" 11가지 | 초안, 사용자 답변 반영 (2026-11-25) |
+| [01-team-proposal-v2.md](./01-team-proposal-v2.md), `01-team-proposal-v2.docx` | 2번째 버전: 추진 업무 10가지 (가, 나)와 조직 구성만 담은 축약본. 배경, 일정, 요청 사항 제외 | 초안 (2026-11-26) |
 | `01-team-proposal.docx` | 위 md로 만든 보고용 문서 | `build_docx.py`로 생성, 손으로 고치지 않음 |
 | `build_docx.py` | docx 생성 래퍼 (변환기는 `arc-tf/deliverables/build_docx.py`) | `python3 as-a-team/build_docx.py` |
 | [02-fde-research.md](./02-fde-research.md) | FDE (Forward Deployed Engineer) 조사와 AX Team 적용안. 기획안 업무 9번 (현업 배치 개발)의 근거와 운영안 | 초안, 운영 방향 반영 (2026-11-26) |

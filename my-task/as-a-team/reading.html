@@ -63,7 +63,8 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <nav class="toc" aria-label="문서 목록"><h2>문서 · 읽는 순서</h2><ol>
 <li><a href="#readme"><span class="num">00</span>AX Team 승격 기획</a></li>
 <li><a href="#01-team-proposal"><span class="num">01</span>AX Team 승격 기획안</a></li>
-<li><a href="#02-fde-research"><span class="num">02</span>FDE (Forward Deployed Engineer) 조사와 AX Team 적용안</a></li>
+<li><a href="#01-team-proposal-v2"><span class="num">02</span>AX Team 승격 기획안</a></li>
+<li><a href="#02-fde-research"><span class="num">03</span>FDE (Forward Deployed Engineer) 조사와 AX Team 적용안</a></li>
 </ol></nav>
 <section class="doc" id="readme"><p class="file"><span class="num">00</span>README.md</p><h1>AX Team 승격 기획</h1>
 <blockquote>
@@ -83,6 +84,11 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <td><a href="#01-team-proposal">01-team-proposal.md</a></td>
 <td>AX Team 승격 기획안 (원본, 요약형). 2절이 "팀이 되면 추진할 수 있는 업무" 11가지</td>
 <td>초안, 사용자 답변 반영 (2026-11-25)</td>
+</tr>
+<tr>
+<td><a href="#01-team-proposal-v2">01-team-proposal-v2.md</a>, <code>01-team-proposal-v2.docx</code></td>
+<td>2번째 버전: 추진 업무 10가지 (가, 나)와 조직 구성만 담은 축약본. 배경, 일정, 요청 사항 제외</td>
+<td>초안 (2026-11-26)</td>
 </tr>
 <tr>
 <td><code>01-team-proposal.docx</code></td>
@@ -357,7 +363,124 @@ blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid var(--li
 <li>인원 18~20명 (정규 13명, 순환 파견 5~7명)</li>
 <li>1차 파견 2~3명 요청 승인과 대상 팀의 협조</li>
 </ul><p class="back"><a href="#top">목차로</a></p></section>
-<section class="doc" id="02-fde-research"><p class="file"><span class="num">02</span>02-fde-research.md</p><h1>FDE (Forward Deployed Engineer) 조사와 AX Team 적용안</h1>
+<section class="doc" id="01-team-proposal-v2"><p class="file"><span class="num">02</span>01-team-proposal-v2.md</p><h1>AX Team 승격 기획안</h1>
+<blockquote>
+<p>AX Part를 AX Team으로 승격하면 추진할 수 있는 업무 10가지와 조직 구성</p>
+</blockquote>
+<h2 id="01-team-proposal-v2--1-팀이-되면-추진할-수-있는-업무">1. 팀이 되면 추진할 수 있는 업무</h2>
+<h3 id="01-team-proposal-v2--가-인사-예산-권한이-있어야-추진할-수-있는-업무">가. 인사, 예산 권한이 있어야 추진할 수 있는 업무</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>업무</th>
+<th>추진 내용</th>
+<th>기대 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>TF 결과 인수와 솔루션 상시 운영</td>
+<td>솔루션마다 책임자와 백업 지정, TF가 검증한 결과 인수</td>
+<td>TF 종료 뒤에도 TF에서 얻은 노하우 유지, 운영 요청으로 인한 신규 개발 지연 축소</td>
+</tr>
+<tr>
+<td>2</td>
+<td>현업 개발 인력의 순환 파견 수용</td>
+<td>파견자가 자기 과제와 함께 합류, 과제는 AX Team이 책임지고 추진, 성과는 원소속 팀과 공동 실적</td>
+<td>현업 과제의 추진 속도 확보, 복귀 인력이 원소속 팀의 AX 거점 역할</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AX Acceleration TF와 역할 분담</td>
+<td>과제 관리는 AX Acceleration TF가 담당, AX Team은 개발과 교육에 집중</td>
+<td>과제 관리와 개발의 책임 구분, 개발과 교육에 인력 집중</td>
+</tr>
+<tr>
+<td>4</td>
+<td>연간 인력, 예산, 연산 자원 요구와 배정</td>
+<td>운영 솔루션과 신규 과제의 자원 수요를 연간 계획으로 요구, 승인 자원을 과제에 배정</td>
+<td>자원 부족으로 대기하는 과제 축소</td>
+</tr>
+<tr>
+<td>5</td>
+<td>보안, 배포 검토와 공통 평가의 대표 창구</td>
+<td>Agent의 승인, 중단, 복구 기준을 승인 조직과 한 번 합의해 여러 과제에 적용</td>
+<td>과제마다 반복되는 심사 축소, 현장 배치 기간 단축</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="01-team-proposal-v2--나-팀-규모가-되어야-추진할-수-있는-업무">나. 팀 규모가 되어야 추진할 수 있는 업무</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>업무</th>
+<th>추진 내용</th>
+<th>기대 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>여러 역할을 같이 배치하는 대규모 과제</td>
+<td>범위가 큰 과제에 3명 이상 배치, 1인 1 Agent 개발에서 팀 단위 개발로 전환</td>
+<td>현업 엔지니어의 반복 업무 시간 절감</td>
+</tr>
+<tr>
+<td>7</td>
+<td>AX 교육 정례 운영과 사내 강사 양성</td>
+<td>사내 개발 환경을 아는 구성원이 강사 역할, 업체 과정은 사내에 없는 주제로 한정</td>
+<td>사내 강의 업무 부담 해소, 업체 의존 축소</td>
+</tr>
+<tr>
+<td>8</td>
+<td>현업 배치 개발</td>
+<td>개발 인력이 부족한 팀의 과제에 AX Team 엔지니어 1명을 1개월 이내로 배치해 개발 후 복귀, 그 팀 구성원이 배우면서 운영까지 맡도록 가이드</td>
+<td>개발 인력이 부족한 팀의 AI/DT 과제 추진, 현업 팀의 운영 역량 확보</td>
+</tr>
+<tr>
+<td>9</td>
+<td>도메인 지식을 넣은 자체 모델 개발 (fine-tuning)</td>
+<td>회사 기밀 문서는 외부 LLM API 사용 불가, 사내 LLM API로 제공할 자체 모델 개발</td>
+<td>도메인 업무에서 Agent 정확도 향상</td>
+</tr>
+<tr>
+<td>10</td>
+<td>엔지니어 업무의 지식 자산화와 DB 관리</td>
+<td>엔지니어의 업무 지식을 수집, 정리해 DB로 구축, 담당 인력이 상시 관리</td>
+<td>AX 확산의 기반 확보, Agent와 자체 모델이 활용할 도메인 지식 축적</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="01-team-proposal-v2--2-조직-구성">2. 조직 구성</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규모</td>
+<td>18~20명 (현재 9명): 정규 13명, 순환 파견 5~7명</td>
+</tr>
+<tr>
+<td>정규 인원 충원</td>
+<td>4명, 팀 이동 (전배) 지원자로 충원</td>
+</tr>
+<tr>
+<td>순환 파견</td>
+<td>각 팀의 개발 인력이 2~5년 근무 뒤 희망에 따라 복귀. 1차 2~3명, 대상은 DEC, ME, DMI처럼 개발 인력이 있는 팀 (예상)</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>순환 파견의 목적: 도메인 지식을 가진 현업 인력 확보, 현업 팀과의 협업 틀 유지</li>
+</ul><p class="back"><a href="#top">목차로</a></p></section>
+<section class="doc" id="02-fde-research"><p class="file"><span class="num">03</span>02-fde-research.md</p><h1>FDE (Forward Deployed Engineer) 조사와 AX Team 적용안</h1>
 <blockquote>
 <p>FDE는 "한 고객, 여러 기능"을 맡는 현장 배치 엔지니어와 "한 기능, 여러 고객"을 맡는 플랫폼 엔지니어를 짝으로 운영하는 방식이며, 사내에서는 "현업 배치 개발"이라는 이름으로 AX Team 엔지니어 1명이 개발 인력이 부족한 팀의 과제를 1개월 이내에 개발해 인도하고 운영은 그 팀이 맡는 방식으로 적용</p>
 </blockquote>
