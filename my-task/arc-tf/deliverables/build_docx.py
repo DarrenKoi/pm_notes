@@ -42,9 +42,10 @@ SKIP_SECTIONS = {"관련 문서"}
 
 FONT = "맑은 고딕"
 MONO = "Consolas"
-ACCENT = RGBColor(0x1F, 0x49, 0x7D)
-GREY = RGBColor(0x59, 0x59, 0x59)
-TABLE_HEAD_FILL = "DCE6F1"
+BLACK = RGBColor(0x00, 0x00, 0x00)
+ACCENT = BLACK  # 제목: 글자는 검정이 기본
+GREY = BLACK  # 인용, 표지 날짜
+TABLE_HEAD_FILL = "EDEDED"  # 옅은 회색
 
 INLINE = re.compile(r"(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))")
 
@@ -58,6 +59,9 @@ def set_font(run_or_style, name=FONT):
         rpr.append(fonts)
     for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
         fonts.set(qn(attr), name)
+    # 테마 글꼴 속성이 남으면 Word가 위 지정을 무시함 (제목이 맑은 고딕으로 안 나오던 원인)
+    for attr in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
+        fonts.attrib.pop(qn(attr), None)
 
 
 def add_inline(par, text, bold=False, size=None, color=None):
@@ -89,7 +93,7 @@ def shade(cell, fill):
     tcpr.append(shd)
 
 
-KANBAN_LANES = ["FBE3CC", "DCE6F1", "EDEDED"]  # 트랙별 칸 색 (Align Fail, 관찰과 지식화, 2차)
+KANBAN_LANES = ["FFFFFF", "F2F2F2", "FFFFFF"]  # 트랙별 칸 색 (Align Fail, 관찰과 지식화, 2차)
 
 
 def add_kanban(doc, header, body):
@@ -111,10 +115,9 @@ def add_kanban(doc, header, body):
                 par = cell.paragraphs[0] if k == 0 else cell.add_paragraph()
                 par.paragraph_format.space_after = Pt(2)
                 prefix = "" if i == 0 or j == 0 or item.strip() in ("", "-") else "▪ "
-                add_inline(par, prefix + item.strip(), bold=(i == 0 or j == 0), size=9,
-                           color=RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else None)
+                add_inline(par, prefix + item.strip(), bold=(i == 0 or j == 0), size=9)
             if i == 0:
-                shade(cell, "1F497D")
+                shade(cell, "D9D9D9")
             else:
                 shade(cell, KANBAN_LANES[(i - 1) % len(KANBAN_LANES)])
     doc.add_paragraph()
@@ -234,6 +237,7 @@ def setup(doc):
         st.paragraph_format.keep_with_next = True
     for name in ("Quote", "List Bullet", "List Bullet 2", "List Number"):
         set_font(styles[name])
+        styles[name].font.color.rgb = BLACK
 
 
 def cover(doc, title_text):
