@@ -38,4 +38,4 @@ python as-a-team/build_docx.py   # my-task/ 에서 실행. 01-team-proposal.docx
 
 ## 휴대폰, 태블릿에서 읽기
 
-게시하지 않음. `reading.html` 생성과 Artifact 게시는 사용자 확인 뒤에 함.
+[reading.html](./reading.html)을 브라우저로 열면 폴더 문서를 한 페이지로 읽을 수 있음 (저장소 루트에서 `python scripts/build_folder_html.py my-task/as-a-team`으로 생성, 손으로 고치지 않음). Artifact 게시는 사용자 확인 뒤에 함.

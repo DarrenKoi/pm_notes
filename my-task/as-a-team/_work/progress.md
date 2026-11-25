@@ -1,3 +1,10 @@
+---
+tags: [as-a-team, progress]
+last_updated: 2026-11-25
+---
+
+# 진행 기록
+
 20:11 지시서, style-guide 읽음. 근거 수집 에이전트 실행, codex 1회차 전송. 다음: map, 후보 30개
 20:15 map.md, candidates.md (35개), evidence.md, codex 1회차 완료. codex 2회차 전송. 다음: grilling
 20:23 codex 2회차, grilling.md, list-v1.md (11개), 카운슬 1차 조언자 5 + 검토자 4 (codex 포함) 완료. 의장 종합 대기. 다음: 리스트 v2, 기획서 초안
